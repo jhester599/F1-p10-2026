@@ -1,0 +1,412 @@
+#!/usr/bin/env python3
+"""
+P10 Race Predictor – run this before each Grand Prix.
+
+Usage
+-----
+After qualifying on Saturday, run:
+
+  python predict_race.py --year 2026 --round 1
+
+The script will:
+  1. Fetch the latest qualifying results and championship standings from
+     the Jolpica API (or load from cache if already fetched).
+  2. Pull historical form data for each driver from the processed dataset.
+  3. Score every driver with each trained model.
+  4. Print a ranked list of P10 candidates with confidence info.
+
+Optional flags
+--------------
+  --year   INT   Season year (default: current year from config)
+  --round  INT   Race round number
+  --force-fetch  Re-download qualifying/standings even if cached
+  --top    INT   How many drivers to show in the output (default 5)
+  --model  STR   Use only this model (default: all)
+"""
+from __future__ import annotations
+
+import argparse
+import logging
+import sys
+from pathlib import Path
+from typing import Optional
+
+import numpy as np
+import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from config import (
+    DNF_POSITION,
+    EVAL_YEAR,
+    FEATURE_COLS,
+    MISSING_POSITION,
+    PREDICT_YEAR,
+    PROCESSED_DIR,
+    STREET_CIRCUITS,
+    TARGET_COL,
+    TRAIN_YEARS,
+)
+from src.data_fetch import F1Fetcher, _status_is_finish, parse_laptime
+from src.models import load_all, predict_race
+from src.scoring import fantasy_pts
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s  %(levelname)-8s  %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+
+
+# ── feature builder for a live / upcoming race ─────────────────────────────────
+
+def build_live_features(
+    year: int,
+    rnd: int,
+    fetcher: F1Fetcher,
+    historical_df: pd.DataFrame,
+    force_fetch: bool = False,
+) -> pd.DataFrame:
+    """
+    Build a feature DataFrame (one row per driver) for a race that has just
+    completed qualifying but not yet started.
+
+    Parameters
+    ----------
+    year, rnd   : season & round of the upcoming race
+    fetcher     : F1Fetcher instance
+    historical_df : processed feature dataset (all past races up to rnd-1 in year)
+    force_fetch : bypass API cache
+
+    Returns
+    -------
+    DataFrame with FEATURE_COLS + driver_id, constructor_id, grid_position
+    """
+    # ── qualifying results ────────────────────────────────────────────────────
+    qual_rows = fetcher.qualifying(year, rnd)
+    if not qual_rows:
+        logger.error("No qualifying data found for %d R%d", year, rnd)
+        sys.exit(1)
+
+    # ── schedule / circuit info ────────────────────────────────────────────────
+    schedule = fetcher.schedule(year)
+    race_info = next((r for r in schedule if int(r["round"]) == rnd), None)
+    if race_info is None:
+        logger.error("Round %d not found in %d schedule", rnd, year)
+        sys.exit(1)
+
+    circuit_id = race_info["Circuit"]["circuitId"].lower()
+    race_name  = race_info["raceName"]
+    is_street  = int(circuit_id in STREET_CIRCUITS)
+
+    logger.info("Race: %s  (circuit: %s, street: %s)", race_name, circuit_id, bool(is_street))
+
+    # ── parse qualifying ──────────────────────────────────────────────────────
+    qual_info: dict[str, dict] = {}
+    for qr in qual_rows:
+        did  = qr["Driver"]["driverId"]
+        cid  = qr["Constructor"]["constructorId"]
+        grid = float(qr.get("position", MISSING_POSITION))
+        q1   = parse_laptime(qr.get("Q1"))
+        q2   = parse_laptime(qr.get("Q2"))
+        q3   = parse_laptime(qr.get("Q3"))
+        best = min(t for t in [q1, q2, q3] if t is not None) if any(
+            t is not None for t in [q1, q2, q3]
+        ) else None
+        qual_info[did] = {"grid": grid, "best_q": best, "cid": cid}
+
+    q3_times  = [v["best_q"] for v in qual_info.values() if v["best_q"] is not None]
+    pole_time = min(q3_times) if q3_times else None
+
+    # ── championship standings before race ─────────────────────────────────
+    prev_rnd  = rnd - 1
+    prev_year = year
+    if prev_rnd == 0:
+        prev_year = year - 1
+        prev_rnd  = fetcher.num_rounds(prev_year) if prev_year >= 2010 else 0
+
+    drv_st: dict[str, tuple] = {}
+    con_st: dict[str, tuple] = {}
+    if prev_rnd > 0:
+        for s in fetcher.driver_standings(prev_year, prev_rnd):
+            did = s["Driver"]["driverId"]
+            drv_st[did] = (int(s["position"]), float(s.get("points", 0)))
+        for c in fetcher.constructor_standings(prev_year, prev_rnd):
+            cid = c["Constructor"]["constructorId"]
+            con_st[cid] = (int(c["position"]), float(c.get("points", 0)))
+
+    # ── team season averages so far (from processed data for this year) ──────
+    team_season = historical_df[
+        (historical_df["year"] == year) & (historical_df["round"] < rnd)
+    ]
+    team_avg_fin: dict[str, float]  = {}
+    team_avg_qual: dict[str, float] = {}
+    if not team_season.empty:
+        team_avg_fin  = team_season.groupby("constructor_id")["finish_position"].mean().to_dict()
+        team_avg_qual = team_season.groupby("constructor_id")["grid_position"].mean().to_dict()
+
+    # ── driver historical form (all races up to now) ──────────────────────────
+    # Use processed dataset for past-seasons + current year up to rnd-1
+    hist_races = historical_df[
+        ((historical_df["year"] < year)) |
+        ((historical_df["year"] == year) & (historical_df["round"] < rnd))
+    ].sort_values(["year", "round"])
+
+    def _driver_hist(did: str) -> pd.DataFrame:
+        return hist_races[hist_races["driver_id"] == did]
+
+    # ── grid of everyone for teammate lookup ──────────────────────────────────
+    grid_map = {did: info["grid"] for did, info in qual_info.items()}
+    con_map  = {did: info["cid"]  for did, info in qual_info.items()}
+
+    rows = []
+    for did, qi in sorted(qual_info.items(), key=lambda x: x[1]["grid"]):
+        cid  = qi["cid"]
+        grid = qi["grid"]
+        best = qi["best_q"]
+
+        if best is not None and pole_time is not None and pole_time > 0:
+            q_gap = (best - pole_time) / pole_time * 100.0
+        else:
+            q_gap = (grid - 1) * 0.08  # rough fallback
+
+        drv_pos, drv_pts = drv_st.get(did, (20, 0.0))
+        con_pos, con_pts = con_st.get(cid, (10, 0.0))
+
+        dh = _driver_hist(did)
+
+        if dh.empty:
+            last_race_pos = MISSING_POSITION
+            last_dnf      = 0
+            last_qual_pos = MISSING_POSITION
+            avg_fin3      = float(MISSING_POSITION)
+            avg_fin5      = float(MISSING_POSITION)
+            avg_qual3     = float(MISSING_POSITION)
+            dnf_last5     = 0
+            pts_last3     = 0.0
+            circ_avg_fin  = float(MISSING_POSITION)
+            circ_last_fin = float(MISSING_POSITION)
+            circ_races    = 0
+            career_races  = 0
+            career_avg    = float(MISSING_POSITION)
+        else:
+            rec = dh.iloc[-1]
+            last_race_pos = float(rec["finish_position"])
+            last_dnf      = int(rec.get("is_dnf", False) if "is_dnf" in dh.columns else
+                                 rec["finish_position"] == DNF_POSITION)
+            last_qual_pos = float(rec.get("grid_position", MISSING_POSITION))
+
+            last3 = dh.tail(3)
+            last5 = dh.tail(5)
+            avg_fin3  = float(last3["finish_position"].mean())
+            avg_fin5  = float(last5["finish_position"].mean())
+            avg_qual3 = float(last3["grid_position"].mean()) if "grid_position" in dh.columns else MISSING_POSITION
+            dnf_last5 = int((last5["finish_position"] == DNF_POSITION).sum())
+            pts_last3 = float(last3["points"].sum()) if "points" in dh.columns else 0.0
+
+            circ = dh[dh["circuit_id"] == circuit_id]
+            circ_avg_fin  = float(circ["finish_position"].mean()) if not circ.empty else MISSING_POSITION
+            circ_last_fin = float(circ.iloc[-1]["finish_position"]) if not circ.empty else MISSING_POSITION
+            circ_races    = len(circ)
+            career_races  = len(dh)
+            career_avg    = float(dh["finish_position"].mean())
+
+        t_avg_fin  = team_avg_fin.get(cid,  MISSING_POSITION)
+        t_avg_qual = team_avg_qual.get(cid,  MISSING_POSITION)
+
+        teammates  = [g for d, g in grid_map.items() if con_map.get(d) == cid and d != did]
+        teammate_g = float(np.mean(teammates)) if teammates else grid
+
+        rows.append({
+            "driver_id":      did,
+            "constructor_id": cid,
+            "grid_position":  grid,
+            "q_gap_pct":      q_gap,
+            "drv_champ_pos":  drv_pos,
+            "drv_champ_pts":  drv_pts,
+            "con_champ_pos":  con_pos,
+            "con_champ_pts":  con_pts,
+            "last_race_pos":  last_race_pos,
+            "last_dnf":       last_dnf,
+            "last_qual_pos":  last_qual_pos,
+            "avg_fin_last3":  avg_fin3,
+            "avg_fin_last5":  avg_fin5,
+            "avg_qual_last3": avg_qual3,
+            "dnf_last5":      dnf_last5,
+            "pts_last3":      pts_last3,
+            "circ_avg_fin":   circ_avg_fin,
+            "circ_last_fin":  circ_last_fin,
+            "circ_races":     circ_races,
+            "is_street":      is_street,
+            "race_num":       rnd,
+            "team_avg_fin_season":  t_avg_fin,
+            "team_avg_qual_season": t_avg_qual,
+            "teammate_grid":  teammate_g,
+            "career_races":   career_races,
+            "career_avg_fin": career_avg,
+        })
+
+    feat_df = pd.DataFrame(rows)
+    # Fill any NaNs with a sensible default
+    for col in FEATURE_COLS:
+        if col in feat_df.columns:
+            med = feat_df[col].median()
+            feat_df[col] = feat_df[col].fillna(med if not np.isnan(med) else MISSING_POSITION)
+
+    return feat_df, race_name, circuit_id
+
+
+# ── pretty print ──────────────────────────────────────────────────────────────
+
+def print_prediction(
+    scored_df: pd.DataFrame,
+    picks: dict[str, str],
+    race_name: str,
+    top_n: int = 5,
+    model_filter: Optional[str] = None,
+) -> None:
+    """
+    Print a human-readable P10 prediction summary.
+    """
+    models_to_show = [model_filter] if model_filter else list(picks.keys())
+
+    print(f"\n{'━'*60}")
+    print(f"  F1 P10 PREDICTOR  –  {race_name}")
+    print(f"{'━'*60}")
+
+    # Count votes across all models
+    vote_series = (
+        pd.Series(list(picks.values()))
+        .value_counts()
+        .rename("votes")
+    )
+
+    print(f"\n  CONSENSUS (all {len(picks)} models):")
+    print(f"  {'Driver':<25}  Votes")
+    for driver, votes in vote_series.head(top_n).items():
+        print(f"  {driver:<25}  {votes}")
+
+    print()
+    for mname in models_to_show:
+        pick  = picks[mname]
+        score_col = f"{mname}_score"
+        if score_col in scored_df.columns:
+            is_clf = mname.endswith("_clf")
+            scores = scored_df.set_index("driver_id")[score_col]
+            if is_clf:
+                ranked = scores.sort_values(ascending=False)
+                label  = "P10 prob"
+                fmt    = ".4f"
+            else:
+                ranked = (scores - 10).abs().sort_values()
+                label  = "|pred - 10|"
+                fmt    = ".2f"
+
+            print(f"  ── {mname} ──  (pick: {pick})")
+            print(f"  {'Driver':<25}  {label:<12}  raw_pred")
+            top_drivers = ranked.head(top_n).index.tolist()
+            for did in top_drivers:
+                raw   = scores[did]
+                dist  = abs(raw - 10) if not is_clf else raw
+                grid  = scored_df.set_index("driver_id").loc[did, "grid_position"]
+                marker = " ★" if did == pick else ""
+                print(f"  {did:<25}  {dist:<12{fmt}}  {raw:.4f}  (grid {int(grid):>2}){marker}")
+            print()
+
+    print(f"{'━'*60}\n")
+
+
+# ── main ───────────────────────────────────────────────────────────────────────
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Predict P10 finisher for an F1 race",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python predict_race.py --year 2026 --round 1
+  python predict_race.py --year 2026 --round 5 --top 8
+  python predict_race.py --year 2026 --round 3 --model xgb_reg
+  python predict_race.py --year 2025 --round 1 --show-actual
+        """,
+    )
+    parser.add_argument("--year",  type=int, default=PREDICT_YEAR, help="Season year")
+    parser.add_argument("--round", type=int, required=True,        help="Race round number")
+    parser.add_argument("--force-fetch", action="store_true",      help="Re-fetch API data")
+    parser.add_argument("--top",   type=int, default=5,            help="Top N drivers to show")
+    parser.add_argument("--model", type=str, default=None,         help="Restrict to one model")
+    parser.add_argument("--show-actual", action="store_true",
+                        help="Show actual result (for past races / back-test)")
+    args = parser.parse_args()
+
+    year, rnd = args.year, args.round
+
+    # ── load historical processed data ──────────────────────────────────────
+    # Try the combined dataset first; fall back to training-only
+    hist_candidates = [
+        PROCESSED_DIR / "features_2010_2025.parquet",
+        PROCESSED_DIR / f"features_{min(TRAIN_YEARS)}_{max(TRAIN_YEARS)}.parquet",
+        PROCESSED_DIR / f"features_2010_{EVAL_YEAR}.parquet",
+    ]
+    hist_path = next((p for p in hist_candidates if p.exists()), None)
+    if hist_path is None:
+        logger.error(
+            "No processed feature data found in %s.\n"
+            "Run scripts/02_build_dataset.py first.",
+            PROCESSED_DIR,
+        )
+        sys.exit(1)
+
+    historical_df = pd.read_parquet(hist_path)
+    logger.info("Historical data loaded: %d rows (%s)", len(historical_df), hist_path.name)
+
+    # ── load models ──────────────────────────────────────────────────────────
+    fitted = load_all()
+    if not fitted:
+        logger.error("No trained models found. Run scripts/03_train_models.py first.")
+        sys.exit(1)
+    if args.model:
+        if args.model not in fitted:
+            logger.error("Model '%s' not found. Available: %s", args.model, list(fitted.keys()))
+            sys.exit(1)
+        fitted = {args.model: fitted[args.model]}
+
+    # ── build features for the upcoming race ──────────────────────────────────
+    fetcher = F1Fetcher()
+    feat_df, race_name, circuit_id = build_live_features(
+        year, rnd, fetcher, historical_df, force_fetch=args.force_fetch
+    )
+
+    # ── predict ───────────────────────────────────────────────────────────────
+    scored_df, picks = predict_race(feat_df, fitted)
+
+    # ── print results ─────────────────────────────────────────────────────────
+    print_prediction(scored_df, picks, race_name, top_n=args.top, model_filter=args.model)
+
+    # ── show actual result (for backtesting) ─────────────────────────────────
+    if args.show_actual:
+        actual_results = fetcher.results(year, rnd)
+        actual_map = {}
+        for r in actual_results:
+            actual_map[r["Driver"]["driverId"]] = int(r.get("position", DNF_POSITION))
+        actual_p10 = [d for d, p in actual_map.items() if p == 10]
+        print(f"\n  ACTUAL RESULT: P10 = {actual_p10[0] if actual_p10 else 'N/A'}")
+        for mname, pick in picks.items():
+            actual_pos = actual_map.get(pick, DNF_POSITION)
+            pts = fantasy_pts(actual_pos)
+            print(f"  {mname:<16} picked {pick:<25} → P{actual_pos}  ({pts} pts)")
+        print()
+
+    # ── save this race's predictions to results/ ──────────────────────────────
+    from config import RESULTS_DIR
+    out_path = RESULTS_DIR / f"prediction_{year}_R{rnd:02d}.csv"
+    scored_df.to_csv(out_path, index=False)
+    logger.info("Full scoring table saved → %s", out_path)
+
+    print(f"  Recommendation: {max(picks.values(), key=lambda d: list(picks.values()).count(d))}")
+    print(f"  (driver picked by the most models)\n")
+
+
+if __name__ == "__main__":
+    main()
