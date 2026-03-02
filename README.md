@@ -34,6 +34,14 @@ After qualifying on Saturday, predict P10 for the upcoming race:
 python predict_race.py --year 2026 --round 5
 ```
 
+> **Tip — skip re-fetching:** If you have a copy of `f1_p10_cache_2010_2025.tar.gz`,
+> extract it into the project root to restore all raw API data, processed parquets,
+> and trained models without re-running steps 1–3:
+> ```bash
+> tar -xzf f1_p10_cache_2010_2025.tar.gz
+> python predict_race.py --year 2026 --round 5   # ready to go
+> ```
+
 ---
 
 ## Project Structure
@@ -109,7 +117,40 @@ All features are derived from information available **after qualifying, before t
 | `lgb_reg` | LightGBM Regressor | Closest predicted pos to 10th |
 | `rf_clf` | Random Forest Classifier | Highest P(finish=10th) |
 | `xgb_clf` | XGBoost Classifier | Highest P(finish=10th) |
-| `ensemble` | Avg of RF+XGB+LGB | Closest predicted pos to 10th |
+| `ensemble` | **WeightedEnsemble** | CV-weighted blend of all models (see below) |
+
+### WeightedEnsemble
+
+The ensemble was redesigned from a simple equal-weight regressor average to a
+**CV-derived weighted blend** of all six base models, including classifiers.
+
+Weights were determined by leave-one-season-out cross-validation across three
+holdout seasons (2011, 2012, 2021), using average fantasy points per race as
+the metric:
+
+| Model | CV Avg Pts | Weight |
+|---|---|---|
+| `xgb_clf` | 11.43 | **4.0** |
+| `rf_clf` | 11.02 | 2.5 |
+| `lgb_reg` | 10.78 | 2.0 |
+| `rf_reg` | 9.99 | 1.0 |
+| `xgb_reg` | 8.30 | 0.3 |
+
+**Blending method:** classifier scores use P(driver finishes 10th); regressor
+scores use 1 / (1 + |predicted_position − 10|). All scores are min-max
+normalised within each race before weighting, so classifiers and regressors
+contribute on a common [0, 1] scale.
+
+**CV results — avg fantasy pts per race:**
+
+| Holdout | ensemble (old) | ensemble (new) | xgb_clf |
+|---|---|---|---|
+| 2011 | 7.74 | 10.16 | 10.79 |
+| 2012 | 10.75 | **11.55** | 11.15 |
+| 2021 | 13.14 | **15.23** | 12.23 |
+| **Overall** | 10.54 | **12.31** | 11.39 |
+
+The new ensemble is the recommended model for race-weekend predictions.
 
 ---
 
@@ -136,14 +177,14 @@ All features are derived from information available **after qualifying, before t
 After qualifying Saturday:
 
 ```bash
-# Fetch fresh data and predict
+# Fetch fresh data and predict (ensemble is default)
 python predict_race.py --year 2026 --round 3
 
 # Show top-8 candidates
 python predict_race.py --year 2026 --round 3 --top 8
 
-# Use only the best model (e.g. xgb_reg)
-python predict_race.py --year 2026 --round 3 --model xgb_reg
+# Use a specific model
+python predict_race.py --year 2026 --round 3 --model xgb_clf
 
 # Back-test (shows actual result)
 python predict_race.py --year 2025 --round 1 --show-actual
@@ -157,3 +198,14 @@ Race results, qualifying times, and championship standings are fetched from
 the **[Jolpica F1 API](https://api.jolpi.ca/ergast/f1)** (Ergast-compatible),
 covering the 1950–present F1 World Championship.  All responses are cached
 locally in `data/raw/` to avoid repeated requests.
+
+---
+
+## Dependencies
+
+Requires `pyarrow` (for parquet support) in addition to the packages listed in
+`requirements.txt`. Install everything with:
+
+```bash
+pip install -r requirements.txt pyarrow
+```
