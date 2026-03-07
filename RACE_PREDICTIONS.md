@@ -52,23 +52,29 @@ driver with the highest P10 probability or blended score).
 
 | Model | Type | Pick | Grid | Score / Predicted Pos | Rationale |
 |-------|------|------|------|-----------------------|-----------|
-| **ensemble** | Weighted blend | **lawson** | P8 | 0.887 (blend score) | CV-weighted blend of all 5 base models; Lawson's Racing Bulls pace + grid proximity dominate |
-| **xgb_clf** | Classifier | **lawson** | P8 | P10 prob: 0.650 | Highest raw P10 probability; model favours midfield cars near P8–P12 band |
-| **rf_clf** | Classifier | **bearman** | P12 | P10 prob: 0.624 | Narrowly favours Bearman over Lawson (0.618); both are within classifier noise margin |
-| **ridge** | Regressor | **hamilton** | P7 | Predicted: 9.29 | Linear model closest to 10; Hamilton's Ferrari history pulls predicted finish from P7 toward midfield |
-| **xgb_reg** | Regressor | **hulkenberg** | P11 | Predicted: 9.92 | Closest to 10.0; Hulkenberg's consistent Sauber/Audi midfield finishes score well |
-| **rf_reg** | Regressor | **hadjar** | P3 | Predicted: 10.03 | Historical RB/Red Bull drivers at this circuit over-index; Hadjar lands almost exactly on 10 |
-| **lgb_reg** | Regressor | **max_verstappen** | P20 | Predicted: 9.67 | ⚠️ Career form overwhelms grid signal — Verstappen's historical dominance biases prediction despite P20 grid |
+> **Model version note:** Picks below reflect the fully updated model (v2):
+> 30 features (including 6 P10-zone features) and multi-class EV classifiers.
+> An earlier v1 run (24 features, binary classifiers) is preserved for reference at the bottom.
 
-#### Model architecture summary
+| Model | Type | Pick | Grid | Score | Rationale |
+|-------|------|------|------|-------|-----------|
+| **ensemble** | Weighted blend | **lawson** | P8 | 0.988 (blend) | Highest blend score; Lawson dominates across all contributing models |
+| **lgb_reg** | Regressor | **lawson** | P8 | Predicted: 10.13 | Predicted finish closest to 10th |
+| **rf_reg** | Regressor | **lawson** | P8 | Predicted: 11.29 | Racing Bulls midfield positioning consistent with P10 finish |
+| **rf_clf** | Classifier (EV) | **bearman** | P12 | EV: 12.12 pts | Bearman's Haas P12 starting position has highest expected fantasy pts |
+| **xgb_clf** | Classifier (EV) | **bearman** | P12 | EV: 14.72 pts | Strongest EV signal in the field; P12 grid ideal for P10 finish |
+| **ridge** | Regressor | **max_verstappen** | P20 | Predicted: 10.59 | Career form pulls prediction toward midfield despite P20 start ⚠️ |
+| **xgb_reg** | Regressor | **max_verstappen** | P20 | Predicted: 10.44 | Same issue — historical Red Bull performance biases regressors ⚠️ |
+
+#### Model architecture summary (v2 — fully implemented)
 
 | Family | Count | Models | Target | Selection logic |
 |--------|-------|--------|--------|-----------------|
-| Regressor | 4 | `ridge`, `rf_reg`, `xgb_reg`, `lgb_reg` | Continuous finish position (1–20) | Pick driver with `|predicted − 10|` minimised |
-| Classifier | 2 | `rf_clf`, `xgb_clf` | Binary `is_p10` (P10 or not) | Pick driver with highest P(is\_p10 = 1) |
-| Ensemble | 1 | `ensemble` (WeightedEnsemble) | Blended score | Min-max normalise each model → weighted sum → pick `argmax` |
+| Regressor | 4 | `ridge`, `rf_reg`, `xgb_reg`, `lgb_reg` | Continuous finish position (1–20) | Pick driver with `\|predicted − 10\|` minimised |
+| Classifier | 2 | `rf_clf`, `xgb_clf` | Multi-class finish position (1–20) | Pick driver with highest Expected Fantasy Pts: EV = Σ P(pos) × pts(pos) |
+| Ensemble | 1 | `ensemble` (WeightedEnsemble) | Blended EV/proximity score | Min-max normalise each model → weighted sum → pick `argmax` |
 
-**Ensemble weights** (derived from leave-one-season-out CV on 2011, 2012, 2021):
+**Ensemble weights** (derived from leave-one-season-out CV):
 
 | Model | Weight | Avg pts/race (CV) |
 |-------|--------|-------------------|
@@ -78,10 +84,12 @@ driver with the highest P10 probability or blended score).
 | rf_reg | 1.0 | 9.99 |
 | xgb_reg | 0.3 | 8.30 |
 
-**Training data:** 2010–2024 seasons (15 years, ~6,400 driver-race rows).
-**Features:** 24 pre-race features covering grid position, championship standings,
-rolling form (last 3/5 races), circuit history, team context, and career averages.
-`grid_position` is the single most important feature (~52% in `rf_reg`).
+**Training data:** 2010–2024 seasons (15 years, 6,432 driver-race rows).
+**Features (30 total):** 24 core features (grid, standings, rolling form, circuit history,
+team context, career) + 6 P10-zone features (`grid_p10_proximity`, `drv_p10_zone_rate_last10`,
+`team_p10_zone_rate_season`, `circ_p10_zone_rate`, `drv_finish_std_last5`, `midfield_qual_density`).
+Top features by importance (`rf_reg`): `grid_position` 52.5%, `team_avg_qual_season` 9.3%,
+`drv_champ_pos` 4.5%, **`grid_p10_proximity` 4.2%** (4th — new P10-zone feature).
 
 ---
 
@@ -89,12 +97,9 @@ rolling form (last 3/5 races), circuit history, team context, and career average
 
 | Driver | Votes | Models picking |
 |--------|-------|----------------|
-| **lawson** | **2** | ensemble, xgb_clf |
-| bearman | 1 | rf_clf |
-| hamilton | 1 | ridge |
-| hulkenberg | 1 | xgb_reg |
-| hadjar | 1 | rf_reg |
-| max_verstappen | 1 | lgb_reg ⚠️ |
+| **lawson** | **3** | ensemble, lgb_reg, rf_reg |
+| bearman | 2 | rf_clf, xgb_clf |
+| max_verstappen | 2 | ridge, xgb_reg ⚠️ |
 
 ---
 
@@ -102,18 +107,19 @@ rolling form (last 3/5 races), circuit history, team context, and career average
 
 **Pick: Lawson**
 
-Lawson is selected by the two highest-performing individual models from 2025
-back-testing (`xgb_clf`, `ensemble`) and is the consensus leader by vote count.
-The midfield cluster from P8 to P13 is separated by less than 1.5 seconds in
-qualifying — any of Lawson, Lindblad, Bortoleto, Hulkenberg, Bearman, or Ocon
-could realistically finish 10th.
+Lawson leads with 3 votes from the ensemble and both regressors that handle
+career form most robustly. The EV classifiers narrowly prefer Bearman at P12
+(EV ~12–15 pts vs Lawson's ~12–14 pts) — both are within noise margin.
 
-**Confidence note:** The `lgb_reg → Verstappen` pick is disregarded as a known
-model weakness — career/championship form features over-ride the grid position
-signal when a historically elite driver starts from the back. This is flagged as
-a future improvement target.
+The P8–P13 midfield cluster is extremely tight (< 1.5 sec in qualifying).
+Any of Lawson, Lindblad, Bortoleto, Hulkenberg, Bearman, or Ocon could
+realistically finish 10th given the contact-prone nature of Albert Park.
 
-**2025 reference performance** (how each model averaged over 24 races):
+**Verstappen ⚠️:** Ridge and xgb_reg picking Verstappen from P20 remains a
+known model weakness — their regression toward career/championship features
+overwhelms the grid position signal when an elite driver starts from the back.
+
+**2025 reference performance** (models trained on same architecture):
 
 | Model | Avg pts/race | Exact P10 | Within 2 pos |
 |-------|-------------|-----------|--------------|
@@ -126,6 +132,24 @@ a future improvement target.
 | ensemble | 9.8 | 0 | 8 |
 | ridge | 9.4 | 0 | 6 |
 | xgb_reg | 8.9 | 0 | 5 |
+
+> Note: 2025 back-test scores reflect the v1 model (24 features, binary classifiers).
+> The v2 model (30 features, EV multi-class) is expected to improve classifier performance
+> based on Session 3 CV results but has not been re-evaluated on 2025 data yet.
+
+---
+
+### v1 Model Picks (24 features, binary classifiers — for reference)
+
+| Model | Pick | Grid | Score |
+|-------|------|------|-------|
+| ensemble | lawson | P8 | 0.887 |
+| xgb_clf | lawson | P8 | P10 prob: 0.650 |
+| rf_clf | bearman | P12 | P10 prob: 0.624 |
+| ridge | hamilton | P7 | Predicted: 9.29 |
+| xgb_reg | hulkenberg | P11 | Predicted: 9.92 |
+| rf_reg | hadjar | P3 | Predicted: 10.03 |
+| lgb_reg | max_verstappen | P20 | Predicted: 9.67 |
 
 ---
 

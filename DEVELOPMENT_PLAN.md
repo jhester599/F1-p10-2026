@@ -158,13 +158,24 @@ Update `README.md` to mark Session 2 and Session 3 as fully implemented.
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 1a | P10-zone features in `config.py` | ⬜ Pending |
-| 1b | P10-zone features in `feature_engineering.py` | ⬜ Pending |
-| 1c | P10-zone features + standings fix in `predict_race.py` | ⬜ Pending |
-| 2a | `SCORING_VECTOR` in `models.py` | ⬜ Pending |
-| 2b | Multi-class classifier definitions | ⬜ Pending |
-| 2c | `train_all()` multi-class target | ⬜ Pending |
-| 2d | `predict_race()` EV selection | ⬜ Pending |
-| 3  | Rebuild parquets (`02_build_dataset.py`) | ⬜ Pending |
-| 4  | Retrain models (`03_train_models.py`) | ⬜ Pending |
-| 5  | Re-prediction + doc update | ⬜ Pending |
+| 1a | P10-zone features in `config.py` | ✅ Done |
+| 1b | P10-zone features in `feature_engineering.py` | ✅ Done |
+| 1c | P10-zone features + standings fix in `predict_race.py` | ✅ Done |
+| 2a | `SCORING_VECTOR` in `models.py` | ✅ Done |
+| 2b | Multi-class classifier definitions | ✅ Done |
+| 2c | `train_all()` multi-class target | ✅ Done |
+| 2d | `predict_race()` EV selection | ✅ Done |
+| 3  | Rebuild parquets (`02_build_dataset.py`) | ✅ Done — 6,432 rows × 30 features |
+| 4  | Retrain models (`03_train_models.py`) | ✅ Done — 7 models, grid_p10_proximity 4th most important |
+| 5  | Re-prediction + doc update | ✅ Done — Lawson 3 votes (was 2), RACE_PREDICTIONS.md updated |
+
+All phases complete. Model is now at full documented specification (v2).
+
+### Remaining known issues / future work
+
+- `lgb_reg` and regressors (`ridge`, `xgb_reg`) still over-weight career form for
+  drivers starting from the back (e.g., Verstappen P20 → predicted ≈ P10).
+  Possible fix: add a grid-position penalty term or cap career features.
+- 2025 back-test not yet re-run with v2 model to measure actual improvement.
+- Ensemble weights predate the EV multi-class change; a new CV run would
+  re-calibrate them for the v2 classifier outputs.
