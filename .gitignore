@@ -16,4 +16,7 @@ venv/
 data/raw/
 data/processed/
 models/
-results/
+results/eval_2025_plots/
+*.zip
+*.tar.gz
+*.gz

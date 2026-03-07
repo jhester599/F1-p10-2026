@@ -1,4 +1,4 @@
-# F1 P10 Predictor
+# F1 P10 Predictor · v2
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -122,7 +122,7 @@ directly targeting the decision the model needs to make:
 | `midfield_qual_density` | Drivers qualifying within 1% gap of this driver (pack tightness) |
 
 > `grid_p10_proximity` entered the top-5 most important features in `rf_reg`
-> immediately on its first evaluation, ranking 5th overall (importance 0.041).
+> immediately on its first evaluation, ranking 4th overall (importance 4.2%).
 
 ---
 
@@ -159,8 +159,7 @@ fantasy scoring objective. `SCORING_VECTOR` in `models.py` pre-computes
 ### WeightedEnsemble
 
 Blends all six base models using fixed weights on a common normalised scale:
-- Multi-class classifiers: EV score (expected fantasy pts)
-- Other classifiers: P(is_p10=1)
+- Multi-class classifiers (`rf_clf`, `xgb_clf`): EV score (expected fantasy pts)
 - Regressors: 1 / (1 + |predicted_position - 10|)
 
 All per-model scores are min-max normalised within each race before blending.
@@ -229,6 +228,9 @@ Outputs:
 ## 2025 Season Results
 
 Models trained on 2010-2024 data, evaluated on all 24 races of the 2025 season.
+These scores reflect the **v1 model** (24 features, binary classifiers). The v2
+model (30 features, multi-class EV) is expected to improve classifier performance
+but has not been re-evaluated on 2025 data yet.
 
 | Model | Avg Pts/Race | Avg Regret | Exact P10 | Within 2% |
 |---|---|---|---|---|
@@ -304,12 +306,38 @@ pip install -r requirements.txt pyarrow
 
 ## Development Log
 
+### Session 4 -- v2 Full Implementation (current)
+
+**Goal:** Close the documentation-vs-code gap from Sessions 2 and 3; rebuild
+data and retrain models on the complete v2 specification.
+
+**Files changed:** `config.py`, `src/feature_engineering.py`, `predict_race.py`,
+`src/models.py`, `RACE_PREDICTIONS.md`, `DEVELOPMENT_PLAN.md`
+
+**Changes:**
+- Added 6 P10-zone features end-to-end: `config.py` FEATURE_COLS, `feature_engineering.py`
+  `build_feature_matrix()`, and `predict_race.py` `build_live_features()`
+- Fixed standings `_safe_pos` bug in `predict_race.py` (was `int(s["position"])`,
+  now handles missing/non-numeric values via `_safe_pos()`)
+- Multi-class EV classifiers fully wired: `SCORING_VECTOR`, XGBoost 0-index fix,
+  EV selection in `predict_race()` and `WeightedEnsemble.score_drivers()`
+- Rebuilt feature matrices (`02_build_dataset.py --force`): 6,432 rows × 38 cols
+- Retrained 7 models (`03_train_models.py --force`): 4 regressors + 2 classifiers
+  (multi-class EV) + 1 WeightedEnsemble
+- Round 01 prediction run on 2026 Australia qualifying; added `RACE_PREDICTIONS.md`
+
+**Key feature importance (rf_reg, v2 model):**
+`grid_position` 52.5% · `team_avg_qual_season` 9.3% · `drv_champ_pos` 4.5% ·
+`grid_p10_proximity` 4.2% (4th — new P10-zone feature)
+
+---
+
 ### Session 3 -- P10-Zone Feature Engineering
 
 **Goal:** Add features encoding signal in the P8-P12 finishing band to improve
 multi-class EV classifier performance.
 
-**Files changed:** `config.py`, `src/feature_engineering.py`
+**Files changed:** `config.py`, `src/feature_engineering.py`, `predict_race.py`
 
 **Changes:**
 - Added 6 P10-zone features to `FEATURE_COLS` (24 -> 30 total)
@@ -378,9 +406,11 @@ baselines for honest model comparison.
 
 ---
 
-### Prior -- WeightedEnsemble v2
+### Prior -- WeightedEnsemble
+
 *(See COMMIT_MESSAGE.md for full details)*
 
 - Replaced equal-weight `VotingRegressor` with `WeightedEnsemble`
 - CV-derived weights across all six base models including classifiers
-- Classifiers contribute via P(is_p10); regressors via proximity score
+- Classifiers contribute via EV score; regressors via proximity score
+  (originally binary P(is_p10); upgraded to multi-class EV in Session 2/4)

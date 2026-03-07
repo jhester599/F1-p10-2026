@@ -6,21 +6,26 @@ Strategy
 We train two families of models on the 2010–2024 data:
 
   A) Regression  → predict finishing_position (1–20)
-     Predict = driver whose predicted position is closest to 10.
+     Select = driver whose predicted finish is closest to 10th place.
 
-  B) Classification → predict P(driver finishes 10th)
-     Predict = driver with highest predicted P10 probability.
+  B) Multi-class Classification → predict P(driver finishes in position p)
+                                   for every p in 1..20.
+     Select = driver that maximises Expected Fantasy Points:
+       EV(driver) = Σ_{p=1}^{20}  P(finish=p) × SCORING_VECTOR[p-1]
 
 Models trained:
   1. Ridge Regression (regularised linear, baseline)
   2. Random Forest Regressor
   3. Gradient Boosting (XGBoost) Regressor
   4. LightGBM Regressor
-  5. Random Forest Classifier  (is_p10 target)
-  6. XGBoost Classifier        (is_p10 target)
-  7. Ensemble Regressor        (average of RF + XGB + LGB predictions)
+  5. Random Forest Classifier  (multi-class: finish_position 1–20, select by EV)
+  6. XGBoost Classifier        (multi-class: finish_position 1–20, select by EV)
+  7. WeightedEnsemble          (xgb_clf-heavy blend of all base models)
 
-For each race we iterate over all 20 drivers, score each with the model, then
+Ensemble weights (derived from leave-one-season-out CV):
+  xgb_clf: 4.0  |  rf_clf: 2.5  |  lgb_reg: 2.0  |  rf_reg: 1.0  |  xgb_reg: 0.3
+
+For each race we iterate over all drivers, score each with the model, then
 select the best candidate.
 """
 from __future__ import annotations
@@ -33,7 +38,7 @@ from typing import Any
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, VotingRegressor
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import Ridge
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -41,9 +46,16 @@ from sklearn.metrics import mean_absolute_error
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from config import FEATURE_COLS, MODELS_DIR, TARGET_COL
+from config import FEATURE_COLS, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS
 
 logger = logging.getLogger(__name__)
+
+# Fantasy points for finishing in positions 1–20 (index = position - 1).
+# Mirrors FANTASY_POINTS from config, which maps |finish - 10| → pts.
+SCORING_VECTOR: list[int] = [
+    FANTASY_POINTS.get(abs(pos - 10), 0) for pos in range(1, 21)
+]
+# Result: [1, 2, 4, 6, 8, 10, 12, 15, 18, 25, 18, 15, 12, 10, 8, 6, 4, 2, 1, 0]
 
 try:
     from xgboost import XGBClassifier, XGBRegressor
@@ -58,6 +70,77 @@ try:
 except ImportError:
     HAS_LGB = False
     logger.warning("lightgbm not installed – LGB models will be skipped")
+
+
+# ── weighted ensemble ──────────────────────────────────────────────────────────
+
+# Weights derived from leave-one-season-out CV (avg fantasy pts):
+#   xgb_clf 11.43 → 4.0 | rf_clf 11.02 → 2.5 | lgb_reg 10.78 → 2.0
+#   rf_reg   9.99 → 1.0 | xgb_reg 8.30 → 0.3
+ENSEMBLE_WEIGHTS: dict[str, float] = {
+    "xgb_clf": 4.0,
+    "rf_clf":  2.5,
+    "lgb_reg": 2.0,
+    "rf_reg":  1.0,
+    "xgb_reg": 0.3,
+}
+
+
+class WeightedEnsemble:
+    """
+    Blends classifier P(P10) and regressor proximity-to-10 scores using
+    CV-derived weights.  Scores are min-max normalised per race before
+    weighting so classifiers and regressors live on the same [0, 1] scale.
+
+    Implements fit / predict so it can be persisted with joblib alongside
+    the other models.
+    """
+
+    def __init__(self, base_models: dict[str, Any], weights: dict[str, float] | None = None):
+        self.base_models = base_models          # {name: fitted estimator}
+        self.weights = weights or ENSEMBLE_WEIGHTS
+
+    # sklearn-compatible shim — the base models are already fitted
+    def fit(self, X, y):
+        return self
+
+    def score_drivers(self, X: np.ndarray) -> np.ndarray:
+        """Return a weighted blend score for each driver row in X."""
+        n = X.shape[0]
+        weighted = np.zeros(n)
+        total_w  = 0.0
+
+        for name, weight in self.weights.items():
+            model = self.base_models.get(name)
+            if model is None:
+                continue
+
+            is_clf = name.endswith("_clf")
+            if is_clf and hasattr(model, "predict_proba"):
+                proba   = model.predict_proba(X)
+                classes = list(model.classes_)
+                # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
+                offset  = 1 if min(classes) == 0 else 0
+                sv      = np.array([SCORING_VECTOR[c + offset - 1]
+                                    for c in classes if 1 <= c + offset <= 20])
+                cls_idx = [i for i, c in enumerate(classes) if 1 <= c + offset <= 20]
+                raw     = proba[:, cls_idx] @ sv
+            else:
+                preds = model.predict(X)
+                raw   = 1.0 / (1.0 + np.abs(preds - 10))
+
+            # min-max normalise within this race
+            lo, hi = raw.min(), raw.max()
+            normed = (raw - lo) / (hi - lo) if hi > lo else raw
+
+            weighted += weight * normed
+            total_w  += weight
+
+        return weighted / total_w if total_w > 0 else weighted
+
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        """Return blend scores (higher = more likely P10)."""
+        return self.score_drivers(X)
 
 
 # ── model catalogue ────────────────────────────────────────────────────────────
@@ -105,11 +188,11 @@ def _make_models() -> dict[str, Any]:
             learning_rate=0.05,
             subsample=0.8,
             colsample_bytree=0.8,
-            scale_pos_weight=19,   # ~1:19 class imbalance for P10
+            objective="multi:softprob",
             random_state=42,
             n_jobs=-1,
             verbosity=0,
-            eval_metric="logloss",
+            eval_metric="mlogloss",
         )
 
     if HAS_LGB:
@@ -126,10 +209,9 @@ def _make_models() -> dict[str, Any]:
             verbose=-1,
         )
 
-    # Ensemble: average predictions from available regressors
-    reg_list = [(k, models[k]) for k in ["rf_reg", "xgb_reg", "lgb_reg"] if k in models]
-    if len(reg_list) >= 2:
-        models["ensemble"] = VotingRegressor(estimators=reg_list, n_jobs=-1)
+    # Ensemble: built after all base models are fitted (see train_all)
+    # Placeholder so the name appears in the model catalogue
+    models["ensemble"] = None
 
     return models
 
@@ -147,12 +229,16 @@ def train_all(
     """
     X = train_df[FEATURE_COLS].values.astype(float)
     y_reg  = train_df[TARGET_COL].values.astype(float)
-    y_clf  = train_df["is_p10"].values.astype(int)
+    # Multi-class: predict full finish position (1–20), not binary is_p10
+    y_clf  = train_df[TARGET_COL].values.astype(int)
 
     fitted: dict[str, Any] = {}
     models = _make_models()
 
     for name, est in models.items():
+        if name == "ensemble":
+            continue  # built separately after base models
+
         out_path = MODELS_DIR / f"{name}.joblib"
         if out_path.exists() and not force:
             logger.info("  %-14s → loading from disk", name)
@@ -160,7 +246,12 @@ def train_all(
             continue
 
         is_clf = name.endswith("_clf")
-        y = y_clf if is_clf else y_reg
+        if is_clf:
+            # XGBoost multi:softprob requires 0-indexed classes (0–19);
+            # RandomForest handles 1-indexed classes (1–20) natively.
+            y = (y_clf - 1) if name == "xgb_clf" else y_clf
+        else:
+            y = y_reg
 
         logger.info("  %-14s → training …", name)
         with warnings.catch_warnings():
@@ -170,6 +261,13 @@ def train_all(
         joblib.dump(est, out_path)
         fitted[name] = est
         logger.info("             saved → %s", out_path)
+
+    # Build and save WeightedEnsemble from fitted base models
+    ensemble = WeightedEnsemble(base_models=fitted)
+    ensemble_path = MODELS_DIR / "ensemble.joblib"
+    joblib.dump(ensemble, ensemble_path)
+    fitted["ensemble"] = ensemble
+    logger.info("  %-14s → built and saved → %s", "ensemble", ensemble_path)
 
     return fitted
 
@@ -227,24 +325,33 @@ def predict_race(
 
     for name, est in fitted_models.items():
         is_clf = name.endswith("_clf")
-        if is_clf:
+
+        if isinstance(est, WeightedEnsemble):
+            # Weighted blend — higher score = more likely P10
+            raw_scores = est.score_drivers(X)
+            scores = pd.Series(raw_scores, index=race_features["driver_id"].values)
+            pick_driver = scores.idxmax()
+        elif is_clf:
             if hasattr(est, "predict_proba"):
-                proba = est.predict_proba(X)
-                # column index for class "1" (P10)
+                proba   = est.predict_proba(X)
                 classes = list(est.classes_)
-                if 1 in classes:
-                    idx = classes.index(1)
-                    scores = pd.Series(proba[:, idx], index=race_features["driver_id"].values)
-                else:
-                    scores = pd.Series(proba[:, -1], index=race_features["driver_id"].values)
+                # Expected fantasy pts: EV = Σ P(finish=p) × SCORING_VECTOR[p-1]
+                # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
+                offset  = 1 if min(classes) == 0 else 0
+                sv      = np.array([SCORING_VECTOR[c + offset - 1]
+                                    for c in classes if 1 <= c + offset <= 20])
+                cls_idx = [i for i, c in enumerate(classes) if 1 <= c + offset <= 20]
+                ev      = proba[:, cls_idx] @ sv
+                scores  = pd.Series(ev, index=race_features["driver_id"].values)
             else:
                 scores = pd.Series(est.predict(X), index=race_features["driver_id"].values)
+            pick_driver = scores.idxmax()
         else:
-            scores = pd.Series(est.predict(X), index=race_features["driver_id"].values)
+            scores      = pd.Series(est.predict(X), index=race_features["driver_id"].values)
+            pick_driver = _pick_p10(name, scores)
 
-        out[f"{name}_score"] = scores.values
-        pick_driver = _pick_p10(name, scores)
         picks[name] = pick_driver
+        out[f"{name}_score"] = scores.values
         out[f"{name}_pick"] = (race_features["driver_id"] == pick_driver).astype(int).values
 
     out["vote_count"] = out[[c for c in out.columns if c.endswith("_pick")]].sum(axis=1)
