@@ -93,13 +93,6 @@ FEATURE_COLS = [
     # --- career ---
     "career_races",
     "career_avg_fin",
-    # --- P10-zone features (added: EV multi-class improvement) ---
-    "grid_p10_proximity",       # |grid_position - 10|: direct distance from P10 starting slot
-    "drv_p10_zone_rate_last10", # driver's rate of finishing P8-P12 in last 10 races
-    "team_p10_zone_rate_season", # constructor's P8-P12 finish rate this season so far
-    "circ_p10_zone_rate",       # driver's P8-P12 finish rate at this circuit historically
-    "drv_finish_std_last5",     # std of finish positions (last 5): low = consistent, high = volatile
-    "midfield_qual_density",    # drivers within 1% qualifying gap of this driver (pack tightness)
 ]
 
 TARGET_COL = "finish_position"
