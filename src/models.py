@@ -119,10 +119,11 @@ class WeightedEnsemble:
             if is_clf and hasattr(model, "predict_proba"):
                 proba   = model.predict_proba(X)
                 classes = list(model.classes_)
-                # Use EV (expected fantasy pts) as the blend signal
-                sv      = np.array([SCORING_VECTOR[c - 1] for c in classes
-                                    if 1 <= c <= 20])
-                cls_idx = [i for i, c in enumerate(classes) if 1 <= c <= 20]
+                # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
+                offset  = 1 if min(classes) == 0 else 0
+                sv      = np.array([SCORING_VECTOR[c + offset - 1]
+                                    for c in classes if 1 <= c + offset <= 20])
+                cls_idx = [i for i, c in enumerate(classes) if 1 <= c + offset <= 20]
                 raw     = proba[:, cls_idx] @ sv
             else:
                 preds = model.predict(X)
@@ -245,7 +246,12 @@ def train_all(
             continue
 
         is_clf = name.endswith("_clf")
-        y = y_clf if is_clf else y_reg
+        if is_clf:
+            # XGBoost multi:softprob requires 0-indexed classes (0–19);
+            # RandomForest handles 1-indexed classes (1–20) natively.
+            y = (y_clf - 1) if name == "xgb_clf" else y_clf
+        else:
+            y = y_reg
 
         logger.info("  %-14s → training …", name)
         with warnings.catch_warnings():
@@ -330,9 +336,11 @@ def predict_race(
                 proba   = est.predict_proba(X)
                 classes = list(est.classes_)
                 # Expected fantasy pts: EV = Σ P(finish=p) × SCORING_VECTOR[p-1]
-                sv      = np.array([SCORING_VECTOR[c - 1] for c in classes
-                                    if 1 <= c <= 20])
-                cls_idx = [i for i, c in enumerate(classes) if 1 <= c <= 20]
+                # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
+                offset  = 1 if min(classes) == 0 else 0
+                sv      = np.array([SCORING_VECTOR[c + offset - 1]
+                                    for c in classes if 1 <= c + offset <= 20])
+                cls_idx = [i for i, c in enumerate(classes) if 1 <= c + offset <= 20]
                 ev      = proba[:, cls_idx] @ sv
                 scores  = pd.Series(ev, index=race_features["driver_id"].values)
             else:
