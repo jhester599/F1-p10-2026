@@ -6,24 +6,26 @@ Strategy
 We train two families of models on the 2010–2024 data:
 
   A) Regression  → predict finishing_position (1–20)
-     Predict = driver whose predicted position is closest to 10.
+     Select = driver whose predicted finish is closest to 10th place.
 
-  B) Classification → predict P(driver finishes 10th)
-     Predict = driver with highest predicted P10 probability.
+  B) Multi-class Classification → predict P(driver finishes in position p)
+                                   for every p in 1..20.
+     Select = driver that maximises Expected Fantasy Points:
+       EV(driver) = Σ_{p=1}^{20}  P(finish=p) × SCORING_VECTOR[p-1]
 
 Models trained:
   1. Ridge Regression (regularised linear, baseline)
   2. Random Forest Regressor
   3. Gradient Boosting (XGBoost) Regressor
   4. LightGBM Regressor
-  5. Random Forest Classifier  (is_p10 target)
-  6. XGBoost Classifier        (is_p10 target)
+  5. Random Forest Classifier  (multi-class: finish_position 1–20, select by EV)
+  6. XGBoost Classifier        (multi-class: finish_position 1–20, select by EV)
   7. WeightedEnsemble          (xgb_clf-heavy blend of all base models)
 
 Ensemble weights (derived from leave-one-season-out CV):
   xgb_clf: 4.0  |  rf_clf: 2.5  |  lgb_reg: 2.0  |  rf_reg: 1.0  |  xgb_reg: 0.3
 
-For each race we iterate over all 20 drivers, score each with the model, then
+For each race we iterate over all drivers, score each with the model, then
 select the best candidate.
 """
 from __future__ import annotations
@@ -44,9 +46,16 @@ from sklearn.metrics import mean_absolute_error
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from config import FEATURE_COLS, MODELS_DIR, TARGET_COL, DNF_POSITION
+from config import FEATURE_COLS, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS
 
 logger = logging.getLogger(__name__)
+
+# Fantasy points for finishing in positions 1–20 (index = position - 1).
+# Mirrors FANTASY_POINTS from config, which maps |finish - 10| → pts.
+SCORING_VECTOR: list[int] = [
+    FANTASY_POINTS.get(abs(pos - 10), 0) for pos in range(1, 21)
+]
+# Result: [1, 2, 4, 6, 8, 10, 12, 15, 18, 25, 18, 15, 12, 10, 8, 6, 4, 2, 1, 0]
 
 try:
     from xgboost import XGBClassifier, XGBRegressor
@@ -110,11 +119,11 @@ class WeightedEnsemble:
             if is_clf and hasattr(model, "predict_proba"):
                 proba   = model.predict_proba(X)
                 classes = list(model.classes_)
-                # prefer P(class == 10); fall back to closest class
-                if 10 in classes:
-                    raw = proba[:, classes.index(10)]
-                else:
-                    raw = proba[:, int(np.argmin(np.abs(np.array(classes) - 10)))]
+                # Use EV (expected fantasy pts) as the blend signal
+                sv      = np.array([SCORING_VECTOR[c - 1] for c in classes
+                                    if 1 <= c <= 20])
+                cls_idx = [i for i, c in enumerate(classes) if 1 <= c <= 20]
+                raw     = proba[:, cls_idx] @ sv
             else:
                 preds = model.predict(X)
                 raw   = 1.0 / (1.0 + np.abs(preds - 10))
@@ -178,11 +187,11 @@ def _make_models() -> dict[str, Any]:
             learning_rate=0.05,
             subsample=0.8,
             colsample_bytree=0.8,
-            scale_pos_weight=19,   # ~1:19 class imbalance for P10
+            objective="multi:softprob",
             random_state=42,
             n_jobs=-1,
             verbosity=0,
-            eval_metric="logloss",
+            eval_metric="mlogloss",
         )
 
     if HAS_LGB:
@@ -219,7 +228,8 @@ def train_all(
     """
     X = train_df[FEATURE_COLS].values.astype(float)
     y_reg  = train_df[TARGET_COL].values.astype(float)
-    y_clf  = train_df["is_p10"].values.astype(int)
+    # Multi-class: predict full finish position (1–20), not binary is_p10
+    y_clf  = train_df[TARGET_COL].values.astype(int)
 
     fitted: dict[str, Any] = {}
     models = _make_models()
@@ -317,23 +327,19 @@ def predict_race(
             pick_driver = scores.idxmax()
         elif is_clf:
             if hasattr(est, "predict_proba"):
-                proba = est.predict_proba(X)
-                # column index for class "1" (P10)
+                proba   = est.predict_proba(X)
                 classes = list(est.classes_)
-                if 1 in classes:
-                    idx = classes.index(1)
-                    scores = pd.Series(proba[:, idx], index=race_features["driver_id"].values)
-                else:
-                    scores = pd.Series(proba[:, -1], index=race_features["driver_id"].values)
+                # Expected fantasy pts: EV = Σ P(finish=p) × SCORING_VECTOR[p-1]
+                sv      = np.array([SCORING_VECTOR[c - 1] for c in classes
+                                    if 1 <= c <= 20])
+                cls_idx = [i for i, c in enumerate(classes) if 1 <= c <= 20]
+                ev      = proba[:, cls_idx] @ sv
+                scores  = pd.Series(ev, index=race_features["driver_id"].values)
             else:
                 scores = pd.Series(est.predict(X), index=race_features["driver_id"].values)
+            pick_driver = scores.idxmax()
         else:
-            scores = pd.Series(est.predict(X), index=race_features["driver_id"].values)
-
-        if isinstance(est, WeightedEnsemble):
-            # pick_driver already set above; scores used for output only
-            pass
-        else:
+            scores      = pd.Series(est.predict(X), index=race_features["driver_id"].values)
             pick_driver = _pick_p10(name, scores)
 
         picks[name] = pick_driver
