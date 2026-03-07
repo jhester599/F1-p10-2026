@@ -43,6 +43,13 @@ def _safe_float(val, default: float = np.nan) -> float:
         return default
 
 
+def _safe_pos(val, default: int = 99) -> int:
+    try:
+        return int(val)
+    except (TypeError, ValueError):
+        return default
+
+
 def _rolling_mean(series: list, n: int, fill: float = DNF_POSITION) -> float:
     """Mean of the last *n* values; None entries are replaced with *fill*."""
     if not series:
@@ -173,7 +180,7 @@ def build_feature_matrix(
         key = (yr, rn)
         if key not in standings_cache:
             standings_cache[key] = {
-                s["Driver"]["driverId"]: (int(s["position"]), _safe_float(s.get("points"), 0.0))
+                s["Driver"]["driverId"]: (_safe_pos(s.get("position") or s.get("positionText")), _safe_float(s.get("points"), 0.0))
                 for s in fetcher.driver_standings(yr, rn)
             }
         return standings_cache[key]
@@ -182,7 +189,7 @@ def build_feature_matrix(
         key = (yr, rn)
         if key not in con_cache:
             con_cache[key] = {
-                c["Constructor"]["constructorId"]: (int(c["position"]), _safe_float(c.get("points"), 0.0))
+                c["Constructor"]["constructorId"]: (_safe_pos(c.get("position") or c.get("positionText")), _safe_float(c.get("points"), 0.0))
                 for c in fetcher.constructor_standings(yr, rn)
             }
         return con_cache[key]
