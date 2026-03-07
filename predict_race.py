@@ -129,12 +129,19 @@ def build_live_features(
     drv_st: dict[str, tuple] = {}
     con_st: dict[str, tuple] = {}
     if prev_rnd > 0:
+        from src.feature_engineering import _safe_pos
         for s in fetcher.driver_standings(prev_year, prev_rnd):
             did = s["Driver"]["driverId"]
-            drv_st[did] = (int(s["position"]), float(s.get("points", 0)))
+            drv_st[did] = (
+                _safe_pos(s.get("position") or s.get("positionText")),
+                float(s.get("points", 0)),
+            )
         for c in fetcher.constructor_standings(prev_year, prev_rnd):
             cid = c["Constructor"]["constructorId"]
-            con_st[cid] = (int(c["position"]), float(c.get("points", 0)))
+            con_st[cid] = (
+                _safe_pos(c.get("position") or c.get("positionText")),
+                float(c.get("points", 0)),
+            )
 
     # ── team season averages so far (from processed data for this year) ──────
     team_season = historical_df[
@@ -156,9 +163,14 @@ def build_live_features(
     def _driver_hist(did: str) -> pd.DataFrame:
         return hist_races[hist_races["driver_id"] == did]
 
-    # ── grid of everyone for teammate lookup ──────────────────────────────────
-    grid_map = {did: info["grid"] for did, info in qual_info.items()}
-    con_map  = {did: info["cid"]  for did, info in qual_info.items()}
+    # ── grid and gap maps for teammate/density lookups ────────────────────────
+    grid_map = {did: info["grid"]  for did, info in qual_info.items()}
+    con_map  = {did: info["cid"]   for did, info in qual_info.items()}
+    gap_map  = {
+        did: (info["best_q"] - pole_time) / pole_time * 100.0
+        if info["best_q"] is not None and pole_time else None
+        for did, info in qual_info.items()
+    }
 
     rows = []
     for did, qi in sorted(qual_info.items(), key=lambda x: x[1]["grid"]):
@@ -218,6 +230,45 @@ def build_live_features(
         teammates  = [g for d, g in grid_map.items() if con_map.get(d) == cid and d != did]
         teammate_g = float(np.mean(teammates)) if teammates else grid
 
+        # ── P10-zone features ─────────────────────────────────────────────────
+        grid_p10_proximity = abs(grid - 10.0)
+
+        if dh.empty:
+            drv_p10_zone_rate_last10 = 0.0
+            circ_p10_zone_rate       = 0.0
+            drv_finish_std_last5     = float(MISSING_POSITION)
+        else:
+            last10_pos = dh.tail(10)["finish_position"].values
+            drv_p10_zone_rate_last10 = float(
+                sum(1 for p in last10_pos if 8 <= p <= 12) / len(last10_pos)
+            )
+            circ_dh   = dh[dh["circuit_id"] == circuit_id]["finish_position"].values
+            circ_p10_zone_rate = (
+                float(sum(1 for p in circ_dh if 8 <= p <= 12) / len(circ_dh))
+                if len(circ_dh) > 0 else 0.0
+            )
+            last5_pos = dh.tail(5)["finish_position"].values
+            drv_finish_std_last5 = (
+                float(np.std(last5_pos)) if len(last5_pos) >= 2 else float(MISSING_POSITION)
+            )
+
+        team_fin_season_vals = (
+            team_season[team_season["constructor_id"] == cid]["finish_position"].values
+        )
+        team_p10_zone_rate_season = (
+            float(sum(1 for p in team_fin_season_vals if 8 <= p <= 12) / len(team_fin_season_vals))
+            if len(team_fin_season_vals) > 0 else 0.0
+        )
+
+        this_gap_pct = gap_map.get(did)
+        if this_gap_pct is not None:
+            midfield_qual_density = sum(
+                1 for d2, g2 in gap_map.items()
+                if d2 != did and g2 is not None and abs(g2 - this_gap_pct) <= 1.0
+            )
+        else:
+            midfield_qual_density = 0
+
         rows.append({
             "driver_id":      did,
             "constructor_id": cid,
@@ -245,6 +296,12 @@ def build_live_features(
             "teammate_grid":  teammate_g,
             "career_races":   career_races,
             "career_avg_fin": career_avg,
+            "grid_p10_proximity":        grid_p10_proximity,
+            "drv_p10_zone_rate_last10":  drv_p10_zone_rate_last10,
+            "team_p10_zone_rate_season": team_p10_zone_rate_season,
+            "circ_p10_zone_rate":        circ_p10_zone_rate,
+            "drv_finish_std_last5":      drv_finish_std_last5,
+            "midfield_qual_density":     midfield_qual_density,
         })
 
     feat_df = pd.DataFrame(rows)

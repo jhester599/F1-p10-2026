@@ -236,6 +236,7 @@ def build_feature_matrix(
 
         grid_map = dict(zip(race_df["driver_id"], race_df["grid_position"]))
         con_map  = dict(zip(race_df["driver_id"], race_df["constructor_id"]))
+        gap_map  = dict(zip(race_df["driver_id"], race_df["q_gap_pct"]))
 
         for _, row in race_df.iterrows():
             did  = row["driver_id"]
@@ -269,6 +270,46 @@ def build_feature_matrix(
             circ_avg_fin  = float(np.mean([h["pos"] for h in circ_hist])) if circ_hist else MISSING_POSITION
             circ_last_fin = circ_hist[-1]["pos"] if circ_hist else MISSING_POSITION
             circ_races    = len(circ_hist)
+
+            # P10-zone features
+            grid_p10_proximity = abs(float(grid) - 10.0) if not (
+                isinstance(grid, float) and np.isnan(grid)
+            ) else float(MISSING_POSITION)
+
+            last10_pos = pos_list[-10:]
+            drv_p10_zone_rate_last10 = (
+                sum(1 for p in last10_pos if 8 <= p <= 12) / len(last10_pos)
+                if last10_pos else 0.0
+            )
+
+            team_fin_season = (
+                team_season[team_season["constructor_id"] == cid]["finish_position"].values
+            )
+            team_p10_zone_rate_season = (
+                sum(1 for p in team_fin_season if 8 <= p <= 12) / len(team_fin_season)
+                if len(team_fin_season) > 0 else 0.0
+            )
+
+            circ_pos = [h["pos"] for h in circ_hist]
+            circ_p10_zone_rate = (
+                sum(1 for p in circ_pos if 8 <= p <= 12) / len(circ_pos)
+                if circ_pos else 0.0
+            )
+
+            last5_pos = pos_list[-5:]
+            drv_finish_std_last5 = (
+                float(np.std(last5_pos)) if len(last5_pos) >= 2 else float(MISSING_POSITION)
+            )
+
+            this_gap = row["q_gap_pct"]
+            if not (isinstance(this_gap, float) and np.isnan(this_gap)):
+                midfield_qual_density = sum(
+                    1 for d2, g2 in gap_map.items()
+                    if d2 != did and not (isinstance(g2, float) and np.isnan(g2))
+                    and abs(g2 - this_gap) <= 1.0
+                )
+            else:
+                midfield_qual_density = 0
 
             # career
             career_races   = len(hist)
@@ -328,6 +369,12 @@ def build_feature_matrix(
                 "teammate_grid":        teammate_grid,
                 "career_races":         career_races,
                 "career_avg_fin":       career_avg_fin,
+                "grid_p10_proximity":        grid_p10_proximity,
+                "drv_p10_zone_rate_last10":  drv_p10_zone_rate_last10,
+                "team_p10_zone_rate_season": team_p10_zone_rate_season,
+                "circ_p10_zone_rate":        circ_p10_zone_rate,
+                "drv_finish_std_last5":      drv_finish_std_last5,
+                "midfield_qual_density":     midfield_qual_density,
             })
 
             # update history AFTER extracting features (no leakage)
