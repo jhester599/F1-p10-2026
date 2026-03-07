@@ -50,9 +50,7 @@ continuous value; pick the driver whose predicted finish is closest to 10th);
 three are **classifiers** (predict probability of finishing 10th; pick the
 driver with the highest P10 probability or blended score).
 
-| Model | Type | Pick | Grid | Score / Predicted Pos | Rationale |
-|-------|------|------|------|-----------------------|-----------|
-> **Model version note:** Picks below reflect the fully updated model (v2):
+> **Model version note (v2):** Picks below reflect the fully updated model:
 > 30 features (including 6 P10-zone features) and multi-class EV classifiers.
 > An earlier v1 run (24 features, binary classifiers) is preserved for reference at the bottom.
 
