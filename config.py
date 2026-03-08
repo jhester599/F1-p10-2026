@@ -102,6 +102,9 @@ FEATURE_COLS = [
     "circ_p10_zone_rate",        # driver's P8-P12 finish rate at this circuit, all-time
     "drv_finish_std_last5",      # std dev of finish positions over last 5 races
     "midfield_qual_density",     # drivers within 1 pct-point of this driver's q_gap_pct
+    # --- grid displacement (v3.2) ---
+    "self_grid_displacement",    # drv_champ_pos - grid_position (negative = displaced backward e.g. penalty)
+    "grid_displacement_behind",  # top-5 champ drivers starting behind this driver (will pass through P10 zone)
 ]
 
 TARGET_COL = "finish_position"

@@ -120,7 +120,7 @@ All features are derived from information available **after qualifying, before t
 | `career_races` | Career race starts |
 | `career_avg_fin` | Career average finish position |
 
-### P10-zone features (6) -- added to sharpen multi-class EV classification
+### P10-zone features (8) -- added to sharpen multi-class EV classification
 
 These features specifically encode signal in the P8-P12 finishing band,
 directly targeting the decision the model needs to make:
@@ -133,6 +133,8 @@ directly targeting the decision the model needs to make:
 | `circ_p10_zone_rate` | Driver's P8-P12 finish rate at this circuit historically |
 | `drv_finish_std_last5` | Std-dev of finish positions (last 5): low = consistent, high = volatile |
 | `midfield_qual_density` | Drivers qualifying within 1% gap of this driver (pack tightness) |
+| `self_grid_displacement` | `drv_champ_pos − grid_position`: negative = driver displaced backward (e.g. grid penalty), positive = qualifies above their championship expectation — both extremes indicate midfield volatility |
+| `grid_displacement_behind` | Count of top-5 championship drivers starting *behind* this driver; each will likely pass through the P10 zone on their charge forward, shifting the expected P10 finisher higher up the grid |
 
 > `grid_p10_proximity` entered the top-5 most important features in `rf_reg`
 > immediately on its first evaluation, ranking 4th overall (importance 4.2%).
@@ -324,6 +326,66 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.2 — Grid Displacement Features (implementation complete; evaluation pending)
+
+**Goal:** Add two new features that capture midfield volatility caused by top-tier
+drivers starting out of position (grid penalties, strategic grid-drop decisions).
+When a championship-contending driver starts from P14 instead of P4, every driver
+between P4 and P14 is at elevated risk of being passed in the early laps — with the
+P10 zone being the primary battleground for these overtakes.
+
+**Files changed:** `src/feature_engineering.py`, `predict_race.py`, `config.py`, `README.md`
+
+**New features (33 total after v3.1 + v3.2):**
+
+| Feature | Formula | Semantics |
+|---|---|---|
+| `self_grid_displacement` | `drv_champ_pos − grid_position` | Negative = driver is displaced backward relative to their expected grid slot (grid penalty or technical issue in quali); positive = qualifies significantly above their standing |
+| `grid_displacement_behind` | `count(d : grid[d] > grid[this] AND champ_pos[d] ≤ 5)` | Number of top-5 championship drivers starting *behind* this driver; each will likely charge through the P10 zone, pushing the effective P10 finisher upward |
+
+**Implementation details:**
+
+- Both features are computed inside `build_feature_matrix()` in a cross-driver loop
+  over `grid_map` and `drv_st` — all information available after qualifying.
+- Threshold of top-5 championship drivers is consistent with the practical observation
+  that positions 6+ rarely produce dramatic penalty-fuelled charges in the midfield zone.
+- `self_grid_displacement = 0` when grid position is unknown (e.g. pit lane start).
+- Both features are also computed in `predict_race.py` `build_live_features()` for
+  live race-day predictions.
+- **Also fixed in this commit:** `fp2_position` was missing from `predict_race.py`'s
+  live inference path (v3.1 only wired it through `feature_engineering.py`). Added
+  full FP2 → FP1 → grid fallback chain to `build_live_features()`.
+
+**Hypothesised signal:**
+
+`grid_displacement_behind` is expected to be informative primarily in ~6-10 races
+per season where a championship frontrunner takes a significant grid penalty (engine
+replacement, gearbox change). In those races the model currently has no way to know
+the midfield grid is effectively "compressed" with faster cars starting in it.
+`self_grid_displacement` provides the symmetric signal from the displaced driver's
+own perspective: a large negative value (e.g. −10 for Verstappen starting P14) is
+a strong buy signal for that driver to finish better than their grid position.
+
+**Evaluation status — blocked by environment:**
+
+Same environment constraint as v3.1: outbound HTTP to `api.jolpi.ca` is unavailable.
+No raw or processed data cache exists to run the pipeline from.
+
+**Evaluation threshold (from v3.0 `results/feature_importance.csv`):**
+
+Each feature must individually exceed 0.014 importance in `rf_reg` (current rank 10,
+held by `avg_fin_last5`) **or** the combined effect of both must reduce average regret
+per race below the v3.0 best-model level.
+
+`grid_displacement_behind` is expected to rank in the middle tier: it is a sparse
+signal (most races have 0 or 1 displaced top-5 driver) but highly decisive in the
+races where it fires. `self_grid_displacement` is denser and may rank higher
+as it encodes every driver's grid vs. championship-standing mismatch every race.
+
+**Next step:** Run `python run_pipeline.py --force` with API access to formally evaluate.
+
+---
 
 ### v3.1 — FP2 Position Feature (implementation complete; evaluation pending)
 

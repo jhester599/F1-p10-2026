@@ -332,6 +332,27 @@ def build_feature_matrix(
             else:
                 midfield_qual_density = 0
 
+            # grid displacement features (v3.2)
+            # Top-5 championship threshold: drivers ranked 1-5 are expected to
+            # recover quickly if starting out of position, pushing P10 zone upward.
+            _TOP_CHAMP_THRESHOLD = 5
+            if not (isinstance(grid, float) and np.isnan(grid)):
+                # self_grid_displacement: negative = driver is displaced backward
+                # (e.g. a grid penalty); positive = qualifies better than standing
+                self_grid_displacement = float(drv_pos) - float(grid)
+                # grid_displacement_behind: number of top-5 championship drivers
+                # starting behind this driver who will likely pass through P10 zone
+                grid_displacement_behind = sum(
+                    1 for d2, g2 in grid_map.items()
+                    if d2 != did
+                    and not (isinstance(g2, float) and np.isnan(g2))
+                    and float(g2) > float(grid)
+                    and drv_st.get(d2, (99, 0.0))[0] <= _TOP_CHAMP_THRESHOLD
+                )
+            else:
+                self_grid_displacement   = 0.0
+                grid_displacement_behind = 0
+
             # career
             career_races   = len(hist)
             career_avg_fin = float(np.mean(pos_list)) if pos_list else MISSING_POSITION
@@ -397,6 +418,8 @@ def build_feature_matrix(
                 "circ_p10_zone_rate":        circ_p10_zone_rate,
                 "drv_finish_std_last5":      drv_finish_std_last5,
                 "midfield_qual_density":     midfield_qual_density,
+                "self_grid_displacement":    self_grid_displacement,
+                "grid_displacement_behind":  grid_displacement_behind,
             })
 
             # update history AFTER extracting features (no leakage)
