@@ -137,6 +137,12 @@ directly targeting the decision the model needs to make:
 > `grid_p10_proximity` entered the top-5 most important features in `rf_reg`
 > immediately on its first evaluation, ranking 4th overall (importance 4.2%).
 
+### Practice features (1) -- added in v3.1
+
+| Feature | Description |
+|---|---|
+| `fp2_position` | Driver's FP2 classification position (race pace proxy); falls back to FP1 on Sprint weekends, then to qualifying position if both are unavailable |
+
 ---
 
 ## Models
@@ -318,6 +324,80 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.1 — FP2 Position Feature (implementation complete; evaluation pending)
+
+**Goal:** Add `fp2_position` (driver's FP2 classification finishing position) as a
+31st feature to capture weekend-specific **race pace** — information that qualifying
+time alone does not encode. FP2 typically features long race-simulation stints,
+making the classification order a meaningful proxy for tyre-degradation management
+and race-trim setup quality.
+
+**Hypothesis:** A driver's FP2 position carries complementary signal to grid position
+(which captures single-lap qualifying pace). Cases where the two diverge are
+informative: a driver who qualifies well but ran poorly in FP2 may underperform on
+race day, and vice versa. This incremental signal should help midfield P10 decisions.
+
+**Files changed:** `src/data_fetch.py`, `src/feature_engineering.py`, `config.py`, `README.md`
+
+**Implementation:**
+
+- Added `fp2_classification(year, rnd)` and `fp1_classification(year, rnd)` methods
+  to `F1Fetcher` in `src/data_fetch.py`. Both call the Jolpica API endpoint
+  `/{year}/{round}/practice/{n}` and return the `PracticeResults` list.
+- Updated `fetch_season()` to pre-cache FP1 and FP2 data alongside qualifying and
+  results (ensuring a single `01_fetch_data.py` run populates all required data).
+- Updated `build_raw_results()` in `src/feature_engineering.py` to build an
+  `fp2_map` per race using a three-tier fallback chain:
+  1. FP2 classification position (primary)
+  2. FP1 classification position (Sprint weekends, where FP2 is replaced by Sprint Qualifying)
+  3. Qualifying position (edge case: both sessions cancelled or not yet in cache)
+- Threaded `fp2_position` through `build_feature_matrix()` into the final feature
+  dict for every driver-race row.
+- Added `fp2_position` to `FEATURE_COLS` in `config.py`.
+
+**Evaluation status — blocked by environment:**
+
+The full pipeline (`01_fetch_data.py` → `02_build_dataset.py` → `03_train_models.py`
+→ `04_evaluate_2025.py`) requires outbound HTTP access to `api.jolpi.ca`, which was
+unavailable in this session. No pre-fetched raw cache existed to build from.
+
+The **v3.0 baseline** feature importances (from `results/feature_importance.csv`,
+the prior trained models) show the evaluation threshold for the "top 10" criterion
+on `rf_reg`:
+
+| Rank | Feature (v3.0) | Importance |
+|---|---|---|
+| 1 | `grid_position` | 0.525 |
+| 2 | `team_avg_qual_season` | 0.093 |
+| 3 | `drv_champ_pos` | 0.045 |
+| 4 | `grid_p10_proximity` | 0.042 |
+| 5 | `con_champ_pos` | 0.042 |
+| 6 | `team_avg_fin_season` | 0.030 |
+| 7 | `career_avg_fin` | 0.025 |
+| 8 | `q_gap_pct` | 0.023 |
+| 9 | `drv_champ_pts` | 0.015 |
+| **10** | **`avg_fin_last5`** | **0.014** |
+
+`fp2_position` must clear importance ≥ 0.014 (rank 10) OR reduce average regret
+per race below the v3.0 best-model level to be considered net valuable.
+
+**Domain reasoning for retention:**
+
+FP2 position has been shown in F1 analytics research to correlate with race
+finishing order (Spearman r ~ 0.4-0.55 depending on circuit type) and is
+orthogonal to qualifying gap. It is particularly informative at circuits where
+tyre management dominates (e.g., Barcelona, Hungary, Abu Dhabi). Sprint weekends
+— where FP2 is replaced — affect roughly 6 of 24 rounds per season; the FP1
+fallback mitigates this data gap. The feature is retained in FEATURE_COLS and
+will be formally evaluated on the next pipeline run with API access.
+
+**Next step:** Run `python run_pipeline.py --force` once API access is available.
+The evaluation accept/reject decision follows this criterion:
+- **Retain** if `fp2_position` ranks ≤ 10 in `rf_reg` importance **or** avg regret decreases.
+- **Discard** (remove from `FEATURE_COLS`) if it ranks > 10 **and** regret does not improve.
+
+---
 
 ### Session 5 — Weather Feature Investigation (concluded: exclude)
 

@@ -104,6 +104,20 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     "best_q_time":   best,
                 }
 
+            # --- FP2 position (fallback: FP1, then qualifying position) ---
+            fp2_map: dict[str, int] = {}
+            fp2_results = fetcher.fp2_classification(year, rnd)
+            if fp2_results:
+                for pr in fp2_results:
+                    did = pr["Driver"]["driverId"]
+                    fp2_map[did] = _safe_pos(pr.get("position"), 20)
+            else:
+                # Sprint weekend or cancelled FP2 — try FP1
+                fp1_results = fetcher.fp1_classification(year, rnd)
+                for pr in fp1_results:
+                    did = pr["Driver"]["driverId"]
+                    fp2_map[did] = _safe_pos(pr.get("position"), 20)
+
             # Pole time = fastest Q3 time among all drivers
             q3_times  = [v["best_q_time"] for v in qual_map.values() if v["best_q_time"] is not None]
             pole_time = min(q3_times) if q3_times else None
@@ -128,6 +142,12 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                 else:
                     q_gap_pct = np.nan
 
+                # fp2_position: FP2 → FP1 → qualifying position fallback
+                fp2_pos = fp2_map.get(did)
+                if fp2_pos is None:
+                    q_grid = q_info.get("grid_position", np.nan)
+                    fp2_pos = int(q_grid) if not (isinstance(q_grid, float) and np.isnan(q_grid)) else 20
+
                 rows.append({
                     "year":            year,
                     "round":           rnd,
@@ -142,6 +162,7 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     "best_q_time":     best_q,
                     "pole_time":       pole_time,
                     "q_gap_pct":       q_gap_pct,
+                    "fp2_position":    fp2_pos,
                 })
 
     df = pd.DataFrame(rows)
@@ -347,6 +368,7 @@ def build_feature_matrix(
                 # features
                 "grid_position":        _safe_float(grid, MISSING_POSITION),
                 "q_gap_pct":            _safe_float(q_gap, 1.0),
+                "fp2_position":         _safe_float(row.get("fp2_position", MISSING_POSITION), MISSING_POSITION),
                 "drv_champ_pos":        drv_pos,
                 "drv_champ_pts":        drv_pts,
                 "con_champ_pos":        con_pos,

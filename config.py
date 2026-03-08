@@ -64,6 +64,8 @@ FEATURE_COLS = [
     # --- qualifying ---
     "grid_position",
     "q_gap_pct",
+    # --- practice ---
+    "fp2_position",          # v3.1: FP2 classification position (race pace proxy)
     # --- championship (before race) ---
     "drv_champ_pos",
     "drv_champ_pts",
