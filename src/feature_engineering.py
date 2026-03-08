@@ -25,6 +25,7 @@ from config import (
     DNF_POSITION,
     FEATURE_COLS,
     MISSING_POSITION,
+    OVERTAKING_DIFFICULTY,
     PROCESSED_DIR,
     STREET_CIRCUITS,
     TARGET_COL,
@@ -259,6 +260,24 @@ def build_feature_matrix(
         con_map  = dict(zip(race_df["driver_id"], race_df["constructor_id"]))
         gap_map  = dict(zip(race_df["driver_id"], race_df["q_gap_pct"]))
 
+        # ── circuit volatility features (v3.3) — computed once per race ──────
+        # historical_dnf_rate: fraction of driver-starts that ended in DNF at
+        # this circuit across the preceding 5 calendar years.
+        prev_circ = raw[
+            (raw["circuit_id"] == circuit) &
+            (
+                (raw["year"] < year) |
+                ((raw["year"] == year) & (raw["round"] < rnd))
+            ) &
+            (raw["year"] >= year - 5)
+        ]
+        if len(prev_circ) > 0:
+            historical_dnf_rate = float(prev_circ["is_dnf"].sum()) / len(prev_circ)
+        else:
+            historical_dnf_rate = 0.15   # typical F1 field-wide baseline
+
+        overtaking_difficulty = OVERTAKING_DIFFICULTY.get(circuit, 5.0)
+
         for _, row in race_df.iterrows():
             did  = row["driver_id"]
             cid  = row["constructor_id"]
@@ -420,6 +439,8 @@ def build_feature_matrix(
                 "midfield_qual_density":     midfield_qual_density,
                 "self_grid_displacement":    self_grid_displacement,
                 "grid_displacement_behind":  grid_displacement_behind,
+                "historical_dnf_rate":       historical_dnf_rate,
+                "overtaking_difficulty":     overtaking_difficulty,
             })
 
             # update history AFTER extracting features (no leakage)

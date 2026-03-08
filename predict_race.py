@@ -41,6 +41,7 @@ from config import (
     EVAL_YEAR,
     FEATURE_COLS,
     MISSING_POSITION,
+    OVERTAKING_DIFFICULTY,
     PREDICT_YEAR,
     PROCESSED_DIR,
     STREET_CIRCUITS,
@@ -183,6 +184,28 @@ def build_live_features(
         if info["best_q"] is not None and pole_time else None
         for did, info in qual_info.items()
     }
+
+    # ── circuit volatility features (v3.3) — computed once per race ──────────
+    circ_past = historical_df[
+        (historical_df["circuit_id"] == circuit_id) &
+        (historical_df["year"] >= year - 5) &
+        (
+            (historical_df["year"] < year) |
+            ((historical_df["year"] == year) & (historical_df["round"] < rnd))
+        )
+    ]
+    if len(circ_past) > 0:
+        # Use is_dnf column if available; otherwise approximate via DNF_POSITION
+        dnf_col = (
+            circ_past["is_dnf"]
+            if "is_dnf" in circ_past.columns
+            else (circ_past["finish_position"] >= DNF_POSITION)
+        )
+        historical_dnf_rate = float(dnf_col.sum()) / len(circ_past)
+    else:
+        historical_dnf_rate = 0.15
+
+    overtaking_difficulty = OVERTAKING_DIFFICULTY.get(circuit_id, 5.0)
 
     rows = []
     for did, qi in sorted(qual_info.items(), key=lambda x: x[1]["grid"]):
@@ -330,6 +353,8 @@ def build_live_features(
             "fp2_position":              float(fp2_pos),
             "self_grid_displacement":    self_grid_displacement,
             "grid_displacement_behind":  grid_displacement_behind,
+            "historical_dnf_rate":       historical_dnf_rate,
+            "overtaking_difficulty":     overtaking_difficulty,
         })
 
     feat_df = pd.DataFrame(rows)
