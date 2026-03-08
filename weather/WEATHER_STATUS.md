@@ -5,7 +5,7 @@ resume in a new session.  Check the **CURRENT STATUS** section first.
 
 ---
 
-## CURRENT STATUS: Phase 1 complete ✅ | Phase 2 pending (needs internet)
+## CURRENT STATUS: Phase 1 ✅ | Phase 2 ✅ COMPLETE — VERDICT: Exclude weather
 
 | Phase | Step | Status | Output |
 |-------|------|--------|--------|
@@ -13,10 +13,10 @@ resume in a new session.  Check the **CURRENT STATUS** section first.
 | 1 | Standalone statistical analysis | ✅ Done | `weather/results/weather_distribution.txt` |
 | 1 | Circuit wet-rate table | ✅ Done | `weather/results/circuit_wet_rates.csv` |
 | 1 | Wet-race P10 outcome log | ✅ Done | `weather/results/wet_race_p10_analysis.csv` |
-| 2 | Real weather data via API | ⏳ Needs internet | replaces curated estimates |
-| 2 | Main F1 feature matrix | ⏳ Needs internet | `data/processed/features_*.parquet` |
-| 2 | Full model comparison | ⏳ Blocked on above | `weather/results/model_comparison.csv` |
-| 2 | Verdict: include weather? | ⏳ Blocked | updates `config.py` if yes |
+| 2 | Real weather data via Open-Meteo API | ✅ Done | `weather/data/weather_historical.parquet` (329 races, source=archive) |
+| 2 | Main F1 feature matrix | ✅ Done | `data/processed/features_*.parquet` (6,911 rows × 38 cols) |
+| 2 | Full model comparison | ✅ Done | `weather/results/model_comparison.csv` |
+| 2 | Verdict: include weather? | ✅ **EXCLUDE** | No improvement; hurts 2025 performance by −2.3 pts/race |
 
 ---
 
@@ -150,3 +150,60 @@ weather/
     ├── model_comparison.csv         ← with/without weather model comparison
     └── weather_importance.csv       ← weather feature importances in RF model
 ```
+
+---
+
+## Phase 2 Findings (real Open-Meteo API data — 329 races, 2010–2025)
+
+### Weather data quality
+All 329 races replaced from **curated estimates → real archive data** (Open-Meteo archive API).
+
+| Category | Count | % |
+|----------|-------|---|
+| Dry (0mm) | 215 | 65.3% |
+| Damp (1–5mm) | 65 | 19.8% |
+| Wet (5–20mm) | 44 | 13.4% |
+| Heavy (>20mm) | 5 | 1.5% |
+
+> Note: The curated dataset estimated only 31 wet races (9.4%).  
+> Real data shows 114 races with >1mm precipitation (34.7%) — dramatically different.
+
+### Statistical nullity of weather features
+
+All weather features showed **near-zero correlation** with P10 outcomes:
+
+| Feature | r | p-value |
+|---------|---|---------|
+| is_wet_race | −0.001 | 0.926 |
+| chaos_index | −0.001 | 0.952 |
+| precipitation_mm | −0.002 | 0.907 |
+| wind_max_kmh | +0.004 | 0.739 |
+
+None are statistically significant. Grid position explains 53% of variance alone.
+
+### Model comparison (2025 holdout — 24 races)
+
+| Model | Features | Avg pts/race | Exact P10s |
+|-------|----------|-------------|-----------|
+| Without weather | 30 | **11.42** | 2 |
+| With weather | 35 | 9.13 | 1 |
+
+**Adding weather features hurt performance by −2.3 pts/race** on the 2025 holdout.
+
+### Why weather doesn't help P10 prediction
+
+1. **All drivers face the same conditions** — weather shifts *every driver's* performance equally, leaving relative order mostly unchanged.
+2. **Wet Spearman r = 0.642 (dry: 0.636)** — grid order is actually *slightly more predictive* in wet conditions, not less. The hypothesis that wet = chaos is not supported.
+3. **Weather features dilute signal** — 5 noise features compete with 30 informative ones, causing the RF to learn spurious patterns.
+4. **P10 base rate is identical** — 4.76% dry, 4.71% wet. Weather does not change *who* finishes P10.
+
+### Recommendation
+
+**Do not include weather features in the main F1-p10 model.**
+
+The current 30-feature set is sufficient. Weather may revisited if:
+- Future analysis finds circuit-specific effects (e.g., Interlagos rain specifically)
+- A weather × driver interaction term is engineered (e.g., driver's wet-race P10 zone rate)
+- Forecasting uncertainty is being communicated to the user (not model training)
+
+The `race_forecast.py` script remains useful for **displaying pre-race conditions** to the user as context, without feeding weather into the model.

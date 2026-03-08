@@ -71,6 +71,19 @@ F1-p10-2026/
 |
 +-- models/                     # saved .joblib model files
 +-- results/                    # evaluation CSVs and plots
+|
++-- weather/                    # weather feature investigation (concluded)
+    +-- WEATHER_STATUS.md       # full findings and verdict
+    +-- fetch_weather.py        # fetches race-day weather from Open-Meteo archive
+    +-- evaluate_weather.py     # model comparison with/without weather features
+    +-- weather_features.py     # feature engineering helpers
+    +-- race_forecast.py        # live forecast for upcoming race weekends
+    +-- data/
+    |   +-- weather_historical.parquet  # 329 races, 2010-2025 (Open-Meteo archive)
+    +-- results/
+        +-- model_comparison.csv        # verdict data
+        +-- weather_importance.csv      # feature importances
+        +-- weather_analysis.txt        # full statistical report
 ```
 
 ---
@@ -228,15 +241,13 @@ Outputs:
 ## 2025 Season Results
 
 Models trained on 2010-2024 data, evaluated on all 24 races of the 2025 season.
-These scores reflect the **v1 model** (24 features, binary classifiers). The v2
-model (30 features, multi-class EV) is expected to improve classifier performance
-but has not been re-evaluated on 2025 data yet.
 
 | Model | Avg Pts/Race | Avg Regret | Exact P10 | Within 2% |
 |---|---|---|---|---|
 | Oracle (ceiling) | 25.00 | 0.00 | 24 | 100% |
 | rf_clf | 12.29 | 12.71 | 2 | 50.0% |
 | xgb_clf | 11.29 | 13.71 | 1 | 45.8% |
+| **without_weather RF** | **11.42** | **13.58** | **2** | — |
 | rf_reg | 10.75 | 14.25 | 1 | 33.3% |
 | lgb_reg | 10.08 | 14.92 | 0 | 33.3% |
 | ensemble | 9.79 | 15.21 | 0 | 33.3% |
@@ -245,8 +256,10 @@ but has not been re-evaluated on 2025 data yet.
 | naive_grid_p10 | 14.04 | 10.96 | 3 | 50.0% |
 | naive_champ_p10 | 9.67 | 15.33 | 2 | 29.2% |
 
-Individual classifiers (`rf_clf`, `xgb_clf`) are the recommended picks for
-the 2026 season until ensemble weights are recalibrated.
+> **`naive_grid_p10` (14.04 pts) remains the strongest single signal** —
+> any model improvement must clear this bar.
+> The `rf_clf` and `xgb_clf` classifiers are the recommended picks for
+> 2026 until ensemble weights are recalibrated on the v2 architecture.
 
 ---
 
@@ -305,6 +318,59 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### Session 5 — Weather Feature Investigation (concluded: exclude)
+
+**Goal:** Determine whether real race-day weather data from the Open-Meteo
+archive API improves P10 prediction accuracy. The `weather/` module was
+built in a prior offline session (Phase 1) and completed here (Phase 2).
+
+**Files changed:** `weather/WEATHER_STATUS.md`, `weather/data/weather_historical.parquet`,
+`weather/results/model_comparison.csv`, `weather/results/weather_analysis.txt`
+
+**What was done:**
+- Replaced the Phase 1 curated/estimated weather dataset with real Open-Meteo
+  archive data for all 329 races (2010–2025) — `source: curated → archive`
+- Completed the `data/raw/` cache (2021–2024 standings files + all 2025 data
+  were missing; filled before building the feature matrix)
+- Built the feature matrix (6,911 rows × 38 cols) and ran `weather/evaluate_weather.py`
+  comparing a 30-feature RF against a 35-feature RF (+5 weather features)
+
+**Statistical findings:**
+
+All weather features showed near-zero, non-significant correlation with P10:
+
+| Feature | r | p-value |
+|---|---|---|
+| `is_wet_race` | −0.001 | 0.926 |
+| `chaos_index` | −0.001 | 0.952 |
+| `precipitation_mm` | −0.002 | 0.907 |
+| `wind_max_kmh` | +0.004 | 0.739 |
+
+Grid → finish Spearman correlation is actually *slightly higher* in wet conditions
+(r = 0.642) than dry (r = 0.636). The hypothesis that rain increases P10 chaos
+is not supported by 15 years of data.
+
+**Model comparison (2025 holdout — 24 races):**
+
+| Model | Features | Avg pts/race | Exact P10 |
+|---|---|---|---|
+| Without weather | 30 | **11.42** | 2 |
+| With weather | 35 | 9.13 | 1 |
+
+**Verdict: Do not include weather features.** Adding them hurt by −2.3 pts/race.
+All five weather features rank in the bottom 5 of 35 by importance (top feature
+`wind_max_kmh` at 1.6%, vs `grid_position` at 53.2%).
+
+**Why weather doesn't help:** All drivers face identical conditions each race,
+so weather shifts relative finishing order very little. The P10 base rate is
+identical in dry (4.76%) and wet (4.71%) races.
+
+**What weather is still good for:** The `race_forecast.py` script can fetch
+the Open-Meteo 7-day forecast after qualifying to *display* conditions to
+the user as context — without those values entering the model itself.
+
+---
 
 ### Session 4 -- v2 Full Implementation (current)
 
