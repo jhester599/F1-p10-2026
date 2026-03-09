@@ -139,6 +139,20 @@ class F1Fetcher:
             return races[0].get("SprintResults", [])
         return []
 
+    def fp2_classification(self, year: int, rnd: int) -> list[dict]:
+        """FP2 classification results (empty if session didn't run, e.g. Sprint weekends)."""
+        races = self._mrdata(f"{year}/{rnd}/practice/2", "RaceTable", "Races")
+        if races:
+            return races[0].get("PracticeResults", [])
+        return []
+
+    def fp1_classification(self, year: int, rnd: int) -> list[dict]:
+        """FP1 classification results (fallback when FP2 data is unavailable)."""
+        races = self._mrdata(f"{year}/{rnd}/practice/1", "RaceTable", "Races")
+        if races:
+            return races[0].get("PracticeResults", [])
+        return []
+
     def driver_standings(self, year: int, rnd: int) -> list[dict]:
         """Driver championship standings after a given round."""
         lists = self._mrdata(
@@ -181,6 +195,8 @@ class F1Fetcher:
                 "results":                self.results(year, rnd),
                 "driver_standings":       self.driver_standings(year, rnd),
                 "constructor_standings":  self.constructor_standings(year, rnd),
+                "fp1":                    self.fp1_classification(year, rnd),
+                "fp2":                    self.fp2_classification(year, rnd),
             }
         return season_data
 

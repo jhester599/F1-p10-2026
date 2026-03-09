@@ -41,6 +41,7 @@ from config import (
     EVAL_YEAR,
     FEATURE_COLS,
     MISSING_POSITION,
+    OVERTAKING_DIFFICULTY,
     PREDICT_YEAR,
     PROCESSED_DIR,
     STREET_CIRCUITS,
@@ -119,6 +120,18 @@ def build_live_features(
     q3_times  = [v["best_q"] for v in qual_info.values() if v["best_q"] is not None]
     pole_time = min(q3_times) if q3_times else None
 
+    # ── FP2 position (v3.1: race pace proxy, fallback: FP1 → qualifying pos) ──
+    from src.feature_engineering import _safe_pos as _fe_safe_pos
+    fp2_map: dict[str, int] = {}
+    fp2_results = fetcher.fp2_classification(year, rnd)
+    if fp2_results:
+        for pr in fp2_results:
+            fp2_map[pr["Driver"]["driverId"]] = _fe_safe_pos(pr.get("position"), 20)
+    else:
+        fp1_results = fetcher.fp1_classification(year, rnd)
+        for pr in fp1_results:
+            fp2_map[pr["Driver"]["driverId"]] = _fe_safe_pos(pr.get("position"), 20)
+
     # ── championship standings before race ─────────────────────────────────
     prev_rnd  = rnd - 1
     prev_year = year
@@ -172,6 +185,28 @@ def build_live_features(
         for did, info in qual_info.items()
     }
 
+    # ── circuit volatility features (v3.3) — computed once per race ──────────
+    circ_past = historical_df[
+        (historical_df["circuit_id"] == circuit_id) &
+        (historical_df["year"] >= year - 5) &
+        (
+            (historical_df["year"] < year) |
+            ((historical_df["year"] == year) & (historical_df["round"] < rnd))
+        )
+    ]
+    if len(circ_past) > 0:
+        # Use is_dnf column if available; otherwise approximate via DNF_POSITION
+        dnf_col = (
+            circ_past["is_dnf"]
+            if "is_dnf" in circ_past.columns
+            else (circ_past["finish_position"] >= DNF_POSITION)
+        )
+        historical_dnf_rate = float(dnf_col.sum()) / len(circ_past)
+    else:
+        historical_dnf_rate = 0.15
+
+    overtaking_difficulty = OVERTAKING_DIFFICULTY.get(circuit_id, 5.0)
+
     rows = []
     for did, qi in sorted(qual_info.items(), key=lambda x: x[1]["grid"]):
         cid  = qi["cid"]
@@ -182,6 +217,8 @@ def build_live_features(
             q_gap = (best - pole_time) / pole_time * 100.0
         else:
             q_gap = (grid - 1) * 0.08  # rough fallback
+
+        fp2_pos = fp2_map.get(did, int(grid))
 
         drv_pos, drv_pts = drv_st.get(did, (20, 0.0))
         con_pos, con_pts = con_st.get(cid, (10, 0.0))
@@ -269,6 +306,17 @@ def build_live_features(
         else:
             midfield_qual_density = 0
 
+        # grid displacement features (v3.2)
+        _TOP_CHAMP_THRESHOLD = 5
+        self_grid_displacement = float(drv_pos) - float(grid)
+        grid_displacement_behind = sum(
+            1 for d2, g2 in grid_map.items()
+            if d2 != did
+            and g2 is not None
+            and float(g2) > float(grid)
+            and drv_st.get(d2, (99, 0.0))[0] <= _TOP_CHAMP_THRESHOLD
+        )
+
         rows.append({
             "driver_id":      did,
             "constructor_id": cid,
@@ -302,6 +350,11 @@ def build_live_features(
             "circ_p10_zone_rate":        circ_p10_zone_rate,
             "drv_finish_std_last5":      drv_finish_std_last5,
             "midfield_qual_density":     midfield_qual_density,
+            "fp2_position":              float(fp2_pos),
+            "self_grid_displacement":    self_grid_displacement,
+            "grid_displacement_behind":  grid_displacement_behind,
+            "historical_dnf_rate":       historical_dnf_rate,
+            "overtaking_difficulty":     overtaking_difficulty,
         })
 
     feat_df = pd.DataFrame(rows)

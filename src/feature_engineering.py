@@ -25,6 +25,7 @@ from config import (
     DNF_POSITION,
     FEATURE_COLS,
     MISSING_POSITION,
+    OVERTAKING_DIFFICULTY,
     PROCESSED_DIR,
     STREET_CIRCUITS,
     TARGET_COL,
@@ -104,6 +105,20 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     "best_q_time":   best,
                 }
 
+            # --- FP2 position (fallback: FP1, then qualifying position) ---
+            fp2_map: dict[str, int] = {}
+            fp2_results = fetcher.fp2_classification(year, rnd)
+            if fp2_results:
+                for pr in fp2_results:
+                    did = pr["Driver"]["driverId"]
+                    fp2_map[did] = _safe_pos(pr.get("position"), 20)
+            else:
+                # Sprint weekend or cancelled FP2 — try FP1
+                fp1_results = fetcher.fp1_classification(year, rnd)
+                for pr in fp1_results:
+                    did = pr["Driver"]["driverId"]
+                    fp2_map[did] = _safe_pos(pr.get("position"), 20)
+
             # Pole time = fastest Q3 time among all drivers
             q3_times  = [v["best_q_time"] for v in qual_map.values() if v["best_q_time"] is not None]
             pole_time = min(q3_times) if q3_times else None
@@ -128,6 +143,12 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                 else:
                     q_gap_pct = np.nan
 
+                # fp2_position: FP2 → FP1 → qualifying position fallback
+                fp2_pos = fp2_map.get(did)
+                if fp2_pos is None:
+                    q_grid = q_info.get("grid_position", np.nan)
+                    fp2_pos = int(q_grid) if not (isinstance(q_grid, float) and np.isnan(q_grid)) else 20
+
                 rows.append({
                     "year":            year,
                     "round":           rnd,
@@ -142,6 +163,7 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     "best_q_time":     best_q,
                     "pole_time":       pole_time,
                     "q_gap_pct":       q_gap_pct,
+                    "fp2_position":    fp2_pos,
                 })
 
     df = pd.DataFrame(rows)
@@ -238,6 +260,24 @@ def build_feature_matrix(
         con_map  = dict(zip(race_df["driver_id"], race_df["constructor_id"]))
         gap_map  = dict(zip(race_df["driver_id"], race_df["q_gap_pct"]))
 
+        # ── circuit volatility features (v3.3) — computed once per race ──────
+        # historical_dnf_rate: fraction of driver-starts that ended in DNF at
+        # this circuit across the preceding 5 calendar years.
+        prev_circ = raw[
+            (raw["circuit_id"] == circuit) &
+            (
+                (raw["year"] < year) |
+                ((raw["year"] == year) & (raw["round"] < rnd))
+            ) &
+            (raw["year"] >= year - 5)
+        ]
+        if len(prev_circ) > 0:
+            historical_dnf_rate = float(prev_circ["is_dnf"].sum()) / len(prev_circ)
+        else:
+            historical_dnf_rate = 0.15   # typical F1 field-wide baseline
+
+        overtaking_difficulty = OVERTAKING_DIFFICULTY.get(circuit, 5.0)
+
         for _, row in race_df.iterrows():
             did  = row["driver_id"]
             cid  = row["constructor_id"]
@@ -311,6 +351,27 @@ def build_feature_matrix(
             else:
                 midfield_qual_density = 0
 
+            # grid displacement features (v3.2)
+            # Top-5 championship threshold: drivers ranked 1-5 are expected to
+            # recover quickly if starting out of position, pushing P10 zone upward.
+            _TOP_CHAMP_THRESHOLD = 5
+            if not (isinstance(grid, float) and np.isnan(grid)):
+                # self_grid_displacement: negative = driver is displaced backward
+                # (e.g. a grid penalty); positive = qualifies better than standing
+                self_grid_displacement = float(drv_pos) - float(grid)
+                # grid_displacement_behind: number of top-5 championship drivers
+                # starting behind this driver who will likely pass through P10 zone
+                grid_displacement_behind = sum(
+                    1 for d2, g2 in grid_map.items()
+                    if d2 != did
+                    and not (isinstance(g2, float) and np.isnan(g2))
+                    and float(g2) > float(grid)
+                    and drv_st.get(d2, (99, 0.0))[0] <= _TOP_CHAMP_THRESHOLD
+                )
+            else:
+                self_grid_displacement   = 0.0
+                grid_displacement_behind = 0
+
             # career
             career_races   = len(hist)
             career_avg_fin = float(np.mean(pos_list)) if pos_list else MISSING_POSITION
@@ -347,6 +408,7 @@ def build_feature_matrix(
                 # features
                 "grid_position":        _safe_float(grid, MISSING_POSITION),
                 "q_gap_pct":            _safe_float(q_gap, 1.0),
+                "fp2_position":         _safe_float(row.get("fp2_position", MISSING_POSITION), MISSING_POSITION),
                 "drv_champ_pos":        drv_pos,
                 "drv_champ_pts":        drv_pts,
                 "con_champ_pos":        con_pos,
@@ -375,6 +437,10 @@ def build_feature_matrix(
                 "circ_p10_zone_rate":        circ_p10_zone_rate,
                 "drv_finish_std_last5":      drv_finish_std_last5,
                 "midfield_qual_density":     midfield_qual_density,
+                "self_grid_displacement":    self_grid_displacement,
+                "grid_displacement_behind":  grid_displacement_behind,
+                "historical_dnf_rate":       historical_dnf_rate,
+                "overtaking_difficulty":     overtaking_difficulty,
             })
 
             # update history AFTER extracting features (no leakage)

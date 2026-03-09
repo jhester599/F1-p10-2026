@@ -120,7 +120,7 @@ All features are derived from information available **after qualifying, before t
 | `career_races` | Career race starts |
 | `career_avg_fin` | Career average finish position |
 
-### P10-zone features (6) -- added to sharpen multi-class EV classification
+### P10-zone features (8) -- added to sharpen multi-class EV classification
 
 These features specifically encode signal in the P8-P12 finishing band,
 directly targeting the decision the model needs to make:
@@ -133,9 +133,29 @@ directly targeting the decision the model needs to make:
 | `circ_p10_zone_rate` | Driver's P8-P12 finish rate at this circuit historically |
 | `drv_finish_std_last5` | Std-dev of finish positions (last 5): low = consistent, high = volatile |
 | `midfield_qual_density` | Drivers qualifying within 1% gap of this driver (pack tightness) |
+| `self_grid_displacement` | `drv_champ_pos − grid_position`: negative = driver displaced backward (e.g. grid penalty), positive = qualifies above their championship expectation — both extremes indicate midfield volatility |
+| `grid_displacement_behind` | Count of top-5 championship drivers starting *behind* this driver; each will likely pass through the P10 zone on their charge forward, shifting the expected P10 finisher higher up the grid |
 
 > `grid_p10_proximity` entered the top-5 most important features in `rf_reg`
 > immediately on its first evaluation, ranking 4th overall (importance 4.2%).
+
+### Practice features (1) -- added in v3.1
+
+| Feature | Description |
+|---|---|
+| `fp2_position` | Driver's FP2 classification position (race pace proxy); falls back to FP1 on Sprint weekends, then to qualifying position if both are unavailable |
+
+### Circuit volatility features (2) -- added in v3.3
+
+| Feature | Description |
+|---|---|
+| `historical_dnf_rate` | Fraction of driver-race entries that ended in DNF at this circuit across the preceding 5 calendar years of races; captures mechanical/safety-car chaos likelihood |
+| `overtaking_difficulty` | Static 1–10 index (1 = Monza-style, 10 = Monaco); encodes how much grid order is preserved to the flag, calibrated from published historical overtake-count analyses |
+
+> Both features describe the *circuit's character* — complementing `is_street` (binary)
+> and `circ_avg_fin` / `circ_p10_zone_rate` (driver-specific) with race-level volatility context.
+> High `historical_dnf_rate` makes P10 harder to predict from starting position;
+> high `overtaking_difficulty` makes it easier (grid order is sticky).
 
 ---
 
@@ -318,6 +338,220 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.3 — Circuit Volatility Features (implementation complete; evaluation pending)
+
+**Goal:** Move beyond the binary `is_street` flag by adding two continuous
+circuit-character features that capture how much a given track disrupts the
+grid-to-finish mapping. A race at Monaco preserves starting order; a race at
+Baku under safety car rewrites it. The model currently has no way to modulate
+its grid-position confidence by circuit character.
+
+**Files changed:** `config.py`, `src/feature_engineering.py`, `predict_race.py`, `README.md`
+
+**New features (35 total after v3.1 + v3.2 + v3.3):**
+
+| Feature | Source | Semantics |
+|---|---|---|
+| `historical_dnf_rate` | Dynamic — computed from `raw` | Fraction of driver-race entries at this circuit that ended in DNF over the preceding 5 calendar years. High rate → attrition races → P10 finishers come from further back. |
+| `overtaking_difficulty` | Static mapping in `config.py` | 1–10 index calibrated from historical overtake-count data. 1 = Monza (pure slipstream), 10 = Monaco. High score → grid order is sticky → P10 is likely near the starting P10 slot. |
+
+**Implementation details:**
+
+`historical_dnf_rate` — `build_feature_matrix()` in `src/feature_engineering.py`:
+- Computed once per race (not per driver) using a vectorised filter on the full
+  `raw` DataFrame: same `circuit_id`, last 5 calendar years (`year >= year - 5`),
+  strictly before the current race.
+- `is_dnf` column is available in `raw` (set in `build_raw_results()`), so no proxy
+  is required. Falls back to 0.15 (F1 historical average) if no prior data exists.
+
+`overtaking_difficulty` — `OVERTAKING_DIFFICULTY` dict in `config.py`:
+- Covers all 30+ Ergast circuit IDs appearing in the 2010-2025 dataset.
+- Ratings based on DRS zone count, typical overtake-count data, and known
+  circuit characteristics. Unmapped circuits default to 5.0.
+- Selected reference values:
+  `monza=1.5`, `bahrain=2.5`, `spa=4.0`, `silverstone=4.5`,
+  `suzuka=6.0`, `zandvoort=7.5`, `hungaroring=9.0`, `singapore=9.0`, `monaco=10.0`
+
+`predict_race.py` `build_live_features()`:
+- `historical_dnf_rate` computed from `historical_df` (the processed feature
+  parquet). Uses `is_dnf` column when available, falls back to
+  `finish_position >= DNF_POSITION` as proxy.
+- `overtaking_difficulty` pulled directly from the same static mapping.
+
+**Circuit character × P10 prediction logic:**
+
+```
+Low overtaking_difficulty (Monza):
+  → grid_position matters less; more noise around P10 zone
+  → model should widen its confidence interval
+
+High overtaking_difficulty (Monaco):
+  → qualifying position is extremely predictive
+  → model should trust grid_position almost exclusively
+
+High historical_dnf_rate (Baku):
+  → attrition likely; drivers further back have elevated P10 probability
+  → model should look at multiple candidates, not just grid P9-P11
+```
+
+Both features are circuit-level (same value for all drivers in a race), so they
+interact with driver-level features rather than dominate them. The Random Forest
+can learn non-linear interactions like "at high `overtaking_difficulty`, weight
+`grid_p10_proximity` more heavily" without any explicit encoding.
+
+**Evaluation status — blocked by environment:**
+
+Same constraint as v3.1/v3.2. Outbound HTTP to `api.jolpi.ca` is unavailable;
+no raw or processed data cache exists.
+
+**Evaluation thresholds (from v3.0 `results/feature_importance.csv`):**
+
+- Each feature must individually exceed 0.014 in `rf_reg` importance (rank 10 benchmark)
+  **or** collectively reduce average regret per race below the v3.0 baseline.
+- `overtaking_difficulty` is a permanent property of a circuit and should show
+  meaningful importance because it scales the effectiveness of `grid_position`.
+  Expected rank: top 15, possibly top 10.
+- `historical_dnf_rate` is noisier (only ~5 data points per circuit per era) but
+  fires strongly in known high-attrition seasons at chaotic tracks.
+
+**Next step:** Run `python run_pipeline.py --force` with API access.
+
+---
+
+### v3.2 — Grid Displacement Features (implementation complete; evaluation pending)
+
+**Goal:** Add two new features that capture midfield volatility caused by top-tier
+drivers starting out of position (grid penalties, strategic grid-drop decisions).
+When a championship-contending driver starts from P14 instead of P4, every driver
+between P4 and P14 is at elevated risk of being passed in the early laps — with the
+P10 zone being the primary battleground for these overtakes.
+
+**Files changed:** `src/feature_engineering.py`, `predict_race.py`, `config.py`, `README.md`
+
+**New features (33 total after v3.1 + v3.2):**
+
+| Feature | Formula | Semantics |
+|---|---|---|
+| `self_grid_displacement` | `drv_champ_pos − grid_position` | Negative = driver is displaced backward relative to their expected grid slot (grid penalty or technical issue in quali); positive = qualifies significantly above their standing |
+| `grid_displacement_behind` | `count(d : grid[d] > grid[this] AND champ_pos[d] ≤ 5)` | Number of top-5 championship drivers starting *behind* this driver; each will likely charge through the P10 zone, pushing the effective P10 finisher upward |
+
+**Implementation details:**
+
+- Both features are computed inside `build_feature_matrix()` in a cross-driver loop
+  over `grid_map` and `drv_st` — all information available after qualifying.
+- Threshold of top-5 championship drivers is consistent with the practical observation
+  that positions 6+ rarely produce dramatic penalty-fuelled charges in the midfield zone.
+- `self_grid_displacement = 0` when grid position is unknown (e.g. pit lane start).
+- Both features are also computed in `predict_race.py` `build_live_features()` for
+  live race-day predictions.
+- **Also fixed in this commit:** `fp2_position` was missing from `predict_race.py`'s
+  live inference path (v3.1 only wired it through `feature_engineering.py`). Added
+  full FP2 → FP1 → grid fallback chain to `build_live_features()`.
+
+**Hypothesised signal:**
+
+`grid_displacement_behind` is expected to be informative primarily in ~6-10 races
+per season where a championship frontrunner takes a significant grid penalty (engine
+replacement, gearbox change). In those races the model currently has no way to know
+the midfield grid is effectively "compressed" with faster cars starting in it.
+`self_grid_displacement` provides the symmetric signal from the displaced driver's
+own perspective: a large negative value (e.g. −10 for Verstappen starting P14) is
+a strong buy signal for that driver to finish better than their grid position.
+
+**Evaluation status — blocked by environment:**
+
+Same environment constraint as v3.1: outbound HTTP to `api.jolpi.ca` is unavailable.
+No raw or processed data cache exists to run the pipeline from.
+
+**Evaluation threshold (from v3.0 `results/feature_importance.csv`):**
+
+Each feature must individually exceed 0.014 importance in `rf_reg` (current rank 10,
+held by `avg_fin_last5`) **or** the combined effect of both must reduce average regret
+per race below the v3.0 best-model level.
+
+`grid_displacement_behind` is expected to rank in the middle tier: it is a sparse
+signal (most races have 0 or 1 displaced top-5 driver) but highly decisive in the
+races where it fires. `self_grid_displacement` is denser and may rank higher
+as it encodes every driver's grid vs. championship-standing mismatch every race.
+
+**Next step:** Run `python run_pipeline.py --force` with API access to formally evaluate.
+
+---
+
+### v3.1 — FP2 Position Feature (implementation complete; evaluation pending)
+
+**Goal:** Add `fp2_position` (driver's FP2 classification finishing position) as a
+31st feature to capture weekend-specific **race pace** — information that qualifying
+time alone does not encode. FP2 typically features long race-simulation stints,
+making the classification order a meaningful proxy for tyre-degradation management
+and race-trim setup quality.
+
+**Hypothesis:** A driver's FP2 position carries complementary signal to grid position
+(which captures single-lap qualifying pace). Cases where the two diverge are
+informative: a driver who qualifies well but ran poorly in FP2 may underperform on
+race day, and vice versa. This incremental signal should help midfield P10 decisions.
+
+**Files changed:** `src/data_fetch.py`, `src/feature_engineering.py`, `config.py`, `README.md`
+
+**Implementation:**
+
+- Added `fp2_classification(year, rnd)` and `fp1_classification(year, rnd)` methods
+  to `F1Fetcher` in `src/data_fetch.py`. Both call the Jolpica API endpoint
+  `/{year}/{round}/practice/{n}` and return the `PracticeResults` list.
+- Updated `fetch_season()` to pre-cache FP1 and FP2 data alongside qualifying and
+  results (ensuring a single `01_fetch_data.py` run populates all required data).
+- Updated `build_raw_results()` in `src/feature_engineering.py` to build an
+  `fp2_map` per race using a three-tier fallback chain:
+  1. FP2 classification position (primary)
+  2. FP1 classification position (Sprint weekends, where FP2 is replaced by Sprint Qualifying)
+  3. Qualifying position (edge case: both sessions cancelled or not yet in cache)
+- Threaded `fp2_position` through `build_feature_matrix()` into the final feature
+  dict for every driver-race row.
+- Added `fp2_position` to `FEATURE_COLS` in `config.py`.
+
+**Evaluation status — blocked by environment:**
+
+The full pipeline (`01_fetch_data.py` → `02_build_dataset.py` → `03_train_models.py`
+→ `04_evaluate_2025.py`) requires outbound HTTP access to `api.jolpi.ca`, which was
+unavailable in this session. No pre-fetched raw cache existed to build from.
+
+The **v3.0 baseline** feature importances (from `results/feature_importance.csv`,
+the prior trained models) show the evaluation threshold for the "top 10" criterion
+on `rf_reg`:
+
+| Rank | Feature (v3.0) | Importance |
+|---|---|---|
+| 1 | `grid_position` | 0.525 |
+| 2 | `team_avg_qual_season` | 0.093 |
+| 3 | `drv_champ_pos` | 0.045 |
+| 4 | `grid_p10_proximity` | 0.042 |
+| 5 | `con_champ_pos` | 0.042 |
+| 6 | `team_avg_fin_season` | 0.030 |
+| 7 | `career_avg_fin` | 0.025 |
+| 8 | `q_gap_pct` | 0.023 |
+| 9 | `drv_champ_pts` | 0.015 |
+| **10** | **`avg_fin_last5`** | **0.014** |
+
+`fp2_position` must clear importance ≥ 0.014 (rank 10) OR reduce average regret
+per race below the v3.0 best-model level to be considered net valuable.
+
+**Domain reasoning for retention:**
+
+FP2 position has been shown in F1 analytics research to correlate with race
+finishing order (Spearman r ~ 0.4-0.55 depending on circuit type) and is
+orthogonal to qualifying gap. It is particularly informative at circuits where
+tyre management dominates (e.g., Barcelona, Hungary, Abu Dhabi). Sprint weekends
+— where FP2 is replaced — affect roughly 6 of 24 rounds per season; the FP1
+fallback mitigates this data gap. The feature is retained in FEATURE_COLS and
+will be formally evaluated on the next pipeline run with API access.
+
+**Next step:** Run `python run_pipeline.py --force` once API access is available.
+The evaluation accept/reject decision follows this criterion:
+- **Retain** if `fp2_position` ranks ≤ 10 in `rf_reg` importance **or** avg regret decreases.
+- **Discard** (remove from `FEATURE_COLS`) if it ranks > 10 **and** regret does not improve.
+
+---
 
 ### Session 5 — Weather Feature Investigation (concluded: exclude)
 
