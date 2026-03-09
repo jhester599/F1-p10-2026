@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v2
+# F1 P10 Predictor · v3.1
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
