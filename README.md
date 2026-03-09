@@ -631,7 +631,7 @@ data and retrain models on the complete v2 specification.
   now handles missing/non-numeric values via `_safe_pos()`)
 - Multi-class EV classifiers fully wired: `SCORING_VECTOR`, XGBoost 0-index fix,
   EV selection in `predict_race()` and `WeightedEnsemble.score_drivers()`
-- Rebuilt feature matrices (`02_build_dataset.py --force`): 6,432 rows × 38 cols
+- Rebuilt feature matrices (`02_build_dataset.py --force`): 6,173 rows × 43 cols
 - Retrained 7 models (`03_train_models.py --force`): 4 regressors + 2 classifiers
   (multi-class EV) + 1 WeightedEnsemble
 - Round 01 prediction run on 2026 Australia qualifying; added `RACE_PREDICTIONS.md`

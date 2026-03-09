@@ -40,7 +40,7 @@ F1-p10-2026/
 |   |                                  https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 |   |                                  Restore: unzip f1_data_cache_2026-03-09.zip -d data/raw/
 |   +-- processed/
-|       +-- features_2010_2024.parquet   # Training feature matrix (6,432 rows x 38 cols)
+|       +-- features_2010_2024.parquet   # Training feature matrix (6,173 rows x 43 cols)
 |       +-- features_2025_2025.parquet   # 2025 eval features (479 rows x 38 cols)
 |       +-- features_2010_2025.parquet   # Combined — kept for reference only
 |

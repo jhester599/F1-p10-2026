@@ -114,7 +114,7 @@ python scripts/02_build_dataset.py --force
 ```
 
 Expected: ~30 seconds. Produces:
-- `data/processed/features_2010_2024.parquet`  (6,432 rows × 38 cols → 38 = 30 features + 8 metadata)
+- `data/processed/features_2010_2024.parquet`  (6,173 rows × 43 cols → 43 = 35 features + 8 metadata)
 - `data/processed/features_2025_2025.parquet`
 - `data/processed/features_2010_2025.parquet`
 
@@ -188,5 +188,5 @@ All phases complete. Model is at v3.1 specification (35 features, all evaluated)
   lift (+2.83 pts/race). If a v4.0 feature set is designed, these should be
   re-evaluated as candidates for removal if a larger batch of stronger features
   can replace them.
-- Data cache URL in documentation is a placeholder — update once the v3.1 zip
-  (1,881 files, 3.1 MB) is uploaded to Google Drive.
+- Data cache (1,881 files, 3.1 MB) is uploaded to Google Drive:
+  https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
