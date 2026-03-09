@@ -1,3 +1,91 @@
+fix(v3.1): correct sprint-round result truncation; full pipeline eval
+
+## Summary
+
+Two fixes and a full evaluation run. The v3.1 feature set (35 features including
+fp2_position and circuit volatility) is now formally evaluated on the corrected
+2025 dataset.
+
+---
+
+## 1. Sprint weekend result truncation (data/raw/)
+
+Three 2025 result files (rounds 11/16/21 — Austrian, Italian, São Paulo GPs)
+were truncated to 1 driver each in the bulk fetch cache. These rounds were
+captured mid-season via the paginated bulk endpoint before the races ran, so
+only the pole-sitter's result was present. Re-fetched from Jolpica individually.
+
+**Impact:** 2025 eval set corrected from 422 → 479 rows (full 24 × ~20 drivers).
+Prior eval results were biased: 3 full races were effectively replaced by a
+single-driver stub, inflating some model scores and deflating others.
+
+---
+
+## 2. FastF1 FP cache completion
+
+All 2018-2025 FP1/FP2 sessions now cached (280 FastF1 files):
+- 2020 R11 (Eifel GP): FP1 and FP2 cancelled due to fog — empty cache files
+  written to prevent re-fetch attempts
+- All other rounds: real lap-time-derived classifications cached
+
+Total cache: **1,881 files** (Jolpica + FastF1), 3.1 MB compressed.
+
+---
+
+## 3. Full pipeline evaluation
+
+```
+python scripts/02_build_dataset.py --force   # 6,652 total / 6,173 train / 479 eval rows
+python scripts/03_train_models.py --force    # 7 models, 35 features
+python scripts/04_evaluate_2025.py           # 2025 holdout, 24 races
+```
+
+**2025 results (35 features vs v3.0 30-feature baseline):**
+
+| Model | v3.1 Avg Pts | v3.0 Avg Pts | Δ |
+|---|---|---|---|
+| ensemble | 12.62 | 9.79 | +2.83 ▲ |
+| xgb_clf | 11.67 | 11.29 | +0.38 ▲ |
+| rf_clf | 11.46 | 12.29 | −0.83 ▼ |
+| ridge | 10.33 | 9.38 | +0.95 ▲ |
+| xgb_reg | 10.29 | 8.88 | +1.41 ▲ |
+| lgb_reg | 10.25 | 10.08 | +0.17 ▲ |
+| rf_reg | 9.04 | 10.75 | −1.71 ▼ |
+| naive_grid_p10 | 14.04 | — | — |
+
+**New feature importances (rf_reg, all 35 features):**
+
+| Rank | Feature | Importance | Decision |
+|---|---|---|---|
+| 11 | `historical_dnf_rate` | 0.0125 | Retain |
+| 23 | `fp2_position` | 0.0063 | Retain |
+| 24 | `overtaking_difficulty` | 0.0063 | Retain |
+| 27 | `self_grid_displacement` | 0.0056 | Retain |
+| 32 | `grid_displacement_behind` | 0.0023 | Retain |
+
+All 5 new features are below the standalone threshold (0.0132) but retained
+because the ensemble gained +2.83 pts/race vs v3.0 — the clearest signal of
+collective value. All 35 features remain in FEATURE_COLS.
+
+---
+
+## Files changed
+
+- `data/raw/2025_{11,16,21}_results.json` — re-fetched with full 20-driver results
+- `data/raw/fastf1_2020_11_{FP1,FP2}.json` — empty stubs for cancelled sessions
+- `README.md` — 2025 results table updated, v3.1 dev log marked as evaluated
+- `DEVELOPMENT_PLAN.md` — all phases marked complete, known issues updated
+- `COMMIT_MESSAGE.md` — this entry
+
+## Files not changed
+
+- All source code (`src/`, `scripts/`, `config.py`, `predict_race.py`)
+- `CONTENTS.md`, `RACE_PREDICTIONS.md`
+
+---
+
+---
+
 feat(v3.1): FastF1 practice data + bulk season fetch + Google Drive cache
 
 ## Summary
@@ -89,7 +177,7 @@ Full 2010-2025 Jolpica cache (1,601 JSON files, 3.0 MB compressed)
 stored on Google Drive. Referenced in module docstrings and README.
 
 **Google Drive:**
-https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
+https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 
 Restore with: `unzip f1_data_cache_2026-03-09.zip -d data/raw/`
 

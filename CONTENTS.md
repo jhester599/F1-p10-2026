@@ -35,9 +35,9 @@ F1-p10-2026/
 |   +-- 05_full_analysis.py          # Extended circuit/driver breakdowns and plots
 |
 +-- data/
-|   +-- raw/                         # 1,601+ cached JSON files (Jolpica) + FastF1 FP files
+|   +-- raw/                         # 1,881 cached JSON files (Jolpica + FastF1 FP)
 |   |                                  Pre-built cache (2010-2025, 3 MB):
-|   |                                  https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
+|   |                                  https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 |   |                                  Restore: unzip f1_data_cache_2026-03-09.zip -d data/raw/
 |   +-- processed/
 |       +-- features_2010_2024.parquet   # Training feature matrix (6,432 rows x 38 cols)
@@ -110,7 +110,7 @@ pip install -r requirements.txt pyarrow fastf1
 
 # Restore the pre-built data cache (recommended — skips the API fetch):
 # Download f1_data_cache_2026-03-09.zip from Google Drive:
-# https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
+# https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
 
 python scripts/03_train_models.py        # ~3-5 min, uses included data

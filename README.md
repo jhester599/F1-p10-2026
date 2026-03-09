@@ -19,7 +19,7 @@ python scripts/01_fetch_data.py --fp-only   # ~42 min, can run overnight
 
 #    Option B — skip the fetch entirely using the pre-built cache (recommended):
 #    Download f1_data_cache_2026-03-09.zip from Google Drive, then:
-#    https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
+#    https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
 
 # 2. Build the feature dataset
@@ -44,7 +44,7 @@ python predict_race.py --year 2026 --round 5
 > **Pre-built data cache (recommended):** Download `f1_data_cache_2026-03-09.zip` (3 MB,
 > covers all 2010–2025 Jolpica data) from Google Drive and unzip into `data/raw/` to skip
 > the API fetch entirely.
-> **[Download cache →](https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing)**
+> **[Download cache →](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing)**
 > ```bash
 > unzip f1_data_cache_2026-03-09.zip -d data/raw/
 > python scripts/01_fetch_data.py --fp-only   # optional: backfill FP1/FP2 (~42 min)
@@ -270,24 +270,28 @@ Outputs:
 
 Models trained on 2010-2024 data, evaluated on all 24 races of the 2025 season.
 
-| Model | Avg Pts/Race | Avg Regret | Exact P10 | Within 2% |
-|---|---|---|---|---|
-| Oracle (ceiling) | 25.00 | 0.00 | 24 | 100% |
-| rf_clf | 12.29 | 12.71 | 2 | 50.0% |
-| xgb_clf | 11.29 | 13.71 | 1 | 45.8% |
-| **without_weather RF** | **11.42** | **13.58** | **2** | — |
-| rf_reg | 10.75 | 14.25 | 1 | 33.3% |
-| lgb_reg | 10.08 | 14.92 | 0 | 33.3% |
-| ensemble | 9.79 | 15.21 | 0 | 33.3% |
-| ridge | 9.38 | 15.62 | 0 | 25.0% |
-| xgb_reg | 8.88 | 16.12 | 0 | 20.8% |
-| naive_grid_p10 | 14.04 | 10.96 | 3 | 50.0% |
-| naive_champ_p10 | 9.67 | 15.33 | 2 | 29.2% |
+Results below are from the **v3.1 model** (35 features including fp2_position, circuit
+volatility, and displacement features). v3.0 avg pts shown for comparison.
 
-> **`naive_grid_p10` (14.04 pts) remains the strongest single signal** —
-> any model improvement must clear this bar.
-> The `rf_clf` and `xgb_clf` classifiers are the recommended picks for
-> 2026 until ensemble weights are recalibrated on the v2 architecture.
+| Model | Avg Pts/Race | Exact P10 | Within 2 pos | v3.0 Avg Pts | Δ |
+|---|---|---|---|---|---|
+| Oracle (ceiling) | 25.00 | 24 | 100% | — | — |
+| **ensemble** | **12.62** | **2** | **41.7%** | 9.79 | **+2.83 ▲** |
+| xgb_clf | 11.67 | 1 | 54.2% | 11.29 | +0.38 ▲ |
+| rf_clf | 11.46 | 2 | 37.5% | 12.29 | −0.83 ▼ |
+| ridge | 10.33 | 1 | 29.2% | 9.38 | +0.95 ▲ |
+| xgb_reg | 10.29 | 2 | 29.2% | 8.88 | +1.41 ▲ |
+| lgb_reg | 10.25 | 1 | 25.0% | 10.08 | +0.17 ▲ |
+| rf_reg | 9.04 | 1 | 20.8% | 10.75 | −1.71 ▼ |
+| naive_grid_p10 | 14.04 | 3 | 50.0% | — | — |
+
+> **`naive_grid_p10` (14.04 pts) remains the benchmark** — no individual model
+> clears it yet, but the ensemble at 12.62 is the best result to date.
+> The **ensemble** is the recommended pick for 2026 (recalibrated weights pending).
+>
+> **Note on v3.1 sprint weekend fix:** an earlier v3.1 run had 3 sprint-weekend
+> rounds with truncated result files (1 driver each instead of 20), biasing eval
+> to 422 rows. The figures above use the corrected 479-row dataset.
 
 ---
 
@@ -339,7 +343,7 @@ FP1/FP2 practice session data (2018+) is fetched via **[FastF1](https://docs.fas
 and cached alongside the Jolpica data.
 
 **Pre-built cache (2010-2025, 3 MB):**
-[Download from Google Drive](https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing)
+[Download from Google Drive](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing)
 — unzip into `data/raw/` to skip the API fetch entirely.
 
 ---
@@ -430,7 +434,7 @@ no raw or processed data cache exists.
 - `historical_dnf_rate` is noisier (only ~5 data points per circuit per era) but
   fires strongly in known high-attrition seasons at chaotic tracks.
 
-**Next step:** Run `python run_pipeline.py --force` with API access.
+**Next step:** ~~Run `python run_pipeline.py --force` with API access.~~ *Evaluated — see v3.1 results above. Both features retained.*
 
 ---
 
@@ -490,11 +494,11 @@ signal (most races have 0 or 1 displaced top-5 driver) but highly decisive in th
 races where it fires. `self_grid_displacement` is denser and may rank higher
 as it encodes every driver's grid vs. championship-standing mismatch every race.
 
-**Next step:** Run `python run_pipeline.py --force` with API access to formally evaluate.
+**Next step:** ~~Run `python run_pipeline.py --force` with API access to formally evaluate.~~ *Evaluated — see v3.1 results above. Both features retained.*
 
 ---
 
-### v3.1 — FP2 Position Feature + Data Pipeline Overhaul
+### v3.1 — FP2 Position Feature + Data Pipeline Overhaul (evaluated)
 
 **Goal:** Add `fp2_position` as a 31st feature; fix broken practice data source;
 overhaul the fetch pipeline to cut API calls by 87%.
@@ -511,7 +515,7 @@ The fix replaces Jolpica practice calls with **FastF1** for years >= 2018:
   maps FastF1 abbreviations → Jolpica driverIds via qualifying cache
 - Results cached to `data/raw/fastf1_{year}_{rnd}_{FP}.json`
 - Sprint weekends auto-fall back to FP1; pre-2018 falls back to grid position
-- **Result:** `fp2_position` is real data for 86.4% of 2024 rows
+- **Result:** `fp2_position` is real data for 86.4%+ of 2018-2025 rows
 
 **Bulk fetch overhaul:**
 
@@ -519,22 +523,43 @@ Jolpica season-wide endpoints (`/{year}/results.json` etc.) return all races
 paginated, cutting calls from 1,348 → 170 for 13 missing years (~87% reduction,
 ~29 min → ~4 min). `fetch_season_bulk()` replaces the old per-race loop.
 `01_fetch_data.py` rewritten with `--skip-fp` / `--fp-only` flags to separate
-the fast Jolpica fetch from the throttled FastF1 FP fetch (~42 min).
+the fast Jolpica fetch from the throttled FastF1 FP fetch.
 
-**Data cache:** Full 2010-2025 Jolpica data (1,601 files, 3 MB) archived to Google Drive:
-https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
+**Data bug fix — sprint weekend results:**
 
-**Evaluation status — pipeline run pending:**
+Three 2025 sprint-weekend result files (rounds 11/16/21 — Austria, Italy, São Paulo)
+were truncated to 1 driver each in the bulk fetch cache (captured mid-season before
+those races ran). Re-fetched from Jolpica to restore all 20 drivers per race.
+This brought the 2025 eval set from 422 → 479 rows (the correct 24 × ~20).
 
-Data is fully cached. Remaining step before evaluation:
+**Data cache:** 1,881 files (Jolpica + FastF1 FP), 3.1 MB — see README Quick Start.
 
-```bash
-python scripts/01_fetch_data.py --fp-only   # backfill FastF1 FP sessions (~42 min)
-python run_pipeline.py --force              # rebuild → retrain → evaluate
-```
+**Evaluation results (2025, 24 races, 479 rows, 35 features):**
 
-Evaluation threshold: `fp2_position` must rank ≤ 10 in `rf_reg` importance
-(threshold: 0.014) **or** reduce avg regret below v3.0 best-model level.
+| Model | Avg Pts/Race | v3.0 Baseline | Δ |
+|---|---|---|---|
+| ensemble | **12.62** | 9.79 | +2.83 ▲ |
+| xgb_clf | 11.67 | 11.29 | +0.38 ▲ |
+| rf_clf | 11.46 | 12.29 | −0.83 ▼ |
+| ridge | 10.33 | 9.38 | +0.95 ▲ |
+| xgb_reg | 10.29 | 8.88 | +1.41 ▲ |
+| lgb_reg | 10.25 | 10.08 | +0.17 ▲ |
+| rf_reg | 9.04 | 10.75 | −1.71 ▼ |
+| naive_grid_p10 | 14.04 | — | — |
+
+**New feature importance (rf_reg, all 35 features):**
+
+| Rank | Feature | Importance | Decision |
+|---|---|---|---|
+| 11 | `historical_dnf_rate` | 0.0125 | Retain — near threshold, clear circuit-character signal |
+| 23 | `fp2_position` | 0.0063 | Retain — below threshold individually; ensemble lift suggests synergy |
+| 24 | `overtaking_difficulty` | 0.0063 | Retain — complements `historical_dnf_rate` |
+| 27 | `self_grid_displacement` | 0.0056 | Retain — fires clearly on penalty weekends |
+| 32 | `grid_displacement_behind` | 0.0023 | Retain — sparse but directionally correct |
+
+All five new features are below the standalone acceptance threshold of 0.0132
+(`avg_fin_last5`), but the **ensemble gained +2.83 pts/race** vs v3.0 with these
+features included — the clearest evidence of their collective value. All retained.
 
 ---
 

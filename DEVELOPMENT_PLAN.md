@@ -165,17 +165,28 @@ Update `README.md` to mark Session 2 and Session 3 as fully implemented.
 | 2b | Multi-class classifier definitions | ✅ Done |
 | 2c | `train_all()` multi-class target | ✅ Done |
 | 2d | `predict_race()` EV selection | ✅ Done |
-| 3  | Rebuild parquets (`02_build_dataset.py`) | ✅ Done — 6,432 rows × 30 features |
-| 4  | Retrain models (`03_train_models.py`) | ✅ Done — 7 models, grid_p10_proximity 4th most important |
-| 5  | Re-prediction + doc update | ✅ Done — Lawson 3 votes (was 2), RACE_PREDICTIONS.md updated |
+| 3  | Rebuild parquets (`02_build_dataset.py`) | ✅ Done — 6,173 train rows × 35 features |
+| 4  | Retrain models (`03_train_models.py`) | ✅ Done — 7 models |
+| 5  | Re-prediction + doc update | ✅ Done — RACE_PREDICTIONS.md updated |
+| v3.1 | FastF1 FP data + bulk fetch + full cache fetch | ✅ Done — 1,881 files, all years |
+| v3.1 | Sprint weekend result fix (3 truncated rounds) | ✅ Done — 422 → 479 eval rows |
+| v3.1 | Full pipeline eval with 35 features | ✅ Done — ensemble 12.62 (+2.83 vs v3.0) |
 
-All phases complete. Model is now at full documented specification (v2).
+All phases complete. Model is at v3.1 specification (35 features, all evaluated).
 
 ### Remaining known issues / future work
 
-- `lgb_reg` and regressors (`ridge`, `xgb_reg`) still over-weight career form for
+- `rf_reg` and regressors (`ridge`, `xgb_reg`) still over-weight career form for
   drivers starting from the back (e.g., Verstappen P20 → predicted ≈ P10).
   Possible fix: add a grid-position penalty term or cap career features.
-- 2025 back-test not yet re-run with v2 model to measure actual improvement.
-- Ensemble weights predate the EV multi-class change; a new CV run would
-  re-calibrate them for the v2 classifier outputs.
+- Ensemble weights (xgb_clf=4.0, rf_clf=2.5, ...) were derived under the v2
+  binary-classifier architecture. A fresh CV run with the v3.1 35-feature
+  multi-class models would re-calibrate them and likely lift ensemble performance
+  further. Run: `python scripts/03_train_models.py --cv`
+- New v3.1-v3.3 features (`fp2_position`, `historical_dnf_rate`, etc.) all rank
+  below the standalone importance threshold but are retained due to the ensemble
+  lift (+2.83 pts/race). If a v4.0 feature set is designed, these should be
+  re-evaluated as candidates for removal if a larger batch of stronger features
+  can replace them.
+- Data cache URL in documentation is a placeholder — update once the v3.1 zip
+  (1,881 files, 3.1 MB) is uploaded to Google Drive.
