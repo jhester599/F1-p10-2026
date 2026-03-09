@@ -12,8 +12,15 @@ Built for a fantasy F1 league where scoring mirrors the F1 points scale
 ```bash
 pip install -r requirements.txt pyarrow
 
-# 1. Download all F1 data 2010-2025 (~10-15 min, then cached)
-python scripts/01_fetch_data.py
+# 1. Download all F1 data 2010-2025
+#    Option A — fast Jolpica-only fetch (~4-6 min), then backfill FP data separately
+python scripts/01_fetch_data.py --skip-fp
+python scripts/01_fetch_data.py --fp-only   # ~42 min, can run overnight
+
+#    Option B — skip the fetch entirely using the pre-built cache (recommended):
+#    Download f1_data_cache_2026-03-09.zip from Google Drive, then:
+#    https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
+unzip f1_data_cache_2026-03-09.zip -d data/raw/
 
 # 2. Build the feature dataset
 python scripts/02_build_dataset.py
@@ -34,12 +41,13 @@ After qualifying on Saturday, predict P10 for the upcoming race:
 python predict_race.py --year 2026 --round 5
 ```
 
-> **Tip -- skip re-fetching:** If you have a copy of `f1_p10_cache_2010_2025.tar.gz`,
-> extract it into the project root to restore all raw API data, processed parquets,
-> and trained models without re-running steps 1-3:
+> **Pre-built data cache (recommended):** Download `f1_data_cache_2026-03-09.zip` (3 MB,
+> covers all 2010–2025 Jolpica data) from Google Drive and unzip into `data/raw/` to skip
+> the API fetch entirely.
+> **[Download cache →](https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing)**
 > ```bash
-> tar -xzf f1_p10_cache_2010_2025.tar.gz
-> python predict_race.py --year 2026 --round 5   # ready to go
+> unzip f1_data_cache_2026-03-09.zip -d data/raw/
+> python scripts/01_fetch_data.py --fp-only   # optional: backfill FP1/FP2 (~42 min)
 > ```
 
 ---
