@@ -22,7 +22,7 @@ F1-p10-2026/
 +-- predict_race.py                  # Race-weekend prediction script
 |
 +-- src/
-|   +-- data_fetch.py                # Jolpica API wrapper with local caching
+|   +-- data_fetch.py                # Jolpica API wrapper + FastF1 (FP1/FP2 for 2018+)
 |   +-- feature_engineering.py       # Builds the 30-feature matrix
 |   +-- models.py                    # All model classes + multi-class EV selection logic
 |   +-- scoring.py                   # Fantasy scoring + regret utilities
@@ -35,8 +35,10 @@ F1-p10-2026/
 |   +-- 05_full_analysis.py          # Extended circuit/driver breakdowns and plots
 |
 +-- data/
-|   +-- raw/                         # 1,664+ cached JSON files from Jolpica API
-|   |                                  (2010-2025, ~12 MB, no API calls needed)
+|   +-- raw/                         # 1,601+ cached JSON files (Jolpica) + FastF1 FP files
+|   |                                  Pre-built cache (2010-2025, 3 MB):
+|   |                                  https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
+|   |                                  Restore: unzip f1_data_cache_2026-03-09.zip -d data/raw/
 |   +-- processed/
 |       +-- features_2010_2024.parquet   # Training feature matrix (6,432 rows x 38 cols)
 |       +-- features_2025_2025.parquet   # 2025 eval features (479 rows x 38 cols)
@@ -70,7 +72,7 @@ F1-p10-2026/
         +-- wet_race_p10_analysis.csv    # 29 documented wet-race P10 outcomes
 ```
 
-> **Parquet columns:** 38 total = 30 model features + 8 metadata columns
+> **Parquet columns:** 38 total = 35 model features + 3 metadata columns
 > (`year`, `round`, `race_id`, `driver_id`, `constructor_id`, `grid_position`,
 > `finish_position`, `is_p10`).
 
@@ -104,7 +106,13 @@ python scripts/03_train_models.py
 ```bash
 unzip F1-p10-source.zip
 cd F1-p10-2026
-pip install -r requirements.txt pyarrow
+pip install -r requirements.txt pyarrow fastf1
+
+# Restore the pre-built data cache (recommended — skips the API fetch):
+# Download f1_data_cache_2026-03-09.zip from Google Drive:
+# https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
+unzip f1_data_cache_2026-03-09.zip -d data/raw/
+
 python scripts/03_train_models.py        # ~3-5 min, uses included data
 python scripts/04_evaluate_2025.py       # evaluate on 2025 season
 python predict_race.py --year 2026 --round 3   # predict after qualifying

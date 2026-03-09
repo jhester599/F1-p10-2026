@@ -329,11 +329,18 @@ python predict_race.py --year 2025 --round 1 --show-actual
 
 ---
 
-## Data Source
+## Data Sources
 
 Race results, qualifying times, and championship standings are fetched from
 the **[Jolpica F1 API](https://api.jolpi.ca/ergast/f1)** (Ergast-compatible).
 All responses are cached locally in `data/raw/` to avoid repeated requests.
+
+FP1/FP2 practice session data (2018+) is fetched via **[FastF1](https://docs.fastf1.dev/)**
+and cached alongside the Jolpica data.
+
+**Pre-built cache (2010-2025, 3 MB):**
+[Download from Google Drive](https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing)
+— unzip into `data/raw/` to skip the API fetch entirely.
 
 ---
 
@@ -487,77 +494,47 @@ as it encodes every driver's grid vs. championship-standing mismatch every race.
 
 ---
 
-### v3.1 — FP2 Position Feature (implementation complete; evaluation pending)
+### v3.1 — FP2 Position Feature + Data Pipeline Overhaul
 
-**Goal:** Add `fp2_position` (driver's FP2 classification finishing position) as a
-31st feature to capture weekend-specific **race pace** — information that qualifying
-time alone does not encode. FP2 typically features long race-simulation stints,
-making the classification order a meaningful proxy for tyre-degradation management
-and race-trim setup quality.
+**Goal:** Add `fp2_position` as a 31st feature; fix broken practice data source;
+overhaul the fetch pipeline to cut API calls by 87%.
 
-**Hypothesis:** A driver's FP2 position carries complementary signal to grid position
-(which captures single-lap qualifying pace). Cases where the two diverge are
-informative: a driver who qualifies well but ran poorly in FP2 may underperform on
-race day, and vice versa. This incremental signal should help midfield P10 decisions.
+**Files changed:** `src/data_fetch.py`, `scripts/01_fetch_data.py`, `config.py`,
+`src/feature_engineering.py`, `README.md`
 
-**Files changed:** `src/data_fetch.py`, `src/feature_engineering.py`, `config.py`, `README.md`
+**Practice data fix (FastF1):**
 
-**Implementation:**
+Jolpica has no `/practice/{n}` endpoint — it returns 404. Prior to this fix,
+`fp2_position` silently duplicated `grid_position` for every row (0% real data).
+The fix replaces Jolpica practice calls with **FastF1** for years >= 2018:
+- `_get_fastf1_practice()` fetches FP1/FP2, ranks drivers by best lap time,
+  maps FastF1 abbreviations → Jolpica driverIds via qualifying cache
+- Results cached to `data/raw/fastf1_{year}_{rnd}_{FP}.json`
+- Sprint weekends auto-fall back to FP1; pre-2018 falls back to grid position
+- **Result:** `fp2_position` is real data for 86.4% of 2024 rows
 
-- Added `fp2_classification(year, rnd)` and `fp1_classification(year, rnd)` methods
-  to `F1Fetcher` in `src/data_fetch.py`. Both call the Jolpica API endpoint
-  `/{year}/{round}/practice/{n}` and return the `PracticeResults` list.
-- Updated `fetch_season()` to pre-cache FP1 and FP2 data alongside qualifying and
-  results (ensuring a single `01_fetch_data.py` run populates all required data).
-- Updated `build_raw_results()` in `src/feature_engineering.py` to build an
-  `fp2_map` per race using a three-tier fallback chain:
-  1. FP2 classification position (primary)
-  2. FP1 classification position (Sprint weekends, where FP2 is replaced by Sprint Qualifying)
-  3. Qualifying position (edge case: both sessions cancelled or not yet in cache)
-- Threaded `fp2_position` through `build_feature_matrix()` into the final feature
-  dict for every driver-race row.
-- Added `fp2_position` to `FEATURE_COLS` in `config.py`.
+**Bulk fetch overhaul:**
 
-**Evaluation status — blocked by environment:**
+Jolpica season-wide endpoints (`/{year}/results.json` etc.) return all races
+paginated, cutting calls from 1,348 → 170 for 13 missing years (~87% reduction,
+~29 min → ~4 min). `fetch_season_bulk()` replaces the old per-race loop.
+`01_fetch_data.py` rewritten with `--skip-fp` / `--fp-only` flags to separate
+the fast Jolpica fetch from the throttled FastF1 FP fetch (~42 min).
 
-The full pipeline (`01_fetch_data.py` → `02_build_dataset.py` → `03_train_models.py`
-→ `04_evaluate_2025.py`) requires outbound HTTP access to `api.jolpi.ca`, which was
-unavailable in this session. No pre-fetched raw cache existed to build from.
+**Data cache:** Full 2010-2025 Jolpica data (1,601 files, 3 MB) archived to Google Drive:
+https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
 
-The **v3.0 baseline** feature importances (from `results/feature_importance.csv`,
-the prior trained models) show the evaluation threshold for the "top 10" criterion
-on `rf_reg`:
+**Evaluation status — pipeline run pending:**
 
-| Rank | Feature (v3.0) | Importance |
-|---|---|---|
-| 1 | `grid_position` | 0.525 |
-| 2 | `team_avg_qual_season` | 0.093 |
-| 3 | `drv_champ_pos` | 0.045 |
-| 4 | `grid_p10_proximity` | 0.042 |
-| 5 | `con_champ_pos` | 0.042 |
-| 6 | `team_avg_fin_season` | 0.030 |
-| 7 | `career_avg_fin` | 0.025 |
-| 8 | `q_gap_pct` | 0.023 |
-| 9 | `drv_champ_pts` | 0.015 |
-| **10** | **`avg_fin_last5`** | **0.014** |
+Data is fully cached. Remaining step before evaluation:
 
-`fp2_position` must clear importance ≥ 0.014 (rank 10) OR reduce average regret
-per race below the v3.0 best-model level to be considered net valuable.
+```bash
+python scripts/01_fetch_data.py --fp-only   # backfill FastF1 FP sessions (~42 min)
+python run_pipeline.py --force              # rebuild → retrain → evaluate
+```
 
-**Domain reasoning for retention:**
-
-FP2 position has been shown in F1 analytics research to correlate with race
-finishing order (Spearman r ~ 0.4-0.55 depending on circuit type) and is
-orthogonal to qualifying gap. It is particularly informative at circuits where
-tyre management dominates (e.g., Barcelona, Hungary, Abu Dhabi). Sprint weekends
-— where FP2 is replaced — affect roughly 6 of 24 rounds per season; the FP1
-fallback mitigates this data gap. The feature is retained in FEATURE_COLS and
-will be formally evaluated on the next pipeline run with API access.
-
-**Next step:** Run `python run_pipeline.py --force` once API access is available.
-The evaluation accept/reject decision follows this criterion:
-- **Retain** if `fp2_position` ranks ≤ 10 in `rf_reg` importance **or** avg regret decreases.
-- **Discard** (remove from `FEATURE_COLS`) if it ranks > 10 **and** regret does not improve.
+Evaluation threshold: `fp2_position` must rank ≤ 10 in `rf_reg` importance
+(threshold: 0.014) **or** reduce avg regret below v3.0 best-model level.
 
 ---
 

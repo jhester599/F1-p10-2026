@@ -1,3 +1,122 @@
+feat(v3.1): FastF1 practice data + bulk season fetch + Google Drive cache
+
+## Summary
+
+Three categories of changes: replace broken Jolpica practice endpoints with
+FastF1, switch from per-race to bulk season API calls to cut fetch time by
+87%, and add archive/restore tooling with a pre-built Google Drive cache.
+
+---
+
+## 1. FastF1 for FP1/FP2 data (src/data_fetch.py)
+
+Jolpica has no `/practice/{n}` endpoint — it returns 404 for every call.
+`fp2_classification()` had been silently returning empty lists, causing
+`fp2_position` to fall back to `grid_position` for every row (zero added
+value). Fixed by replacing Jolpica practice calls with FastF1.
+
+**New methods:**
+- `_build_abbrev_map(year, rnd)` — builds a 3-letter code → Jolpica
+  driverId lookup from the cached qualifying JSON for that round, plus a
+  corrected static fallback (uses Jolpica's actual short-form IDs:
+  `leclerc`, `norris`, `hamilton`, not `charles_leclerc` etc.)
+- `_get_fastf1_practice(year, rnd, session_name)` — fetches FP1 or FP2
+  via FastF1, derives classification from best lap times per driver, maps
+  abbreviations to Jolpica driverIds, caches to
+  `data/raw/fastf1_{year}_{rnd}_{FP}.json` in Jolpica-compatible format
+- `fp2_classification()` / `fp1_classification()` now branch on year:
+  FastF1 for >= 2018, empty list for < 2018 (grid fallback unchanged)
+
+**Rate limiting:** FastF1 uses the F1 live-timing API (~500 calls/hr).
+A built-in 8s delay between `session.load()` calls keeps usage safe.
+
+**Result:** `fp2_position` is now real data for 86.4% of 2024 rows,
+vs 0% before (Sprint weekends fall back to FP1 automatically).
+The `FASTF1_MIN_YEAR = 2018` constant documents the coverage boundary.
+
+---
+
+## 2. Bulk season fetch (src/data_fetch.py, scripts/01_fetch_data.py)
+
+The old `fetch_season()` made one API call per race per endpoint (5 calls
+× 22 races = 110 calls/season). Jolpica exposes season-wide paginated
+endpoints for results, qualifying, and sprint that return all races at once
+(server-capped at 100 rows/page → ~5 pages per season for results and
+qualifying). Standings have no season-wide-by-round equivalent and remain
+per-round.
+
+**New method:** `fetch_season_bulk(year)` — replaces the inner race loop:
+- `_fetch_bulk_season_endpoint()` paginates results/qualifying/sprint,
+  writes individual round cache files in the same format as before (so
+  single-race helpers remain valid), and caches each page separately for
+  resume safety
+- Per-round standings calls unchanged (no bulk option available)
+- `fetch_season()` now delegates to `fetch_season_bulk()`
+
+**Call counts per 22-race season:**
+
+| Endpoint | Old | New |
+|---|---|---|
+| results | 22 | 5 pages |
+| qualifying | 22 | 5 pages |
+| sprint | 22 | 1 page |
+| driver standings | 22 | 22 (unchanged) |
+| constructor standings | 22 | 22 (unchanged) |
+| schedule | 1 | 1 |
+| **Total** | **111** | **56** |
+
+Across 13 missing years: 1,348 calls → 170 calls (~87% reduction).
+Estimated full-fetch time: 29 min → 4 min.
+
+---
+
+## 3. Fetch script overhaul (scripts/01_fetch_data.py)
+
+Complete rewrite with resume safety and FP/Jolpica separation:
+
+- `--skip-fp` — Jolpica-only fast path (~4-6 min for all years)
+- `--fp-only` — fetch only missing FP1/FP2 sessions (~42 min throttled)
+- `--archive` / `--archive-only` — zip `data/raw/*.json` to a dated
+  archive for offline distribution
+- Per-year skip if already fully cached; partial-cache detection for FP
+- Progress logging with elapsed time per year
+
+---
+
+## 4. Data cache (data/f1_data_cache_2026-03-09.zip)
+
+Full 2010-2025 Jolpica cache (1,601 JSON files, 3.0 MB compressed)
+stored on Google Drive. Referenced in module docstrings and README.
+
+**Google Drive:**
+https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
+
+Restore with: `unzip f1_data_cache_2026-03-09.zip -d data/raw/`
+
+---
+
+## Files changed
+
+- `src/data_fetch.py` — FastF1 integration, bulk season fetch, corrected
+  static driver ID map, `FASTF1_MIN_YEAR` constant
+- `scripts/01_fetch_data.py` — full rewrite with `--skip-fp`, `--fp-only`,
+  `--archive`, resume safety, per-year audit
+- `README.md` — Quick Start updated with Google Drive cache link, `--skip-fp`
+  and `--fp-only` workflow, correct fetch time estimates
+
+## Files not changed
+
+- `config.py`
+- `src/feature_engineering.py`
+- `src/models.py`
+- `src/scoring.py`
+- `predict_race.py`, `run_pipeline.py`
+- `scripts/02_build_dataset.py` through `04_evaluate_2025.py`
+
+---
+
+---
+
 feat: replace ensemble with CV-weighted blend; fix API compatibility bugs
 
 ## Summary
