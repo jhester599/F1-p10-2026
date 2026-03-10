@@ -234,7 +234,23 @@ Update `README.md` to mark Session 2 and Session 3 as fully implemented.
 | v3.1 | Sprint weekend result fix (3 truncated rounds) | ✅ Done — 422 → 479 eval rows |
 | v3.1 | Full pipeline eval with 35 features | ✅ Done — ensemble 12.62 (+2.83 vs v3.0) |
 
-All phases complete. Model is at v3.1 specification (35 features, all evaluated).
+All phases complete. Model is at v3.4 specification (35 features, XGBRanker ensemble).
+
+### v3.41 — DNF Feature Exploration (completed 2026-03-10)
+
+Explored three additional DNF signal features as standalone predictors.  Full
+results in `dnf/DNF_STATUS.md`.  **All three excluded** from the model.
+
+| Feature | Val Δ | Holdout Δ | Decision |
+|---------|--------|-----------|---------|
+| `drv_dnf_rate_last10` | −1.24 | −0.96 | EXCLUDE |
+| `driver_circuit_dnf_rate` | +1.18 | −0.96 | EXCLUDE |
+| `constructor_dnf_rate` | −2.02 | −0.25 | EXCLUDE |
+
+Key finding: DNF likelihood predicts whether a driver finishes the race at all,
+but carries no discriminative power over finishing position (specifically P10).
+Mutual information of all three with `is_p10` is < 0.001.  The v3.4 feature
+set (35 features) is unchanged.
 
 ### Remaining known issues / future work
 
