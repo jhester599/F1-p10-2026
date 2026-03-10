@@ -99,7 +99,7 @@ F1-p10-2026/
 
 ---
 
-## Features (30 total)
+## Features (35 total)
 
 All features are derived from information available **after qualifying, before the race**.
 
@@ -172,6 +172,37 @@ directly targeting the decision the model needs to make:
 > 60% Spearman ρ(grid, finish) + 20% inverse pos-change std-dev + 20% inverse DNF rate,
 > scaled to 1–10. Prior v3.3 values were hand-coded assumptions that diverged significantly
 > from empirical data for Americas (8.3→4.5), Baku (7.8→4.7), Vegas (1.0→5.2), Zandvoort (4.5→7.5).
+
+### Evaluated and excluded features — weather (Session 5)
+
+The following five features were rigorously evaluated against 329 real race-day weather
+records (Open-Meteo archive API, 2010–2025) and **excluded from the final model** because
+their predictive importance was insufficient to justify the added complexity:
+
+| Feature | Importance (RF) | r with P10 | p-value | Verdict |
+|---|---|---|---|---|
+| `is_wet_race` | — | −0.001 | 0.926 | Excluded |
+| `chaos_index` | — | −0.001 | 0.952 | Excluded |
+| `precipitation_mm` | — | −0.002 | 0.907 | Excluded |
+| `wind_max_kmh` | 1.6% (bottom 5 of 35) | +0.004 | 0.739 | Excluded |
+| `rain_category` | — | — | — | Excluded |
+
+**Key finding:** Adding these five features hurt the 2025 holdout by **−2.3 pts/race**
+(11.42 → 9.13 avg pts/race). All five ranked in the bottom 5 of 35 features by RF
+importance. None were statistically significant predictors of P10 outcomes.
+
+**Why they don't help:** All drivers face identical race-day conditions, so weather
+shifts the entire field's performance equally — relative finishing order is largely
+unchanged. Grid → finish Spearman correlation is actually *higher* in wet conditions
+(ρ = 0.642) than dry (ρ = 0.636), contradicting the intuition that rain increases
+P10 chaos. The P10 base rate is statistically identical: 4.76% in dry races, 4.71%
+in wet races across 329 documented races.
+
+> See `weather/WEATHER_STATUS.md` for the full investigation report and
+> `weather/results/model_comparison.csv` for the with/without comparison.
+> The `weather/race_forecast.py` script remains available to display
+> pre-race conditions to the user as context, without those values
+> entering the model.
 
 ---
 
