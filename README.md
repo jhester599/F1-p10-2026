@@ -520,9 +520,37 @@ are handled.
 | `xgb_ranker` | TBD | TBD | TBD | TBD |
 | `ensemble` (with ranker) | TBD | TBD | TBD | TBD |
 
-**Next step:** Run `python run_pipeline.py --force` with API access (or restore
-from cache) to generate 2025 holdout results and populate the performance delta
-table above. Update `ENSEMBLE_WEIGHTS["xgb_ranker"]` based on observed avg pts.
+**⚠️ ACTION REQUIRED — evaluate xgb_ranker on real data:**
+
+The sandbox environment blocks outbound HTTP, so the evaluation below must be
+run locally on a machine with internet access (or with the Google Drive cache
+already downloaded). Follow these steps in order:
+
+```bash
+# Step 1 — Restore the pre-built data cache from Google Drive
+#   URL: https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+#   File: f1_data_cache_2026-03-09.zip (~3 MB, covers 2010–2025)
+unzip f1_data_cache_2026-03-09.zip -d data/raw/
+
+# Step 2 — Rebuild the feature matrix (reads from data/raw/)
+python scripts/02_build_dataset.py
+#   Output: data/processed/features_2010_2024.parquet  (training)
+#           data/processed/features_2025_2025.parquet  (holdout)
+
+# Step 3 — Retrain all models including xgb_ranker (force overwrites disk cache)
+python scripts/03_train_models.py --force
+#   This trains: ridge, rf_reg, rf_clf, xgb_reg, xgb_clf, xgb_ranker, lgb_reg, ensemble
+
+# Step 4 — Evaluate on the 2025 holdout season
+python scripts/04_evaluate_2025.py
+#   Output: results/eval_2025_summary.csv
+#           results/eval_2025_picks.csv
+```
+
+Once complete, update the performance delta table above with values from
+`results/eval_2025_summary.csv`, then update `ENSEMBLE_WEIGHTS["xgb_ranker"]`
+in `src/models.py` to the value that matches the observed avg pts/race
+(use the same proportional scaling as the other models: weight ≈ avg_pts / 2.9).
 
 ---
 
