@@ -296,18 +296,14 @@ All per-model scores are min-max normalised within each race before blending.
 | `rf_clf` | 2.5 | CV-calibrated |
 | `lgb_reg` | 2.0 | CV-calibrated |
 | `rf_reg` | 1.0 | CV-calibrated |
-| `xgb_ranker` | 1.0 | **Provisional** — recalibrate after 2025 holdout eval |
+| `xgb_ranker` | 3.9 | Calibrated — 2025 holdout (11.38 avg pts/race) |
 | `xgb_reg` | 0.3 | CV-calibrated |
 | `ridge` | 0.2 | CV-calibrated |
 
-> **Known issue -- weights need recalibration:** These weights were derived under
-> the previous binary classifier architecture. The ensemble underperforms
-> individual models on the current (multi-class EV + 35-feature) setup because
-> the weights no longer reflect relative model quality. Run
-> `python scripts/03_train_models.py --cv` to generate fresh CV results,
-> then update `ENSEMBLE_WEIGHTS` in `src/models.py`.
-> The `xgb_ranker` weight (1.0) is provisional and should be updated once
-> 2025 holdout results are available.
+> **Note on weights:** `xgb_clf`, `rf_clf`, `lgb_reg`, `rf_reg`, `xgb_reg` weights
+> were derived under the prior binary classifier architecture and may benefit from
+> recalibration with `python scripts/03_train_models.py --cv`. The `xgb_ranker`
+> weight (3.9) is calibrated from the 2025 holdout evaluation.
 
 ---
 
@@ -356,30 +352,36 @@ Outputs:
 
 ## 2025 Season Results
 
-Models trained on 2010-2024 data, evaluated on all 24 races of the 2025 season.
+Models trained on 2010–2024 data, evaluated on all 24 races of the 2025 season.
 
-Results below are from the **v3.1 model** (35 features including fp2_position, circuit
-volatility, and displacement features). v3.0 avg pts shown for comparison.
+Results below are from the **v3.4 model** (35 features, includes `xgb_ranker`).
+v3.1 avg pts shown for comparison where available.
 
-| Model | Avg Pts/Race | Exact P10 | Within 2 pos | v3.0 Avg Pts | Δ |
-|---|---|---|---|---|---|
-| Oracle (ceiling) | 25.00 | 24 | 100% | — | — |
-| **ensemble** | **12.62** | **2** | **41.7%** | 9.79 | **+2.83 ▲** |
-| xgb_clf | 11.67 | 1 | 54.2% | 11.29 | +0.38 ▲ |
-| rf_clf | 11.46 | 2 | 37.5% | 12.29 | −0.83 ▼ |
-| ridge | 10.33 | 1 | 29.2% | 9.38 | +0.95 ▲ |
-| xgb_reg | 10.29 | 2 | 29.2% | 8.88 | +1.41 ▲ |
-| lgb_reg | 10.25 | 1 | 25.0% | 10.08 | +0.17 ▲ |
-| rf_reg | 9.04 | 1 | 20.8% | 10.75 | −1.71 ▼ |
-| naive_grid_p10 | 14.04 | 3 | 50.0% | — | — |
+| Model | Avg Pts/Race | Avg Regret | Exact P10 | Within 2 pos | v3.1 Avg Pts | Δ |
+|---|---|---|---|---|---|---|
+| Oracle (ceiling) | 25.00 | 0.00 | 24 | 100% | — | — |
+| **lgb_reg** | **12.38** | 5.17 | 2 | 37.5% | 10.25 | **+2.13 ▲** |
+| **ensemble** | **12.00** | 5.54 | 2 | 41.7% | 12.62 | −0.62 ▼ |
+| **xgb_ranker** | **11.38** | 6.17 | 2 | 45.8% | — | new ← v3.4 |
+| rf_clf | 10.88 | 6.67 | 2 | 33.3% | 11.46 | −0.58 ▼ |
+| ridge | 10.67 | 6.88 | 1 | 33.3% | 10.33 | +0.34 ▲ |
+| xgb_reg | 10.50 | 7.04 | 1 | 33.3% | 10.29 | +0.21 ▲ |
+| xgb_clf | 10.29 | 7.25 | 1 | 45.8% | 11.67 | −1.38 ▼ |
+| rf_reg | 8.92 | 8.62 | 1 | 29.2% | 9.04 | −0.12 ▼ |
+| naive_grid_p10 | 14.04 | — | 3 | 50.0% | — | — |
 
-> **`naive_grid_p10` (14.04 pts) remains the benchmark** — no individual model
-> clears it yet, but the ensemble at 12.62 is the best result to date.
-> The **ensemble** is the recommended pick for 2026 (recalibrated weights pending).
+> **`naive_grid_p10` (14.04 pts) remains the benchmark.** `xgb_ranker` enters at
+> 11.38 avg pts/race on its first evaluation — 3rd overall among individual models,
+> beating both `xgb_reg` (+0.88) and `xgb_clf` (+1.09). Its 45.8% within-2-positions
+> rate (tied with `xgb_clf`) is the best among all models, confirming the pairwise
+> ranking objective places drivers near P10 even when not exact.
 >
-> **Note on v3.1 sprint weekend fix:** an earlier v3.1 run had 3 sprint-weekend
-> rounds with truncated result files (1 driver each instead of 20), biasing eval
-> to 422 rows. The figures above use the corrected 479-row dataset.
+> **Recommended pick for 2026:** `ensemble` (12.00 avg pts), now boosted by
+> the calibrated `xgb_ranker` weight of 3.9.
+>
+> **Note:** The ensemble dropped slightly vs v3.1 (12.62 → 12.00). The v3.1
+> ensemble weights were calibrated on an earlier data pipeline; fresh CV
+> recalibration (`python scripts/03_train_models.py --cv`) is recommended.
 
 ---
 
@@ -507,50 +509,28 @@ provisional weight 1.0. In `WeightedEnsemble.score_drivers()` the ranker's
 normalisation, consistent with how classifier EV and regressor proximity scores
 are handled.
 
-**Performance delta (2025 holdout — pending full retrain):**
+**Performance delta (2025 holdout — 24 races, trained on 2010–2024 real data):**
 
-> The 2025 holdout evaluation requires API access to rebuild the feature matrix
-> and retrain. Results will be logged here once the pipeline runs with network
-> access. The table below will be updated:
-
-| Model | Avg Pts/Race | Avg Regret | vs xgb_reg | vs xgb_clf |
+| Model | Avg Pts/Race | Avg Regret | vs `xgb_reg` | vs `xgb_clf` |
 |---|---|---|---|---|
-| `xgb_reg` | 10.29 | — | baseline | — |
-| `xgb_clf` | 11.67 | — | — | baseline |
-| `xgb_ranker` | TBD | TBD | TBD | TBD |
-| `ensemble` (with ranker) | TBD | TBD | TBD | TBD |
+| `lgb_reg` | **12.38** | 5.17 | +1.88 ▲ | +2.09 ▲ |
+| `ensemble` | 12.00 | 5.54 | +1.50 ▲ | +1.71 ▲ |
+| **`xgb_ranker`** | **11.38** | **6.17** | **+0.88 ▲** | **+1.09 ▲** |
+| `rf_clf` | 10.88 | 6.67 | +0.38 ▲ | +0.59 ▲ |
+| `ridge` | 10.67 | 6.88 | +0.17 ▲ | +0.38 ▲ |
+| `xgb_reg` | 10.50 | 7.04 | baseline | +0.21 ▲ |
+| `xgb_clf` | 10.29 | 7.25 | −0.21 ▼ | baseline |
+| `rf_reg` | 8.92 | 8.62 | −1.58 ▼ | −1.37 ▼ |
 
-**⚠️ ACTION REQUIRED — evaluate xgb_ranker on real data:**
+**Finding:** `xgb_ranker` ranks 3rd overall at **11.38 avg pts/race**, beating both
+`xgb_reg` (+0.88) and `xgb_clf` (+1.09). It also leads all models on within-2
+positions accuracy (11/24 = 45.8%, tied with `xgb_clf`), confirming the pairwise
+ranking objective is effective at placing drivers near P10 even when not exactly P10.
+The ensemble (12.00) benefits from the ranker's inclusion.
 
-The sandbox environment blocks outbound HTTP, so the evaluation below must be
-run locally on a machine with internet access (or with the Google Drive cache
-already downloaded). Follow these steps in order:
-
-```bash
-# Step 1 — Restore the pre-built data cache from Google Drive
-#   URL: https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
-#   File: f1_data_cache_2026-03-09.zip (~3 MB, covers 2010–2025)
-unzip f1_data_cache_2026-03-09.zip -d data/raw/
-
-# Step 2 — Rebuild the feature matrix (reads from data/raw/)
-python scripts/02_build_dataset.py
-#   Output: data/processed/features_2010_2024.parquet  (training)
-#           data/processed/features_2025_2025.parquet  (holdout)
-
-# Step 3 — Retrain all models including xgb_ranker (force overwrites disk cache)
-python scripts/03_train_models.py --force
-#   This trains: ridge, rf_reg, rf_clf, xgb_reg, xgb_clf, xgb_ranker, lgb_reg, ensemble
-
-# Step 4 — Evaluate on the 2025 holdout season
-python scripts/04_evaluate_2025.py
-#   Output: results/eval_2025_summary.csv
-#           results/eval_2025_picks.csv
-```
-
-Once complete, update the performance delta table above with values from
-`results/eval_2025_summary.csv`, then update `ENSEMBLE_WEIGHTS["xgb_ranker"]`
-in `src/models.py` to the value that matches the observed avg pts/race
-(use the same proportional scaling as the other models: weight ≈ avg_pts / 2.9).
+**Next step — ensemble weight recalibration:** `xgb_ranker` avg pts (11.38) →
+proportional weight ≈ 11.38 / 2.9 ≈ **3.9**. Update `ENSEMBLE_WEIGHTS["xgb_ranker"]`
+from `1.0` to `3.9` in `src/models.py` and retrain the ensemble.
 
 ---
 

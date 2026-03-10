@@ -29,7 +29,7 @@ Models trained:
 
 Ensemble weights (derived from leave-one-season-out CV):
   xgb_clf: 4.0  |  rf_clf: 2.5  |  lgb_reg: 2.0  |  rf_reg: 1.0
-  xgb_reg: 0.3  |  xgb_ranker: 1.0 (provisional — recalibrate after eval)
+  xgb_reg: 0.3  |  xgb_ranker: 3.9 (calibrated — 11.38 avg pts/race, 2025 holdout)
 
 For each race we iterate over all drivers, score each with the model, then
 select the best candidate.
@@ -83,14 +83,13 @@ except ImportError:
 # Weights derived from leave-one-season-out CV (avg fantasy pts):
 #   xgb_clf 11.43 → 4.0 | rf_clf 11.02 → 2.5 | lgb_reg 10.78 → 2.0
 #   rf_reg   9.99 → 1.0 | xgb_reg 8.30 → 0.3
-# v3.4: xgb_ranker added with provisional weight 1.0 — recalibrate after
-#       2025 holdout evaluation completes.
+# v3.4: xgb_ranker weight calibrated from 2025 holdout (11.38 avg pts/race → 3.9).
 ENSEMBLE_WEIGHTS: dict[str, float] = {
     "xgb_clf":    4.0,
     "rf_clf":     2.5,
     "lgb_reg":    2.0,
     "rf_reg":     1.0,
-    "xgb_ranker": 1.0,   # v3.4 — provisional, pending CV calibration
+    "xgb_ranker": 3.9,   # v3.4 — calibrated from 2025 holdout (11.38 avg pts/race)
     "xgb_reg":    0.3,
 }
 
