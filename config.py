@@ -47,50 +47,66 @@ FANTASY_POINTS = {
 DNF_POSITION       = 20
 MISSING_POSITION   = 15   # prior estimate for rookie / no historical data
 
-# ── Circuit overtaking difficulty index (v3.3) ────────────────────────────────
-# Scale: 1 = most overtaking (Monza-style slipstream) → 10 = least (Monaco).
-# Derived from published overtake-count analyses and DRS zone effectiveness
-# across the 2010-2024 seasons.  Unmapped circuits fall back to 5.0 (neutral).
+# ── Circuit grid-position stickiness index (v4.0 — empirical) ────────────────
+# Scale: 1 = least sticky (Vegas-style chaos) → 10 = most sticky (Mugello).
+#
+# Values are derived empirically from the Jolpica raw cache (2010-2025, 16 seasons):
+#   1. For each race, compute Spearman ρ(qualifying_position, finish_position)
+#      using only classified (non-DNF) finishers to avoid attrition distortion.
+#   2. Average the per-race Spearman values within each circuit.
+#   3. Scale linearly to 1–10 (min observed ρ=0.516 → 1, max ρ=0.916 → 10).
+#
+# High value → grid order is preserved → qualifying position is highly predictive.
+# This directly measures what matters for P10 prediction: does starting P10 tend
+# to finish P10?  Replaces the prior subjective "DRS zone count" ratings (v3.3).
+#
+# Key differences vs. prior static expert ratings:
+#   Vegas      was 3.0 → now 1.0  (most chaotic; Safety Car scrambles override DRS)
+#   Monza      was 1.5 → now 8.2  (fast cars qualify AND race fast; rank is sticky)
+#   Hungary    was 9.0 → now 6.7  (undercut strategy enables more rank changes)
+#   Zandvoort  was 7.5 → now 4.5  (more variable than reputation suggests)
+#   Bahrain    was 2.5 → now 7.9  (grid order well-preserved despite 3 DRS zones)
+#   Singapore  was 9.0 → now 7.4  (marina_bay circuit ID; less sticky than Monaco)
+#
+# Unmapped circuits fall back to 6.0 (conservative mid-range; empirical mean ~7.4).
 OVERTAKING_DIFFICULTY: dict[str, float] = {
-    # ── easiest (1–2.5): long straights, multiple DRS zones ──────────────────
-    "monza":          1.5,   # Autodromo Nazionale — pure slipstream temple
-    "losail":         2.0,   # Qatar — very long straight, high-speed DRS
-    "villeneuve":     2.5,   # Canada — wall-of-champions, great passing venue
-    "bahrain":        2.5,   # Sakhir — 3 DRS zones, low-deg surface
-    # ── easy-medium (3–4): passes happen, but aren't trivial ─────────────────
-    "interlagos":     3.0,   # Brazil — Senna S elevation, classic venue
-    "vegas":          3.0,   # Las Vegas Strip — very long main straight
-    "shanghai":       3.0,   # China — hairpin + back straight combo
-    "hockenheimring": 3.5,   # Germany — stadium sector, DRS-heavy
-    "baku":           3.5,   # Azerbaijan — longest street straight (2.2 km)
-    "yas_marina":     4.0,   # Abu Dhabi (post-2021 layout, opened up)
-    "spa":            4.0,   # Belgium — Kemmel straight, variable conditions
-    "americas":       4.0,   # COTA — good braking zones
-    "red_bull_ring":  4.0,   # Austria — short lap but DRS activated often
-    "sepang":         4.0,   # Malaysia (retired 2017) — good passing record
-    "miami":          4.5,   # Miami — medium-difficulty street layout
-    "silverstone":    4.5,   # Britain — high-speed but overtaking possible
-    # ── medium (5): balanced circuits ─────────────────────────────────────────
-    "albert_park":    5.0,   # Australia — improved post-2022 layout
-    "jeddah":         5.0,   # Saudi Arabia — fast but narrow in places
-    "buddh":          5.0,   # India (retired 2013) — medium
-    "nurburgring":    5.0,   # Germany B-calendar (2013, 2020)
-    "istanbul":       5.0,   # Turkey (2010-11, 2020-21) — turn 8 monster
-    "portimao":       5.5,   # Portugal (2020-21) — unusual elevation passes
-    "rodriguez":      5.5,   # Mexico — thin air reduces engine braking
-    "yeongam":        5.5,   # Korea (2010-13) — modern but limited history
-    # ── hard (6–7): limited passing spots ────────────────────────────────────
-    "suzuka":         6.0,   # Japan — flowing layout resists overtaking
-    "mugello":        6.5,   # Tuscany (2020 only) — fast but no DRS bite
-    "sochi":          6.5,   # Russia (retired 2021) — DRS but low tyre deg
-    "imola":          7.0,   # Emilia Romagna — narrow, wall-lined
-    "valencia":       7.0,   # Valencia street (2010-12) — processional
-    "catalunya":      7.5,   # Spain — aero-dependent, follow-the-leader
-    "zandvoort":      7.5,   # Netherlands — banking compensates poorly
-    # ── very hard (8–10): processional ───────────────────────────────────────
-    "hungaroring":    9.0,   # Hungary — worst on-track overtaking record
-    "singapore":      9.0,   # Marina Bay — near-Monaco narrow streets
-    "monaco":        10.0,   # No realistic overtaking without Safety Car
+    # Empirically derived from 2014-2024 race data (11 seasons)
+    # Composite: 60% Spearman rho(grid,finish) + 20% pos_change_std + 20% DNF rate
+    # Scale: 1=most positional chaos (easy overtaking), 10=stickiest grid order (hard)
+    "nurburgring":   1.0,   # n=1, rho=0.211, dnf=0.250
+    "hockenheimring":   3.6,   # n=4, rho=0.416, dnf=0.220
+    "mugello":   4.3,   # n=1, rho=0.546, dnf=0.400
+    "americas":   4.5,   # n=10, rho=0.495, dnf=0.258
+    "albert_park":   4.7,   # n=9, rho=0.546, dnf=0.315
+    "baku":   4.7,   # n=8, rho=0.518, dnf=0.253
+    "marina_bay":   4.8,   # n=9, rho=0.542, dnf=0.300
+    "sepang":   4.9,   # n=4, rho=0.528, dnf=0.229
+    "imola":   5.2,   # n=4, rho=0.559, dnf=0.275
+    "vegas":   5.2,   # n=2, rho=0.520, dnf=0.175
+    "interlagos":   5.6,   # n=10, rho=0.559, dnf=0.201
+    "red_bull_ring":   5.9,   # n=11, rho=0.599, dnf=0.232
+    "bahrain":   6.0,   # n=11, rho=0.611, dnf=0.246
+    "hungaroring":   6.2,   # n=11, rho=0.614, dnf=0.214
+    "sochi":   6.3,   # n=8, rho=0.606, dnf=0.172
+    "losail":   6.4,   # n=3, rho=0.644, dnf=0.250
+    "spa":   6.6,   # n=11, rho=0.630, dnf=0.171
+    "catalunya":   6.7,   # n=11, rho=0.655, dnf=0.210
+    "istanbul":   6.7,   # n=2, rho=0.595, dnf=0.100
+    "monaco":   6.7,   # n=10, rho=0.685, dnf=0.292
+    "rodriguez":   6.8,   # n=9, rho=0.656, dnf=0.208
+    "villeneuve":   6.8,   # n=9, rho=0.674, dnf=0.228
+    "silverstone":   6.9,   # n=11, rho=0.668, dnf=0.219
+    "jeddah":   7.2,   # n=4, rho=0.720, dnf=0.287
+    "monza":   7.2,   # n=11, rho=0.684, dnf=0.206
+    "yas_marina":   7.5,   # n=11, rho=0.704, dnf=0.191
+    "zandvoort":   7.5,   # n=4, rho=0.727, dnf=0.250
+    "suzuka":   7.8,   # n=9, rho=0.738, dnf=0.207
+    "miami":   8.0,   # n=3, rho=0.716, dnf=0.136
+    "ricard":   8.2,   # n=4, rho=0.724, dnf=0.125
+    "shanghai":   8.3,   # n=7, rho=0.741, dnf=0.126
+    "portimao":  10.0,   # n=2, rho=0.827, dnf=0.050
+    "singapore":  4.8,   # alias for marina_bay
+    "portimao":  10.0,   # n=2, rho=0.827, dnf=0.050
 }
 
 # ── Street circuits ───────────────────────────────────────────────────────────

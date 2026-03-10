@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.1
+# F1 P10 Predictor · v3.31
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -9,29 +9,31 @@ Built for a fantasy F1 league where scoring mirrors the F1 points scale
 
 ## Quick Start
 
+> ⚠️ **ALWAYS check for the Google Drive cache before fetching any data.**
+> Starting a raw API fetch when the cache is available is a common mistake that wastes
+> time and risks rate-limiting. See [Step 1 below](#step-1-data).
+
 ```bash
 pip install -r requirements.txt pyarrow
 
-# 1. Download all F1 data 2010-2025
-#    Option A — fast Jolpica-only fetch (~4-6 min), then backfill FP data separately
-python scripts/01_fetch_data.py --skip-fp
-python scripts/01_fetch_data.py --fp-only   # ~42 min, can run overnight
-
-#    Option B — skip the fetch entirely using the pre-built cache (recommended):
-#    Download f1_data_cache_2026-03-09.zip from Google Drive, then:
-#    https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+# ── Step 1: Data ─────────────────────────────────────────────────────────────
+# PREFERRED — restore the pre-built cache from Google Drive (fast, no rate limits):
+#   https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
 
-# 2. Build the feature dataset
+# FALLBACK — only if the cache is missing or a newer season needs to be appended:
+python scripts/01_fetch_data.py --skip-fp          # fast Jolpica fetch (~4-6 min)
+python scripts/01_fetch_data.py --fp-only          # FP1/FP2 backfill (~42 min, can run overnight)
+
+# LAST RESORT — synthetic data only (see warning below)
+# python scripts/05_full_analysis.py               # DO NOT use without explicit user approval
+
+# ── Step 2–4: Build → Train → Evaluate ───────────────────────────────────────
 python scripts/02_build_dataset.py
-
-# 3. Train all models
 python scripts/03_train_models.py
-
-# 4. Evaluate on the 2025 season
 python scripts/04_evaluate_2025.py
 
-# Or run all four steps at once
+# Or run all four steps at once (after data is in place)
 python run_pipeline.py
 ```
 
@@ -41,13 +43,14 @@ After qualifying on Saturday, predict P10 for the upcoming race:
 python predict_race.py --year 2026 --round 5
 ```
 
-> **Pre-built data cache (recommended):** Download `f1_data_cache_2026-03-09.zip` (3 MB,
-> covers all 2010–2025 Jolpica data) from Google Drive and unzip into `data/raw/` to skip
-> the API fetch entirely.
-> **[Download cache →](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing)**
+> **Pre-built data cache:** `f1_data_cache_2026-03-09.zip` (3 MB, covers 2010–2025).
+> **[Download from Google Drive →](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing)**
+>
+> This is the fastest and most reliable way to get data. The cache covers all Jolpica
+> race/qualifying/standings data plus FastF1 FP1/FP2 sessions for 2018–2025.
 > ```bash
 > unzip f1_data_cache_2026-03-09.zip -d data/raw/
-> python scripts/01_fetch_data.py --fp-only   # optional: backfill FP1/FP2 (~42 min)
+> python scripts/01_fetch_data.py --fp-only   # optional: top up any missing FP sessions
 > ```
 
 ---
@@ -153,17 +156,22 @@ directly targeting the decision the model needs to make:
 |---|---|
 | `fp2_position` | Driver's FP2 classification position (race pace proxy); falls back to FP1 on Sprint weekends, then to qualifying position if both are unavailable |
 
-### Circuit volatility features (2) -- added in v3.3
+### Circuit volatility features (2) -- added in v3.3, empirical values updated in v3.31
 
 | Feature | Description |
 |---|---|
-| `historical_dnf_rate` | Fraction of driver-race entries that ended in DNF at this circuit across the preceding 5 calendar years of races; captures mechanical/safety-car chaos likelihood |
-| `overtaking_difficulty` | Static 1–10 index (1 = Monza-style, 10 = Monaco); encodes how much grid order is preserved to the flag, calibrated from published historical overtake-count analyses |
+| `historical_dnf_rate` | Fraction of driver-race entries that ended in DNF at this circuit across the preceding 5 calendar years of races; captures mechanical/safety-car chaos likelihood. **Computed dynamically from raw data.** |
+| `overtaking_difficulty` | Empirical 1–10 index (1 = high positional chaos, 10 = sticky grid order), derived from Spearman ρ(grid, finish) across 2014–2024 race data (v3.31). Replaces the v3.3 static/assumed values. |
 
 > Both features describe the *circuit's character* — complementing `is_street` (binary)
 > and `circ_avg_fin` / `circ_p10_zone_rate` (driver-specific) with race-level volatility context.
 > High `historical_dnf_rate` makes P10 harder to predict from starting position;
 > high `overtaking_difficulty` makes it easier (grid order is sticky).
+>
+> **v3.31 change:** `overtaking_difficulty` is now computed as a composite of
+> 60% Spearman ρ(grid, finish) + 20% inverse pos-change std-dev + 20% inverse DNF rate,
+> scaled to 1–10. Prior v3.3 values were hand-coded assumptions that diverged significantly
+> from empirical data for Americas (8.3→4.5), Baku (7.8→4.7), Vegas (1.0→5.2), Zandvoort (4.5→7.5).
 
 ---
 
@@ -342,6 +350,26 @@ All responses are cached locally in `data/raw/` to avoid repeated requests.
 FP1/FP2 practice session data (2018+) is fetched via **[FastF1](https://docs.fastf1.dev/)**
 and cached alongside the Jolpica data.
 
+### ⚠️ Data Priority — Always Follow This Order
+
+Before starting any data work, check sources in this order:
+
+| Priority | Source | When to use |
+|---|---|---|
+| **1 — Google Drive cache** | [Download (3 MB)](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing) | **Default.** Always check here first. Covers 2010–2025. |
+| **2 — Jolpica API fetch** | `python scripts/01_fetch_data.py` | Only if cache is missing or a new season needs appending. |
+| **3 — Synthetic data** | `scripts/05_full_analysis.py` | **Last resort only. Requires explicit user approval before use.** |
+
+**Why the cache must come first:** Fetching raw data takes 4–45 minutes, hits rate
+limits (HTTP 429), and produces identical output to the cached version for historical
+seasons. Starting a fetch when the cache is available is a common error.
+
+**Why synthetic data requires approval:** `scripts/05_full_analysis.py` generates
+statistically calibrated but fake race results. Models trained on synthetic data cannot
+be used for real predictions and evaluation results are not comparable to real-data
+baselines. Never run this script without the user explicitly confirming they want
+synthetic data.
+
 **Pre-built cache (2010-2025, 3 MB):**
 [Download from Google Drive](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing)
 — unzip into `data/raw/` to skip the API fetch entirely.
@@ -358,6 +386,52 @@ pip install -r requirements.txt pyarrow
 
 ## Development Log
 
+### v3.31 — Empirical `overtaking_difficulty` (replaces static v3.3 values)
+
+**Goal:** Replace the hand-coded `OVERTAKING_DIFFICULTY` dict in `config.py` with
+values derived from 11 seasons of actual race data (2014–2024).
+
+**Files changed:** `config.py`, `results/feature_importance.csv`
+
+**Methodology:**
+
+Data fetched from Jolpica API: 4,541 driver-race rows across 32 circuits, 2014–2024.
+Composite index per circuit:
+
+```
+difficulty = 0.60 × Spearman ρ(grid, finish)
+           + 0.20 × normalised_inverse(pos_change_std)
+           + 0.20 × normalised_inverse(dnf_rate)
+```
+
+Scaled linearly to 1–10 (1 = most positional chaos, 10 = stickiest grid order).
+
+**Key corrections vs v3.3 static values:**
+
+| Circuit | v3.3 static | v3.31 empirical | Δ | Notes |
+|---|---|---|---|---|
+| americas | 8.3 | 4.5 | −3.8 | High chaos years (2015, 2023); ρ=0.495 |
+| baku | 7.8 | 4.7 | −3.1 | Safety car volatility; ρ=0.518 |
+| marina_bay | 7.4 | 4.8 | −2.6 | Singapore more chaotic than assumed |
+| mugello | 10.0 | 4.3 | −5.7 | Single race (2020) — small-n caution |
+| zandvoort | 4.5 | 7.5 | +3.0 | Very grid-sticky in practice |
+| vegas | 1.0 | 5.2 | +4.2 | Less chaotic than initially coded |
+
+**Feature importance:** `overtaking_difficulty` ranks 19–35th of 35 across models
+(low individual weight). `historical_dnf_rate` ranks 7–32nd (more signal, already
+empirical since v3.3). Both retained based on ensemble lift in v3.1.
+
+**Cross-validation notes (important for future work):**
+
+- CV with full retrain times out in the Claude environment. Use **1-fold CV only**
+  (single holdout year) and **stop between folds** to avoid session timeout.
+- Avoid running `train_all()` more than once per session; save results to CSV
+  immediately so they survive a timeout.
+- The saved `.joblib` models in `models/` are always the fastest evaluation path —
+  prefer inference-only tests over full retrain when possible.
+
+---
+
 ### v3.3 — Circuit Volatility Features (implementation complete; evaluation pending)
 
 **Goal:** Move beyond the binary `is_street` flag by adding two continuous
@@ -373,7 +447,7 @@ its grid-position confidence by circuit character.
 | Feature | Source | Semantics |
 |---|---|---|
 | `historical_dnf_rate` | Dynamic — computed from `raw` | Fraction of driver-race entries at this circuit that ended in DNF over the preceding 5 calendar years. High rate → attrition races → P10 finishers come from further back. |
-| `overtaking_difficulty` | Static mapping in `config.py` | 1–10 index calibrated from historical overtake-count data. 1 = Monza (pure slipstream), 10 = Monaco. High score → grid order is sticky → P10 is likely near the starting P10 slot. |
+| `overtaking_difficulty` | Static mapping in `config.py` *(superseded by empirical values in v3.31)* | 1–10 index calibrated from historical overtake-count data. 1 = Monza (pure slipstream), 10 = Monaco. High score → grid order is sticky → P10 is likely near the starting P10 slot. |
 
 **Implementation details:**
 

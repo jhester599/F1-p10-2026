@@ -6,6 +6,65 @@ to avoid timeout-related failures.
 
 ---
 
+## ⚠️ Critical Working Rules for Claude Sessions
+
+These are the most common sources of wasted time and failed sessions. Follow this
+checklist before doing any data or model work.
+
+### Rule 1 — Data: Always check Google Drive cache first
+
+Before running any fetch script or writing any data-retrieval code, check whether
+the pre-built Google Drive cache covers what you need:
+
+**Cache URL:** https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+**Covers:** All Jolpica race/qualifying/standings data + FastF1 FP1/FP2, seasons 2010–2025.
+
+```bash
+# Restore from cache — always prefer this over running 01_fetch_data.py
+unzip f1_data_cache_2026-03-09.zip -d data/raw/
+```
+
+**Data source priority:**
+1. **Google Drive cache** — default, always check first
+2. **Jolpica API fetch** (`scripts/01_fetch_data.py`) — only if cache is stale/missing
+3. **Synthetic data** (`scripts/05_full_analysis.py`) — **last resort, requires explicit user approval**
+
+Starting a live API fetch when the cache is available is a known recurring mistake.
+The fetch takes 4–45 minutes, is prone to HTTP 429 rate limiting, and produces
+identical data for historical seasons.
+
+### Rule 2 — Synthetic data: never use without approval
+
+`scripts/05_full_analysis.py` generates statistically calibrated but **fake** race
+results. It was built as a fallback when the Jolpica API was unreachable in a
+sandboxed environment. Models trained on synthetic data:
+- Cannot be used for real predictions
+- Produce evaluation metrics not comparable to any real-data baseline
+- Will silently corrupt the `models/*.joblib` files if saved
+
+**Never run `05_full_analysis.py` unless the user explicitly says to use synthetic data.**
+
+### Rule 3 — Cross-validation and model retraining: timeout risk
+
+Full CV (3+ folds) with `train_all()` regularly causes session timeouts. Follow
+these guidelines to avoid losing work:
+
+- **Use 1-fold CV by default.** Choose one holdout year (e.g. 2024) and train/evaluate
+  once. Only run multi-fold CV if the user explicitly requests it.
+- **Stop between folds.** Save results to CSV after each fold completes so that a
+  timeout mid-run doesn't lose all data.
+- **Prefer inference-only tests.** The saved `models/*.joblib` files are already
+  trained. Swap feature values at inference time to compare configurations without
+  retraining — this is orders of magnitude faster.
+- **If retraining is required,** call `train_all()` once on a smaller train window
+  (e.g. 2018–2023 only, ~2,500 rows) rather than the full 2010–2024 set.
+- **Save outputs immediately** after each expensive step:
+  ```python
+  results_df.to_csv("/home/claude/cv_results_fold1.csv", index=False)
+  ```
+
+---
+
 ## Background
 
 Three development sessions were logged in `COMMIT_MESSAGE.md` and `README.md`.
@@ -168,6 +227,7 @@ Update `README.md` to mark Session 2 and Session 3 as fully implemented.
 | 3  | Rebuild parquets (`02_build_dataset.py`) | ✅ Done — 6,173 train rows × 35 features |
 | 4  | Retrain models (`03_train_models.py`) | ✅ Done — 7 models |
 | 5  | Re-prediction + doc update | ✅ Done — RACE_PREDICTIONS.md updated |
+| v3.31 | Empirical `overtaking_difficulty` replacing static v3.3 values | ✅ Done — composite Spearman ρ metric, 4,541 rows, 32 circuits |
 | v3.1 | FastF1 FP data + bulk fetch + full cache fetch | ✅ Done — 1,881 files, all years |
 | v3.1 | Sprint weekend result fix (3 truncated rounds) | ✅ Done — 422 → 479 eval rows |
 | v3.1 | Full pipeline eval with 35 features | ✅ Done — ensemble 12.62 (+2.83 vs v3.0) |
@@ -180,13 +240,14 @@ All phases complete. Model is at v3.1 specification (35 features, all evaluated)
   drivers starting from the back (e.g., Verstappen P20 → predicted ≈ P10).
   Possible fix: add a grid-position penalty term or cap career features.
 - Ensemble weights (xgb_clf=4.0, rf_clf=2.5, ...) were derived under the v2
-  binary-classifier architecture. A fresh CV run with the v3.1 35-feature
-  multi-class models would re-calibrate them and likely lift ensemble performance
-  further. Run: `python scripts/03_train_models.py --cv`
-- New v3.1-v3.3 features (`fp2_position`, `historical_dnf_rate`, etc.) all rank
+  binary-classifier architecture. A fresh CV run with the v3.31 35-feature
+  multi-class models would re-calibrate them. **When running CV to recalibrate,
+  use 1-fold only and save results between folds** (see Rule 3 above).
+  Run: `python scripts/03_train_models.py --cv`
+- New v3.1–v3.31 features (`fp2_position`, `historical_dnf_rate`, etc.) all rank
   below the standalone importance threshold but are retained due to the ensemble
   lift (+2.83 pts/race). If a v4.0 feature set is designed, these should be
   re-evaluated as candidates for removal if a larger batch of stronger features
   can replace them.
-- Data cache (1,881 files, 3.1 MB) is uploaded to Google Drive:
+- Data cache (updated through 2024, ~1,881 files, 3.1 MB) is on Google Drive:
   https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing

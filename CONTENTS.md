@@ -1,8 +1,27 @@
 # F1-p10-source.zip — Contents Guide
 
+**Current version: v3.31**
+
 This file documents what is included in `F1-p10-source.zip` and how to use it.
 The full zip (`F1-p10-full.zip`) contains everything below plus the trained
 model `.joblib` files (~78 MB uncompressed).
+
+---
+
+## ⚠️ Before you do anything with data — read this
+
+**Always check the Google Drive cache before running any fetch script.**
+
+| Priority | What | Link / command |
+|---|---|---|
+| **1 — Google Drive cache** | Pre-built 2010–2025 data (3 MB) | [Download](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing) |
+| **2 — Live API fetch** | Jolpica + FastF1 (~4–45 min) | `python scripts/01_fetch_data.py` |
+| **3 — Synthetic data** | Fake calibrated data | `scripts/05_full_analysis.py` — **requires explicit user approval** |
+
+`scripts/05_full_analysis.py` generates statistically plausible but fake race data.
+It exists as a last resort for environments with no API access. Models trained on
+synthetic data produce non-comparable evaluation results and must not be used for
+real predictions. Do not run it without being asked to by the user.
 
 ---
 
@@ -108,18 +127,29 @@ unzip F1-p10-source.zip
 cd F1-p10-2026
 pip install -r requirements.txt pyarrow fastf1
 
-# Restore the pre-built data cache (recommended — skips the API fetch):
-# Download f1_data_cache_2026-03-09.zip from Google Drive:
+# Step 1 — ALWAYS restore from Google Drive cache first:
 # https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
 
-python scripts/03_train_models.py        # ~3-5 min, uses included data
+# Step 2 — Train models (uses the included processed data, no API calls needed):
+python scripts/03_train_models.py        # ~3-5 min
+
+# Step 3 — Evaluate and predict:
 python scripts/04_evaluate_2025.py       # evaluate on 2025 season
 python predict_race.py --year 2026 --round 3   # predict after qualifying
 ```
 
 Steps 01 (fetch) and 02 (build dataset) are skipped because `data/raw/` and
-`data/processed/` are already fully populated in the zip.
+`data/processed/` are already fully populated from the cache.
+
+If the cache zip is unavailable, run the fetch manually:
+```bash
+python scripts/01_fetch_data.py --skip-fp   # fast (~4-6 min)
+python scripts/02_build_dataset.py
+```
+
+**Do not run `scripts/05_full_analysis.py`** unless the user has explicitly approved
+the use of synthetic data. See the warning at the top of this file.
 
 ---
 
@@ -147,7 +177,14 @@ python scripts/03_train_models.py --cv
 # then update ENSEMBLE_WEIGHTS in src/models.py
 ```
 
-**Weather features: excluded.** A full investigation (Session 5, `weather/`)
+**Cross-validation and retraining — timeout risk:**
+
+Full CV with 3+ folds regularly causes session timeouts. Always use 1-fold CV
+(single holdout year), save results to CSV after each fold, and prefer inference-only
+evaluation over full retrain where possible. See `DEVELOPMENT_PLAN.md` Rule 3 for
+full guidance.
+
+---
 confirmed that weather data from the Open-Meteo archive adds no predictive value
 for P10. Adding 5 weather features to the 30-feature model hurt 2025 holdout
 performance by −2.3 pts/race. The 30-feature set stands as the current baseline.
