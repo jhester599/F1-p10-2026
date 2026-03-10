@@ -11,23 +11,25 @@ to avoid timeout-related failures.
 These are the most common sources of wasted time and failed sessions. Follow this
 checklist before doing any data or model work.
 
-### Rule 1 — Data: Always check Google Drive cache first
+### Rule 1 — Data: Always check repo zip cache first
 
 Before running any fetch script or writing any data-retrieval code, check whether
-the pre-built Google Drive cache covers what you need:
+the pre-built cache zip covers what you need:
 
-**Cache URL:** https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+**Repo zip:** `f1_data_cache_2026-03-09.zip` is committed to the repo root.
+**Google Drive fallback:** https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 **Covers:** All Jolpica race/qualifying/standings data + FastF1 FP1/FP2, seasons 2010–2025.
 
 ```bash
-# Restore from cache — always prefer this over running 01_fetch_data.py
+# Restore from repo zip — always prefer this over running 01_fetch_data.py
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
 ```
 
 **Data source priority:**
-1. **Google Drive cache** — default, always check first
-2. **Jolpica API fetch** (`scripts/01_fetch_data.py`) — only if cache is stale/missing
-3. **Synthetic data** (`scripts/05_full_analysis.py`) — **last resort, requires explicit user approval**
+1. **Repo zip** (`f1_data_cache_2026-03-09.zip` in repo root) — default, check first
+2. **Google Drive cache** — use if repo zip is missing or outdated
+3. **Jolpica API fetch** (`scripts/01_fetch_data.py`) — only if both caches are stale/missing
+4. **Synthetic data** (`scripts/05_full_analysis.py`) — **last resort, requires explicit user approval**
 
 Starting a live API fetch when the cache is available is a known recurring mistake.
 The fetch takes 4–45 minutes, is prone to HTTP 429 rate limiting, and produces
@@ -249,5 +251,5 @@ All phases complete. Model is at v3.1 specification (35 features, all evaluated)
   lift (+2.83 pts/race). If a v4.0 feature set is designed, these should be
   re-evaluated as candidates for removal if a larger batch of stronger features
   can replace them.
-- Data cache (updated through 2024, ~1,881 files, 3.1 MB) is on Google Drive:
-  https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+- Data cache (updated through 2025, ~1,881 files, 3.1 MB): `f1_data_cache_2026-03-09.zip`
+  committed to repo root. Google Drive mirror: https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing

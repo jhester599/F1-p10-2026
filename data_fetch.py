@@ -11,8 +11,9 @@ Practice (FP1/FP2) data:
     to qualifying/grid position in feature_engineering.py.
 
 Pre-built cache (2010-2025, all Jolpica + partial FP data, 3 MB):
-  https://drive.google.com/file/d/1aAE9CkYn-AEpFw8JQRF0l8H27rjKQuZq/view?usp=sharing
-  Download → unzip f1_data_cache_2026-03-09.zip -d data/raw/
+  1. Repo zip (first): f1_data_cache_2026-03-09.zip committed to repo root
+     unzip f1_data_cache_2026-03-09.zip -d data/raw/
+  2. Google Drive (fallback): https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
   Then run: python scripts/01_fetch_data.py --fp-only  (to backfill FP data)
 """
 from __future__ import annotations

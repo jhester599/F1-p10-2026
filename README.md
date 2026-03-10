@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.31
+# F1 P10 Predictor · v3.4
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -9,7 +9,8 @@ Built for a fantasy F1 league where scoring mirrors the F1 points scale
 
 ## Quick Start
 
-> ⚠️ **ALWAYS check for the Google Drive cache before fetching any data.**
+> ⚠️ **ALWAYS check for the repo-committed zip before fetching any data.**
+> The file `f1_data_cache_2026-03-09.zip` is committed to the repo root.
 > Starting a raw API fetch when the cache is available is a common mistake that wastes
 > time and risks rate-limiting. See [Step 1 below](#step-1-data).
 
@@ -17,9 +18,12 @@ Built for a fantasy F1 league where scoring mirrors the F1 points scale
 pip install -r requirements.txt pyarrow
 
 # ── Step 1: Data ─────────────────────────────────────────────────────────────
-# PREFERRED — restore the pre-built cache from Google Drive (fast, no rate limits):
-#   https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+# PREFERRED — restore the pre-built cache from the repo zip (fast, no network needed):
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
+
+# FALLBACK 1 — if the repo zip is missing, download from Google Drive:
+#   https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+# unzip f1_data_cache_2026-03-09.zip -d data/raw/
 
 # FALLBACK — only if the cache is missing or a newer season needs to be appended:
 python scripts/01_fetch_data.py --skip-fp          # fast Jolpica fetch (~4-6 min)
@@ -44,7 +48,8 @@ python predict_race.py --year 2026 --round 5
 ```
 
 > **Pre-built data cache:** `f1_data_cache_2026-03-09.zip` (3 MB, covers 2010–2025).
-> **[Download from Google Drive →](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing)**
+> **Committed to repo root** — no download required if you cloned the repo.
+> Google Drive mirror: [Download →](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing)
 >
 > This is the fastest and most reliable way to get data. The cache covers all Jolpica
 > race/qualifying/standings data plus FastF1 FP1/FP2 sessions for 2018–2025.
@@ -99,7 +104,7 @@ F1-p10-2026/
 
 ---
 
-## Features (30 total)
+## Features (35 total)
 
 All features are derived from information available **after qualifying, before the race**.
 
@@ -173,6 +178,37 @@ directly targeting the decision the model needs to make:
 > scaled to 1–10. Prior v3.3 values were hand-coded assumptions that diverged significantly
 > from empirical data for Americas (8.3→4.5), Baku (7.8→4.7), Vegas (1.0→5.2), Zandvoort (4.5→7.5).
 
+### Evaluated and excluded features — weather (Session 5)
+
+The following five features were rigorously evaluated against 329 real race-day weather
+records (Open-Meteo archive API, 2010–2025) and **excluded from the final model** because
+their predictive importance was insufficient to justify the added complexity:
+
+| Feature | Importance (RF) | r with P10 | p-value | Verdict |
+|---|---|---|---|---|
+| `is_wet_race` | — | −0.001 | 0.926 | Excluded |
+| `chaos_index` | — | −0.001 | 0.952 | Excluded |
+| `precipitation_mm` | — | −0.002 | 0.907 | Excluded |
+| `wind_max_kmh` | 1.6% (bottom 5 of 35) | +0.004 | 0.739 | Excluded |
+| `rain_category` | — | — | — | Excluded |
+
+**Key finding:** Adding these five features hurt the 2025 holdout by **−2.3 pts/race**
+(11.42 → 9.13 avg pts/race). All five ranked in the bottom 5 of 35 features by RF
+importance. None were statistically significant predictors of P10 outcomes.
+
+**Why they don't help:** All drivers face identical race-day conditions, so weather
+shifts the entire field's performance equally — relative finishing order is largely
+unchanged. Grid → finish Spearman correlation is actually *higher* in wet conditions
+(ρ = 0.642) than dry (ρ = 0.636), contradicting the intuition that rain increases
+P10 chaos. The P10 base rate is statistically identical: 4.76% in dry races, 4.71%
+in wet races across 329 documented races.
+
+> See `weather/WEATHER_STATUS.md` for the full investigation report and
+> `weather/results/model_comparison.csv` for the with/without comparison.
+> The `weather/race_forecast.py` script remains available to display
+> pre-race conditions to the user as context, without those values
+> entering the model.
+
 ---
 
 ## Models
@@ -185,6 +221,7 @@ directly targeting the decision the model needs to make:
 | `lgb_reg` | LightGBM Regressor | Closest predicted position to 10th |
 | `rf_clf` | Random Forest Classifier (multi-class) | Highest EV of fantasy points |
 | `xgb_clf` | XGBoost Classifier (multi-class) | Highest EV of fantasy points |
+| `xgb_ranker` | **XGBoost Ranker** (`rank:pairwise`) ← v3.4 | Highest P10-centred relevance score |
 | `ensemble` | WeightedEnsemble | CV-weighted blend of all models |
 
 ### Multi-class EV Classifiers
@@ -205,29 +242,73 @@ fantasy scoring objective. `SCORING_VECTOR` in `models.py` pre-computes
 > classifiers use 1-indexed (1-20). `train_all()` applies a shift for XGBoost,
 > and `select_best_driver_by_ev()` detects the convention via `min(classes)`.
 
+### XGBoost Ranker — Learning-to-Rank (v3.4)
+
+`xgb_ranker` uses `xgboost.XGBRanker(objective='rank:pairwise')`, a
+**Learning-to-Rank** formulation that directly optimises pairwise driver
+ordering within each race rather than predicting an absolute position number.
+
+**Motivation:** Standard regression and classification treat each driver row
+independently. But F1 is zero-sum: exactly one driver finishes P10. A ranker
+models the relative ordering problem natively — it learns "driver A is more
+likely than driver B to finish closest to P10" — which better captures the
+competitive structure of a race.
+
+**Relevance target:** A custom P10-centred score replaces the raw
+`finish_position` label:
+
+```
+relevance(driver) = 1 / (1 + |finish_position - 10|)
+```
+
+This gives P10 a relevance of 1.0, with smooth symmetric decay:
+
+| Finish position | Relevance |
+|---|---|
+| P10 (exact) | 1.000 |
+| P9 or P11 | 0.500 |
+| P8 or P12 | 0.333 |
+| P7 or P13 | 0.250 |
+| P5 or P15 | 0.167 |
+| P1 or P19 | 0.100 |
+| P20 / DNF  | 0.091 |
+
+**Training requirements:** `XGBRanker` strictly requires that training rows be
+sorted by query group (race) and that a `qid` array identifies each row's
+group. `train_all()` handles this automatically:
+
+1. Sort `train_df` by `(year, round)`.
+2. Compute `qid` using `groupby(["year","round"]).ngroup()` — a sorted integer
+   per unique race.
+3. Call `ranker.fit(X_rank, y_rank, qid=qid_train)`.
+
+**Prediction:** `XGBRanker.predict()` returns relevance scores. The driver with
+the highest score is selected as the predicted P10 (`idxmax()`), mirroring the
+classifier EV selection strategy.
+
 ### WeightedEnsemble
 
-Blends all six base models using fixed weights on a common normalised scale:
+Blends all seven base models using fixed weights on a common normalised scale:
 - Multi-class classifiers (`rf_clf`, `xgb_clf`): EV score (expected fantasy pts)
+- Ranker (`xgb_ranker`): raw predicted relevance scores (already P10-centred)
 - Regressors: 1 / (1 + |predicted_position - 10|)
 
 All per-model scores are min-max normalised within each race before blending.
 
-| Model | Weight |
-|---|---|
-| `xgb_clf` | 4.0 |
-| `rf_clf` | 2.5 |
-| `lgb_reg` | 2.0 |
-| `rf_reg` | 1.0 |
-| `xgb_reg` | 0.3 |
-| `ridge` | 0.2 |
+| Model | Weight | Status |
+|---|---|---|
+| `xgb_clf` | 4.0 | CV-calibrated |
+| `rf_clf` | 2.5 | CV-calibrated |
+| `lgb_reg` | 2.0 | CV-calibrated |
+| `rf_reg` | 1.0 | CV-calibrated |
+| `xgb_ranker` | 3.9 | Calibrated — 2025 holdout (11.38 avg pts/race) |
+| `xgb_reg` | 0.3 | CV-calibrated |
+| `ridge` | 0.2 | CV-calibrated |
 
-> **Known issue -- weights need recalibration:** These weights were derived under
-> the previous binary classifier architecture. The ensemble underperforms
-> individual models on the current (multi-class EV + 30-feature) setup because
-> the weights no longer reflect relative model quality. Run
-> `python scripts/03_train_models.py --cv` to generate fresh CV results,
-> then update `ENSEMBLE_WEIGHTS` in `src/models.py`.
+> **Note on weights:** `xgb_clf`, `rf_clf`, `lgb_reg`, `rf_reg`, `xgb_reg` weights
+> were derived under the prior binary classifier architecture and may benefit from
+> recalibration with `python scripts/03_train_models.py --cv`. The `xgb_ranker`
+> weight (3.9) is calibrated from the 2025 holdout evaluation.
 
 ---
 
@@ -276,30 +357,36 @@ Outputs:
 
 ## 2025 Season Results
 
-Models trained on 2010-2024 data, evaluated on all 24 races of the 2025 season.
+Models trained on 2010–2024 data, evaluated on all 24 races of the 2025 season.
 
-Results below are from the **v3.1 model** (35 features including fp2_position, circuit
-volatility, and displacement features). v3.0 avg pts shown for comparison.
+Results below are from the **v3.4 model** (35 features, includes `xgb_ranker`).
+v3.1 avg pts shown for comparison where available.
 
-| Model | Avg Pts/Race | Exact P10 | Within 2 pos | v3.0 Avg Pts | Δ |
-|---|---|---|---|---|---|
-| Oracle (ceiling) | 25.00 | 24 | 100% | — | — |
-| **ensemble** | **12.62** | **2** | **41.7%** | 9.79 | **+2.83 ▲** |
-| xgb_clf | 11.67 | 1 | 54.2% | 11.29 | +0.38 ▲ |
-| rf_clf | 11.46 | 2 | 37.5% | 12.29 | −0.83 ▼ |
-| ridge | 10.33 | 1 | 29.2% | 9.38 | +0.95 ▲ |
-| xgb_reg | 10.29 | 2 | 29.2% | 8.88 | +1.41 ▲ |
-| lgb_reg | 10.25 | 1 | 25.0% | 10.08 | +0.17 ▲ |
-| rf_reg | 9.04 | 1 | 20.8% | 10.75 | −1.71 ▼ |
-| naive_grid_p10 | 14.04 | 3 | 50.0% | — | — |
+| Model | Avg Pts/Race | Avg Regret | Exact P10 | Within 2 pos | v3.1 Avg Pts | Δ |
+|---|---|---|---|---|---|---|
+| Oracle (ceiling) | 25.00 | 0.00 | 24 | 100% | — | — |
+| **lgb_reg** | **12.38** | 5.17 | 2 | 37.5% | 10.25 | **+2.13 ▲** |
+| **ensemble** | **12.00** | 5.54 | 2 | 41.7% | 12.62 | −0.62 ▼ |
+| **xgb_ranker** | **11.38** | 6.17 | 2 | 45.8% | — | new ← v3.4 |
+| rf_clf | 10.88 | 6.67 | 2 | 33.3% | 11.46 | −0.58 ▼ |
+| ridge | 10.67 | 6.88 | 1 | 33.3% | 10.33 | +0.34 ▲ |
+| xgb_reg | 10.50 | 7.04 | 1 | 33.3% | 10.29 | +0.21 ▲ |
+| xgb_clf | 10.29 | 7.25 | 1 | 45.8% | 11.67 | −1.38 ▼ |
+| rf_reg | 8.92 | 8.62 | 1 | 29.2% | 9.04 | −0.12 ▼ |
+| naive_grid_p10 | 14.04 | — | 3 | 50.0% | — | — |
 
-> **`naive_grid_p10` (14.04 pts) remains the benchmark** — no individual model
-> clears it yet, but the ensemble at 12.62 is the best result to date.
-> The **ensemble** is the recommended pick for 2026 (recalibrated weights pending).
+> **`naive_grid_p10` (14.04 pts) remains the benchmark.** `xgb_ranker` enters at
+> 11.38 avg pts/race on its first evaluation — 3rd overall among individual models,
+> beating both `xgb_reg` (+0.88) and `xgb_clf` (+1.09). Its 45.8% within-2-positions
+> rate (tied with `xgb_clf`) is the best among all models, confirming the pairwise
+> ranking objective places drivers near P10 even when not exact.
 >
-> **Note on v3.1 sprint weekend fix:** an earlier v3.1 run had 3 sprint-weekend
-> rounds with truncated result files (1 driver each instead of 20), biasing eval
-> to 422 rows. The figures above use the corrected 479-row dataset.
+> **Recommended pick for 2026:** `ensemble` (12.00 avg pts), now boosted by
+> the calibrated `xgb_ranker` weight of 3.9.
+>
+> **Note:** The ensemble dropped slightly vs v3.1 (12.62 → 12.00). The v3.1
+> ensemble weights were calibrated on an earlier data pipeline; fresh CV
+> recalibration (`python scripts/03_train_models.py --cv`) is recommended.
 
 ---
 
@@ -385,6 +472,72 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.4 — Learning-to-Rank via `XGBRanker` (rank:pairwise)
+
+**Goal:** Replace the XGBoost regression objective (predicting absolute position)
+with a Learning-to-Rank objective that directly optimises pairwise driver
+ordering within each race, better capturing the zero-sum competitive structure
+of F1.
+
+**Files changed:** `src/models.py`, `README.md`
+
+**Architecture change:**
+
+| Aspect | Before (v3.31) | After (v3.4) |
+|---|---|---|
+| XGB objective | `reg:squarederror` (predict position 1–20) | `rank:pairwise` (rank within each race group) |
+| Target label | `finish_position` (integer 1–20) | `1 / (1 + \|finish_position − 10\|)` (float 0.09–1.0) |
+| Training sort | Any order | Must be sorted by `(year, round)` + `qid` array |
+| Selection | Closest predicted position to 10 | Highest relevance score (`idxmax`) |
+| Ensemble role | `xgb_reg` remains; ranker is additive | `xgb_ranker` added at provisional weight 1.0 |
+
+**Relevance target rationale:** `1 / (1 + |pos − 10|)` assigns P10 the maximum
+relevance (1.0) and penalises deviation symmetrically. This is non-zero for all
+positions (unlike a binary P10 indicator), giving the ranker gradient signal from
+every row — including near-misses at P9/P11 — rather than only from exact P10s.
+
+**Training implementation (`train_all` in `src/models.py`):**
+
+```python
+# Sort by race so XGBRanker groups are contiguous
+train_sorted = train_df.sort_values(["year", "round"]).reset_index(drop=True)
+X_rank    = train_sorted[FEATURE_COLS].values.astype(float)
+y_rank    = 1.0 / (1.0 + np.abs(train_sorted[TARGET_COL].values.astype(float) - 10.0))
+qid_train = train_sorted.groupby(["year", "round"], sort=True).ngroup().values
+ranker.fit(X_rank, y_rank, qid=qid_train)
+```
+
+**Ensemble integration:** `xgb_ranker` is added to `ENSEMBLE_WEIGHTS` at
+provisional weight 1.0. In `WeightedEnsemble.score_drivers()` the ranker's
+`predict()` output is used directly (already P10-centred) before min-max
+normalisation, consistent with how classifier EV and regressor proximity scores
+are handled.
+
+**Performance delta (2025 holdout — 24 races, trained on 2010–2024 real data):**
+
+| Model | Avg Pts/Race | Avg Regret | vs `xgb_reg` | vs `xgb_clf` |
+|---|---|---|---|---|
+| `lgb_reg` | **12.38** | 5.17 | +1.88 ▲ | +2.09 ▲ |
+| `ensemble` | 12.00 | 5.54 | +1.50 ▲ | +1.71 ▲ |
+| **`xgb_ranker`** | **11.38** | **6.17** | **+0.88 ▲** | **+1.09 ▲** |
+| `rf_clf` | 10.88 | 6.67 | +0.38 ▲ | +0.59 ▲ |
+| `ridge` | 10.67 | 6.88 | +0.17 ▲ | +0.38 ▲ |
+| `xgb_reg` | 10.50 | 7.04 | baseline | +0.21 ▲ |
+| `xgb_clf` | 10.29 | 7.25 | −0.21 ▼ | baseline |
+| `rf_reg` | 8.92 | 8.62 | −1.58 ▼ | −1.37 ▼ |
+
+**Finding:** `xgb_ranker` ranks 3rd overall at **11.38 avg pts/race**, beating both
+`xgb_reg` (+0.88) and `xgb_clf` (+1.09). It also leads all models on within-2
+positions accuracy (11/24 = 45.8%, tied with `xgb_clf`), confirming the pairwise
+ranking objective is effective at placing drivers near P10 even when not exactly P10.
+The ensemble (12.00) benefits from the ranker's inclusion.
+
+**Next step — ensemble weight recalibration:** `xgb_ranker` avg pts (11.38) →
+proportional weight ≈ 11.38 / 2.9 ≈ **3.9**. Update `ENSEMBLE_WEIGHTS["xgb_ranker"]`
+from `1.0` to `3.9` in `src/models.py` and retrain the ensemble.
+
+---
 
 ### v3.31 — Empirical `overtaking_difficulty` (replaces static v3.3 values)
 

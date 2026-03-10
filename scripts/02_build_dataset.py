@@ -22,7 +22,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from config import TRAIN_YEARS, EVAL_YEAR, PROCESSED_DIR
-from src.data_fetch import F1Fetcher
+from data_fetch import F1Fetcher
 from src.feature_engineering import build_raw_results, build_feature_matrix
 
 logging.basicConfig(
