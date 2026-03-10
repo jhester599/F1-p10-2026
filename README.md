@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.31
+# F1 P10 Predictor · v3.4
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -185,6 +185,7 @@ directly targeting the decision the model needs to make:
 | `lgb_reg` | LightGBM Regressor | Closest predicted position to 10th |
 | `rf_clf` | Random Forest Classifier (multi-class) | Highest EV of fantasy points |
 | `xgb_clf` | XGBoost Classifier (multi-class) | Highest EV of fantasy points |
+| `xgb_ranker` | **XGBoost Ranker** (`rank:pairwise`) ← v3.4 | Highest P10-centred relevance score |
 | `ensemble` | WeightedEnsemble | CV-weighted blend of all models |
 
 ### Multi-class EV Classifiers
@@ -205,29 +206,77 @@ fantasy scoring objective. `SCORING_VECTOR` in `models.py` pre-computes
 > classifiers use 1-indexed (1-20). `train_all()` applies a shift for XGBoost,
 > and `select_best_driver_by_ev()` detects the convention via `min(classes)`.
 
+### XGBoost Ranker — Learning-to-Rank (v3.4)
+
+`xgb_ranker` uses `xgboost.XGBRanker(objective='rank:pairwise')`, a
+**Learning-to-Rank** formulation that directly optimises pairwise driver
+ordering within each race rather than predicting an absolute position number.
+
+**Motivation:** Standard regression and classification treat each driver row
+independently. But F1 is zero-sum: exactly one driver finishes P10. A ranker
+models the relative ordering problem natively — it learns "driver A is more
+likely than driver B to finish closest to P10" — which better captures the
+competitive structure of a race.
+
+**Relevance target:** A custom P10-centred score replaces the raw
+`finish_position` label:
+
+```
+relevance(driver) = 1 / (1 + |finish_position - 10|)
+```
+
+This gives P10 a relevance of 1.0, with smooth symmetric decay:
+
+| Finish position | Relevance |
+|---|---|
+| P10 (exact) | 1.000 |
+| P9 or P11 | 0.500 |
+| P8 or P12 | 0.333 |
+| P7 or P13 | 0.250 |
+| P5 or P15 | 0.167 |
+| P1 or P19 | 0.100 |
+| P20 / DNF  | 0.091 |
+
+**Training requirements:** `XGBRanker` strictly requires that training rows be
+sorted by query group (race) and that a `qid` array identifies each row's
+group. `train_all()` handles this automatically:
+
+1. Sort `train_df` by `(year, round)`.
+2. Compute `qid` using `groupby(["year","round"]).ngroup()` — a sorted integer
+   per unique race.
+3. Call `ranker.fit(X_rank, y_rank, qid=qid_train)`.
+
+**Prediction:** `XGBRanker.predict()` returns relevance scores. The driver with
+the highest score is selected as the predicted P10 (`idxmax()`), mirroring the
+classifier EV selection strategy.
+
 ### WeightedEnsemble
 
-Blends all six base models using fixed weights on a common normalised scale:
+Blends all seven base models using fixed weights on a common normalised scale:
 - Multi-class classifiers (`rf_clf`, `xgb_clf`): EV score (expected fantasy pts)
+- Ranker (`xgb_ranker`): raw predicted relevance scores (already P10-centred)
 - Regressors: 1 / (1 + |predicted_position - 10|)
 
 All per-model scores are min-max normalised within each race before blending.
 
-| Model | Weight |
-|---|---|
-| `xgb_clf` | 4.0 |
-| `rf_clf` | 2.5 |
-| `lgb_reg` | 2.0 |
-| `rf_reg` | 1.0 |
-| `xgb_reg` | 0.3 |
-| `ridge` | 0.2 |
+| Model | Weight | Status |
+|---|---|---|
+| `xgb_clf` | 4.0 | CV-calibrated |
+| `rf_clf` | 2.5 | CV-calibrated |
+| `lgb_reg` | 2.0 | CV-calibrated |
+| `rf_reg` | 1.0 | CV-calibrated |
+| `xgb_ranker` | 1.0 | **Provisional** — recalibrate after 2025 holdout eval |
+| `xgb_reg` | 0.3 | CV-calibrated |
+| `ridge` | 0.2 | CV-calibrated |
 
 > **Known issue -- weights need recalibration:** These weights were derived under
 > the previous binary classifier architecture. The ensemble underperforms
-> individual models on the current (multi-class EV + 30-feature) setup because
+> individual models on the current (multi-class EV + 35-feature) setup because
 > the weights no longer reflect relative model quality. Run
 > `python scripts/03_train_models.py --cv` to generate fresh CV results,
 > then update `ENSEMBLE_WEIGHTS` in `src/models.py`.
+> The `xgb_ranker` weight (1.0) is provisional and should be updated once
+> 2025 holdout results are available.
 
 ---
 
@@ -385,6 +434,66 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.4 — Learning-to-Rank via `XGBRanker` (rank:pairwise)
+
+**Goal:** Replace the XGBoost regression objective (predicting absolute position)
+with a Learning-to-Rank objective that directly optimises pairwise driver
+ordering within each race, better capturing the zero-sum competitive structure
+of F1.
+
+**Files changed:** `src/models.py`, `README.md`
+
+**Architecture change:**
+
+| Aspect | Before (v3.31) | After (v3.4) |
+|---|---|---|
+| XGB objective | `reg:squarederror` (predict position 1–20) | `rank:pairwise` (rank within each race group) |
+| Target label | `finish_position` (integer 1–20) | `1 / (1 + \|finish_position − 10\|)` (float 0.09–1.0) |
+| Training sort | Any order | Must be sorted by `(year, round)` + `qid` array |
+| Selection | Closest predicted position to 10 | Highest relevance score (`idxmax`) |
+| Ensemble role | `xgb_reg` remains; ranker is additive | `xgb_ranker` added at provisional weight 1.0 |
+
+**Relevance target rationale:** `1 / (1 + |pos − 10|)` assigns P10 the maximum
+relevance (1.0) and penalises deviation symmetrically. This is non-zero for all
+positions (unlike a binary P10 indicator), giving the ranker gradient signal from
+every row — including near-misses at P9/P11 — rather than only from exact P10s.
+
+**Training implementation (`train_all` in `src/models.py`):**
+
+```python
+# Sort by race so XGBRanker groups are contiguous
+train_sorted = train_df.sort_values(["year", "round"]).reset_index(drop=True)
+X_rank    = train_sorted[FEATURE_COLS].values.astype(float)
+y_rank    = 1.0 / (1.0 + np.abs(train_sorted[TARGET_COL].values.astype(float) - 10.0))
+qid_train = train_sorted.groupby(["year", "round"], sort=True).ngroup().values
+ranker.fit(X_rank, y_rank, qid=qid_train)
+```
+
+**Ensemble integration:** `xgb_ranker` is added to `ENSEMBLE_WEIGHTS` at
+provisional weight 1.0. In `WeightedEnsemble.score_drivers()` the ranker's
+`predict()` output is used directly (already P10-centred) before min-max
+normalisation, consistent with how classifier EV and regressor proximity scores
+are handled.
+
+**Performance delta (2025 holdout — pending full retrain):**
+
+> The 2025 holdout evaluation requires API access to rebuild the feature matrix
+> and retrain. Results will be logged here once the pipeline runs with network
+> access. The table below will be updated:
+
+| Model | Avg Pts/Race | Avg Regret | vs xgb_reg | vs xgb_clf |
+|---|---|---|---|---|
+| `xgb_reg` | 10.29 | — | baseline | — |
+| `xgb_clf` | 11.67 | — | — | baseline |
+| `xgb_ranker` | TBD | TBD | TBD | TBD |
+| `ensemble` (with ranker) | TBD | TBD | TBD | TBD |
+
+**Next step:** Run `python run_pipeline.py --force` with API access (or restore
+from cache) to generate 2025 holdout results and populate the performance delta
+table above. Update `ENSEMBLE_WEIGHTS["xgb_ranker"]` based on observed avg pts.
+
+---
 
 ### v3.31 — Empirical `overtaking_difficulty` (replaces static v3.3 values)
 
