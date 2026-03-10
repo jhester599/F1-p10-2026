@@ -606,12 +606,44 @@ python scripts/03_train_models.py --cv --resume
 python scripts/03_train_models.py --cv --force
 ```
 
+#### Ensemble weight recalibration
+
+The 12-fold rolling CV revealed that the old weights (derived from
+leave-one-year-out CV) were substantially mis-calibrated.  Weights are now
+proportional to each model's average fantasy pts per race above the per-fold
+floor, anchored so the best model = 4.0.
+
+| Model | Old weight | Avg pts (12-fold CV) | CV coeff | New weight | Change |
+|---|---|---|---|---|---|
+| `rf_reg` | 1.0 | **11.82** | 0.58 | **4.00** | ↑↑↑ (severely under-weighted) |
+| `rf_clf` | 2.5 | 11.30 | 0.61 | **2.75** | ↑ slight |
+| `ridge` | 0.0 | 10.99 | 0.60 | **2.00** | ✨ new — linear diversity |
+| `xgb_clf` | 4.0 | 10.95 | 0.64 | **2.00** | ↓↓ (LOYO over-weighted XGB) |
+| `xgb_ranker` | 3.9 | 10.92 | 0.65 | **1.75** | ↓↓ |
+| `lgb_reg` | 2.0 | 10.36 | 0.63 | **0.50** | ↓↓ |
+| `xgb_reg` | 0.3 | 10.15 | 0.67 | **0.25** | ≈ kept for diversity |
+
+Key findings:
+- `rf_reg` is the clear leader under temporal CV: best avg score *and* the
+  lowest coefficient of variation (most consistent across seasons).
+- `xgb_clf` and `xgb_ranker` were previously over-weighted because LOYO let
+  them train on future seasons, inflating their apparent accuracy.
+- `ridge` is added to the ensemble for the first time: its linear structure
+  is orthogonal to the tree models, it wins 2 of 12 folds outright, and its
+  CV is the second-lowest of all models.
+- The old ensemble (11.41 avg pts) trailed `rf_reg` alone (11.82) — the
+  new weights should close this gap.
+
+**File changed:** `src/models.py` — `ENSEMBLE_WEIGHTS` dict updated.
+
 #### Files changed
 
 - `scripts/03_train_models.py` — replaced `run_cv()` with rolling-window
   logic; added `--window-size` and `--resume` CLI flags; checkpointing to
   `results/cv_checkpoints/`; extended default eval range to 2014–2025;
   auto-selects combined parquet when cv_years include 2025.
+- `src/models.py` — `ENSEMBLE_WEIGHTS` recalibrated from 12-fold CV;
+  `ridge` added as ensemble member (weight 2.0).
 - `results/cv_checkpoints/fold_2014.csv` … `fold_2025.csv` — 12 fold results.
 - `results/cv_results.csv` — combined 2 016-row CV results table.
 - `README.md` — this entry.
