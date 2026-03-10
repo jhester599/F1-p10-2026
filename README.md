@@ -9,7 +9,8 @@ Built for a fantasy F1 league where scoring mirrors the F1 points scale
 
 ## Quick Start
 
-> ⚠️ **ALWAYS check for the Google Drive cache before fetching any data.**
+> ⚠️ **ALWAYS check for the repo-committed zip before fetching any data.**
+> The file `f1_data_cache_2026-03-09.zip` is committed to the repo root.
 > Starting a raw API fetch when the cache is available is a common mistake that wastes
 > time and risks rate-limiting. See [Step 1 below](#step-1-data).
 
@@ -17,9 +18,12 @@ Built for a fantasy F1 league where scoring mirrors the F1 points scale
 pip install -r requirements.txt pyarrow
 
 # ── Step 1: Data ─────────────────────────────────────────────────────────────
-# PREFERRED — restore the pre-built cache from Google Drive (fast, no rate limits):
-#   https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+# PREFERRED — restore the pre-built cache from the repo zip (fast, no network needed):
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
+
+# FALLBACK 1 — if the repo zip is missing, download from Google Drive:
+#   https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+# unzip f1_data_cache_2026-03-09.zip -d data/raw/
 
 # FALLBACK — only if the cache is missing or a newer season needs to be appended:
 python scripts/01_fetch_data.py --skip-fp          # fast Jolpica fetch (~4-6 min)
@@ -44,7 +48,8 @@ python predict_race.py --year 2026 --round 5
 ```
 
 > **Pre-built data cache:** `f1_data_cache_2026-03-09.zip` (3 MB, covers 2010–2025).
-> **[Download from Google Drive →](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing)**
+> **Committed to repo root** — no download required if you cloned the repo.
+> Google Drive mirror: [Download →](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing)
 >
 > This is the fastest and most reliable way to get data. The cache covers all Jolpica
 > race/qualifying/standings data plus FastF1 FP1/FP2 sessions for 2018–2025.

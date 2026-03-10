@@ -10,13 +10,14 @@ model `.joblib` files (~78 MB uncompressed).
 
 ## ⚠️ Before you do anything with data — read this
 
-**Always check the Google Drive cache before running any fetch script.**
+**Always check the repo zip cache before running any fetch script.**
 
 | Priority | What | Link / command |
 |---|---|---|
-| **1 — Google Drive cache** | Pre-built 2010–2025 data (3 MB) | [Download](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing) |
-| **2 — Live API fetch** | Jolpica + FastF1 (~4–45 min) | `python scripts/01_fetch_data.py` |
-| **3 — Synthetic data** | Fake calibrated data | `scripts/05_full_analysis.py` — **requires explicit user approval** |
+| **1 — Repo zip** | `f1_data_cache_2026-03-09.zip` committed to repo root (3 MB) | `unzip f1_data_cache_2026-03-09.zip -d data/raw/` |
+| **2 — Google Drive cache** | Same zip hosted on Google Drive (use if repo zip missing) | [Download](https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing) |
+| **3 — Live API fetch** | Jolpica + FastF1 (~4–45 min) | `python scripts/01_fetch_data.py` |
+| **4 — Synthetic data** | Fake calibrated data | `scripts/05_full_analysis.py` — **requires explicit user approval** |
 
 `scripts/05_full_analysis.py` generates statistically plausible but fake race data.
 It exists as a last resort for environments with no API access. Models trained on
@@ -56,8 +57,9 @@ F1-p10-2026/
 +-- data/
 |   +-- raw/                         # 1,881 cached JSON files (Jolpica + FastF1 FP)
 |   |                                  Pre-built cache (2010-2025, 3 MB):
-|   |                                  https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
-|   |                                  Restore: unzip f1_data_cache_2026-03-09.zip -d data/raw/
+|   |                                  1. Repo zip (first): f1_data_cache_2026-03-09.zip in repo root
+|   |                                     unzip f1_data_cache_2026-03-09.zip -d data/raw/
+|   |                                  2. Google Drive (fallback): https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 |   +-- processed/
 |       +-- features_2010_2024.parquet   # Training feature matrix (6,173 rows x 43 cols)
 |       +-- features_2025_2025.parquet   # 2025 eval features (479 rows x 38 cols)
@@ -127,9 +129,10 @@ unzip F1-p10-source.zip
 cd F1-p10-2026
 pip install -r requirements.txt pyarrow fastf1
 
-# Step 1 — ALWAYS restore from Google Drive cache first:
-# https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+# Step 1 — ALWAYS restore from the repo zip first (committed to repo root):
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
+# If the repo zip is missing, download from Google Drive:
+# https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 
 # Step 2 — Train models (uses the included processed data, no API calls needed):
 python scripts/03_train_models.py        # ~3-5 min
