@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.41
+# F1 P10 Predictor · v3.5
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -509,6 +509,88 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.5 — Time-Series CV with Checkpointing (`--resume`)
+
+**Goal:** Replace the leave-one-year-out cross-validation with a proper
+rolling-window `TimeSeriesSplit` that prevents data leakage and add
+fault-tolerant checkpointing so a timeout never discards completed work.
+
+#### Problem with the old CV approach
+
+The original `run_cv()` used leave-one-year-out (LOYO): for each held-out
+year it trained on *all other years* in the training set.  This has two
+issues:
+
+1. **Data leakage** — training on seasons *after* the eval year is not how
+   the predictor is used in production.  It inflates CV estimates and can
+   mask real generalisation gaps.
+2. **Timeout risk** — each fold trains 7+ models from scratch on ~14 seasons
+   of data (~8 000 rows).  With 7 folds (2018–2024) that is 49+ model fits,
+   often exceeding notebook/CI wall-clock limits.
+
+#### New approach: rolling Time-Series window
+
+Each fold now trains on a **fixed-width window** of consecutive seasons
+(default: 4 years) and evaluates on the immediately following season:
+
+| Fold | Train seasons | Eval season |
+|------|---------------|-------------|
+| 1    | 2010–2013     | 2014        |
+| 2    | 2011–2014     | 2015        |
+| …    | …             | …           |
+| 10   | 2019–2022     | 2023        |
+| 11   | 2020–2023     | 2024        |
+
+This mirrors real-world use: we always predict into an unseen future season
+using only a recent historical window.
+
+**Benefits over LOYO:**
+- No data leakage (training window always ends before the eval year)
+- Smaller training sets per fold → faster fits (4 seasons ≈ 2 400 rows)
+- Monotonically increasing time axis → variance estimation matches deployment
+
+#### Checkpointing
+
+Each fold's results are saved to disk immediately after completion:
+
+```
+results/cv_checkpoints/fold_2014.csv
+results/cv_checkpoints/fold_2015.csv
+…
+results/cv_checkpoints/fold_2024.csv
+```
+
+After all folds complete (or on `--resume`), the combined file is written to
+`results/cv_results.csv` as before.
+
+#### Usage
+
+```bash
+# Standard full run (11 folds, window=4)
+python scripts/03_train_models.py --cv
+
+# Custom window size
+python scripts/03_train_models.py --cv --window-size 5
+
+# Restrict to specific eval years
+python scripts/03_train_models.py --cv --cv-years 2020 2021 2022 2023 2024
+
+# Resume after a timeout — skips folds with existing checkpoints
+python scripts/03_train_models.py --cv --resume
+
+# Force-resume (re-run all folds, overwrite checkpoints)
+python scripts/03_train_models.py --cv --force
+```
+
+#### Files changed
+
+- `scripts/03_train_models.py` — replaced `run_cv()` with rolling-window
+  logic; added `--window-size` and `--resume` CLI flags; checkpointing to
+  `results/cv_checkpoints/`.
+- `README.md` — this entry.
+
+---
 
 ### v3.4 — Learning-to-Rank via `XGBRanker` (rank:pairwise)
 
