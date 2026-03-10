@@ -1,0 +1,6 @@
+label,n_features,val_avg_pts,hold_avg_pts
+baseline,35,11.67,9.75
++drv_dnf_rate_last10,36,10.43,8.79
++driver_circuit_dnf_rate,36,12.85,8.79
++constructor_dnf_rate,36,9.65,9.5
++all_dnf_candidates,38,12.85,10.62

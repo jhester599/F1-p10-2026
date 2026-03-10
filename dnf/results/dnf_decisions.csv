@@ -1,0 +1,4 @@
+feature,val_delta,hold_delta,decision
+drv_dnf_rate_last10,-1.24,-0.96,EXCLUDE
+driver_circuit_dnf_rate,1.18,-0.96,EXCLUDE
+constructor_dnf_rate,-2.02,-0.25,EXCLUDE

@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.4
+# F1 P10 Predictor · v3.41
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -89,7 +89,16 @@ F1-p10-2026/
 +-- results/                    # evaluation CSVs and plots
 |
 +-- weather/                    # weather feature investigation (concluded)
-    +-- WEATHER_STATUS.md       # full findings and verdict
+|   +-- WEATHER_STATUS.md       # full findings and verdict
+|
++-- dnf/                        # DNF signal feature investigation v3.41 (concluded)
+    +-- DNF_STATUS.md           # full findings and verdict (all features excluded)
+    +-- explore_dnf_features.py # exploration & incremental evaluation script
+    +-- results/
+        +-- dnf_candidate_stats.csv      # MI / correlation per candidate feature
+        +-- dnf_incremental_eval.csv     # model comparison results
+        +-- dnf_feature_importance.csv   # LightGBM importances, +all_dnf model
+        +-- dnf_decisions.csv            # INCLUDE/EXCLUDE verdict per feature
     +-- fetch_weather.py        # fetches race-day weather from Open-Meteo archive
     +-- evaluate_weather.py     # model comparison with/without weather features
     +-- weather_features.py     # feature engineering helpers
@@ -177,6 +186,34 @@ directly targeting the decision the model needs to make:
 > 60% Spearman ρ(grid, finish) + 20% inverse pos-change std-dev + 20% inverse DNF rate,
 > scaled to 1–10. Prior v3.3 values were hand-coded assumptions that diverged significantly
 > from empirical data for Americas (8.3→4.5), Baku (7.8→4.7), Vegas (1.0→5.2), Zandvoort (4.5→7.5).
+
+### Evaluated and excluded features — DNF signals (v3.41)
+
+Three additional DNF-oriented features were evaluated as standalone predictors
+in v3.41 to test whether granular DNF signals beyond `historical_dnf_rate` add
+predictive value.  **All three were excluded.**
+
+| Feature | Holdout Δ | MI(is_p10) | Decision |
+|---------|-----------|-----------|---------|
+| `drv_dnf_rate_last10` | −0.96 pts/race | 0.000625 | **Excluded** |
+| `driver_circuit_dnf_rate` | −0.96 pts/race | 0.000740 | **Excluded** |
+| `constructor_dnf_rate` | −0.25 pts/race | 0.000000 | **Excluded** |
+
+**Why they don't help:** DNF probability predicts whether a driver finishes the
+race at all, but carries no discriminative power over *which position* they
+finish in.  The conditional finish distribution (given classifying) is not
+skewed toward P10 for high-DNF-rate drivers.  All three features ranked in the
+bottom 12 of 38 features by LightGBM importance; individual holdout deltas are
+negative; mutual information with `is_p10` is < 0.001.
+
+The combined "+all_dnf_candidates" run showed a nominal +0.87 pts/race holdout
+gain, but this is attributed to noise: the individual features each hurt
+performance and there is no coherent mechanistic explanation for an interaction
+effect.  The 24-race holdout sample is too small to assign significance to a
+swing of this magnitude.
+
+> See `dnf/DNF_STATUS.md` for the full investigation report and
+> `dnf/results/` for supporting CSVs.
 
 ### Evaluated and excluded features — weather (Session 5)
 
