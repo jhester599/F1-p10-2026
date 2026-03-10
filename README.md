@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.41
+# F1 P10 Predictor · v3.5
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -509,6 +509,114 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.5 — Time-Series CV with Checkpointing (`--resume`)
+
+**Goal:** Replace the leave-one-year-out cross-validation with a proper
+rolling-window `TimeSeriesSplit` that prevents data leakage and add
+fault-tolerant checkpointing so a timeout never discards completed work.
+
+#### Problem with the old CV approach
+
+The original `run_cv()` used leave-one-year-out (LOYO): for each held-out
+year it trained on *all other years* in the training set.  This has two
+issues:
+
+1. **Data leakage** — training on seasons *after* the eval year is not how
+   the predictor is used in production.  It inflates CV estimates and can
+   mask real generalisation gaps.
+2. **Timeout risk** — each fold trains 7+ models from scratch on ~14 seasons
+   of data (~8 000 rows).  With 7 folds (2018–2024) that is 49+ model fits,
+   often exceeding notebook/CI wall-clock limits.
+
+#### New approach: rolling Time-Series window
+
+Each fold now trains on a **fixed-width window** of consecutive seasons
+(default: 4 years) and evaluates on the immediately following season:
+
+| Fold | Train seasons | Eval season |
+|------|---------------|-------------|
+| 1    | 2010–2013     | 2014        |
+| 2    | 2011–2014     | 2015        |
+| 3    | 2012–2015     | 2016        |
+| 4    | 2013–2016     | 2017        |
+| 5    | 2014–2017     | 2018        |
+| 6    | 2015–2018     | 2019        |
+| 7    | 2016–2019     | 2020        |
+| 8    | 2017–2020     | 2021        |
+| 9    | 2018–2021     | 2022        |
+| 10   | 2019–2022     | 2023        |
+| 11   | 2020–2023     | 2024        |
+| 12   | 2021–2024     | 2025        |
+
+This mirrors real-world use: we always predict into an unseen future season
+using only a recent historical window.
+
+**Benefits over LOYO:**
+- No data leakage (training window always ends before the eval year)
+- Smaller training sets per fold → faster fits (4 seasons ≈ 2 400 rows)
+- Monotonically increasing time axis → variance estimation matches deployment
+
+#### Full CV results (12 folds, 2014–2025, window=4)
+
+252 races evaluated per model across 12 seasons:
+
+| Model      | Avg pts/race | Exact P10 | Exact P10 % |
+|------------|-------------|-----------|-------------|
+| rf_reg     | **11.82**   | 22        | 8.7 %       |
+| ensemble   | 11.41       | 21        | 8.3 %       |
+| rf_clf     | 11.30       | 16        | 6.3 %       |
+| ridge      | 10.99       | 17        | 6.7 %       |
+| xgb_clf    | 10.95       | 18        | 7.1 %       |
+| xgb_ranker | 10.92       | 19        | 7.5 %       |
+| lgb_reg    | 10.36       | 12        | 4.8 %       |
+| xgb_reg    | 10.15       | 13        | 5.2 %       |
+
+#### Checkpointing
+
+Each fold's results are saved to disk immediately after completion:
+
+```
+results/cv_checkpoints/fold_2014.csv
+results/cv_checkpoints/fold_2015.csv
+…
+results/cv_checkpoints/fold_2025.csv
+results/cv_results.csv          ← combined (all folds)
+```
+
+After all folds complete (or on `--resume`), the combined file is written to
+`results/cv_results.csv` as before.
+
+#### Usage
+
+```bash
+# Standard full run (12 folds, 2014-2025, window=4)
+python scripts/03_train_models.py --cv
+
+# Custom window size
+python scripts/03_train_models.py --cv --window-size 5
+
+# Restrict to specific eval years
+python scripts/03_train_models.py --cv --cv-years 2020 2021 2022 2023 2024 2025
+
+# Resume after a timeout — skips folds with existing checkpoints
+python scripts/03_train_models.py --cv --resume
+
+# Force-resume (re-run all folds, overwrite checkpoints)
+python scripts/03_train_models.py --cv --force
+```
+
+#### Files changed
+
+- `scripts/03_train_models.py` — replaced `run_cv()` with rolling-window
+  logic; added `--window-size` and `--resume` CLI flags; checkpointing to
+  `results/cv_checkpoints/`; extended default eval range to 2014–2025;
+  auto-selects combined parquet when cv_years include 2025.
+- `results/cv_checkpoints/fold_2014.csv` … `fold_2025.csv` — 12 fold results.
+- `results/cv_results.csv` — combined 2 016-row CV results table.
+- `README.md` — this entry.
+
+---
 
 ### v3.4 — Learning-to-Rank via `XGBRanker` (rank:pairwise)
 
