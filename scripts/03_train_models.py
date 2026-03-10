@@ -148,8 +148,8 @@ def main() -> None:
     parser.add_argument("--cv", action="store_true", help="Run rolling Time-Series CV")
     parser.add_argument(
         "--cv-years", nargs="+", type=int,
-        default=list(range(2014, 2025)),  # eval years: 2014–2024 (11 folds with default window=4)
-        help="Years to use as CV evaluation targets (default: 2014–2024)",
+        default=list(range(2014, 2026)),  # eval years: 2014–2025 (12 folds with default window=4)
+        help="Years to use as CV evaluation targets (default: 2014–2025)",
     )
     parser.add_argument(
         "--window-size", type=int, default=4,
@@ -162,7 +162,14 @@ def main() -> None:
     args = parser.parse_args()
 
     # ── load training data ────────────────────────────────────────────────────
-    train_path = PROCESSED_DIR / f"features_{min(TRAIN_YEARS)}_{max(TRAIN_YEARS)}.parquet"
+    # If cv_years include years beyond TRAIN_YEARS (e.g. 2025), load the
+    # combined parquet that covers all available seasons.
+    all_cv_years = args.cv_years if args.cv else []
+    max_cv_year = max(all_cv_years) if all_cv_years else max(TRAIN_YEARS)
+    if max_cv_year > max(TRAIN_YEARS):
+        train_path = PROCESSED_DIR / f"features_{min(TRAIN_YEARS)}_{max_cv_year}.parquet"
+    else:
+        train_path = PROCESSED_DIR / f"features_{min(TRAIN_YEARS)}_{max(TRAIN_YEARS)}.parquet"
     if not train_path.exists():
         logger.error(
             "Training data not found at %s.\n"
@@ -198,7 +205,8 @@ def main() -> None:
 
     # ── cross-validation ──────────────────────────────────────────────────────
     if args.cv:
-        cv_years = [y for y in args.cv_years if y in TRAIN_YEARS]
+        available_years = sorted(train_df["year"].unique())
+        cv_years = [y for y in args.cv_years if y in available_years]
         if args.resume:
             pending = [y for y in cv_years if not _checkpoint_path(y).exists()]
             done = [y for y in cv_years if _checkpoint_path(y).exists()]

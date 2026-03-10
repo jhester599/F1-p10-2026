@@ -538,9 +538,16 @@ Each fold now trains on a **fixed-width window** of consecutive seasons
 |------|---------------|-------------|
 | 1    | 2010–2013     | 2014        |
 | 2    | 2011–2014     | 2015        |
-| …    | …             | …           |
+| 3    | 2012–2015     | 2016        |
+| 4    | 2013–2016     | 2017        |
+| 5    | 2014–2017     | 2018        |
+| 6    | 2015–2018     | 2019        |
+| 7    | 2016–2019     | 2020        |
+| 8    | 2017–2020     | 2021        |
+| 9    | 2018–2021     | 2022        |
 | 10   | 2019–2022     | 2023        |
 | 11   | 2020–2023     | 2024        |
+| 12   | 2021–2024     | 2025        |
 
 This mirrors real-world use: we always predict into an unseen future season
 using only a recent historical window.
@@ -550,6 +557,21 @@ using only a recent historical window.
 - Smaller training sets per fold → faster fits (4 seasons ≈ 2 400 rows)
 - Monotonically increasing time axis → variance estimation matches deployment
 
+#### Full CV results (12 folds, 2014–2025, window=4)
+
+252 races evaluated per model across 12 seasons:
+
+| Model      | Avg pts/race | Exact P10 | Exact P10 % |
+|------------|-------------|-----------|-------------|
+| rf_reg     | **11.82**   | 22        | 8.7 %       |
+| ensemble   | 11.41       | 21        | 8.3 %       |
+| rf_clf     | 11.30       | 16        | 6.3 %       |
+| ridge      | 10.99       | 17        | 6.7 %       |
+| xgb_clf    | 10.95       | 18        | 7.1 %       |
+| xgb_ranker | 10.92       | 19        | 7.5 %       |
+| lgb_reg    | 10.36       | 12        | 4.8 %       |
+| xgb_reg    | 10.15       | 13        | 5.2 %       |
+
 #### Checkpointing
 
 Each fold's results are saved to disk immediately after completion:
@@ -558,7 +580,8 @@ Each fold's results are saved to disk immediately after completion:
 results/cv_checkpoints/fold_2014.csv
 results/cv_checkpoints/fold_2015.csv
 …
-results/cv_checkpoints/fold_2024.csv
+results/cv_checkpoints/fold_2025.csv
+results/cv_results.csv          ← combined (all folds)
 ```
 
 After all folds complete (or on `--resume`), the combined file is written to
@@ -567,14 +590,14 @@ After all folds complete (or on `--resume`), the combined file is written to
 #### Usage
 
 ```bash
-# Standard full run (11 folds, window=4)
+# Standard full run (12 folds, 2014-2025, window=4)
 python scripts/03_train_models.py --cv
 
 # Custom window size
 python scripts/03_train_models.py --cv --window-size 5
 
 # Restrict to specific eval years
-python scripts/03_train_models.py --cv --cv-years 2020 2021 2022 2023 2024
+python scripts/03_train_models.py --cv --cv-years 2020 2021 2022 2023 2024 2025
 
 # Resume after a timeout — skips folds with existing checkpoints
 python scripts/03_train_models.py --cv --resume
@@ -587,7 +610,10 @@ python scripts/03_train_models.py --cv --force
 
 - `scripts/03_train_models.py` — replaced `run_cv()` with rolling-window
   logic; added `--window-size` and `--resume` CLI flags; checkpointing to
-  `results/cv_checkpoints/`.
+  `results/cv_checkpoints/`; extended default eval range to 2014–2025;
+  auto-selects combined parquet when cv_years include 2025.
+- `results/cv_checkpoints/fold_2014.csv` … `fold_2025.csv` — 12 fold results.
+- `results/cv_results.csv` — combined 2 016-row CV results table.
 - `README.md` — this entry.
 
 ---
