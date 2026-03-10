@@ -27,9 +27,13 @@ Models trained:
   7. XGBoost Ranker            (rank:pairwise, P10-centred relevance target)  ← v3.4
   8. WeightedEnsemble          (CV-weighted blend of all base models)
 
-Ensemble weights (derived from leave-one-season-out CV):
-  xgb_clf: 4.0  |  rf_clf: 2.5  |  lgb_reg: 2.0  |  rf_reg: 1.0
-  xgb_reg: 0.3  |  xgb_ranker: 3.9 (calibrated — 11.38 avg pts/race, 2025 holdout)
+Ensemble weights (v3.5 — derived from 12-fold rolling Time-Series CV, 2014–2025):
+  rf_reg: 4.0  |  rf_clf: 2.75  |  ridge: 2.0  |  xgb_clf: 2.0
+  xgb_ranker: 1.75  |  lgb_reg: 0.5  |  xgb_reg: 0.25
+
+  Old LOYO weights (v3.4): xgb_clf 4.0, xgb_ranker 3.9, rf_clf 2.5, lgb_reg 2.0,
+  rf_reg 1.0, xgb_reg 0.3 — these over-weighted XGB models that looked strong under
+  leave-one-year-out but under-perform in proper temporal (rolling-window) validation.
 
 For each race we iterate over all drivers, score each with the model, then
 select the best candidate.
@@ -80,17 +84,26 @@ except ImportError:
 
 # ── weighted ensemble ──────────────────────────────────────────────────────────
 
-# Weights derived from leave-one-season-out CV (avg fantasy pts):
-#   xgb_clf 11.43 → 4.0 | rf_clf 11.02 → 2.5 | lgb_reg 10.78 → 2.0
-#   rf_reg   9.99 → 1.0 | xgb_reg 8.30 → 0.3
-# v3.4: xgb_ranker weight calibrated from 2025 holdout (11.38 avg pts/race → 3.9).
+# v3.5 weights — derived from 12-fold rolling Time-Series CV (2014–2025, window=4).
+# Each weight is proportional to avg fantasy pts per race above the per-fold floor,
+# anchored so the best model = 4.0.  Ridge added as a linear-diversity component.
+#
+# Model performance (252 races, 12 folds):
+#   rf_reg     11.82 avg pts  CV=0.58  → 4.00  (was 1.0 — severely under-weighted)
+#   rf_clf     11.30 avg pts  CV=0.61  → 2.75  (was 2.5 — slight increase)
+#   ridge      10.99 avg pts  CV=0.60  → 2.00  (was 0.0 — new: linear diversity)
+#   xgb_clf    10.95 avg pts  CV=0.64  → 2.00  (was 4.0 — over-weighted by LOYO)
+#   xgb_ranker 10.92 avg pts  CV=0.65  → 1.75  (was 3.9 — over-weighted by LOYO)
+#   lgb_reg    10.36 avg pts  CV=0.63  → 0.50  (was 2.0 — over-weighted by LOYO)
+#   xgb_reg    10.15 avg pts  CV=0.67  → 0.25  (was 0.3 — minimal, kept for diversity)
 ENSEMBLE_WEIGHTS: dict[str, float] = {
-    "xgb_clf":    4.0,
-    "rf_clf":     2.5,
-    "lgb_reg":    2.0,
-    "rf_reg":     1.0,
-    "xgb_ranker": 3.9,   # v3.4 — calibrated from 2025 holdout (11.38 avg pts/race)
-    "xgb_reg":    0.3,
+    "rf_reg":     4.00,
+    "rf_clf":     2.75,
+    "ridge":      2.00,
+    "xgb_clf":    2.00,
+    "xgb_ranker": 1.75,
+    "lgb_reg":    0.50,
+    "xgb_reg":    0.25,
 }
 
 
