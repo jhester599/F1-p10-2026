@@ -23,7 +23,7 @@ bahrain,ridge,1.0,1
 bahrain,xgb_clf,12.0,1
 bahrain,xgb_ranker,12.0,1
 bahrain,xgb_reg,18.0,1
-baku,ensemble,4.0,1
+baku,ensemble,8.0,1
 baku,lgb_reg,8.0,1
 baku,rf_clf,8.0,1
 baku,rf_reg,4.0,1
@@ -55,7 +55,7 @@ imola,ridge,6.0,1
 imola,xgb_clf,18.0,1
 imola,xgb_ranker,8.0,1
 imola,xgb_reg,1.0,1
-interlagos,ensemble,12.0,1
+interlagos,ensemble,15.0,1
 interlagos,lgb_reg,4.0,1
 interlagos,rf_clf,18.0,1
 interlagos,rf_reg,12.0,1
@@ -103,7 +103,7 @@ monaco,ridge,10.0,1
 monaco,xgb_clf,18.0,1
 monaco,xgb_ranker,25.0,1
 monaco,xgb_reg,10.0,1
-monza,ensemble,12.0,1
+monza,ensemble,1.0,1
 monza,lgb_reg,12.0,1
 monza,rf_clf,1.0,1
 monza,rf_reg,12.0,1
@@ -143,7 +143,7 @@ silverstone,ridge,18.0,1
 silverstone,xgb_clf,18.0,1
 silverstone,xgb_ranker,18.0,1
 silverstone,xgb_reg,15.0,1
-spa,ensemble,12.0,1
+spa,ensemble,8.0,1
 spa,lgb_reg,8.0,1
 spa,rf_clf,8.0,1
 spa,rf_reg,12.0,1

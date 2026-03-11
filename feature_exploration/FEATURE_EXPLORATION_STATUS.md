@@ -194,6 +194,7 @@ due to its bagging mechanism.
 | v3.63 | 2026-03-11 | `drv_form_trend` accepted (+1.083 pts); added to FEATURE_COLS | 38 |
 | v3.64 | 2026-03-11 | Full 12-fold CV re-run; ensemble weights recalibrated to v3.64 | 38 |
 | v3.65 | 2026-03-11 | Era-stratified sample weights: V8=0.25, hybrid=0.60, GE=1.00 | 38 |
+| v3.66 | 2026-03-11 | CV re-run with era weights; ensemble recalibrated (rf_clf=4.00, xgb_ranker=3.25) | 38 |
 
 ---
 

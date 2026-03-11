@@ -265,6 +265,31 @@ set (35 features) is unchanged.
 
 See `feature_exploration/FEATURE_EXPLORATION_STATUS.md` for full results and methodology.
 
+### v3.66 — Era-Weighted CV Re-run + Ensemble Recalibration (2026-03-11)
+
+Full 12-fold rolling Time-Series CV (2014–2025, window=4, 252 races) re-run with era-stratified
+sample weights active (V8=0.25, turbo-hybrid=0.60, ground-effect=1.00).
+
+**Era-weighted CV results (252 races, 12 folds):**
+
+| Model | CV avg pts/race |
+|-------|----------------|
+| ensemble | 11.62 |
+| rf_clf | 11.40 |
+| xgb_ranker | 11.21 |
+| rf_reg | 11.17 |
+| ridge | 11.03 |
+| lgb_reg | 10.80 |
+| xgb_clf | 10.71 |
+| xgb_reg | 10.43 |
+
+**New ENSEMBLE_WEIGHTS (v3.66)** updated in `src/models.py`:
+`rf_clf=4.00, xgb_ranker=3.25, rf_reg=3.00, ridge=2.50, lgb_reg=1.50, xgb_clf=1.25, xgb_reg=0.25, grid_heuristic=2.00, champ_heuristic=2.00`
+
+**2025 holdout note:** Individual models unchanged from v3.65 (rf_clf=12.00, xgb_ranker=11.83).
+Ensemble drops from 10.50 → 10.17 due to reduced diversity (top-2 models now dominate weighting).
+CV remains the primary reliability estimate; individual models recommended for 2026 picks.
+
 ### v3.65 — Era-Stratified Sample Weights (2026-03-11)
 
 F1 three-era weighting added to training: V8 (2010–2013) = 0.25, turbo-hybrid (2014–2021) = 0.60,
@@ -275,8 +300,7 @@ ground-effect (2022+) = 1.00.  Implemented in `config.py` (ERA_WEIGHTS, era_samp
   xgb_ranker: 8.54 → 11.83 (+3.29)  |  ensemble: 8.83 → 10.50 (+1.67)
   xgb_clf: 10.08 → 10.58 (+0.50)   |  rf_clf: unchanged at 12.00
 
-Note: The v3.64 ensemble weights (from uniform-weighted CV) are still in use.
-A CV re-run with era weights would recalibrate them; deferred to v3.66 if needed.
+Note: v3.64 ensemble weights (uniform-weighted CV) recalibrated in v3.66 with era weights.
 
 ### v3.64 — Full 12-Fold CV Re-run + Ensemble Re-weighting (2026-03-11)
 
@@ -310,14 +334,14 @@ is the more reliable production estimate.
 - `rf_reg` and regressors (`ridge`, `xgb_reg`) still over-weight career form for
   drivers starting from the back (e.g., Verstappen P20 → predicted ≈ P10).
   Possible fix: add a grid-position penalty term or cap career features.
-- Ensemble weights are now v3.64-calibrated (38-feature, 12-fold CV). ✅ Done.
-- The 2025 holdout era-conflict is partially resolved by v3.65 era weights (ensemble
-  8.83 → 10.50). `rf_reg` remains weak on 2025 (8.08 → 8.58) because tree splits on
-  interaction features still capture some V8-era structure even with 0.25 weighting.
-  Future fix: rolling-window production training (2021–2024 only) or era weight tuning.
-- v3.64 ensemble weights derived from **uniform-weighted CV**. A CV re-run with era
-  weights may recalibrate them, particularly increasing xgb_ranker weight (recovered
-  most from era weighting on holdout). Deferred: CV with era weights ≈ 30 min.
+- Ensemble weights now v3.66-calibrated (38-feature, 12-fold CV, era weights). ✅ Done.
+- Era-weighted CV re-run completed in v3.66. ✅ Done.
+- `rf_reg` remains weak on 2025 holdout (8.58) despite era weighting. Tree splits on
+  interaction features still capture some V8-era structure. Future fix: rolling-window
+  production training (2021–2024 only) or stricter era weight tuning.
+- v3.66 ensemble diversity reduction noted: top-2 model dominance reduces hedging benefit.
+  If ensemble underperforms in 2026, consider adding a diversity penalty to weight derivation
+  or using a soft-max blend instead of linear weights.
 - New v3.1–v3.31 features (`fp2_position`, `historical_dnf_rate`, etc.) all rank
   below the standalone importance threshold but are retained due to the ensemble
   lift. If a v4.0 feature set is designed, these should be re-evaluated.
