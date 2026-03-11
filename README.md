@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.5
+# F1 P10 Predictor · v3.66
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -113,7 +113,7 @@ F1-p10-2026/
 
 ---
 
-## Features (35 total)
+## Features (38 total)
 
 All features are derived from information available **after qualifying, before the race**.
 
@@ -186,6 +186,16 @@ directly targeting the decision the model needs to make:
 > 60% Spearman ρ(grid, finish) + 20% inverse pos-change std-dev + 20% inverse DNF rate,
 > scaled to 1–10. Prior v3.3 values were hand-coded assumptions that diverged significantly
 > from empirical data for Americas (8.3→4.5), Baku (7.8→4.7), Vegas (1.0→5.2), Zandvoort (4.5→7.5).
+
+### Interaction and trend features (3) — accepted in v3.61–v3.63
+
+| Feature | Formula | Rank (rf_reg) | Description |
+|---|---|---|---|
+| `q_gap_sq` | `q_gap_pct²` | #12/38 | Quadratic qualifying pace penalty — captures non-linear deficit for backmarkers |
+| `grid_x_overtaking` | `grid_position × overtaking_difficulty` | #7/38 | Grid position interaction with circuit stickiness: P12 at Monaco ≠ P12 at Albert Park |
+| `drv_form_trend` | `avg_fin_last3 − avg_fin_last5` | #16/38 | Driver velocity: negative = improving over recent 3 vs 5-race baseline |
+
+> See `feature_exploration/FEATURE_EXPLORATION_STATUS.md` for the full 20-candidate evaluation.
 
 ### Evaluated and excluded features — DNF signals (v3.41)
 
@@ -332,20 +342,24 @@ Blends all seven base models using fixed weights on a common normalised scale:
 
 All per-model scores are min-max normalised within each race before blending.
 
-| Model | Weight | Status |
-|---|---|---|
-| `xgb_clf` | 4.0 | CV-calibrated |
-| `rf_clf` | 2.5 | CV-calibrated |
-| `lgb_reg` | 2.0 | CV-calibrated |
-| `rf_reg` | 1.0 | CV-calibrated |
-| `xgb_ranker` | 3.9 | Calibrated — 2025 holdout (11.38 avg pts/race) |
-| `xgb_reg` | 0.3 | CV-calibrated |
-| `ridge` | 0.2 | CV-calibrated |
+| Model | Weight | CV avg pts/race | Notes |
+|---|---|---|---|
+| `rf_clf` | **4.00** | 11.40 | Best CV model under era weights; most robust to turbo-era data |
+| `xgb_ranker` | **3.25** | 11.21 | Large recovery with era weights (+3.29 on 2025 holdout) |
+| `rf_reg` | **3.00** | 11.17 | Solid; recovered partially with era weights |
+| `grid_heuristic` | **2.00** | — | Analytic: 1/(1+\|grid_pos−10\|); independent of fitted models |
+| `champ_heuristic` | **2.00** | — | Analytic: 1/(1+\|champ_pos−10\|); clipped to [1,20] |
+| `ridge` | **2.50** | 11.03 | Linear model; stable across eras |
+| `lgb_reg` | **1.50** | 10.80 | Improved under era weighting |
+| `xgb_clf` | **1.25** | 10.71 | Lifted by reduced V8-era noise |
+| `xgb_reg` | **0.25** | 10.43 | Weakest CV; kept minimal for diversity |
 
-> **Note on weights:** `xgb_clf`, `rf_clf`, `lgb_reg`, `rf_reg`, `xgb_reg` weights
-> were derived under the prior binary classifier architecture and may benefit from
-> recalibration with `python scripts/03_train_models.py --cv`. The `xgb_ranker`
-> weight (3.9) is calibrated from the 2025 holdout evaluation.
+> **v3.66 calibration:** Weights derived from 12-fold rolling Time-Series CV (2014–2025, window=4)
+> **with era-stratified sample weights active** (V8=0.25, turbo-hybrid=0.60, ground-effect=1.00).
+> Each weight is proportional to avg fantasy pts per race above the per-fold floor (xgb_reg = 10.43),
+> anchored so the best model = 4.0. The two analytic heuristics are held at 2.0 (unchanged).
+> Compared with v3.64 (uniform weights), `rf_clf` replaces `rf_reg` as the top-weighted model;
+> `xgb_ranker` rises from 1.50→3.25 reflecting its strong response to era weighting.
 
 ---
 
@@ -394,36 +408,44 @@ Outputs:
 
 ## 2025 Season Results
 
-Models trained on 2010–2024 data, evaluated on all 24 races of the 2025 season.
+Models evaluated on all 24 races of the 2025 season. All trained on 2010–2024.
 
-Results below are from the **v3.4 model** (35 features, includes `xgb_ranker`).
-v3.1 avg pts shown for comparison where available.
+### v3.66 results — 38 features, era-weighted CV weights, era-stratified training
 
-| Model | Avg Pts/Race | Avg Regret | Exact P10 | Within 2 pos | v3.1 Avg Pts | Δ |
-|---|---|---|---|---|---|---|
-| Oracle (ceiling) | 25.00 | 0.00 | 24 | 100% | — | — |
-| **lgb_reg** | **12.38** | 5.17 | 2 | 37.5% | 10.25 | **+2.13 ▲** |
-| **ensemble** | **12.00** | 5.54 | 2 | 41.7% | 12.62 | −0.62 ▼ |
-| **xgb_ranker** | **11.38** | 6.17 | 2 | 45.8% | — | new ← v3.4 |
-| rf_clf | 10.88 | 6.67 | 2 | 33.3% | 11.46 | −0.58 ▼ |
-| ridge | 10.67 | 6.88 | 1 | 33.3% | 10.33 | +0.34 ▲ |
-| xgb_reg | 10.50 | 7.04 | 1 | 33.3% | 10.29 | +0.21 ▲ |
-| xgb_clf | 10.29 | 7.25 | 1 | 45.8% | 11.67 | −1.38 ▼ |
-| rf_reg | 8.92 | 8.62 | 1 | 29.2% | 9.04 | −0.12 ▼ |
-| naive_grid_p10 | 14.04 | — | 3 | 50.0% | — | — |
+| Model | Avg Pts/Race | Exact P10 | Within 2 pos | v3.65 (v3.64 wts) | Δ v3.66 weights |
+|---|---|---|---|---|---|
+| naive_grid_p10 | 14.04 | 3 | 50.0% | — | — |
+| **rf_clf** | **12.00** | 2 | 50.0% | 12.00 | 0.00 |
+| **xgb_ranker** | **11.83** | 2 | 41.7% | 11.83 | 0.00 |
+| ridge | 10.71 | 0 | 37.5% | 10.71 | 0.00 |
+| xgb_clf | 10.58 | 1 | 33.3% | 10.58 | 0.00 |
+| lgb_reg | 10.38 | 1 | 29.2% | 10.38 | 0.00 |
+| xgb_reg | 10.25 | 1 | 33.3% | 10.25 | 0.00 |
+| **ensemble** | **10.17** | 1 | 29.2% | 10.50 | −0.33 |
+| rf_reg | 8.58 | 0 | 16.7% | 8.58 | 0.00 |
 
-> **`naive_grid_p10` (14.04 pts) remains the benchmark.** `xgb_ranker` enters at
-> 11.38 avg pts/race on its first evaluation — 3rd overall among individual models,
-> beating both `xgb_reg` (+0.88) and `xgb_clf` (+1.09). Its 45.8% within-2-positions
-> rate (tied with `xgb_clf`) is the best among all models, confirming the pairwise
-> ranking objective places drivers near P10 even when not exact.
+> **v3.66 ensemble note:** Recalibrating weights from era-weighted CV (rf_clf=4.00, xgb_ranker=3.25)
+> concentrates ensemble votes on the two dominant models, reducing diversity and dropping ensemble
+> holdout from 10.50 → 10.17. Individual models `rf_clf` (12.00) and `xgb_ranker` (11.83) remain
+> the strongest picks. This is a known trade-off when CV and holdout rankings diverge.
 >
-> **Recommended pick for 2026:** `ensemble` (12.00 avg pts), now boosted by
-> the calibrated `xgb_ranker` weight of 3.9.
+> **12-fold rolling CV (4-year window, 252 races) with era weights — v3.66:**
 >
-> **Note:** The ensemble dropped slightly vs v3.1 (12.62 → 12.00). The v3.1
-> ensemble weights were calibrated on an earlier data pipeline; fresh CV
-> recalibration (`python scripts/03_train_models.py --cv`) is recommended.
+> | Model | CV avg pts/race (12 folds, era-weighted) |
+> |---|---|
+> | **ensemble** | **11.62** |
+> | rf_clf | 11.40 |
+> | xgb_ranker | 11.21 |
+> | rf_reg | 11.17 |
+> | ridge | 11.03 |
+> | lgb_reg | 10.80 |
+> | xgb_clf | 10.71 |
+> | xgb_reg | 10.43 |
+>
+> **Recommended pick for 2026:** `rf_clf` (12.00 on 2025 holdout, 11.40 CV avg).
+> `xgb_ranker` is the second-best individual pick (11.83 holdout, 11.21 CV avg).
+> `ensemble` leads CV (11.62) but underperforms on holdout due to reduced diversity — use
+> individual models as primary picks.
 
 ---
 
@@ -509,6 +531,209 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.66 — Era-Weighted CV Re-run + Ensemble Recalibration
+
+**Date:** 2026-03-11
+**Branch:** `claude/explore-model-features-BVwu5`
+**Features:** 38 (unchanged)
+
+Full 12-fold rolling Time-Series CV (2014–2025, window=4, 252 races) re-run with era-stratified
+sample weights active (V8=0.25, turbo-hybrid=0.60, ground-effect=1.00) to replace the v3.64
+weights that were calibrated without era weighting.
+
+#### Era-Weighted CV Results (252 races, 12 folds)
+
+| Model | CV avg pts/race | Change vs v3.64 (uniform) |
+|---|---|---|
+| **ensemble** | **11.62** | +0.10 |
+| rf_clf | 11.40 | +0.09 |
+| xgb_ranker | 11.21 | **+0.43** |
+| rf_reg | 11.17 | −0.39 |
+| ridge | 11.03 | −0.12 |
+| lgb_reg | 10.80 | +0.36 |
+| xgb_clf | 10.71 | +0.35 |
+| xgb_reg | 10.43 | −0.44 |
+
+#### New Ensemble Weights (v3.66)
+
+| Model | v3.64 weight | v3.66 weight | Change |
+|---|---|---|---|
+| `rf_clf` | 3.25 | **4.00** | +0.75 ▲ |
+| `xgb_ranker` | 1.50 | **3.25** | +1.75 ▲ |
+| `rf_reg` | 4.00 | **3.00** | −1.00 ▼ |
+| `ridge` | 2.75 | **2.50** | −0.25 |
+| `grid_heuristic` | 2.00 | **2.00** | — |
+| `champ_heuristic` | 2.00 | **2.00** | — |
+| `lgb_reg` | 0.25 | **1.50** | +1.25 ▲ |
+| `xgb_clf` | 0.25 | **1.25** | +1.00 ▲ |
+| `xgb_reg` | 1.75 | **0.25** | −1.50 ▼ |
+
+#### 2025 Holdout — Individual Models Unchanged; Ensemble Drops
+
+Era-weighted CV correctly identifies `rf_clf` and `xgb_ranker` as the strongest models.
+However, concentrating ensemble weight on these two reduces diversity, causing the ensemble
+to converge on the same picks and lose the hedging benefit.
+
+| Metric | v3.65 ensemble | v3.66 ensemble | Δ |
+|---|---|---|---|
+| 2025 holdout pts/race | 10.50 | 10.17 | −0.33 |
+| CV avg pts/race | — | 11.62 | — |
+
+**Conclusion:** For 2026 race predictions, favour `rf_clf` or `xgb_ranker` as primary picks
+over the ensemble. The ensemble remains the most reliable CV estimate but underperforms on
+the 24-race holdout due to reduced model diversity.
+
+---
+
+### v3.65 — Era-Stratified Sample Weights
+
+**Date:** 2026-03-11
+**Branch:** `claude/explore-model-features-BVwu5`
+**Features:** 38 (unchanged)
+
+F1 has three distinct regulatory eras with different positional dynamics. Training all
+2010–2024 data with equal weight caused the pre-turbo era (2010–2013) to teach patterns
+that conflict with the new interaction features (`grid_x_overtaking`, `drv_form_trend`).
+
+#### Era Boundaries and Weights
+
+| Era | Years | Weight | Rationale |
+|-----|-------|--------|-----------|
+| V8 naturally aspirated | 2010–2013 | **0.25** | No settled DRS, different aero, `overtaking_difficulty` values don't apply to this era |
+| Turbo-hybrid (V6) | 2014–2021 | **0.60** | Stable rules, `OVERTAKING_DIFFICULTY` calibrated here; partially superseded by 2022 reset |
+| Ground effect / new aero | 2022–present | **1.00** | Current regulations; most predictive of 2026 conditions |
+
+Training data composition: 1,702 V8 rows (27.5%) → effective weight 0.25 → ~2.1% influence.
+3,112 turbo-hybrid rows (50.4%) → effective weight 0.60 → ~44%. 1,359 GE rows (22%) → full weight.
+
+#### 2025 Holdout Impact
+
+| Model | Without era weights | With era weights | Δ |
+|---|---|---|---|
+| xgb_ranker | 8.54 | **11.83** | **+3.29** |
+| ensemble | 8.83 | **10.50** | **+1.67** |
+| xgb_clf | 10.08 | 10.58 | +0.50 |
+| rf_reg | 8.08 | 8.58 | +0.50 |
+| rf_clf | 12.08 | 12.00 | −0.08 |
+
+The `xgb_ranker` (whose pairwise relevance objective is most sensitive to positional dynamics)
+saw the largest recovery (+3.29). `rf_clf` was already robust and remained stable.
+
+#### Implementation
+
+`ERA_WEIGHTS` and `era_sample_weight()` added to `config.py`. `train_all()` in `src/models.py`
+accepts `use_era_weights=True` (default). All models pass `sample_weight` at fit time;
+`XGBRanker` uses one weight per query group (race) as required by the pairwise API.
+
+---
+
+### v3.64 — Full 12-Fold CV Re-run + Ensemble Re-weighting
+
+**Date:** 2026-03-11
+**Branch:** `claude/explore-model-features-BVwu5`
+**Features:** 38 (unchanged from v3.63)
+
+Full 12-fold rolling Time-Series CV (2014–2025, window=4, 252 races) re-run on the
+complete 38-feature set to replace the stale v3.5 ensemble weights.
+
+#### CV Results (252 races, 12 folds)
+
+| Model | Avg Pts/Race | Change vs v3.5 |
+|---|---|---|
+| rf_reg | 11.56 | −0.26 |
+| ensemble (v3.64 weights) | 11.52 | — |
+| rf_clf | 11.31 | +0.01 |
+| ridge | 11.15 | +0.16 |
+| xgb_reg | 10.87 | **+0.72** |
+| xgb_ranker | 10.78 | −0.14 |
+| lgb_reg | 10.44 | +0.08 |
+| xgb_clf | 10.36 | **−0.59** |
+
+#### New Ensemble Weights (v3.64)
+
+Derived using the same proportional-to-floor methodology as v3.5 (floor = weakest model,
+best = 4.0). Key changes vs v3.5:
+
+| Model | Old (v3.5) | New (v3.64) | Δ |
+|---|---|---|---|
+| rf_reg | 4.00 | 4.00 | — |
+| rf_clf | 2.75 | **3.25** | +0.50 |
+| ridge | 2.00 | **2.75** | +0.75 |
+| xgb_reg | 0.25 | **1.75** | +1.50 |
+| xgb_ranker | 1.75 | **1.50** | −0.25 |
+| lgb_reg | 0.50 | **0.25** | −0.25 |
+| xgb_clf | 2.00 | **0.25** | −1.75 |
+| grid_heuristic | 2.00 | 2.00 | — |
+| champ_heuristic | 2.00 | 2.00 | — |
+
+**Interpretation:** The new interaction features (`grid_x_overtaking`, `q_gap_sq`,
+`drv_form_trend`) provide continuous signal that benefits regression models (`xgb_reg` +1.50,
+`ridge` +0.75, `rf_clf` +0.50) while `xgb_clf` suffers from over-parameterisation on
+the new feature space.
+
+#### Feature Importances (new features, trained on 2010–2024)
+
+| Feature | rf_reg rank | rf_reg importance |
+|---|---|---|
+| `grid_x_overtaking` | #7/38 | 2.04% |
+| `q_gap_sq` | #12/38 | 1.12% |
+| `drv_form_trend` | #16/38 | 1.01% |
+
+---
+
+### v3.63 — Feature Exploration: 3 New Predictors Accepted
+
+**Branch:** `claude/explore-model-features-BVwu5`
+**Date:** 2026-03-11
+**Features:** 35 → 38 (+3 accepted from 20 candidates tested)
+
+#### Methodology
+
+A systematic iterative feature exploration was conducted using a 1-fold
+holdout (train 2021–2023, test 2024) with `rf_reg` and `lgb_reg` as the
+primary screening models. Twenty candidate features were tested sequentially
+— each accepted feature joins the baseline before the next test — ensuring
+only incremental, non-redundant value is rewarded.
+
+See `feature_exploration/FEATURE_EXPLORATION_STATUS.md` for full results.
+
+#### Accepted Features
+
+| Version | Feature | Formula | Δ pts/race |
+|---------|---------|---------|------------|
+| v3.61 | `q_gap_sq` | `q_gap_pct²` | **+0.833** |
+| v3.62 | `grid_x_overtaking` | `grid_position × overtaking_difficulty` | **+1.208** |
+| v3.63 | `drv_form_trend` | `avg_fin_last3 − avg_fin_last5` | **+1.083** |
+
+**`q_gap_sq`** — Squaring the percentage gap to pole time captures the non-linear
+nature of qualifying pace deficits. A driver 4% off pole is far worse than
+2× a driver 2% off; the squared term explicitly encodes this relationship.
+
+**`grid_x_overtaking`** — The strongest new feature. Starting P12 on a Monaco-like
+circuit (overtaking_difficulty ≈ 7) is fundamentally different from P12 at
+Albert Park (difficulty ≈ 4.7). The product term explicitly captures this
+interaction that the individual features cannot.
+
+**`drv_form_trend`** — `avg_fin_last3 − avg_fin_last5` measures whether a driver
+is currently on an improving (negative) or worsening (positive) trajectory.
+Captured strongly by LightGBM, likely because improving drivers often convert
+into P10 zone finishes even from non-ideal grid positions.
+
+#### Discarded Features (17)
+
+The following 17 candidates were discarded as not incrementally predictive:
+`team_qual_fin_delta`, `fp2_vs_grid`, `drv_pts_per_race`, `drv_teammate_qual_delta`,
+`grid_position_sq`, `is_midfield_team`, `drv_recent_vs_trend`, `avg_qual_last5`,
+`avg_fin_last10`, `drv_pts_last5`, `drv_p10_zone_last5`, `circ_avg_qual`,
+`drv_best_fin_last5`, `drv_worst_fin_last5`, `team_finish_std_season`,
+`circ_recent_fin`, `drv_in_points_last5`.
+
+Most were redundant with existing features (e.g., `drv_pts_last5` is collinear
+with `pts_last3` + `drv_champ_pts`). Several hurt LightGBM due to feature
+collinearity in the small 3-year training window.
+
+---
 
 ### v3.5 — Time-Series CV with Checkpointing (`--resume`)
 

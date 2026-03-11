@@ -443,6 +443,79 @@ def build_feature_matrix(
                 "overtaking_difficulty":     overtaking_difficulty,
             })
 
+            # ── Category B candidate features (feature_exploration v3.6) ────
+            # These extra columns are NOT in FEATURE_COLS yet — they are tested
+            # iteratively by feature_exploration/test_feature.py.  Each that
+            # passes the acceptance threshold will be added to FEATURE_COLS and
+            # the version incremented by +0.01.
+
+            # 11. avg_qual_last5 — 5-race rolling qualifying average
+            avg_qual5 = _rolling_mean(qual_list, 5, fill=float(MISSING_POSITION))
+
+            # 12. avg_fin_last10 — 10-race rolling finish average
+            avg_fin10 = _rolling_mean(pos_list, 10, fill=float(MISSING_POSITION))
+
+            # 13. drv_pts_last5 — sum of championship points over last 5 races
+            drv_pts_last5 = sum(float(p) for p in pts_list[-5:])
+
+            # 14. drv_p10_zone_last5 — P8–P12 finish rate over last 5 races
+            # (last5_pos already computed above from pos_list[-5:])
+            drv_p10_zone_last5 = (
+                sum(1 for p in last5_pos if 8 <= p <= 12) / len(last5_pos)
+                if last5_pos else 0.0
+            )
+
+            # 15. circ_avg_qual — driver's career avg qualifying position at circuit
+            circ_qual_list = [h["grid"] for h in circ_hist]
+            circ_avg_qual = (
+                float(np.mean(circ_qual_list)) if circ_qual_list else float(MISSING_POSITION)
+            )
+
+            # 16. drv_best_fin_last5 — best finish position in last 5 races
+            drv_best_fin_last5 = (
+                float(min(last5_pos)) if last5_pos else float(MISSING_POSITION)
+            )
+
+            # 17. drv_worst_fin_last5 — worst finish position in last 5 races
+            drv_worst_fin_last5 = (
+                float(max(last5_pos)) if last5_pos else float(MISSING_POSITION)
+            )
+
+            # 18. team_finish_std_season — std dev of team finish positions this season
+            team_fin_season_all = (
+                team_season[team_season["constructor_id"] == cid]["finish_position"].values
+            )
+            team_finish_std_season = (
+                float(np.std(team_fin_season_all))
+                if len(team_fin_season_all) >= 2 else float(MISSING_POSITION)
+            )
+
+            # 19. circ_recent_fin — avg of driver's last 2 finishes at this circuit
+            circ_recent_pos = [h["pos"] for h in circ_hist[-2:]]
+            circ_recent_fin = (
+                float(np.mean(circ_recent_pos)) if circ_recent_pos else float(MISSING_POSITION)
+            )
+
+            # 20. drv_in_points_last5 — fraction of last 5 races finishing ≤ 10
+            drv_in_points_last5 = (
+                sum(1 for p in last5_pos if p <= 10) / len(last5_pos)
+                if last5_pos else 0.0
+            )
+
+            # Attach candidate features to the row dict (already appended above)
+            feature_rows[-1].update({
+                "avg_qual_last5":        avg_qual5,
+                "avg_fin_last10":        avg_fin10,
+                "drv_pts_last5":         drv_pts_last5,
+                "drv_p10_zone_last5":    drv_p10_zone_last5,
+                "circ_avg_qual":         circ_avg_qual,
+                "drv_best_fin_last5":    drv_best_fin_last5,
+                "drv_worst_fin_last5":   drv_worst_fin_last5,
+                "team_finish_std_season": team_finish_std_season,
+                "circ_recent_fin":       circ_recent_fin,
+                "drv_in_points_last5":   drv_in_points_last5,
+            })
+
             # update history AFTER extracting features (no leakage)
             drv_history.setdefault(did, []).append({
                 "pos":     row["finish_position"],
@@ -456,6 +529,22 @@ def build_feature_matrix(
 
     # Clamp grid position
     feat_df["grid_position"] = feat_df["grid_position"].clip(1, 20).fillna(20)
+
+    # ── Accepted candidate features (v3.61–v3.63) ─────────────────────────
+    # Derived from existing columns — computed after the main loop so all
+    # source columns are fully NaN-filled and clamped first.
+    #
+    # v3.61: q_gap_sq — quadratic qualifying pace penalty (+0.833 pts/race)
+    feat_df["q_gap_sq"] = feat_df["q_gap_pct"] ** 2
+    #
+    # v3.62: grid_x_overtaking — grid position × overtaking difficulty (+1.208)
+    feat_df["grid_x_overtaking"] = (
+        feat_df["grid_position"] * feat_df["overtaking_difficulty"]
+    )
+    #
+    # v3.63: drv_form_trend — avg_fin_last3 minus avg_fin_last5 (+1.083)
+    # Negative = driver has improved in the 3 most recent races vs their 5-race avg.
+    feat_df["drv_form_trend"] = feat_df["avg_fin_last3"] - feat_df["avg_fin_last5"]
 
     # Fill remaining NaNs with column median
     for col in FEATURE_COLS:

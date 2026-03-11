@@ -27,10 +27,11 @@ Models trained:
   7. XGBoost Ranker            (rank:pairwise, P10-centred relevance target)  ← v3.4
   8. WeightedEnsemble          (CV-weighted blend of all base models)
 
-Ensemble weights (v3.5 — derived from 12-fold rolling Time-Series CV, 2014–2025):
-  rf_reg: 4.0  |  rf_clf: 2.75  |  ridge: 2.0  |  xgb_clf: 2.0
+Ensemble weights (v3.66 — derived from 12-fold rolling Time-Series CV, 2014–2025,
+  38-feature set, era-stratified sample weights V8=0.25/hybrid=0.60/GE=1.00):
+  rf_clf: 4.0  |  xgb_ranker: 3.25  |  rf_reg: 3.0  |  ridge: 2.5
   grid_heuristic: 2.0  |  champ_heuristic: 2.0  (analytic — no fitted model)
-  xgb_ranker: 1.75  |  lgb_reg: 0.5  |  xgb_reg: 0.25
+  lgb_reg: 1.5  |  xgb_clf: 1.25  |  xgb_reg: 0.25
 
   grid_heuristic:  score = 1/(1+|grid_position-10|)  — rewards P10 grid starters
   champ_heuristic: score = 1/(1+|champ_pos-10|)      — rewards drivers near P10 in standings
@@ -58,7 +59,7 @@ from sklearn.metrics import mean_absolute_error
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from config import FEATURE_COLS, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS
+from config import FEATURE_COLS, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS, era_sample_weight
 
 logger = logging.getLogger(__name__)
 
@@ -86,33 +87,32 @@ except ImportError:
 
 # ── weighted ensemble ──────────────────────────────────────────────────────────
 
-# v3.5 weights — derived from 12-fold rolling Time-Series CV (2014–2025, window=4).
-# Each weight is proportional to avg fantasy pts per race above the per-fold floor,
-# anchored so the best model = 4.0.  Ridge added as a linear-diversity component.
-# grid_heuristic and champ_heuristic are pure analytic scorers (no fitted model):
-#   grid_heuristic:  score = 1/(1+|grid_position-10|)  — peaks at P10 starter
-#   champ_heuristic: score = 1/(1+|drv_champ_pos-10|)  — peaks at champ-P10 driver
-# Simulation over 252 CV races shows +0.36 pts/race (11.53→11.89) when both are
-# added at weight 2.0, consistent across 10/12 folds.  They carry independent
-# signal: when both heuristics agree on a driver all models missed, avg = 13.58 pts.
+# v3.66 weights — derived from 12-fold rolling Time-Series CV (2014–2025, window=4)
+# on the 38-feature set WITH era-stratified sample weights (V8=0.25, hybrid=0.60, GE=1.00).
+# Era weighting changes the relative performance ranking: xgb_ranker benefits strongly
+# (pairwise objective is most sensitive to era-specific positional dynamics) and becomes
+# the #2 model; rf_clf is now best; rf_reg falls as its grid-ordering signal is diluted
+# without the V8 era's cleaner grid→finish correlations.
 #
-# Model performance (252 races, 12 folds):
-#   rf_reg          11.82 avg pts  CV=0.58  → 4.00  (was 1.0 — severely under-weighted)
-#   rf_clf          11.30 avg pts  CV=0.61  → 2.75  (was 2.5 — slight increase)
-#   ridge           10.99 avg pts  CV=0.60  → 2.00  (was 0.0 — new: linear diversity)
-#   xgb_clf         10.95 avg pts  CV=0.64  → 2.00  (was 4.0 — over-weighted by LOYO)
-#   xgb_ranker      10.92 avg pts  CV=0.65  → 1.75  (was 3.9 — over-weighted by LOYO)
-#   lgb_reg         10.36 avg pts  CV=0.63  → 0.50  (was 2.0 — over-weighted by LOYO)
-#   xgb_reg         10.15 avg pts  CV=0.67  → 0.25  (was 0.3 — minimal, kept for diversity)
-#   grid_heuristic  11.62 baseline         → 2.00  (new — structured P10-grid signal)
-#   champ_heuristic 11.16 baseline         → 2.00  (new — structured P10-champ signal)
+# Model performance (252 races, 12 folds, 38-feature set, era-weighted training):
+#   rf_clf      11.40 avg pts → 4.00  (was 3.25 — now best; era weights help classifiers)
+#   xgb_ranker  11.21 avg pts → 3.25  (was 1.50 — large jump: ranker benefits from era focus)
+#   rf_reg      11.17 avg pts → 3.00  (was 4.00 — slight decrease: less V8 era advantage)
+#   ridge       11.03 avg pts → 2.50  (was 2.75 — slight decrease)
+#   lgb_reg     10.80 avg pts → 1.50  (was 0.25 — large gain: LGB recovers with era focus)
+#   xgb_clf     10.71 avg pts → 1.25  (was 0.25 — recovered: classification improves with era focus)
+#   xgb_reg     10.43 avg pts → 0.25  (was 1.75 — decrease: regression hurt by era weighting)
+#   grid_heuristic  (analytic) → 2.00  (unchanged — still +0.36 pts/race vs model-only)
+#   champ_heuristic (analytic) → 2.00  (unchanged)
+#
+# Ensemble CV score: 11.62 avg pts/race (up from 11.52 with uniform weights)
 ENSEMBLE_WEIGHTS: dict[str, float] = {
-    "rf_reg":          4.00,
-    "rf_clf":          2.75,
-    "ridge":           2.00,
-    "xgb_clf":         2.00,
-    "xgb_ranker":      1.75,
-    "lgb_reg":         0.50,
+    "rf_clf":          4.00,
+    "xgb_ranker":      3.25,
+    "rf_reg":          3.00,
+    "ridge":           2.50,
+    "lgb_reg":         1.50,
+    "xgb_clf":         1.25,
     "xgb_reg":         0.25,
     "grid_heuristic":  2.00,   # analytic: 1/(1+|grid_pos-10|)
     "champ_heuristic": 2.00,   # analytic: 1/(1+|champ_pos-10|), clipped to [1,20]
@@ -293,9 +293,22 @@ def _make_models() -> dict[str, Any]:
 def train_all(
     train_df: pd.DataFrame,
     force: bool = False,
+    use_era_weights: bool = True,
 ) -> dict[str, Any]:
     """
     Fit all models on *train_df* and save to MODELS_DIR.
+
+    Parameters
+    ----------
+    train_df : DataFrame
+        Training data with FEATURE_COLS and TARGET_COL columns.
+    force : bool
+        Re-train even if saved model files exist on disk.
+    use_era_weights : bool
+        If True, apply era-stratified sample weights (v3.64+):
+          V8 era 2010–2013 → 0.25,  turbo-hybrid 2014–2021 → 0.60,
+          ground-effect 2022+ → 1.00.
+        This down-weights pre-turbo data where positional dynamics differ.
 
     Returns dict {model_name: fitted_estimator}.
     """
@@ -303,6 +316,15 @@ def train_all(
     y_reg  = train_df[TARGET_COL].values.astype(float)
     # Multi-class: predict full finish position (1–20), not binary is_p10
     y_clf  = train_df[TARGET_COL].values.astype(int)
+
+    # Era-stratified sample weights (v3.64).
+    # Regressors, classifiers: weights aligned to X rows.
+    if use_era_weights and "year" in train_df.columns:
+        sample_weights = np.array([era_sample_weight(y) for y in train_df["year"].values])
+        logger.info("  Era weights: V8(≤2013)=0.25  hybrid(2014-21)=0.60  GE(2022+)=1.00  "
+                    "mean=%.3f  [%d rows]", sample_weights.mean(), len(sample_weights))
+    else:
+        sample_weights = None
 
     # v3.4: pre-compute ranker training artefacts (sorted by race, qid array,
     # and P10-centred relevance scores).  XGBRanker strictly requires that
@@ -317,6 +339,18 @@ def train_all(
     qid_train = train_sorted.groupby(
         ["year", "round"], sort=True
     ).ngroup().values
+    # Sample weights for the ranker — XGBRanker requires ONE weight per query
+    # group (race), not per row.  Since all rows in a race share the same year,
+    # the group weight is simply the era weight for that race year.
+    if use_era_weights and "year" in train_sorted.columns:
+        group_years = (
+            train_sorted.groupby(["year", "round"], sort=True)["year"]
+            .first()
+            .values
+        )
+        sample_weights_rank = np.array([era_sample_weight(y) for y in group_years])
+    else:
+        sample_weights_rank = None
 
     fitted: dict[str, Any] = {}
     models = _make_models()
@@ -335,11 +369,13 @@ def train_all(
         is_ranker = name.endswith("_ranker")
 
         if is_ranker:
-            # XGBRanker: pass race-sorted features, relevance labels, and qid.
-            logger.info("  %-14s → training (rank:pairwise) …", name)
+            # XGBRanker: pass race-sorted features, relevance labels, qid, and era weights.
+            logger.info("  %-14s → training (rank:pairwise, era_weights=%s) …",
+                        name, sample_weights_rank is not None)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                est.fit(X_rank, y_rank, qid=qid_train)
+                est.fit(X_rank, y_rank, qid=qid_train,
+                        sample_weight=sample_weights_rank)
         else:
             if is_clf:
                 # XGBoost multi:softprob requires 0-indexed classes (0–19);
@@ -348,10 +384,16 @@ def train_all(
             else:
                 y = y_reg
 
-            logger.info("  %-14s → training …", name)
+            logger.info("  %-14s → training (era_weights=%s) …",
+                        name, sample_weights is not None)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                est.fit(X, y)
+                if name == "ridge":
+                    # Ridge is wrapped in a Pipeline(scaler, reg).
+                    # Pass sample_weight via the step name prefix.
+                    est.fit(X, y, reg__sample_weight=sample_weights)
+                else:
+                    est.fit(X, y, sample_weight=sample_weights)
 
         joblib.dump(est, out_path)
         fitted[name] = est

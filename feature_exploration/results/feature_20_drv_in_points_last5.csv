@@ -1,0 +1,2 @@
+feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+drv_in_points_last5,Fraction of last 5 races with finish ≤ 10,DISCARD,12.611111111111112,12.472222222222221,0.0,-1.9166666666666679,1.5,-0.9583333333333339
