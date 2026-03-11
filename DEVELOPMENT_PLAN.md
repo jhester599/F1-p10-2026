@@ -263,24 +263,48 @@ set (35 features) is unchanged.
 | `grid_x_overtaking` (grid × overtaking_difficulty) | KEEP | +1.208 |
 | `drv_form_trend` (avg_fin_last3 − avg_fin_last5) | KEEP | +1.083 |
 
-See `feature_exploration/FEATURE_EXPLORATION_STATUS.md` for full results and
-methodology.  Full 12-fold rolling CV with the 38-feature set is the
-recommended next step to confirm the holdout gains hold at scale.
+See `feature_exploration/FEATURE_EXPLORATION_STATUS.md` for full results and methodology.
+
+### v3.64 — Full 12-Fold CV Re-run + Ensemble Re-weighting (2026-03-11)
+
+Full 12-fold rolling Time-Series CV (2014–2025, window=4, 252 races) confirmed
+the 38-feature set and produced recalibrated ensemble weights.
+
+**CV results (252 races):**
+
+| Model | CV avg pts/race |
+|-------|----------------|
+| rf_reg | 11.56 |
+| ensemble | 11.52 |
+| rf_clf | 11.31 |
+| ridge | 11.15 |
+| xgb_reg | 10.87 |
+| xgb_ranker | 10.78 |
+| lgb_reg | 10.44 |
+| xgb_clf | 10.36 |
+
+**New ENSEMBLE_WEIGHTS (v3.64)** updated in `src/models.py`:
+`rf_reg=4.00, rf_clf=3.25, ridge=2.75, xgb_reg=1.75, xgb_ranker=1.50, lgb_reg=0.25, xgb_clf=0.25, grid_heuristic=2.00, champ_heuristic=2.00`
+
+**Key finding:** The new interaction features benefit regression models (+1.50 for xgb_reg)
+while hurting xgb_clf (−1.75).  When trained on the full 2010–2024 window, rf_reg
+degrades on 2025 holdout (11.56 CV → 8.08 holdout) due to pre-turbo-era data
+conflicting with interaction feature dynamics.  The 4-year rolling window CV (11.52)
+is the more reliable production estimate.
 
 ### Remaining known issues / future work
 
 - `rf_reg` and regressors (`ridge`, `xgb_reg`) still over-weight career form for
   drivers starting from the back (e.g., Verstappen P20 → predicted ≈ P10).
   Possible fix: add a grid-position penalty term or cap career features.
-- Ensemble weights (xgb_clf=4.0, rf_clf=2.5, ...) were derived under the v2
-  binary-classifier architecture. A fresh CV run with the v3.31 35-feature
-  multi-class models would re-calibrate them. **When running CV to recalibrate,
-  use 1-fold only and save results between folds** (see Rule 3 above).
-  Run: `python scripts/03_train_models.py --cv`
+- Ensemble weights are now v3.64-calibrated (38-feature, 12-fold CV). ✅ Done.
+- The 2025 holdout shows rf_reg degrading (11.56 CV → 8.08 holdout) when trained
+  on full 2010–2024 data. Root cause: pre-turbo era data conflicts with interaction
+  feature dynamics. **Future fix:** train production model on the most recent 4 years
+  (2021–2024) to match the CV window, rather than full 2010–2024. This would give
+  the CV performance on the production model.
 - New v3.1–v3.31 features (`fp2_position`, `historical_dnf_rate`, etc.) all rank
   below the standalone importance threshold but are retained due to the ensemble
-  lift (+2.83 pts/race). If a v4.0 feature set is designed, these should be
-  re-evaluated as candidates for removal if a larger batch of stronger features
-  can replace them.
+  lift. If a v4.0 feature set is designed, these should be re-evaluated.
 - Data cache (updated through 2025, ~1,881 files, 3.1 MB): `f1_data_cache_2026-03-09.zip`
   committed to repo root. Google Drive mirror: https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing

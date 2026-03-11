@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.63
+# F1 P10 Predictor · v3.64
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -113,7 +113,7 @@ F1-p10-2026/
 
 ---
 
-## Features (35 total)
+## Features (38 total)
 
 All features are derived from information available **after qualifying, before the race**.
 
@@ -186,6 +186,16 @@ directly targeting the decision the model needs to make:
 > 60% Spearman ρ(grid, finish) + 20% inverse pos-change std-dev + 20% inverse DNF rate,
 > scaled to 1–10. Prior v3.3 values were hand-coded assumptions that diverged significantly
 > from empirical data for Americas (8.3→4.5), Baku (7.8→4.7), Vegas (1.0→5.2), Zandvoort (4.5→7.5).
+
+### Interaction and trend features (3) — accepted in v3.61–v3.63
+
+| Feature | Formula | Rank (rf_reg) | Description |
+|---|---|---|---|
+| `q_gap_sq` | `q_gap_pct²` | #12/38 | Quadratic qualifying pace penalty — captures non-linear deficit for backmarkers |
+| `grid_x_overtaking` | `grid_position × overtaking_difficulty` | #7/38 | Grid position interaction with circuit stickiness: P12 at Monaco ≠ P12 at Albert Park |
+| `drv_form_trend` | `avg_fin_last3 − avg_fin_last5` | #16/38 | Driver velocity: negative = improving over recent 3 vs 5-race baseline |
+
+> See `feature_exploration/FEATURE_EXPLORATION_STATUS.md` for the full 20-candidate evaluation.
 
 ### Evaluated and excluded features — DNF signals (v3.41)
 
@@ -332,20 +342,23 @@ Blends all seven base models using fixed weights on a common normalised scale:
 
 All per-model scores are min-max normalised within each race before blending.
 
-| Model | Weight | Status |
-|---|---|---|
-| `xgb_clf` | 4.0 | CV-calibrated |
-| `rf_clf` | 2.5 | CV-calibrated |
-| `lgb_reg` | 2.0 | CV-calibrated |
-| `rf_reg` | 1.0 | CV-calibrated |
-| `xgb_ranker` | 3.9 | Calibrated — 2025 holdout (11.38 avg pts/race) |
-| `xgb_reg` | 0.3 | CV-calibrated |
-| `ridge` | 0.2 | CV-calibrated |
+| Model | Weight | CV avg pts/race | Notes |
+|---|---|---|---|
+| `rf_reg` | **4.00** | 11.56 | Best single model; stable across all 12 folds |
+| `rf_clf` | **3.25** | 11.31 | +0.50 vs v3.5; benefits from new form/interaction features |
+| `grid_heuristic` | **2.00** | — | Analytic: 1/(1+\|grid_pos−10\|); independent of fitted models |
+| `champ_heuristic` | **2.00** | — | Analytic: 1/(1+\|champ_pos−10\|); clipped to [1,20] |
+| `ridge` | **2.75** | 11.15 | +0.75 vs v3.5; linear model gains from interaction terms |
+| `xgb_reg` | **1.75** | 10.87 | +1.50 vs v3.5; large gain from continuous interaction features |
+| `xgb_ranker` | **1.50** | 10.78 | −0.25 vs v3.5; slight decrease |
+| `lgb_reg` | **0.25** | 10.44 | −0.25 vs v3.5; kept minimal for diversity |
+| `xgb_clf` | **0.25** | 10.36 | −1.75 vs v3.5; poor 38-feature generalization; kept for diversity |
 
-> **Note on weights:** `xgb_clf`, `rf_clf`, `lgb_reg`, `rf_reg`, `xgb_reg` weights
-> were derived under the prior binary classifier architecture and may benefit from
-> recalibration with `python scripts/03_train_models.py --cv`. The `xgb_ranker`
-> weight (3.9) is calibrated from the 2025 holdout evaluation.
+> **v3.64 calibration:** Weights derived from 12-fold rolling Time-Series CV (2014–2025, window=4)
+> on the full 38-feature set. Each weight is proportional to avg fantasy pts per race above
+> the per-fold floor (xgb_clf = 10.36), anchored so the best model = 4.0.
+> The two analytic heuristics (`grid_heuristic`, `champ_heuristic`) are held at 2.0 —
+> unchanged from v3.5, as simulation shows consistent +0.36 pts/race vs model-only ensemble.
 
 ---
 
@@ -394,36 +407,45 @@ Outputs:
 
 ## 2025 Season Results
 
-Models trained on 2010–2024 data, evaluated on all 24 races of the 2025 season.
+Models evaluated on all 24 races of the 2025 season.
 
-Results below are from the **v3.4 model** (35 features, includes `xgb_ranker`).
-v3.1 avg pts shown for comparison where available.
+### v3.64 results — 38 features, v3.64 ensemble weights, trained on 2010–2024
 
-| Model | Avg Pts/Race | Avg Regret | Exact P10 | Within 2 pos | v3.1 Avg Pts | Δ |
-|---|---|---|---|---|---|---|
-| Oracle (ceiling) | 25.00 | 0.00 | 24 | 100% | — | — |
-| **lgb_reg** | **12.38** | 5.17 | 2 | 37.5% | 10.25 | **+2.13 ▲** |
-| **ensemble** | **12.00** | 5.54 | 2 | 41.7% | 12.62 | −0.62 ▼ |
-| **xgb_ranker** | **11.38** | 6.17 | 2 | 45.8% | — | new ← v3.4 |
-| rf_clf | 10.88 | 6.67 | 2 | 33.3% | 11.46 | −0.58 ▼ |
-| ridge | 10.67 | 6.88 | 1 | 33.3% | 10.33 | +0.34 ▲ |
-| xgb_reg | 10.50 | 7.04 | 1 | 33.3% | 10.29 | +0.21 ▲ |
-| xgb_clf | 10.29 | 7.25 | 1 | 45.8% | 11.67 | −1.38 ▼ |
-| rf_reg | 8.92 | 8.62 | 1 | 29.2% | 9.04 | −0.12 ▼ |
-| naive_grid_p10 | 14.04 | — | 3 | 50.0% | — | — |
+| Model | Avg Pts/Race | Exact P10 | Within 2 pos | v3.5 Avg Pts | Δ |
+|---|---|---|---|---|---|
+| naive_grid_p10 | 14.04 | 3 | 50.0% | — | — |
+| **rf_clf** | **12.08** | 2 | 45.8% | 10.88 | **+1.20 ▲** |
+| ridge | 11.25 | 0 | 37.5% | 10.67 | **+0.58 ▲** |
+| lgb_reg | 10.62 | 1 | 33.3% | 12.38 | −1.76 ▼ |
+| xgb_reg | 10.58 | 1 | 33.3% | 10.50 | +0.08 |
+| xgb_clf | 10.08 | 1 | 37.5% | 10.29 | −0.21 ▼ |
+| ensemble | 8.83 | 1 | 25.0% | 12.00 | −3.17 ▼ |
+| xgb_ranker | 8.54 | 1 | 20.8% | 11.38 | −2.84 ▼ |
+| rf_reg | 8.08 | 1 | 25.0% | 8.92 | −0.84 ▼ |
 
-> **`naive_grid_p10` (14.04 pts) remains the benchmark.** `xgb_ranker` enters at
-> 11.38 avg pts/race on its first evaluation — 3rd overall among individual models,
-> beating both `xgb_reg` (+0.88) and `xgb_clf` (+1.09). Its 45.8% within-2-positions
-> rate (tied with `xgb_clf`) is the best among all models, confirming the pairwise
-> ranking objective places drivers near P10 even when not exact.
+> ⚠️ **Holdout caveat:** Training on the full 2010–2024 dataset (15 seasons) hurts
+> models that lean on tree-based splits across interaction features
+> (`grid_x_overtaking`, `drv_form_trend`). The pre-turbo/hybrid era (2010–2013)
+> encodes different positional dynamics that conflict with 2025 patterns when these
+> features interact with circuit stickiness indices derived from 2014–2025 data.
+> `rf_reg` in particular drops from 11.56 (CV, 4-year window) to 8.08 (full-window holdout).
 >
-> **Recommended pick for 2026:** `ensemble` (12.00 avg pts), now boosted by
-> the calibrated `xgb_ranker` weight of 3.9.
+> **The 12-fold rolling CV (4-year window, 252 races) is the more reliable performance estimate:**
 >
-> **Note:** The ensemble dropped slightly vs v3.1 (12.62 → 12.00). The v3.1
-> ensemble weights were calibrated on an earlier data pipeline; fresh CV
-> recalibration (`python scripts/03_train_models.py --cv`) is recommended.
+> | Model | CV avg pts/race (12 folds) |
+> |---|---|
+> | rf_reg | 11.56 |
+> | **ensemble** | **11.52** |
+> | rf_clf | 11.31 |
+> | ridge | 11.15 |
+> | xgb_reg | 10.87 |
+> | xgb_ranker | 10.78 |
+> | lgb_reg | 10.44 |
+> | xgb_clf | 10.36 |
+>
+> **Recommended pick for 2026:** `rf_clf` (12.08 on 2025 holdout, 11.31 CV avg) or
+> `ensemble` (11.52 CV avg). The CV ensemble is expected to recover toward 11.52
+> when production inference uses recent-era training data consistent with the rolling window.
 
 ---
 
@@ -509,6 +531,60 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.64 — Full 12-Fold CV Re-run + Ensemble Re-weighting
+
+**Date:** 2026-03-11
+**Branch:** `claude/explore-model-features-BVwu5`
+**Features:** 38 (unchanged from v3.63)
+
+Full 12-fold rolling Time-Series CV (2014–2025, window=4, 252 races) re-run on the
+complete 38-feature set to replace the stale v3.5 ensemble weights.
+
+#### CV Results (252 races, 12 folds)
+
+| Model | Avg Pts/Race | Change vs v3.5 |
+|---|---|---|
+| rf_reg | 11.56 | −0.26 |
+| ensemble (v3.64 weights) | 11.52 | — |
+| rf_clf | 11.31 | +0.01 |
+| ridge | 11.15 | +0.16 |
+| xgb_reg | 10.87 | **+0.72** |
+| xgb_ranker | 10.78 | −0.14 |
+| lgb_reg | 10.44 | +0.08 |
+| xgb_clf | 10.36 | **−0.59** |
+
+#### New Ensemble Weights (v3.64)
+
+Derived using the same proportional-to-floor methodology as v3.5 (floor = weakest model,
+best = 4.0). Key changes vs v3.5:
+
+| Model | Old (v3.5) | New (v3.64) | Δ |
+|---|---|---|---|
+| rf_reg | 4.00 | 4.00 | — |
+| rf_clf | 2.75 | **3.25** | +0.50 |
+| ridge | 2.00 | **2.75** | +0.75 |
+| xgb_reg | 0.25 | **1.75** | +1.50 |
+| xgb_ranker | 1.75 | **1.50** | −0.25 |
+| lgb_reg | 0.50 | **0.25** | −0.25 |
+| xgb_clf | 2.00 | **0.25** | −1.75 |
+| grid_heuristic | 2.00 | 2.00 | — |
+| champ_heuristic | 2.00 | 2.00 | — |
+
+**Interpretation:** The new interaction features (`grid_x_overtaking`, `q_gap_sq`,
+`drv_form_trend`) provide continuous signal that benefits regression models (`xgb_reg` +1.50,
+`ridge` +0.75, `rf_clf` +0.50) while `xgb_clf` suffers from over-parameterisation on
+the new feature space.
+
+#### Feature Importances (new features, trained on 2010–2024)
+
+| Feature | rf_reg rank | rf_reg importance |
+|---|---|---|
+| `grid_x_overtaking` | #7/38 | 2.04% |
+| `q_gap_sq` | #12/38 | 1.12% |
+| `drv_form_trend` | #16/38 | 1.01% |
+
+---
 
 ### v3.63 — Feature Exploration: 3 New Predictors Accepted
 

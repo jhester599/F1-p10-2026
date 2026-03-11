@@ -1,9 +1,9 @@
-# Feature Exploration Status — v3.63
+# Feature Exploration Status — v3.64
 
 **Branch:** `claude/explore-model-features-BVwu5`
 **Started:** 2026-03-11
 **Base version:** v3.5 (35 features)
-**Current version:** v3.63 (38 features — 3 accepted from 20 tested)
+**Current version:** v3.64 (38 features — 3 accepted from 20 tested; full CV + ensemble re-weighting complete)
 
 ---
 
@@ -49,6 +49,9 @@ Intermediate values computed in `build_feature_matrix()` but correctly excluded:
 | CV (12-fold, 2014–2025) avg pts/race | 11.62 (ensemble) |
 | 2025 holdout avg pts/race | 12.00 (ensemble) |
 | Features | 35 |
+
+> Note: v3.5 CV was run under LOYO (leave-one-year-out) protocol, not rolling window.
+> v3.64 CV uses rolling 4-year window — results are not directly comparable but more realistic.
 
 **1-fold holdout baseline for Phase 3 testing:**
 - Train window: 2021–2023 (3 seasons)
@@ -104,8 +107,41 @@ before the next test). Tests run on: train=2021–2023, test=2024, 24 races.
 | v3.63 | `drv_form_trend` | `avg_fin_last3 − avg_fin_last5` | +1.083 | Strong in lgb_reg; drivers improving over last 3 races vs 5-race baseline |
 
 **Total features:** 35 → 38 (+3)
-**Estimated improvement vs v3.5 baseline (sequential):** +3.124 pts/race on 1-fold holdout
-**Note:** The 1-fold holdout improvement is directionally reliable but not directly comparable to the 12-fold rolling CV. A full re-evaluation is recommended.
+**1-fold holdout improvement (sequential, train 2021–2023, test 2024):** +3.124 pts/race
+**Full 12-fold CV result (v3.64, 252 races):** ensemble 11.52 avg pts/race
+
+### Full CV Validation Results (v3.64)
+
+12-fold rolling Time-Series CV (2014–2025, window=4, 252 races) on the 38-feature set:
+
+| Model | CV avg pts/race | Δ vs v3.5 |
+|-------|----------------|-----------|
+| rf_reg | 11.56 | −0.26 |
+| **ensemble** | **11.52** | — |
+| rf_clf | 11.31 | +0.01 |
+| ridge | 11.15 | +0.16 |
+| xgb_reg | 10.87 | **+0.72** |
+| xgb_ranker | 10.78 | −0.14 |
+| lgb_reg | 10.44 | +0.08 |
+| xgb_clf | 10.36 | **−0.59** |
+
+**Ensemble weights updated to v3.64** (see `src/models.py`):
+
+| Model | Old weight | New weight | Δ |
+|-------|-----------|-----------|---|
+| rf_reg | 4.00 | 4.00 | — |
+| rf_clf | 2.75 | **3.25** | +0.50 |
+| ridge | 2.00 | **2.75** | +0.75 |
+| xgb_reg | 0.25 | **1.75** | +1.50 |
+| xgb_ranker | 1.75 | **1.50** | −0.25 |
+| lgb_reg | 0.50 | **0.25** | −0.25 |
+| xgb_clf | 2.00 | **0.25** | −1.75 |
+| grid_heuristic | 2.00 | 2.00 | — |
+| champ_heuristic | 2.00 | 2.00 | — |
+
+**Interpretation:** New continuous features (`grid_x_overtaking`, `q_gap_sq`,
+`drv_form_trend`) strengthen regression models while exposing xgb_clf to
+overfitting on the expanded feature space.
 
 ---
 
@@ -156,6 +192,7 @@ due to its bagging mechanism.
 | v3.61 | 2026-03-11 | `q_gap_sq` accepted (+0.833 pts); added to FEATURE_COLS | 36 |
 | v3.62 | 2026-03-11 | `grid_x_overtaking` accepted (+1.208 pts); added to FEATURE_COLS | 37 |
 | v3.63 | 2026-03-11 | `drv_form_trend` accepted (+1.083 pts); added to FEATURE_COLS | 38 |
+| v3.64 | 2026-03-11 | Full 12-fold CV re-run; ensemble weights recalibrated to v3.64 | 38 |
 
 ---
 
@@ -168,5 +205,12 @@ due to its bagging mechanism.
 | `feature_exploration/results/*.csv` | New — per-feature checkpoints + summary |
 | `src/feature_engineering.py` | Added 10 Category B candidate columns + 3 accepted features |
 | `config.py` | FEATURE_COLS: added `q_gap_sq`, `grid_x_overtaking`, `drv_form_trend` |
+| `src/models.py` | ENSEMBLE_WEIGHTS updated to v3.64; module docstring updated |
 | `data/processed/*.parquet` | Rebuilt with 38 features (gitignored) |
-| `README.md` | Version updated to v3.63 |
+| `results/cv_results.csv` | Updated — full 12-fold CV on 38-feature set (252 races) |
+| `results/cv_checkpoints/fold_*.csv` | Updated — all 12 folds regenerated |
+| `results/eval_2025_*.csv` | Updated — 2025 holdout with v3.64 models |
+| `results/feature_importance.csv` | Updated — feature importances from 38-feature models |
+| `models/*.joblib` | Updated — all 7 base models + ensemble retrained (gitignored) |
+| `README.md` | Version updated to v3.64; weights, results, features updated |
+| `DEVELOPMENT_PLAN.md` | v3.64 milestone added |

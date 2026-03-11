@@ -27,10 +27,11 @@ Models trained:
   7. XGBoost Ranker            (rank:pairwise, P10-centred relevance target)  ← v3.4
   8. WeightedEnsemble          (CV-weighted blend of all base models)
 
-Ensemble weights (v3.5 — derived from 12-fold rolling Time-Series CV, 2014–2025):
-  rf_reg: 4.0  |  rf_clf: 2.75  |  ridge: 2.0  |  xgb_clf: 2.0
+Ensemble weights (v3.64 — derived from 12-fold rolling Time-Series CV, 2014–2025,
+  38-feature set including q_gap_sq, grid_x_overtaking, drv_form_trend):
+  rf_reg: 4.0  |  rf_clf: 3.25  |  ridge: 2.75  |  xgb_reg: 1.75
   grid_heuristic: 2.0  |  champ_heuristic: 2.0  (analytic — no fitted model)
-  xgb_ranker: 1.75  |  lgb_reg: 0.5  |  xgb_reg: 0.25
+  xgb_ranker: 1.5  |  lgb_reg: 0.25  |  xgb_clf: 0.25
 
   grid_heuristic:  score = 1/(1+|grid_position-10|)  — rewards P10 grid starters
   champ_heuristic: score = 1/(1+|champ_pos-10|)      — rewards drivers near P10 in standings
@@ -86,34 +87,34 @@ except ImportError:
 
 # ── weighted ensemble ──────────────────────────────────────────────────────────
 
-# v3.5 weights — derived from 12-fold rolling Time-Series CV (2014–2025, window=4).
+# v3.64 weights — derived from 12-fold rolling Time-Series CV (2014–2025, window=4)
+# on the full 38-feature set (incl. q_gap_sq, grid_x_overtaking, drv_form_trend).
 # Each weight is proportional to avg fantasy pts per race above the per-fold floor,
-# anchored so the best model = 4.0.  Ridge added as a linear-diversity component.
+# anchored so the best model = 4.0.
 # grid_heuristic and champ_heuristic are pure analytic scorers (no fitted model):
 #   grid_heuristic:  score = 1/(1+|grid_position-10|)  — peaks at P10 starter
 #   champ_heuristic: score = 1/(1+|drv_champ_pos-10|)  — peaks at champ-P10 driver
-# Simulation over 252 CV races shows +0.36 pts/race (11.53→11.89) when both are
-# added at weight 2.0, consistent across 10/12 folds.  They carry independent
-# signal: when both heuristics agree on a driver all models missed, avg = 13.58 pts.
+# Simulation over 252 CV races shows +0.36 pts/race vs model-only ensemble.
+# They carry independent signal; weights held at 2.0 (unchanged from v3.5).
 #
-# Model performance (252 races, 12 folds):
-#   rf_reg          11.82 avg pts  CV=0.58  → 4.00  (was 1.0 — severely under-weighted)
-#   rf_clf          11.30 avg pts  CV=0.61  → 2.75  (was 2.5 — slight increase)
-#   ridge           10.99 avg pts  CV=0.60  → 2.00  (was 0.0 — new: linear diversity)
-#   xgb_clf         10.95 avg pts  CV=0.64  → 2.00  (was 4.0 — over-weighted by LOYO)
-#   xgb_ranker      10.92 avg pts  CV=0.65  → 1.75  (was 3.9 — over-weighted by LOYO)
-#   lgb_reg         10.36 avg pts  CV=0.63  → 0.50  (was 2.0 — over-weighted by LOYO)
-#   xgb_reg         10.15 avg pts  CV=0.67  → 0.25  (was 0.3 — minimal, kept for diversity)
-#   grid_heuristic  11.62 baseline         → 2.00  (new — structured P10-grid signal)
-#   champ_heuristic 11.16 baseline         → 2.00  (new — structured P10-champ signal)
+# Model performance (252 races, 12 folds, 38-feature set):
+#   rf_reg      11.56 avg pts → 4.00  (stable — still dominant)
+#   rf_clf      11.31 avg pts → 3.25  (was 2.75 — benefits from new form/interaction feats)
+#   ridge       11.15 avg pts → 2.75  (was 2.00 — linear model gains from interaction terms)
+#   xgb_reg     10.87 avg pts → 1.75  (was 0.25 — large gain: continuous feats suit XGB reg)
+#   xgb_ranker  10.78 avg pts → 1.50  (was 1.75 — slight decrease)
+#   lgb_reg     10.44 avg pts → 0.25  (was 0.50 — decrease; kept minimal for diversity)
+#   xgb_clf     10.36 avg pts → 0.25  (was 2.00 — poor with new feats; kept for diversity)
+#   grid_heuristic  (analytic) → 2.00  (unchanged)
+#   champ_heuristic (analytic) → 2.00  (unchanged)
 ENSEMBLE_WEIGHTS: dict[str, float] = {
     "rf_reg":          4.00,
-    "rf_clf":          2.75,
-    "ridge":           2.00,
-    "xgb_clf":         2.00,
-    "xgb_ranker":      1.75,
-    "lgb_reg":         0.50,
-    "xgb_reg":         0.25,
+    "rf_clf":          3.25,
+    "ridge":           2.75,
+    "xgb_reg":         1.75,
+    "xgb_ranker":      1.50,
+    "lgb_reg":         0.25,
+    "xgb_clf":         0.25,
     "grid_heuristic":  2.00,   # analytic: 1/(1+|grid_pos-10|)
     "champ_heuristic": 2.00,   # analytic: 1/(1+|champ_pos-10|), clipped to [1,20]
 }
