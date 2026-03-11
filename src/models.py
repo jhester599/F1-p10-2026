@@ -29,11 +29,13 @@ Models trained:
 
 Ensemble weights (v3.5 — derived from 12-fold rolling Time-Series CV, 2014–2025):
   rf_reg: 4.0  |  rf_clf: 2.75  |  ridge: 2.0  |  xgb_clf: 2.0
+  grid_heuristic: 2.0  |  champ_heuristic: 2.0  (analytic — no fitted model)
   xgb_ranker: 1.75  |  lgb_reg: 0.5  |  xgb_reg: 0.25
 
-  Old LOYO weights (v3.4): xgb_clf 4.0, xgb_ranker 3.9, rf_clf 2.5, lgb_reg 2.0,
-  rf_reg 1.0, xgb_reg 0.3 — these over-weighted XGB models that looked strong under
-  leave-one-year-out but under-perform in proper temporal (rolling-window) validation.
+  grid_heuristic:  score = 1/(1+|grid_position-10|)  — rewards P10 grid starters
+  champ_heuristic: score = 1/(1+|champ_pos-10|)      — rewards drivers near P10 in standings
+  Both are min-max normalised per race, identical to all model-based components.
+  Simulation over 252 CV races shows +0.37 pts/race vs model-only ensemble.
 
 For each race we iterate over all drivers, score each with the model, then
 select the best candidate.
@@ -87,24 +89,38 @@ except ImportError:
 # v3.5 weights — derived from 12-fold rolling Time-Series CV (2014–2025, window=4).
 # Each weight is proportional to avg fantasy pts per race above the per-fold floor,
 # anchored so the best model = 4.0.  Ridge added as a linear-diversity component.
+# grid_heuristic and champ_heuristic are pure analytic scorers (no fitted model):
+#   grid_heuristic:  score = 1/(1+|grid_position-10|)  — peaks at P10 starter
+#   champ_heuristic: score = 1/(1+|drv_champ_pos-10|)  — peaks at champ-P10 driver
+# Simulation over 252 CV races shows +0.36 pts/race (11.53→11.89) when both are
+# added at weight 2.0, consistent across 10/12 folds.  They carry independent
+# signal: when both heuristics agree on a driver all models missed, avg = 13.58 pts.
 #
 # Model performance (252 races, 12 folds):
-#   rf_reg     11.82 avg pts  CV=0.58  → 4.00  (was 1.0 — severely under-weighted)
-#   rf_clf     11.30 avg pts  CV=0.61  → 2.75  (was 2.5 — slight increase)
-#   ridge      10.99 avg pts  CV=0.60  → 2.00  (was 0.0 — new: linear diversity)
-#   xgb_clf    10.95 avg pts  CV=0.64  → 2.00  (was 4.0 — over-weighted by LOYO)
-#   xgb_ranker 10.92 avg pts  CV=0.65  → 1.75  (was 3.9 — over-weighted by LOYO)
-#   lgb_reg    10.36 avg pts  CV=0.63  → 0.50  (was 2.0 — over-weighted by LOYO)
-#   xgb_reg    10.15 avg pts  CV=0.67  → 0.25  (was 0.3 — minimal, kept for diversity)
+#   rf_reg          11.82 avg pts  CV=0.58  → 4.00  (was 1.0 — severely under-weighted)
+#   rf_clf          11.30 avg pts  CV=0.61  → 2.75  (was 2.5 — slight increase)
+#   ridge           10.99 avg pts  CV=0.60  → 2.00  (was 0.0 — new: linear diversity)
+#   xgb_clf         10.95 avg pts  CV=0.64  → 2.00  (was 4.0 — over-weighted by LOYO)
+#   xgb_ranker      10.92 avg pts  CV=0.65  → 1.75  (was 3.9 — over-weighted by LOYO)
+#   lgb_reg         10.36 avg pts  CV=0.63  → 0.50  (was 2.0 — over-weighted by LOYO)
+#   xgb_reg         10.15 avg pts  CV=0.67  → 0.25  (was 0.3 — minimal, kept for diversity)
+#   grid_heuristic  11.62 baseline         → 2.00  (new — structured P10-grid signal)
+#   champ_heuristic 11.16 baseline         → 2.00  (new — structured P10-champ signal)
 ENSEMBLE_WEIGHTS: dict[str, float] = {
-    "rf_reg":     4.00,
-    "rf_clf":     2.75,
-    "ridge":      2.00,
-    "xgb_clf":    2.00,
-    "xgb_ranker": 1.75,
-    "lgb_reg":    0.50,
-    "xgb_reg":    0.25,
+    "rf_reg":          4.00,
+    "rf_clf":          2.75,
+    "ridge":           2.00,
+    "xgb_clf":         2.00,
+    "xgb_ranker":      1.75,
+    "lgb_reg":         0.50,
+    "xgb_reg":         0.25,
+    "grid_heuristic":  2.00,   # analytic: 1/(1+|grid_pos-10|)
+    "champ_heuristic": 2.00,   # analytic: 1/(1+|champ_pos-10|), clipped to [1,20]
 }
+
+# Column indices used by the analytic heuristics (derived from FEATURE_COLS at import time)
+_GRID_COL_IDX  = FEATURE_COLS.index("grid_position")
+_CHAMP_COL_IDX = FEATURE_COLS.index("drv_champ_pos")
 
 
 class WeightedEnsemble:
@@ -132,28 +148,38 @@ class WeightedEnsemble:
         total_w  = 0.0
 
         for name, weight in self.weights.items():
-            model = self.base_models.get(name)
-            if model is None:
-                continue
 
-            is_clf    = name.endswith("_clf")
-            is_ranker = name.endswith("_ranker")
-            if is_clf and hasattr(model, "predict_proba"):
-                proba   = model.predict_proba(X)
-                classes = list(model.classes_)
-                # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
-                offset  = 1 if min(classes) == 0 else 0
-                sv      = np.array([SCORING_VECTOR[c + offset - 1]
-                                    for c in classes if 1 <= c + offset <= 20])
-                cls_idx = [i for i, c in enumerate(classes) if 1 <= c + offset <= 20]
-                raw     = proba[:, cls_idx] @ sv
-            elif is_ranker:
-                # Ranker already outputs P10-centred relevance scores;
-                # use directly (they are already on a [0, 1]-ish scale).
-                raw = model.predict(X).astype(float)
+            # ── analytic heuristics (require no fitted model) ──────────────
+            if name == "grid_heuristic":
+                raw = 1.0 / (1.0 + np.abs(X[:, _GRID_COL_IDX] - 10.0))
+            elif name == "champ_heuristic":
+                # clip champ position to [1,20] — value 99 means unranked
+                champ = np.clip(X[:, _CHAMP_COL_IDX], 1.0, 20.0)
+                raw = 1.0 / (1.0 + np.abs(champ - 10.0))
             else:
-                preds = model.predict(X)
-                raw   = 1.0 / (1.0 + np.abs(preds - 10))
+                # ── fitted model scorers ────────────────────────────────────
+                model = self.base_models.get(name)
+                if model is None:
+                    continue
+
+                is_clf    = name.endswith("_clf")
+                is_ranker = name.endswith("_ranker")
+                if is_clf and hasattr(model, "predict_proba"):
+                    proba   = model.predict_proba(X)
+                    classes = list(model.classes_)
+                    # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
+                    offset  = 1 if min(classes) == 0 else 0
+                    sv      = np.array([SCORING_VECTOR[c + offset - 1]
+                                        for c in classes if 1 <= c + offset <= 20])
+                    cls_idx = [i for i, c in enumerate(classes) if 1 <= c + offset <= 20]
+                    raw     = proba[:, cls_idx] @ sv
+                elif is_ranker:
+                    # Ranker already outputs P10-centred relevance scores;
+                    # use directly (they are already on a [0, 1]-ish scale).
+                    raw = model.predict(X).astype(float)
+                else:
+                    preds = model.predict(X)
+                    raw   = 1.0 / (1.0 + np.abs(preds - 10))
 
             # min-max normalise within this race
             lo, hi = raw.min(), raw.max()

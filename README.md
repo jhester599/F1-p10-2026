@@ -636,6 +636,56 @@ Key findings:
 
 **File changed:** `src/models.py` — `ENSEMBLE_WEIGHTS` dict updated.
 
+#### Analytic heuristics added to the ensemble
+
+After the weight calibration, the ensemble (11.41 avg pts) still trailed
+the naive grid-P10 baseline (11.62).  Analysis showed that the baselines
+carry **independent signal** not fully captured by the models:
+
+| Scenario | Races | Avg pts |
+|---|---|---|
+| Both heuristics agree with models | common | normal range |
+| Both heuristics agree, all models disagree | 4.8 % (12 races) | **13.58** |
+
+Rather than running as separate strategies, the two heuristics were added
+directly into `WeightedEnsemble.score_drivers()` as analytic scorers that
+require no fitted model:
+
+```
+grid_heuristic:  score_i = 1 / (1 + |grid_position_i − 10|)
+champ_heuristic: score_i = 1 / (1 + |champ_pos_i − 10|)   (champ_pos clipped to [1,20])
+```
+
+Both scores are min-max normalised per race before blending, identical to all
+other components.  A weighted-vote simulation over 252 CV races tested
+multiple weight levels:
+
+| Config | Avg pts/race | vs. base |
+|---|---|---|
+| base ensemble (model-only) | 11.52 | — |
+| + grid_heuristic (w=1.0) | 11.77 | +0.25 |
+| + grid_heuristic (w=2.0) | 11.76 | +0.24 |
+| + both heuristics (w=1.0 ea) | 11.83 | +0.31 |
+| **+ both heuristics (w=2.0 ea)** | **11.89** | **+0.37** |
+| pure grid baseline | 11.62 | — |
+
+**`+both(2.0 ea)` was the best configuration**, improving 10 of 12 folds
+with only a small regression in 2022 (−0.6 pts/race).
+
+**New ENSEMBLE_WEIGHTS (final v3.5):**
+
+| Component | Weight | Type |
+|---|---|---|
+| `rf_reg` | 4.00 | fitted model |
+| `rf_clf` | 2.75 | fitted model |
+| `ridge` | 2.00 | fitted model |
+| `xgb_clf` | 2.00 | fitted model |
+| `grid_heuristic` | **2.00** | analytic (new) |
+| `champ_heuristic` | **2.00** | analytic (new) |
+| `xgb_ranker` | 1.75 | fitted model |
+| `lgb_reg` | 0.50 | fitted model |
+| `xgb_reg` | 0.25 | fitted model |
+
 #### Files changed
 
 - `scripts/03_train_models.py` — replaced `run_cv()` with rolling-window
@@ -643,7 +693,9 @@ Key findings:
   `results/cv_checkpoints/`; extended default eval range to 2014–2025;
   auto-selects combined parquet when cv_years include 2025.
 - `src/models.py` — `ENSEMBLE_WEIGHTS` recalibrated from 12-fold CV;
-  `ridge` added as ensemble member (weight 2.0).
+  `ridge` added; `grid_heuristic` and `champ_heuristic` added as analytic
+  ensemble components; `WeightedEnsemble.score_drivers()` handles heuristic
+  names before model lookup; `_GRID_COL_IDX` / `_CHAMP_COL_IDX` constants.
 - `results/cv_checkpoints/fold_2014.csv` … `fold_2025.csv` — 12 fold results.
 - `results/cv_results.csv` — combined 2 016-row CV results table.
 - `README.md` — this entry.
