@@ -358,6 +358,18 @@ def build_live_features(
         })
 
     feat_df = pd.DataFrame(rows)
+
+    # ── Derived features (mirror of feature_engineering.py post-loop section) ─
+    # v3.61: q_gap_sq
+    feat_df["q_gap_sq"] = feat_df["q_gap_pct"] ** 2
+    # v3.62: grid_x_overtaking
+    feat_df["grid_x_overtaking"] = feat_df["grid_position"] * feat_df["overtaking_difficulty"]
+    # v3.63: drv_form_trend
+    feat_df["drv_form_trend"] = feat_df["avg_fin_last3"] - feat_df["avg_fin_last5"]
+    # v3.71: season_completeness — need total races in the current season schedule
+    total_rounds = max((int(r["round"]) for r in schedule), default=24)
+    feat_df["season_completeness"] = (rnd / total_rounds)
+
     # Fill any NaNs with a sensible default
     for col in FEATURE_COLS:
         if col in feat_df.columns:

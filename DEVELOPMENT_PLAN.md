@@ -351,19 +351,57 @@ season fraction into halves, thirds, and quarters.  No retraining required.
 - **R6+:** Regression/ranking models gain reliability; ensemble weighting is well-calibrated
 - **Season opener:** `rf_clf` is the single best reference model for Race 1
 
-**Recommended future improvements (for consideration):**
-1. **Pre-season test signal** (Priority: High) — add a `is_pre_season_fast` feature from
-   Bahrain pre-season testing data to reduce R1 cold-start penalty
-2. **`season_completeness` feature** — `race_num / total_races_season` ∈ [0,1]; allows
-   tree models to learn seasonality interactions; est. +0.3–0.5 pts/race
-3. **Season-stage adaptive ensemble weights** — three sets of ENSEMBLE_WEIGHTS
-   (R1–R5 early, R6–R15 mid, R16+ late) calibrated independently
-4. **R1–R5 ensemble shift** — increase `ridge` and `grid_heuristic` weights, reduce
-   `rf_reg`/`xgb_ranker` weights for early-season races (implementable without retraining)
+**Recommended future improvements — status:**
+1. **Pre-season test signal** (Priority: High) — ❌ Pending. Add `is_pre_season_fast`
+   from Bahrain pre-season test data to reduce R1 cold-start penalty
+2. **`season_completeness` feature** — ✅ **Implemented in v3.71**
+3. **Season-stage adaptive ensemble weights** — ✅ **Implemented in v3.72**
+4. **R1–R5 ensemble shift** — ✅ **Implemented in v3.72 EARLY weights**
 
 Full results: `results/seasonal_performance_analysis.md`
 CSVs: `results/seasonal_performance_by_half/third/quarter.csv`
 Script: `scripts/06_seasonal_performance_analysis.py`
+
+---
+
+### v3.71 — `season_completeness` Feature (2026-03-11)
+
+Implements recommendation #2 from v3.7.
+
+- Added `season_completeness = race_num / total_races_in_season` to `FEATURE_COLS` (39th feature).
+- Computed in `src/feature_engineering.py` post-loop as `feat_df["race_num"] / year.map(max_round)`.
+- Computed in `predict_race.py::build_live_features()` using total schedule rounds.
+- Also fixed pre-existing bug: `q_gap_sq`, `grid_x_overtaking`, `drv_form_trend` (v3.61–v3.63)
+  were in FEATURE_COLS but never computed in `build_live_features()`. All four derived features
+  now computed in the same post-loop block.
+- Dataset rebuilt: 6,173 rows × 39 model features.
+- Production models retrained on full 2010–2024 data.
+
+**Feature importance:** Picked up by all six tree models; `lgb_reg` uses it most actively
+(importance 411 on raw LGB scale). Not in the top 5 for most models, consistent with its
+role as a soft contextual prior rather than a direct positional predictor.
+
+---
+
+### v3.72 — Season-Stage Adaptive Ensemble Weights (2026-03-11)
+
+Implements recommendation #3 from v3.7.
+
+**Implementation:**
+- Added `ENSEMBLE_WEIGHTS_EARLY` (R1–R5), `ENSEMBLE_WEIGHTS_MID` (R6–R15),
+  `ENSEMBLE_WEIGHTS_LATE` (R16+) to `src/models.py`.
+- Added `ENSEMBLE_STAGE_BOUNDARIES = (5, 15)` and `_RACE_NUM_COL_IDX` constant.
+- `WeightedEnsemble` gains `adaptive: bool = True` attribute and `_select_weights(race_num)`.
+- `score_drivers(X)` extracts `race_num` from the feature matrix column and auto-selects
+  the appropriate weight set — no changes required in `predict_race.py`.
+- Backward compatible: `getattr(self, "adaptive", True)` fallback handles old `.joblib` files.
+
+**Weight derivation:** Per-model avg fantasy pts/race from `cv_results_with_segments.csv`
+segmented by race number band. Scaled linearly to [0.25, 4.00] per stage.
+
+**2024 holdout:** Ensemble 11.42 → 14.17 pts/race (+2.75).
+Caveat: comparison uses full-history (2010–2023) vs 4-year CV window — delta includes
+both adaptive-weight and training-data effects. Requires 12-fold CV to isolate cleanly.
 
 ---
 

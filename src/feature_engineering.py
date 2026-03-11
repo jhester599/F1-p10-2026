@@ -530,6 +530,14 @@ def build_feature_matrix(
     # Clamp grid position
     feat_df["grid_position"] = feat_df["grid_position"].clip(1, 20).fillna(20)
 
+    # ── v3.71: season_completeness ─────────────────────────────────────────
+    # race_num / total_races_in_season ∈ [0, 1].  Allows tree models to learn
+    # season-stage interactions (e.g. form features are more informative late).
+    max_round_per_year = raw.groupby("year")["round"].max()
+    feat_df["season_completeness"] = (
+        feat_df["race_num"] / feat_df["year"].map(max_round_per_year)
+    ).clip(0.0, 1.0)
+
     # ── Accepted candidate features (v3.61–v3.63) ─────────────────────────
     # Derived from existing columns — computed after the main loop so all
     # source columns are fully NaN-filled and clamped first.

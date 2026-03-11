@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.7
+# F1 P10 Predictor · v3.72
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -113,7 +113,7 @@ F1-p10-2026/
 
 ---
 
-## Features (38 total)
+## Features (39 total)
 
 All features are derived from information available **after qualifying, before the race**.
 
@@ -139,6 +139,7 @@ All features are derived from information available **after qualifying, before t
 | `circ_races` | Times raced at this circuit |
 | `is_street` | Street circuit flag (Monaco, Baku, etc.) |
 | `race_num` | Round number in season |
+| `season_completeness` | `race_num / total_races_season` ∈ [0, 1] — v3.71 |
 | `team_avg_fin_season` | Team's season average finish |
 | `team_avg_qual_season` | Team's season average qualifying |
 | `teammate_grid` | Teammate's grid position |
@@ -187,7 +188,7 @@ directly targeting the decision the model needs to make:
 > scaled to 1–10. Prior v3.3 values were hand-coded assumptions that diverged significantly
 > from empirical data for Americas (8.3→4.5), Baku (7.8→4.7), Vegas (1.0→5.2), Zandvoort (4.5→7.5).
 
-### Interaction and trend features (3) — accepted in v3.61–v3.63
+### Interaction and trend features (3) — accepted in v3.61–v3.63 (unchanged)
 
 | Feature | Formula | Rank (rf_reg) | Description |
 |---|---|---|---|
@@ -335,31 +336,75 @@ classifier EV selection strategy.
 
 ### WeightedEnsemble
 
-Blends all seven base models using fixed weights on a common normalised scale:
+Blends all seven base models using CV-derived weights on a common normalised scale:
 - Multi-class classifiers (`rf_clf`, `xgb_clf`): EV score (expected fantasy pts)
 - Ranker (`xgb_ranker`): raw predicted relevance scores (already P10-centred)
 - Regressors: 1 / (1 + |predicted_position - 10|)
 
 All per-model scores are min-max normalised within each race before blending.
 
-| Model | Weight | CV avg pts/race | Notes |
-|---|---|---|---|
-| `rf_clf` | **4.00** | 11.40 | Best CV model under era weights; most robust to turbo-era data |
-| `xgb_ranker` | **3.25** | 11.21 | Large recovery with era weights (+3.29 on 2025 holdout) |
-| `rf_reg` | **3.00** | 11.17 | Solid; recovered partially with era weights |
-| `grid_heuristic` | **2.00** | — | Analytic: 1/(1+\|grid_pos−10\|); independent of fitted models |
-| `champ_heuristic` | **2.00** | — | Analytic: 1/(1+\|champ_pos−10\|); clipped to [1,20] |
-| `ridge` | **2.50** | 11.03 | Linear model; stable across eras |
-| `lgb_reg` | **1.50** | 10.80 | Improved under era weighting |
-| `xgb_clf` | **1.25** | 10.71 | Lifted by reduced V8-era noise |
-| `xgb_reg` | **0.25** | 10.43 | Weakest CV; kept minimal for diversity |
+**v3.72 — Season-Stage Adaptive Weights:** The ensemble now automatically selects
+one of three weight sets based on the current race number.  Weights were calibrated
+from CV data segmented by race number band.
 
-> **v3.66 calibration:** Weights derived from 12-fold rolling Time-Series CV (2014–2025, window=4)
-> **with era-stratified sample weights active** (V8=0.25, turbo-hybrid=0.60, ground-effect=1.00).
-> Each weight is proportional to avg fantasy pts per race above the per-fold floor (xgb_reg = 10.43),
-> anchored so the best model = 4.0. The two analytic heuristics are held at 2.0 (unchanged).
-> Compared with v3.64 (uniform weights), `rf_clf` replaces `rf_reg` as the top-weighted model;
-> `xgb_ranker` rises from 1.50→3.25 reflecting its strong response to era weighting.
+| Stage | Races | Best model | Dominant signal |
+|---|---|---|---|
+| Early | R1–R5 | `rf_clf` (12.42 avg) | Career/circuit history; form features are sparse |
+| Mid | R6–R15 | `ridge` (11.23 avg) | Qualifying pace; form features stabilising |
+| Late | R16+ | `rf_reg` (12.07 avg) | Stable season-average form; track-specific knowledge |
+
+**Early weights (R1–R5):**
+
+| Model | Weight | Stage avg pts |
+|---|---|---|
+| `rf_clf` | **4.00** | 12.42 |
+| `xgb_ranker` | **3.00** | 11.90 |
+| `lgb_reg` | **2.25** | 11.48 |
+| `grid_heuristic` | **2.00** | — |
+| `champ_heuristic` | **2.00** | — |
+| `xgb_reg` | **1.75** | 11.22 |
+| `rf_reg` | **1.00** | 10.80 |
+| `xgb_clf` | **0.75** | 10.63 |
+| `ridge` | **0.25** | 10.38 |
+
+**Mid weights (R6–R15):**
+
+| Model | Weight | Stage avg pts |
+|---|---|---|
+| `ridge` | **4.00** | 11.23 |
+| `lgb_reg` | **2.75** | 11.00 |
+| `grid_heuristic` | **2.00** | — |
+| `champ_heuristic` | **2.00** | — |
+| `xgb_clf` | **2.00** | 10.85 |
+| `rf_reg` | **1.75** | 10.81 |
+| `rf_clf` | **1.00** | 10.65 |
+| `xgb_reg` | **0.50** | 10.59 |
+| `xgb_ranker` | **0.25** | 10.52 |
+
+**Late weights (R16+):**
+
+| Model | Weight | Stage avg pts |
+|---|---|---|
+| `rf_reg` | **4.00** | 12.07 |
+| `rf_clf` | **3.50** | 11.82 |
+| `xgb_ranker` | **3.50** | 11.79 |
+| `ridge` | **2.75** | 11.25 |
+| `grid_heuristic` | **2.00** | — |
+| `champ_heuristic` | **2.00** | — |
+| `xgb_clf` | **1.75** | 10.56 |
+| `lgb_reg` | **0.75** | 9.90 |
+| `xgb_reg` | **0.25** | 9.51 |
+
+> **Baseline `ENSEMBLE_WEIGHTS`** (used when `adaptive=False`) retains the v3.66
+> full-season calibration: rf_clf=4.00, xgb_ranker=3.25, rf_reg=3.00, ridge=2.50,
+> lgb_reg=1.50, xgb_clf=1.25, xgb_reg=0.25, heuristics=2.00.
+> The adaptive ensemble is the new default for all production predictions.
+>
+> **v3.72 holdout (2024, trained on 2010–2023):** Ensemble improved from
+> 11.42 → 14.17 pts/race (+2.75 pts).  Note: comparison uses full-history training
+> (2010–2023) rather than the 4-year CV window; the delta reflects both adaptive
+> weights and training data effects.  A full 12-fold CV re-run is needed to isolate
+> the pure weight effect.
 
 ---
 
@@ -538,6 +583,101 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.72 — Season-Stage Adaptive Ensemble Weights
+
+**Date:** 2026-03-11
+**Branch:** `claude/f1-model-performance-analysis-TsB3L`
+**Features:** 39 (season_completeness from v3.71)
+
+Implements the adaptive ensemble weight system recommended in v3.7 finding #3.
+Instead of a single global `ENSEMBLE_WEIGHTS` dictionary, the `WeightedEnsemble`
+class now maintains three sets of weights and selects automatically based on
+`race_num` (extracted from the feature matrix at prediction time).
+
+#### Stage boundaries and selection logic
+
+```python
+# In WeightedEnsemble.score_drivers(X):
+race_num = int(X[0, _RACE_NUM_COL_IDX])   # extracted from feature matrix
+if race_num <= 5:
+    weights = ENSEMBLE_WEIGHTS_EARLY       # R1-R5
+elif race_num <= 15:
+    weights = ENSEMBLE_WEIGHTS_MID         # R6-R15
+else:
+    weights = ENSEMBLE_WEIGHTS_LATE        # R16+
+```
+
+#### Weight derivation
+
+For each stage, per-model average fantasy pts/race were computed from the
+existing `cv_results_with_segments.csv` (252 races, 12 CV folds). Weights
+are scaled linearly to the [0.25, 4.00] range so the best-performing model
+per stage gets weight 4.00 and the weakest gets 0.25.  The two analytic
+heuristics (`grid_heuristic`, `champ_heuristic`) are held at 2.00 in all stages.
+
+#### 2024 holdout evaluation
+
+| Setup | Ensemble pts/race | Notes |
+|---|---|---|
+| v3.66 (static weights, 38 features) | 11.42 | From cv_results.csv cv_year=2024 |
+| v3.72 (adaptive weights, 39 features) | **14.17** | Trained 2010–2023, tested 2024 |
+| Delta | **+2.75** | Full-history vs 4-year window; interpret with caution |
+
+The most dramatic improvement is in the ensemble (+2.75 pts). Individual model changes
+(e.g. rf_clf −1.5 pts) reflect training on 14 years vs 4 years rather than the feature
+change. A full 12-fold CV re-run would cleanly isolate the adaptive-weight contribution.
+
+#### Backward compatibility
+
+Setting `adaptive=False` when constructing `WeightedEnsemble` restores the static
+v3.66 weights.  `getattr(self, "adaptive", True)` in `_select_weights()` means
+existing `ensemble.joblib` files loaded from disk (which lack the `adaptive` attribute)
+automatically use adaptive weights when called with the new code.
+
+---
+
+### v3.71 — `season_completeness` Feature
+
+**Date:** 2026-03-11
+**Branch:** `claude/f1-model-performance-analysis-TsB3L`
+**Features:** 38 → **39**
+
+Adds a new season-context feature implementing recommendation #2 from the v3.7
+within-season analysis: a normalised season progress indicator.
+
+```python
+season_completeness = race_num / total_races_in_season   # ∈ [0, 1]
+```
+
+This allows tree models to learn interactions between season stage and form features —
+e.g., that `avg_fin_last3` is more informative late in the season when it reflects stable
+car performance.
+
+#### Feature importance (trained models, 2010–2024 data)
+
+| Model | Importance |
+|---|---|
+| `lgb_reg` | 411 (raw LGB scale; ~60% of top-5 avg ~680) |
+| `xgb_ranker` | 0.024 (similar to mid-tier features) |
+| `xgb_clf` | 0.019 |
+| `rf_clf` | 0.017 |
+| `xgb_reg` | 0.012 |
+| `rf_reg` | 0.006 |
+
+The feature is used across all six tree models, as expected for a contextual interaction
+feature.  Not in the top 5 for most models (grid_position dominates), consistent with
+its role as a soft prior on how much to trust form signals rather than a direct predictor.
+
+#### Bug fix: derived features missing from `predict_race.py`
+
+v3.71 also fixes a pre-existing bug: `q_gap_sq`, `grid_x_overtaking`, and `drv_form_trend`
+(added to FEATURE_COLS in v3.61–v3.63) were computed in `feature_engineering.py` but not
+in `predict_race.py::build_live_features()`, causing these features to be missing or NaN
+during live race predictions.  All four derived features are now computed in the same
+post-loop block inside `build_live_features()`.
+
+---
 
 ### v3.7 — Within-Season Model Performance Analysis
 

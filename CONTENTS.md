@@ -1,6 +1,6 @@
 # F1-p10-source.zip — Contents Guide
 
-**Current version: v3.7**
+**Current version: v3.72**
 
 This file documents what is included in `F1-p10-source.zip` and how to use it.
 The full zip (`F1-p10-full.zip`) contains everything below plus the trained
@@ -56,14 +56,14 @@ F1-p10-2026/
 |   +-- 06_seasonal_performance_analysis.py  # v3.7: within-season accuracy analysis
 |
 +-- data/
-|   +-- raw/                         # 1,881 cached JSON files (Jolpica + FastF1 FP)
+|   +-- raw/                         # 1,881 cached JSON files (Jolpica + FastF1 FP) [unzip from cache zip]
 |   |                                  Pre-built cache (2010-2025, 3 MB):
 |   |                                  1. Repo zip (first): f1_data_cache_2026-03-09.zip in repo root
 |   |                                     unzip f1_data_cache_2026-03-09.zip -d data/raw/
 |   |                                  2. Google Drive (fallback): https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
 |   +-- processed/
-|       +-- features_2010_2024.parquet   # Training feature matrix (6,173 rows x 43 cols)
-|       +-- features_2025_2025.parquet   # 2025 eval features (479 rows x 38 cols)
+|       +-- features_2010_2024.parquet   # Training feature matrix (6,173 rows × 39 features, v3.71+)
+|       +-- features_2025_2025.parquet   # 2025 eval features (479 rows × 39 features, v3.71+)
 |       +-- features_2010_2025.parquet   # Combined — kept for reference only
 |
 +-- models/                          # EMPTY in source zip (see below)
@@ -100,7 +100,7 @@ F1-p10-2026/
         +-- wet_race_p10_analysis.csv    # 29 documented wet-race P10 outcomes
 ```
 
-> **Parquet columns:** 38 total = 35 model features + 3 metadata columns
+> **Parquet columns:** 39 model features + metadata columns (year, round, race_id,
 > (`year`, `round`, `race_id`, `driver_id`, `constructor_id`, `grid_position`,
 > `finish_position`, `is_p10`).
 
@@ -163,7 +163,7 @@ the use of synthetic data. See the warning at the top of this file.
 
 ---
 
-## Key architecture notes (v2)
+## Key architecture notes (v3.72)
 
 **Regressors** (`ridge`, `rf_reg`, `xgb_reg`, `lgb_reg`): trained on
 `finish_position` as a continuous target. Pick = driver whose predicted
@@ -178,9 +178,9 @@ EV(driver) = sum over pos 1-20 of [ P(finish=pos) x SCORING_VECTOR[pos-1] ]
 SCORING_VECTOR = [1, 2, 4, 6, 8, 10, 12, 15, 18, 25, 18, 15, 12, 10, 8, 6, 4, 2, 1, 0]
 ```
 
-**WeightedEnsemble**: blends all six models on a common normalised scale.
-Current weights were calibrated before the multi-class EV change and may be
-stale. Recalibrate with:
+**WeightedEnsemble** (v3.72): blends all six models using season-stage adaptive
+weights.  Three weight sets (EARLY/MID/LATE) auto-selected from race_num.
+To recalibrate weights after a full CV re-run:
 
 ```bash
 python scripts/03_train_models.py --cv
