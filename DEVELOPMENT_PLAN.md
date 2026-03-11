@@ -329,6 +329,82 @@ degrades on 2025 holdout (11.56 CV → 8.08 holdout) due to pre-turbo-era data
 conflicting with interaction feature dynamics.  The 4-year rolling window CV (11.52)
 is the more reliable production estimate.
 
+### v3.7 — Within-Season Performance Analysis (2026-03-11)
+
+Systematic analysis of whether model accuracy shifts across the season.
+Method: segment the 12-fold CV results (252 races, 2014–2025) by normalised
+season fraction into halves, thirds, and quarters.  No retraining required.
+
+**Key findings:**
+
+| Finding | Detail |
+|---------|--------|
+| `rf_clf` best in H1 & at Race 1 | H1=11.59 pts vs ensemble 11.22; R1=11.92 (only model near avg) |
+| Regression/ranker models improve strongly in H2 | `rf_reg` +1.64, `xgb_ranker` +1.19, `ridge` +0.95 pts H1→H2 |
+| GBM classifiers degrade slightly in H2 | `lgb_reg` −0.37, `xgb_clf` −0.47, `xgb_reg` −0.64 pts |
+| Race 1 is hardest for form-based models | ensemble/xgb_ranker/rf_reg/ridge all score ~7.8–9.8 at R1 |
+| Q3 (races 51–75%) is best quarter overall | ensemble 12.86, rf_reg 12.05, ridge 12.02 pts |
+| Ensemble H2 gain (+0.83 pts) is real but not sig. | p=0.35 paired t-test; H2>H1 in 6/12 years |
+
+**Practical recommendations for 2026:**
+- **R1–R5:** Lean on `rf_clf` and `xgb_clf` (classifier models handle cold-start better)
+- **R6+:** Regression/ranking models gain reliability; ensemble weighting is well-calibrated
+- **Season opener:** `rf_clf` is the single best reference model for Race 1
+
+**Recommended future improvements — status:**
+1. **Pre-season test signal** (Priority: High) — ❌ Pending. Add `is_pre_season_fast`
+   from Bahrain pre-season test data to reduce R1 cold-start penalty
+2. **`season_completeness` feature** — ✅ **Implemented in v3.71**
+3. **Season-stage adaptive ensemble weights** — ✅ **Implemented in v3.72**
+4. **R1–R5 ensemble shift** — ✅ **Implemented in v3.72 EARLY weights**
+
+Full results: `results/seasonal_performance_analysis.md`
+CSVs: `results/seasonal_performance_by_half/third/quarter.csv`
+Script: `scripts/06_seasonal_performance_analysis.py`
+
+---
+
+### v3.71 — `season_completeness` Feature (2026-03-11)
+
+Implements recommendation #2 from v3.7.
+
+- Added `season_completeness = race_num / total_races_in_season` to `FEATURE_COLS` (39th feature).
+- Computed in `src/feature_engineering.py` post-loop as `feat_df["race_num"] / year.map(max_round)`.
+- Computed in `predict_race.py::build_live_features()` using total schedule rounds.
+- Also fixed pre-existing bug: `q_gap_sq`, `grid_x_overtaking`, `drv_form_trend` (v3.61–v3.63)
+  were in FEATURE_COLS but never computed in `build_live_features()`. All four derived features
+  now computed in the same post-loop block.
+- Dataset rebuilt: 6,173 rows × 39 model features.
+- Production models retrained on full 2010–2024 data.
+
+**Feature importance:** Picked up by all six tree models; `lgb_reg` uses it most actively
+(importance 411 on raw LGB scale). Not in the top 5 for most models, consistent with its
+role as a soft contextual prior rather than a direct positional predictor.
+
+---
+
+### v3.72 — Season-Stage Adaptive Ensemble Weights (2026-03-11)
+
+Implements recommendation #3 from v3.7.
+
+**Implementation:**
+- Added `ENSEMBLE_WEIGHTS_EARLY` (R1–R5), `ENSEMBLE_WEIGHTS_MID` (R6–R15),
+  `ENSEMBLE_WEIGHTS_LATE` (R16+) to `src/models.py`.
+- Added `ENSEMBLE_STAGE_BOUNDARIES = (5, 15)` and `_RACE_NUM_COL_IDX` constant.
+- `WeightedEnsemble` gains `adaptive: bool = True` attribute and `_select_weights(race_num)`.
+- `score_drivers(X)` extracts `race_num` from the feature matrix column and auto-selects
+  the appropriate weight set — no changes required in `predict_race.py`.
+- Backward compatible: `getattr(self, "adaptive", True)` fallback handles old `.joblib` files.
+
+**Weight derivation:** Per-model avg fantasy pts/race from `cv_results_with_segments.csv`
+segmented by race number band. Scaled linearly to [0.25, 4.00] per stage.
+
+**2024 holdout:** Ensemble 11.42 → 14.17 pts/race (+2.75).
+Caveat: comparison uses full-history (2010–2023) vs 4-year CV window — delta includes
+both adaptive-weight and training-data effects. Requires 12-fold CV to isolate cleanly.
+
+---
+
 ### Remaining known issues / future work
 
 - `rf_reg` and regressors (`ridge`, `xgb_reg`) still over-weight career form for

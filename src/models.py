@@ -118,9 +118,71 @@ ENSEMBLE_WEIGHTS: dict[str, float] = {
     "champ_heuristic": 2.00,   # analytic: 1/(1+|champ_pos-10|), clipped to [1,20]
 }
 
-# Column indices used by the analytic heuristics (derived from FEATURE_COLS at import time)
-_GRID_COL_IDX  = FEATURE_COLS.index("grid_position")
-_CHAMP_COL_IDX = FEATURE_COLS.index("drv_champ_pos")
+# ── v3.72 Season-stage adaptive ensemble weights ───────────────────────────────
+#
+# Derived from 12-fold rolling Time-Series CV data (2014–2025, 252 races) by
+# segmenting cv_results.csv into three race-number bands and scaling model
+# performance (avg fantasy pts/race) to the [0.25, 4.00] weight range.
+#
+# Stage boundaries (tunable via ENSEMBLE_STAGE_BOUNDARIES):
+#   Early : R1  – R5   (≤ 5 races in)   — within-season form features are noisy
+#   Mid   : R6  – R15  (mid-season)     — form features stabilising
+#   Late  : R16+        (final quarter)  — car performance and form fully stable
+#
+# Source performance (avg pts/race, 12-fold CV):
+#   EARLY:  rf_clf=12.42  xgb_ranker=11.90  lgb_reg=11.48  xgb_reg=11.22
+#           rf_reg=10.80  xgb_clf=10.63     ridge=10.38
+#   MID:    ridge=11.23   lgb_reg=11.00     xgb_clf=10.85  rf_reg=10.81
+#           rf_clf=10.65  xgb_reg=10.59     xgb_ranker=10.52
+#   LATE:   rf_reg=12.07  rf_clf=11.82      xgb_ranker=11.79  ridge=11.25
+#           xgb_clf=10.56 lgb_reg=9.90      xgb_reg=9.51
+#
+# grid_heuristic / champ_heuristic: analytic — held constant at 2.00 across stages.
+ENSEMBLE_WEIGHTS_EARLY: dict[str, float] = {
+    # R1–R5: rf_clf and xgb_ranker dominate; ridge is least useful
+    "rf_clf":          4.00,
+    "xgb_ranker":      3.00,
+    "lgb_reg":         2.25,
+    "xgb_reg":         1.75,
+    "rf_reg":          1.00,
+    "xgb_clf":         0.75,
+    "ridge":           0.25,
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}
+ENSEMBLE_WEIGHTS_MID: dict[str, float] = {
+    # R6–R15: ridge leads (qualifying signal strongest); xgb_ranker weakest
+    "ridge":           4.00,
+    "lgb_reg":         2.75,
+    "xgb_clf":         2.00,
+    "rf_reg":          1.75,
+    "rf_clf":          1.00,
+    "xgb_reg":         0.50,
+    "xgb_ranker":      0.25,
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}
+ENSEMBLE_WEIGHTS_LATE: dict[str, float] = {
+    # R16+: rf_reg, rf_clf, xgb_ranker benefit from stable form; lgb/xgb_reg degrade
+    "rf_reg":          4.00,
+    "rf_clf":          3.50,
+    "xgb_ranker":      3.50,
+    "ridge":           2.75,
+    "xgb_clf":         1.75,
+    "lgb_reg":         0.75,
+    "xgb_reg":         0.25,
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}
+
+# Stage boundaries: (early_max, mid_max).  race_num ≤ early_max → EARLY;
+# early_max < race_num ≤ mid_max → MID; race_num > mid_max → LATE.
+ENSEMBLE_STAGE_BOUNDARIES: tuple[int, int] = (5, 15)
+
+# Column indices used by the analytic heuristics and stage selection
+_GRID_COL_IDX     = FEATURE_COLS.index("grid_position")
+_CHAMP_COL_IDX    = FEATURE_COLS.index("drv_champ_pos")
+_RACE_NUM_COL_IDX = FEATURE_COLS.index("race_num")
 
 
 class WeightedEnsemble:
@@ -133,21 +195,52 @@ class WeightedEnsemble:
     the other models.
     """
 
-    def __init__(self, base_models: dict[str, Any], weights: dict[str, float] | None = None):
+    def __init__(
+        self,
+        base_models: dict[str, Any],
+        weights: dict[str, float] | None = None,
+        adaptive: bool = True,
+    ):
         self.base_models = base_models          # {name: fitted estimator}
         self.weights = weights or ENSEMBLE_WEIGHTS
+        # v3.72: when adaptive=True, weights are selected per-race based on race_num
+        self.adaptive = adaptive
 
     # sklearn-compatible shim — the base models are already fitted
     def fit(self, X, y):
         return self
 
+    def _select_weights(self, race_num: int) -> dict[str, float]:
+        """v3.72: return the appropriate weight set for *race_num*."""
+        if not getattr(self, "adaptive", True):
+            return self.weights
+        early_max, mid_max = ENSEMBLE_STAGE_BOUNDARIES
+        if race_num <= early_max:
+            return ENSEMBLE_WEIGHTS_EARLY
+        elif race_num <= mid_max:
+            return ENSEMBLE_WEIGHTS_MID
+        else:
+            return ENSEMBLE_WEIGHTS_LATE
+
     def score_drivers(self, X: np.ndarray) -> np.ndarray:
-        """Return a weighted blend score for each driver row in X."""
+        """Return a weighted blend score for each driver row in X.
+
+        v3.72: If self.adaptive is True, automatically selects the weight set
+        (early/mid/late) based on race_num extracted from feature column
+        _RACE_NUM_COL_IDX.  Falls back to self.weights if race_num unavailable.
+        """
+        # Determine race stage (all rows in X belong to the same race)
+        try:
+            race_num = int(X[0, _RACE_NUM_COL_IDX])
+        except (IndexError, ValueError):
+            race_num = 1
+        active_weights = self._select_weights(race_num)
+
         n = X.shape[0]
         weighted = np.zeros(n)
         total_w  = 0.0
 
-        for name, weight in self.weights.items():
+        for name, weight in active_weights.items():
 
             # ── analytic heuristics (require no fitted model) ──────────────
             if name == "grid_heuristic":

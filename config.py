@@ -150,6 +150,7 @@ FEATURE_COLS = [
     "is_street",
     # --- season context ---
     "race_num",
+    "season_completeness",       # v3.71: race_num / total_races_season ∈ [0, 1]
     # --- team context ---
     "team_avg_fin_season",
     "team_avg_qual_season",
