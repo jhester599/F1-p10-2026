@@ -193,6 +193,7 @@ due to its bagging mechanism.
 | v3.62 | 2026-03-11 | `grid_x_overtaking` accepted (+1.208 pts); added to FEATURE_COLS | 37 |
 | v3.63 | 2026-03-11 | `drv_form_trend` accepted (+1.083 pts); added to FEATURE_COLS | 38 |
 | v3.64 | 2026-03-11 | Full 12-fold CV re-run; ensemble weights recalibrated to v3.64 | 38 |
+| v3.65 | 2026-03-11 | Era-stratified sample weights: V8=0.25, hybrid=0.60, GE=1.00 | 38 |
 
 ---
 
@@ -205,7 +206,8 @@ due to its bagging mechanism.
 | `feature_exploration/results/*.csv` | New — per-feature checkpoints + summary |
 | `src/feature_engineering.py` | Added 10 Category B candidate columns + 3 accepted features |
 | `config.py` | FEATURE_COLS: added `q_gap_sq`, `grid_x_overtaking`, `drv_form_trend` |
-| `src/models.py` | ENSEMBLE_WEIGHTS updated to v3.64; module docstring updated |
+| `src/models.py` | ENSEMBLE_WEIGHTS updated to v3.64; era_weights support in train_all() |
+| `config.py` | ERA_WEIGHTS + era_sample_weight() added |
 | `data/processed/*.parquet` | Rebuilt with 38 features (gitignored) |
 | `results/cv_results.csv` | Updated — full 12-fold CV on 38-feature set (252 races) |
 | `results/cv_checkpoints/fold_*.csv` | Updated — all 12 folds regenerated |

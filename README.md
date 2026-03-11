@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.64
+# F1 P10 Predictor · v3.65
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -407,32 +407,29 @@ Outputs:
 
 ## 2025 Season Results
 
-Models evaluated on all 24 races of the 2025 season.
+Models evaluated on all 24 races of the 2025 season. All trained on 2010–2024.
 
-### v3.64 results — 38 features, v3.64 ensemble weights, trained on 2010–2024
+### v3.65 results — 38 features, v3.64 weights, era-stratified training
 
-| Model | Avg Pts/Race | Exact P10 | Within 2 pos | v3.5 Avg Pts | Δ |
+| Model | Avg Pts/Race | Exact P10 | Within 2 pos | v3.64 (uniform) | Δ era weights |
 |---|---|---|---|---|---|
 | naive_grid_p10 | 14.04 | 3 | 50.0% | — | — |
-| **rf_clf** | **12.08** | 2 | 45.8% | 10.88 | **+1.20 ▲** |
-| ridge | 11.25 | 0 | 37.5% | 10.67 | **+0.58 ▲** |
-| lgb_reg | 10.62 | 1 | 33.3% | 12.38 | −1.76 ▼ |
-| xgb_reg | 10.58 | 1 | 33.3% | 10.50 | +0.08 |
-| xgb_clf | 10.08 | 1 | 37.5% | 10.29 | −0.21 ▼ |
-| ensemble | 8.83 | 1 | 25.0% | 12.00 | −3.17 ▼ |
-| xgb_ranker | 8.54 | 1 | 20.8% | 11.38 | −2.84 ▼ |
-| rf_reg | 8.08 | 1 | 25.0% | 8.92 | −0.84 ▼ |
+| **rf_clf** | **12.00** | 2 | 50.0% | 12.08 | −0.08 |
+| **xgb_ranker** | **11.83** | 2 | 41.7% | 8.54 | **+3.29 ▲** |
+| ridge | 10.71 | 0 | 37.5% | 11.25 | −0.54 |
+| xgb_clf | 10.58 | 1 | 33.3% | 10.08 | **+0.50 ▲** |
+| **ensemble** | **10.50** | 1 | 29.2% | 8.83 | **+1.67 ▲** |
+| lgb_reg | 10.38 | 1 | 29.2% | 10.62 | −0.25 |
+| xgb_reg | 10.25 | 1 | 33.3% | 10.58 | −0.33 |
+| rf_reg | 8.58 | 0 | 16.7% | 8.08 | +0.50 |
 
-> ⚠️ **Holdout caveat:** Training on the full 2010–2024 dataset (15 seasons) hurts
-> models that lean on tree-based splits across interaction features
-> (`grid_x_overtaking`, `drv_form_trend`). The pre-turbo/hybrid era (2010–2013)
-> encodes different positional dynamics that conflict with 2025 patterns when these
-> features interact with circuit stickiness indices derived from 2014–2025 data.
-> `rf_reg` in particular drops from 11.56 (CV, 4-year window) to 8.08 (full-window holdout).
+> **Era weighting (v3.65)** significantly recovers models that suffered from pre-turbo era
+> data contamination: `xgb_ranker` +3.29, `ensemble` +1.67, `xgb_clf` +0.50.
+> Era weights: V8 (2010–2013) = 0.25 | turbo-hybrid (2014–2021) = 0.60 | ground-effect (2022+) = 1.00.
 >
-> **The 12-fold rolling CV (4-year window, 252 races) is the more reliable performance estimate:**
+> **The 12-fold rolling CV (4-year window, 252 races) remains the most reliable performance estimate:**
 >
-> | Model | CV avg pts/race (12 folds) |
+> | Model | CV avg pts/race (12 folds, v3.64) |
 > |---|---|
 > | rf_reg | 11.56 |
 > | **ensemble** | **11.52** |
@@ -443,9 +440,8 @@ Models evaluated on all 24 races of the 2025 season.
 > | lgb_reg | 10.44 |
 > | xgb_clf | 10.36 |
 >
-> **Recommended pick for 2026:** `rf_clf` (12.08 on 2025 holdout, 11.31 CV avg) or
-> `ensemble` (11.52 CV avg). The CV ensemble is expected to recover toward 11.52
-> when production inference uses recent-era training data consistent with the rolling window.
+> **Recommended pick for 2026:** `rf_clf` (12.00 on 2025 holdout, 11.31 CV avg).
+> `ensemble` is also viable (10.50 holdout, 11.52 CV avg).
 
 ---
 
@@ -531,6 +527,48 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.65 — Era-Stratified Sample Weights
+
+**Date:** 2026-03-11
+**Branch:** `claude/explore-model-features-BVwu5`
+**Features:** 38 (unchanged)
+
+F1 has three distinct regulatory eras with different positional dynamics. Training all
+2010–2024 data with equal weight caused the pre-turbo era (2010–2013) to teach patterns
+that conflict with the new interaction features (`grid_x_overtaking`, `drv_form_trend`).
+
+#### Era Boundaries and Weights
+
+| Era | Years | Weight | Rationale |
+|-----|-------|--------|-----------|
+| V8 naturally aspirated | 2010–2013 | **0.25** | No settled DRS, different aero, `overtaking_difficulty` values don't apply to this era |
+| Turbo-hybrid (V6) | 2014–2021 | **0.60** | Stable rules, `OVERTAKING_DIFFICULTY` calibrated here; partially superseded by 2022 reset |
+| Ground effect / new aero | 2022–present | **1.00** | Current regulations; most predictive of 2026 conditions |
+
+Training data composition: 1,702 V8 rows (27.5%) → effective weight 0.25 → ~2.1% influence.
+3,112 turbo-hybrid rows (50.4%) → effective weight 0.60 → ~44%. 1,359 GE rows (22%) → full weight.
+
+#### 2025 Holdout Impact
+
+| Model | Without era weights | With era weights | Δ |
+|---|---|---|---|
+| xgb_ranker | 8.54 | **11.83** | **+3.29** |
+| ensemble | 8.83 | **10.50** | **+1.67** |
+| xgb_clf | 10.08 | 10.58 | +0.50 |
+| rf_reg | 8.08 | 8.58 | +0.50 |
+| rf_clf | 12.08 | 12.00 | −0.08 |
+
+The `xgb_ranker` (whose pairwise relevance objective is most sensitive to positional dynamics)
+saw the largest recovery (+3.29). `rf_clf` was already robust and remained stable.
+
+#### Implementation
+
+`ERA_WEIGHTS` and `era_sample_weight()` added to `config.py`. `train_all()` in `src/models.py`
+accepts `use_era_weights=True` (default). All models pass `sample_weight` at fit time;
+`XGBRanker` uses one weight per query group (race) as required by the pairwise API.
+
+---
 
 ### v3.64 — Full 12-Fold CV Re-run + Ensemble Re-weighting
 

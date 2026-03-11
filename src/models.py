@@ -59,7 +59,7 @@ from sklearn.metrics import mean_absolute_error
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from config import FEATURE_COLS, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS
+from config import FEATURE_COLS, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS, era_sample_weight
 
 logger = logging.getLogger(__name__)
 
@@ -294,9 +294,22 @@ def _make_models() -> dict[str, Any]:
 def train_all(
     train_df: pd.DataFrame,
     force: bool = False,
+    use_era_weights: bool = True,
 ) -> dict[str, Any]:
     """
     Fit all models on *train_df* and save to MODELS_DIR.
+
+    Parameters
+    ----------
+    train_df : DataFrame
+        Training data with FEATURE_COLS and TARGET_COL columns.
+    force : bool
+        Re-train even if saved model files exist on disk.
+    use_era_weights : bool
+        If True, apply era-stratified sample weights (v3.64+):
+          V8 era 2010–2013 → 0.25,  turbo-hybrid 2014–2021 → 0.60,
+          ground-effect 2022+ → 1.00.
+        This down-weights pre-turbo data where positional dynamics differ.
 
     Returns dict {model_name: fitted_estimator}.
     """
@@ -304,6 +317,15 @@ def train_all(
     y_reg  = train_df[TARGET_COL].values.astype(float)
     # Multi-class: predict full finish position (1–20), not binary is_p10
     y_clf  = train_df[TARGET_COL].values.astype(int)
+
+    # Era-stratified sample weights (v3.64).
+    # Regressors, classifiers: weights aligned to X rows.
+    if use_era_weights and "year" in train_df.columns:
+        sample_weights = np.array([era_sample_weight(y) for y in train_df["year"].values])
+        logger.info("  Era weights: V8(≤2013)=0.25  hybrid(2014-21)=0.60  GE(2022+)=1.00  "
+                    "mean=%.3f  [%d rows]", sample_weights.mean(), len(sample_weights))
+    else:
+        sample_weights = None
 
     # v3.4: pre-compute ranker training artefacts (sorted by race, qid array,
     # and P10-centred relevance scores).  XGBRanker strictly requires that
@@ -318,6 +340,18 @@ def train_all(
     qid_train = train_sorted.groupby(
         ["year", "round"], sort=True
     ).ngroup().values
+    # Sample weights for the ranker — XGBRanker requires ONE weight per query
+    # group (race), not per row.  Since all rows in a race share the same year,
+    # the group weight is simply the era weight for that race year.
+    if use_era_weights and "year" in train_sorted.columns:
+        group_years = (
+            train_sorted.groupby(["year", "round"], sort=True)["year"]
+            .first()
+            .values
+        )
+        sample_weights_rank = np.array([era_sample_weight(y) for y in group_years])
+    else:
+        sample_weights_rank = None
 
     fitted: dict[str, Any] = {}
     models = _make_models()
@@ -336,11 +370,13 @@ def train_all(
         is_ranker = name.endswith("_ranker")
 
         if is_ranker:
-            # XGBRanker: pass race-sorted features, relevance labels, and qid.
-            logger.info("  %-14s → training (rank:pairwise) …", name)
+            # XGBRanker: pass race-sorted features, relevance labels, qid, and era weights.
+            logger.info("  %-14s → training (rank:pairwise, era_weights=%s) …",
+                        name, sample_weights_rank is not None)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                est.fit(X_rank, y_rank, qid=qid_train)
+                est.fit(X_rank, y_rank, qid=qid_train,
+                        sample_weight=sample_weights_rank)
         else:
             if is_clf:
                 # XGBoost multi:softprob requires 0-indexed classes (0–19);
@@ -349,10 +385,16 @@ def train_all(
             else:
                 y = y_reg
 
-            logger.info("  %-14s → training …", name)
+            logger.info("  %-14s → training (era_weights=%s) …",
+                        name, sample_weights is not None)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                est.fit(X, y)
+                if name == "ridge":
+                    # Ridge is wrapped in a Pipeline(scaler, reg).
+                    # Pass sample_weight via the step name prefix.
+                    est.fit(X, y, reg__sample_weight=sample_weights)
+                else:
+                    est.fit(X, y, sample_weight=sample_weights)
 
         joblib.dump(est, out_path)
         fitted[name] = est

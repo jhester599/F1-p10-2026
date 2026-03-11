@@ -177,3 +177,38 @@ FEATURE_COLS = [
 ]
 
 TARGET_COL = "finish_position"
+
+# ── Era-stratified sample weights ─────────────────────────────────────────────
+# F1 has three hard regulatory eras with distinct positional dynamics.
+# Older eras teach conflicting patterns for interaction features
+# (grid_x_overtaking, drv_form_trend) that were designed for the modern era.
+#
+# V8 naturally aspirated (2010-2013):
+#   DRS not yet established (2011+), KERS optional, no ground effect aero.
+#   grid → finish Spearman is meaningfully lower; overtaking dynamics differ.
+#   Weight: 0.25 — included for sample volume but heavily discounted.
+#
+# Turbo-hybrid V6 (2014-2021):
+#   Full DRS, stable regulations through this era, hybrid power established.
+#   OVERTAKING_DIFFICULTY values were empirically calibrated on this era.
+#   Weight: 0.60 — relevant but partially superseded by 2022 regulation reset.
+#
+# Ground effect / new aero (2022-present):
+#   Major regulation reset: new car concepts, different following-car dynamics,
+#   changed DRS effectiveness. Most predictive of 2026 conditions.
+#   Weight: 1.00 — full weight.
+ERA_WEIGHTS: dict[str, float] = {
+    "v8":           0.25,   # 2010–2013
+    "turbo_hybrid": 0.60,   # 2014–2021
+    "ground_effect": 1.00,  # 2022–present
+}
+
+
+def era_sample_weight(year: int) -> float:
+    """Return the era-stratified sample weight for a given season year."""
+    if year <= 2013:
+        return ERA_WEIGHTS["v8"]
+    elif year <= 2021:
+        return ERA_WEIGHTS["turbo_hybrid"]
+    else:
+        return ERA_WEIGHTS["ground_effect"]

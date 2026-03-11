@@ -265,6 +265,19 @@ set (35 features) is unchanged.
 
 See `feature_exploration/FEATURE_EXPLORATION_STATUS.md` for full results and methodology.
 
+### v3.65 — Era-Stratified Sample Weights (2026-03-11)
+
+F1 three-era weighting added to training: V8 (2010–2013) = 0.25, turbo-hybrid (2014–2021) = 0.60,
+ground-effect (2022+) = 1.00.  Implemented in `config.py` (ERA_WEIGHTS, era_sample_weight) and
+`src/models.py` (train_all use_era_weights=True default).
+
+2025 holdout impact (train full 2010-2024):
+  xgb_ranker: 8.54 → 11.83 (+3.29)  |  ensemble: 8.83 → 10.50 (+1.67)
+  xgb_clf: 10.08 → 10.58 (+0.50)   |  rf_clf: unchanged at 12.00
+
+Note: The v3.64 ensemble weights (from uniform-weighted CV) are still in use.
+A CV re-run with era weights would recalibrate them; deferred to v3.66 if needed.
+
 ### v3.64 — Full 12-Fold CV Re-run + Ensemble Re-weighting (2026-03-11)
 
 Full 12-fold rolling Time-Series CV (2014–2025, window=4, 252 races) confirmed
@@ -298,11 +311,13 @@ is the more reliable production estimate.
   drivers starting from the back (e.g., Verstappen P20 → predicted ≈ P10).
   Possible fix: add a grid-position penalty term or cap career features.
 - Ensemble weights are now v3.64-calibrated (38-feature, 12-fold CV). ✅ Done.
-- The 2025 holdout shows rf_reg degrading (11.56 CV → 8.08 holdout) when trained
-  on full 2010–2024 data. Root cause: pre-turbo era data conflicts with interaction
-  feature dynamics. **Future fix:** train production model on the most recent 4 years
-  (2021–2024) to match the CV window, rather than full 2010–2024. This would give
-  the CV performance on the production model.
+- The 2025 holdout era-conflict is partially resolved by v3.65 era weights (ensemble
+  8.83 → 10.50). `rf_reg` remains weak on 2025 (8.08 → 8.58) because tree splits on
+  interaction features still capture some V8-era structure even with 0.25 weighting.
+  Future fix: rolling-window production training (2021–2024 only) or era weight tuning.
+- v3.64 ensemble weights derived from **uniform-weighted CV**. A CV re-run with era
+  weights may recalibrate them, particularly increasing xgb_ranker weight (recovered
+  most from era weighting on holdout). Deferred: CV with era weights ≈ 30 min.
 - New v3.1–v3.31 features (`fp2_position`, `historical_dnf_rate`, etc.) all rank
   below the standalone importance threshold but are retained due to the ensemble
   lift. If a v4.0 feature set is designed, these should be re-evaluated.
