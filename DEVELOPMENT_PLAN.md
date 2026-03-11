@@ -329,6 +329,44 @@ degrades on 2025 holdout (11.56 CV → 8.08 holdout) due to pre-turbo-era data
 conflicting with interaction feature dynamics.  The 4-year rolling window CV (11.52)
 is the more reliable production estimate.
 
+### v3.7 — Within-Season Performance Analysis (2026-03-11)
+
+Systematic analysis of whether model accuracy shifts across the season.
+Method: segment the 12-fold CV results (252 races, 2014–2025) by normalised
+season fraction into halves, thirds, and quarters.  No retraining required.
+
+**Key findings:**
+
+| Finding | Detail |
+|---------|--------|
+| `rf_clf` best in H1 & at Race 1 | H1=11.59 pts vs ensemble 11.22; R1=11.92 (only model near avg) |
+| Regression/ranker models improve strongly in H2 | `rf_reg` +1.64, `xgb_ranker` +1.19, `ridge` +0.95 pts H1→H2 |
+| GBM classifiers degrade slightly in H2 | `lgb_reg` −0.37, `xgb_clf` −0.47, `xgb_reg` −0.64 pts |
+| Race 1 is hardest for form-based models | ensemble/xgb_ranker/rf_reg/ridge all score ~7.8–9.8 at R1 |
+| Q3 (races 51–75%) is best quarter overall | ensemble 12.86, rf_reg 12.05, ridge 12.02 pts |
+| Ensemble H2 gain (+0.83 pts) is real but not sig. | p=0.35 paired t-test; H2>H1 in 6/12 years |
+
+**Practical recommendations for 2026:**
+- **R1–R5:** Lean on `rf_clf` and `xgb_clf` (classifier models handle cold-start better)
+- **R6+:** Regression/ranking models gain reliability; ensemble weighting is well-calibrated
+- **Season opener:** `rf_clf` is the single best reference model for Race 1
+
+**Recommended future improvements (for consideration):**
+1. **Pre-season test signal** (Priority: High) — add a `is_pre_season_fast` feature from
+   Bahrain pre-season testing data to reduce R1 cold-start penalty
+2. **`season_completeness` feature** — `race_num / total_races_season` ∈ [0,1]; allows
+   tree models to learn seasonality interactions; est. +0.3–0.5 pts/race
+3. **Season-stage adaptive ensemble weights** — three sets of ENSEMBLE_WEIGHTS
+   (R1–R5 early, R6–R15 mid, R16+ late) calibrated independently
+4. **R1–R5 ensemble shift** — increase `ridge` and `grid_heuristic` weights, reduce
+   `rf_reg`/`xgb_ranker` weights for early-season races (implementable without retraining)
+
+Full results: `results/seasonal_performance_analysis.md`
+CSVs: `results/seasonal_performance_by_half/third/quarter.csv`
+Script: `scripts/06_seasonal_performance_analysis.py`
+
+---
+
 ### Remaining known issues / future work
 
 - `rf_reg` and regressors (`ridge`, `xgb_reg`) still over-weight career form for

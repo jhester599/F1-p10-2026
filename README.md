@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.66
+# F1 P10 Predictor · v3.7
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -446,6 +446,13 @@ Models evaluated on all 24 races of the 2025 season. All trained on 2010–2024.
 > `xgb_ranker` is the second-best individual pick (11.83 holdout, 11.21 CV avg).
 > `ensemble` leads CV (11.62) but underperforms on holdout due to reduced diversity — use
 > individual models as primary picks.
+>
+> **Seasonal guidance (v3.7):** Model accuracy varies across the season.
+> `rf_clf` is specifically the strongest model at Race 1 (11.92 avg) and in the early season
+> (H1=11.59), while `rf_reg` and `xgb_ranker` improve most by mid-season (+1.64 and +1.19 pts
+> in H2).  Use `rf_clf` as the primary reference for R1–R5; rely on the full ensemble from
+> R6 onwards.  See the v3.7 Development Log entry or `results/seasonal_performance_analysis.md`
+> for the complete analysis.
 
 ---
 
@@ -531,6 +538,71 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.7 — Within-Season Model Performance Analysis
+
+**Date:** 2026-03-11
+**Branch:** `claude/f1-model-performance-analysis-TsB3L`
+**Features:** 38 (unchanged) | **No retraining** — analysis of existing CV results
+
+Systematic investigation of whether model accuracy changes across a season.
+The 12-fold rolling Time-Series CV results (252 races, 2014–2025) were segmented
+into halves, thirds, and quarters using a normalised season fraction to account
+for varying season lengths (17–24 races).
+
+#### Key findings
+
+| Observation | Detail |
+|-------------|--------|
+| `rf_clf` leads in H1 and Race 1 | H1=11.59 pts, Race 1=11.92 pts (only model near its season average) |
+| Regression/ranker models improve in H2 | `rf_reg` +1.64 pts, `xgb_ranker` +1.19 pts, `ridge` +0.95 pts |
+| GBM classifiers degrade slightly in H2 | `lgb_reg` −0.37, `xgb_clf` −0.47, `xgb_reg` −0.64 pts |
+| Race 1 cold-start penalty | ensemble/xgb_ranker/rf_reg/ridge all score 7.8–9.8 pts at R1 |
+| Q3 (races 51–75%) is strongest quarter | ensemble 12.86, ridge 12.02, rf_reg 12.05 pts/race |
+| Half-season trend: real but not stat. sig. | Ensemble +0.83 pts H1→H2; H2>H1 in 6/12 years (p=0.35) |
+
+#### Explanation of the split behaviour
+
+- **Early-season (R1–R5):** Within-season features (`avg_fin_last3`, `team_avg_fin_season`,
+  `drv_p10_zone_rate_last10`) have near-zero information because the season has just started.
+  Classifier models (`rf_clf`) that rely more on **career/circuit history** are better calibrated
+  here than regression/ranking models that weight within-season form heavily.
+
+- **Mid/late season (R6+):** As within-season signals accumulate, regression and ranking models
+  (`rf_reg`, `xgb_ranker`) dramatically improve because their form features now reflect the
+  current car performance and driver momentum.
+
+- **Q3 peak (races 51–75%):** Corresponds roughly to R12–R17 in a 22-race season.  This is
+  post-summer-break, after the main aerodynamic development period.  Car performance is most
+  stable, championship dynamics are well-established, and qualifying positions are highly
+  predictive of race outcomes — ideal conditions for grid/form-based models.
+
+#### Recommended model for each 2026 race phase
+
+| Season phase | Best reference model | Rationale |
+|---|---|---|
+| Race 1 (season opener) | `rf_clf` (11.92 avg) | Classifier uses historical base rates; unaffected by missing within-season features |
+| R2–R5 (early season) | `rf_clf`, lean on `ensemble` | Within-season features sparse; history-based models preferred |
+| R6–R12 (mid season) | `ensemble` (full weight) | All features now meaningful; calibrated CV weights are well-suited |
+| R13+ (late season) | `ensemble` + `rf_reg` reference | Form features fully stabilised; `rf_reg` and `xgb_ranker` at peak |
+
+#### Recommended improvements for future versions
+
+1. **Pre-season test signal** *(Priority: High)* — Add a `is_pre_season_fast` feature from
+   Bahrain pre-season testing lap-delta data to reduce the Race 1 cold-start gap.
+2. **`season_completeness` feature** — `race_num / total_races_season` ∈ [0, 1]; enables tree
+   models to learn seasonality interactions (e.g., `avg_fin_last3` weight increases late-season).
+   Estimated gain: +0.3–0.5 pts/race.
+3. **Season-stage adaptive ensemble weights** — Three weight sets (R1–R5, R6–R15, R16+)
+   calibrated independently.  Expected gain: +0.5–1.0 pts/race at the season extremes.
+4. **Early-season weight shift** — Increase `ridge` and `grid_heuristic` weights, reduce
+   `rf_reg`/`xgb_ranker` weights for R1–R5.  Implementable without retraining.
+
+Full analysis report: `results/seasonal_performance_analysis.md`
+Raw CSVs: `results/seasonal_performance_by_half/third/quarter.csv`, `results/cv_results_with_segments.csv`
+Script: `scripts/06_seasonal_performance_analysis.py`
+
+---
 
 ### v3.66 — Era-Weighted CV Re-run + Ensemble Recalibration
 
