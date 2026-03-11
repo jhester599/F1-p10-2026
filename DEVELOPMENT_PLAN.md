@@ -252,6 +252,21 @@ but carries no discriminative power over finishing position (specifically P10).
 Mutual information of all three with `is_p10` is < 0.001.  The v3.4 feature
 set (35 features) is unchanged.
 
+### v3.63 — Feature Exploration (2026-03-11)
+
+20 candidate features tested on a 1-fold holdout (train 2021–2023, test 2024).
+3 features accepted; 17 discarded.  All changes are in branch `claude/explore-model-features-BVwu5`.
+
+| Feature | Verdict | Δ pts/race |
+|---------|---------|------------|
+| `q_gap_sq` (q_gap_pct²) | KEEP | +0.833 |
+| `grid_x_overtaking` (grid × overtaking_difficulty) | KEEP | +1.208 |
+| `drv_form_trend` (avg_fin_last3 − avg_fin_last5) | KEEP | +1.083 |
+
+See `feature_exploration/FEATURE_EXPLORATION_STATUS.md` for full results and
+methodology.  Full 12-fold rolling CV with the 38-feature set is the
+recommended next step to confirm the holdout gains hold at scale.
+
 ### Remaining known issues / future work
 
 - `rf_reg` and regressors (`ridge`, `xgb_reg`) still over-weight career form for

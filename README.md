@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v3.5
+# F1 P10 Predictor · v3.63
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix.
 
@@ -509,6 +509,59 @@ pip install -r requirements.txt pyarrow
 ---
 
 ## Development Log
+
+### v3.63 — Feature Exploration: 3 New Predictors Accepted
+
+**Branch:** `claude/explore-model-features-BVwu5`
+**Date:** 2026-03-11
+**Features:** 35 → 38 (+3 accepted from 20 candidates tested)
+
+#### Methodology
+
+A systematic iterative feature exploration was conducted using a 1-fold
+holdout (train 2021–2023, test 2024) with `rf_reg` and `lgb_reg` as the
+primary screening models. Twenty candidate features were tested sequentially
+— each accepted feature joins the baseline before the next test — ensuring
+only incremental, non-redundant value is rewarded.
+
+See `feature_exploration/FEATURE_EXPLORATION_STATUS.md` for full results.
+
+#### Accepted Features
+
+| Version | Feature | Formula | Δ pts/race |
+|---------|---------|---------|------------|
+| v3.61 | `q_gap_sq` | `q_gap_pct²` | **+0.833** |
+| v3.62 | `grid_x_overtaking` | `grid_position × overtaking_difficulty` | **+1.208** |
+| v3.63 | `drv_form_trend` | `avg_fin_last3 − avg_fin_last5` | **+1.083** |
+
+**`q_gap_sq`** — Squaring the percentage gap to pole time captures the non-linear
+nature of qualifying pace deficits. A driver 4% off pole is far worse than
+2× a driver 2% off; the squared term explicitly encodes this relationship.
+
+**`grid_x_overtaking`** — The strongest new feature. Starting P12 on a Monaco-like
+circuit (overtaking_difficulty ≈ 7) is fundamentally different from P12 at
+Albert Park (difficulty ≈ 4.7). The product term explicitly captures this
+interaction that the individual features cannot.
+
+**`drv_form_trend`** — `avg_fin_last3 − avg_fin_last5` measures whether a driver
+is currently on an improving (negative) or worsening (positive) trajectory.
+Captured strongly by LightGBM, likely because improving drivers often convert
+into P10 zone finishes even from non-ideal grid positions.
+
+#### Discarded Features (17)
+
+The following 17 candidates were discarded as not incrementally predictive:
+`team_qual_fin_delta`, `fp2_vs_grid`, `drv_pts_per_race`, `drv_teammate_qual_delta`,
+`grid_position_sq`, `is_midfield_team`, `drv_recent_vs_trend`, `avg_qual_last5`,
+`avg_fin_last10`, `drv_pts_last5`, `drv_p10_zone_last5`, `circ_avg_qual`,
+`drv_best_fin_last5`, `drv_worst_fin_last5`, `team_finish_std_season`,
+`circ_recent_fin`, `drv_in_points_last5`.
+
+Most were redundant with existing features (e.g., `drv_pts_last5` is collinear
+with `pts_last3` + `drv_champ_pts`). Several hurt LightGBM due to feature
+collinearity in the small 3-year training window.
+
+---
 
 ### v3.5 — Time-Series CV with Checkpointing (`--resume`)
 

@@ -1,0 +1,21 @@
+feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+q_gap_sq,q_gap_pct² — quadratic qualifying pace penalty,KEEP,10.61111111111111,11.166666666666666,0.5,1.166666666666668,0.0,0.8333333333333339
+grid_x_overtaking,grid_position × overtaking_difficulty — grid/overtaking interaction,KEEP,11.166666666666666,11.888888888888888,0.7083333333333339,1.7083333333333321,-0.25,1.208333333333333
+team_qual_fin_delta,team_avg_qual_season − team_avg_fin_season — team position-gain tendency,DISCARD,11.888888888888888,11.847222222222221,-0.4583333333333339,0.3333333333333339,0.0,-0.0625
+drv_form_trend,avg_fin_last3 − avg_fin_last5 — short-vs-long form delta (negative=improving),KEEP,11.888888888888888,12.611111111111112,0.125,2.041666666666668,0.0,1.083333333333334
+fp2_vs_grid,fp2_position − grid_position — practice-to-qualifying improvement,DISCARD,12.611111111111112,11.847222222222221,-0.25,-2.041666666666668,0.0,-1.145833333333334
+drv_pts_per_race,"drv_champ_pts / max(race_num − 1, 1) — championship points rate",DISCARD,12.611111111111112,12.097222222222223,0.625,-2.25,0.08333333333333393,-0.8125
+drv_teammate_qual_delta,grid_position − teammate_grid — qualifying delta vs teammate,DISCARD,12.611111111111112,11.916666666666666,0.16666666666666607,-2.25,0.0,-1.041666666666667
+grid_position_sq,grid_position² — non-linear grid position penalty,DISCARD,12.611111111111112,12.0,0.375,-2.208333333333334,0.0,-0.916666666666667
+is_midfield_team,int(4 ≤ con_champ_pos ≤ 7) — midfield constructor flag,DISCARD,12.611111111111112,11.958333333333334,0.0,-1.958333333333334,0.0,-0.979166666666667
+drv_recent_vs_trend,last_race_pos − avg_fin_last5 — last race vs 5-race trend,DISCARD,12.611111111111112,11.694444444444445,-0.25,-2.5,0.0,-1.375
+avg_qual_last5,5-race rolling qualifying average,DISCARD,12.611111111111112,12.402777777777777,-0.7083333333333339,-0.5833333333333339,0.6666666666666661,-0.6458333333333339
+avg_fin_last10,10-race rolling finish average,DISCARD,12.611111111111112,11.888888888888891,-0.5,-2.5,0.8333333333333339,-1.5
+drv_pts_last5,Sum of championship points over last 5 races,DISCARD,12.611111111111112,11.569444444444445,-0.6666666666666661,-3.416666666666668,0.9583333333333339,-2.041666666666667
+drv_p10_zone_last5,P8–P12 finish rate over last 5 races,DISCARD,12.611111111111112,12.194444444444445,0.0,-2.458333333333334,1.208333333333334,-1.229166666666667
+circ_avg_qual,Driver's career avg qualifying at this circuit,DISCARD,12.611111111111112,12.805555555555557,0.0,-0.375,0.9583333333333339,-0.1875
+drv_best_fin_last5,Best finish position in last 5 races,DISCARD,12.611111111111112,12.069444444444443,0.16666666666666607,-1.7916666666666679,0.0,-0.8125000000000009
+drv_worst_fin_last5,Worst finish position in last 5 races,DISCARD,12.611111111111112,12.111111111111109,0.0,-1.4166666666666679,-0.08333333333333393,-0.7083333333333339
+team_finish_std_season,Std dev of team finish positions this season,DISCARD,12.611111111111112,11.791666666666666,0.125,-2.583333333333334,0.0,-1.229166666666667
+circ_recent_fin,Avg of driver's last 2 finishes at this circuit,DISCARD,12.611111111111112,11.375,-0.4166666666666661,-3.291666666666668,0.0,-1.854166666666667
+drv_in_points_last5,Fraction of last 5 races with finish ≤ 10,DISCARD,12.611111111111112,12.472222222222221,0.0,-1.9166666666666679,1.5,-0.9583333333333339

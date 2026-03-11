@@ -170,6 +170,10 @@ FEATURE_COLS = [
     # --- circuit volatility (v3.3) ---
     "historical_dnf_rate",       # fraction of driver-starts DNF'd at this circuit in last 5 years
     "overtaking_difficulty",     # static 1-10 index: 1=Monza (easy), 10=Monaco (impossible)
+    # --- feature exploration accepted features (v3.61–v3.63) ---
+    "q_gap_sq",                  # v3.61: q_gap_pct² — quadratic qualifying pace penalty
+    "grid_x_overtaking",         # v3.62: grid_position × overtaking_difficulty
+    "drv_form_trend",            # v3.63: avg_fin_last3 − avg_fin_last5 (negative=improving)
 ]
 
 TARGET_COL = "finish_position"
