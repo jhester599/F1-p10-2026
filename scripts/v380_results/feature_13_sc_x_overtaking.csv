@@ -1,0 +1,2 @@
+feature,version,description,verdict,base_rf_reg,base_lgb_reg,ext_rf_reg,ext_lgb_reg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+sc_x_overtaking,v3.93,circ_sc_rate × overtaking_difficulty interaction,DISCARD,12.545454545454545,11.818181818181818,12.545454545454545,8.772727272727273,0.0,-3.045454545454545,0.0,-1.5227272727272725

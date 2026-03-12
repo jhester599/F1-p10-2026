@@ -1,0 +1,2 @@
+feature,version,description,verdict,base_rf_reg,base_lgb_reg,ext_rf_reg,ext_lgb_reg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+circ_avg_pit_stops,v3.84,Avg pit stop count per race at circuit (last 5 years),DISCARD,12.545454545454545,11.818181818181818,12.227272727272727,8.0,-0.31818181818181834,-3.8181818181818183,0.0,-2.0681818181818183

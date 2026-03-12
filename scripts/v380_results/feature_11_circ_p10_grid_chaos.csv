@@ -1,0 +1,2 @@
+feature,version,description,verdict,base_rf_reg,base_lgb_reg,ext_rf_reg,ext_lgb_reg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+circ_p10_grid_chaos,v3.91,Std dev of P10 finisher's starting grid at this circuit,DISCARD,12.545454545454545,11.818181818181818,12.090909090909092,8.090909090909092,-0.45454545454545325,-3.7272727272727266,0.0,-2.09090909090909

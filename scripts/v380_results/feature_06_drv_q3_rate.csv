@@ -1,0 +1,2 @@
+feature,version,description,verdict,base_rf_reg,base_lgb_reg,ext_rf_reg,ext_lgb_reg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+drv_q3_rate,v3.86,Driver's Q3 appearance rate over last 10 qualifying sessions,DISCARD,12.545454545454545,11.818181818181818,10.772727272727273,6.7727272727272725,-1.7727272727272716,-5.045454545454546,-2.09090909090909,-3.4090909090909087
