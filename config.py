@@ -175,6 +175,13 @@ FEATURE_COLS = [
     "q_gap_sq",                  # v3.61: q_gap_pct² — quadratic qualifying pace penalty
     "grid_x_overtaking",         # v3.62: grid_position × overtaking_difficulty
     "drv_form_trend",            # v3.63: avg_fin_last3 − avg_fin_last5 (negative=improving)
+    # --- DNF recovery (v3.94) ---
+    "drv_dnf_recovery_rate",     # v3.94: last_dnf × (avg_fin_last5 ≤ 12) — driver tendency to bounce back after DNF
+    # --- all-model validated features (v3.95–v4.14 testing, 4 kept) ---
+    "circ_vsc_rate",             # v3.96: avg VSC deployments per race at circuit (last 5 yrs, FastF1) +0.18 avg
+    "circ_sc_vsc_combined",      # v3.97: circ_sc_rate + circ_vsc_rate total disruption index +0.21 avg
+    "circ_avg_pit_stops",        # v3.98: avg pit stop count per race at this circuit (last 5 yrs, Kaggle) +0.19 avg
+    "circ_collision_rate",       # v4.03: collision/accident DNF rate per driver-start at circuit (Kaggle) +0.26 avg
 ]
 
 TARGET_COL = "finish_position"
