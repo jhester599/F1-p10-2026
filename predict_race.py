@@ -369,6 +369,55 @@ def build_live_features(
     # v3.71: season_completeness — need total races in the current season schedule
     total_rounds = max((int(r["round"]) for r in schedule), default=24)
     feat_df["season_completeness"] = (rnd / total_rounds)
+    # v3.94: drv_dnf_recovery_rate
+    feat_df["drv_dnf_recovery_rate"] = (
+        feat_df["last_dnf"] * (feat_df["avg_fin_last5"] <= 12).astype(float)
+    )
+    # v4.04: drv_overperformance_rate
+    feat_df["drv_overperformance_rate"] = (
+        (feat_df["avg_qual_last3"] - feat_df["avg_fin_last5"]).clip(lower=0) / 10.0
+    )
+
+    # ── v3.95–v4.03: circuit-level features from aux tables ──────────────────
+    _aux_dir = Path(__file__).parent / "data" / "aux"
+    _sc_path = _aux_dir / "sc_vsc_by_circuit.csv"
+    if _sc_path.exists():
+        _sc_df = pd.read_csv(_sc_path)
+        _past_sc = _sc_df[
+            (_sc_df["circuit_id"] == circuit_id) &
+            (_sc_df["year"] >= year - 5) & (_sc_df["year"] < year)
+        ]
+        feat_df["circ_sc_rate"] = _past_sc["sc_count"].mean() if len(_past_sc) > 0 else 0.5
+        feat_df["circ_vsc_rate"] = _past_sc["vsc_count"].mean() if len(_past_sc) > 0 else 0.3
+    else:
+        feat_df["circ_sc_rate"] = 0.5
+        feat_df["circ_vsc_rate"] = 0.3
+
+    _pit_path = _aux_dir / "pit_stops_by_circuit.csv"
+    if _pit_path.exists():
+        _pit_df = pd.read_csv(_pit_path)
+        _past_pit = _pit_df[
+            (_pit_df["circuit_id"] == circuit_id) &
+            (_pit_df["year"] >= year - 5) & (_pit_df["year"] < year)
+        ]
+        feat_df["circ_pit_stop_var"] = (
+            _past_pit["avg_pit_stops"].var() if len(_past_pit) > 1 else 0.1
+        )
+    else:
+        feat_df["circ_pit_stop_var"] = 0.1
+
+    _coll_path = _aux_dir / "dnf_circuit_history.csv"
+    if _coll_path.exists():
+        _cdf = pd.read_csv(_coll_path)
+        if "collision_dnf_rate" in _cdf.columns:
+            _past_c = _cdf[(_cdf["circuit_id"] == circuit_id) & (_cdf["year"] < year)]
+            feat_df["circ_collision_rate"] = (
+                _past_c["collision_dnf_rate"].mean() if len(_past_c) > 0 else 0.04
+            )
+        else:
+            feat_df["circ_collision_rate"] = 0.04
+    else:
+        feat_df["circ_collision_rate"] = 0.04
 
     # Fill any NaNs with a sensible default
     for col in FEATURE_COLS:

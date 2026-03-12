@@ -501,6 +501,28 @@ Models evaluated on all 24 races of the 2025 season. All trained on 2010–2024.
 
 ---
 
+### v4.03 results — 44 features, recalibrated adaptive stage weights
+
+| Model | Avg Pts/Race | Exact P10 | vs v3.94 |
+|---|---|---|---|
+| naive_grid_p10 | **14.04** | 3 | benchmark |
+| xgb_reg | **12.42** | 1 | **+2.54** |
+| lgb_reg | **11.96** | 2 | **+2.42** |
+| xgb_ranker | 11.67 | 1 | −0.04 |
+| rf_clf | 11.04 | 3 | −0.67 |
+| ridge | 10.79 | 0 | 0.00 |
+| xgb_clf | 10.75 | 2 | −0.42 |
+| ensemble | 10.46 | 1 | −0.21 |
+| rf_reg | 10.00 | 0 | +1.08 |
+
+> **Recommended pick for 2026 (v4.03):** `xgb_reg` or `lgb_reg` are now the strongest
+> individual models on 2025 holdout (12.42 and 11.96 respectively), driven by the 4 new
+> circuit-level features. `rf_clf` remains strongest for exact P10 picks (3 exact).
+> `naive_grid_p10` (14.04) is still the unbeaten benchmark.
+> Stage-adaptive guidance: EARLY → xgb_clf/rf_clf; MID → ridge/rf_reg; LATE → ridge.
+
+---
+
 ## Fantasy Scoring
 
 | Predicted driver's actual finish | Points |
@@ -1248,6 +1270,72 @@ empirical since v3.3). Both retained based on ensemble lift in v3.1.
   immediately so they survive a timeout.
 - The saved `.joblib` models in `models/` are always the fastest evaluation path —
   prefer inference-only tests over full retrain when possible.
+
+---
+
+### v3.80–v3.94 — New Data Source Exploration & Feature Testing (complete)
+
+**Goal:** Evaluate 14 candidate features derived from three new F1 data sources — Kaggle F1 historical dataset, OpenF1 API, and FastF1 — for incremental predictive value. Run each through the standard CV protocol (train 2020–2022, test 2023) and keep only those that clear the ≥0.0 avg pts/race threshold. Re-calibrate ensemble stage weights using 2023+2024 combined CV.
+
+**New data sources explored:**
+- **Kaggle F1 dataset** (Google Drive `16gdW6-l1w7EjsBbDskm4nlCok6kgvkPy`): pit stop counts, Q1/Q2/Q3 progression, DNF reason codes (mechanical vs collision)
+- **OpenF1 API** (`api.openf1.org/v1/`): safety car events, pit data, stints — 2023-present
+- **FastF1** (`pip install fastf1`): race control messages for SC/VSC events — 2018-present
+
+**Infrastructure added:** `scripts/07_build_aux_features.py` (builds `data/aux/*.csv`), `scripts/08_test_new_features.py` (sequential feature tester with resume support)
+
+**Feature test results (14 candidates):**
+
+| Version | Feature | Δ avg pts/race | Verdict |
+|---------|---------|----------------|---------|
+| v3.81 | `circ_sc_rate` | −1.66 | ❌ Discard |
+| v3.82 | `circ_vsc_rate` | −1.57 | ❌ Discard |
+| v3.83 | `circ_sc_vsc_combined` | −0.02 | ❌ Discard |
+| v3.84 | `circ_avg_pit_stops` | −2.07 | ❌ Discard |
+| v3.85 | `circ_pit_stop_variance` | −1.09 | ❌ Discard |
+| v3.86 | `drv_q3_rate` | −3.41 | ❌ Discard |
+| v3.87 | `drv_q2_elim_rate` | −0.41 | ❌ Discard |
+| v3.88 | `drv_mechanical_dnf_rate` | −1.07 | ❌ Discard |
+| v3.89 | `circ_collision_rate` | −1.73 | ❌ Discard |
+| v3.90 | `drv_overperformance_rate` | −1.00 | ❌ Discard |
+| v3.91 | `circ_p10_grid_chaos` | −2.09 | ❌ Discard |
+| v3.92 | `drv_starts_p10_zone_rate` | −0.89 | ❌ Discard |
+| v3.93 | `sc_x_overtaking` | −1.52 | ❌ Discard |
+| **v3.94** | **`drv_dnf_recovery_rate`** | **+1.84** | **✅ Keep** |
+
+**Phase 1 result:** 40 features. `drv_dnf_recovery_rate` = `last_dnf × (avg_fin_last5 ≤ 12)` — competitive drivers who DNF'd last race; a bounce-back signal not otherwise in the 39-feature set.
+
+**Phase 2 — All-5-model re-test (v3.95–v4.14):** 20 candidates retested using rf_reg, lgb_reg, ridge, rf_clf, xgb_clf. Accept: avg delta all 5 > 0. Results:
+
+| Version | Feature | Δ avg all 5 | Verdict |
+|---------|---------|-------------|---------|
+| v3.95 | `circ_sc_rate` | −0.73 | ❌ Discard |
+| **v3.96** | **`circ_vsc_rate`** | **+0.18** | **✅ Keep** |
+| **v3.97** | **`circ_sc_vsc_combined`** | **+0.21** | **✅ Keep** |
+| **v3.98** | **`circ_avg_pit_stops`** | **+0.19** | **✅ Keep** |
+| v3.99–v4.02 | (4 features) | all negative | ❌ Discard |
+| **v4.03** | **`circ_collision_rate`** | **+0.26** | **✅ Keep** |
+| v4.04–v4.14 | (11 features) | all negative | ❌ Discard |
+
+**Ensemble recalibration (v4.03):** Stage weights updated with 44-feature 2023+2024 combined CV. Key changes: EARLY — xgb_clf co-first (16.00 avg), rf_reg demoted (9.50, worst); MID — rf_reg raised to near-first (12.50 avg); LATE — ridge dominant (14.56 avg).
+
+**Feature count:** 39 → 44
+
+**2025 evaluation (v4.03 final):**
+
+| Model | Avg pts/race | vs v3.94 |
+|-------|-------------|---------|
+| naive_grid_p10 | **14.04** (benchmark) | — |
+| xgb_reg | **12.42** | +2.54 |
+| lgb_reg | **11.96** | +2.42 |
+| xgb_ranker | 11.67 | −0.04 |
+| rf_clf | 11.04 | −0.67 |
+| ridge | 10.79 | 0.00 |
+| ensemble | 10.46 | −0.21 |
+
+The 4 new circuit-level features strongly boosted regressors but were neutral-to-negative for classifiers.
+
+**See `V380_PLAN.md` for full detail.**
 
 ---
 
