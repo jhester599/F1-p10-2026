@@ -554,6 +554,80 @@ def build_feature_matrix(
     # Negative = driver has improved in the 3 most recent races vs their 5-race avg.
     feat_df["drv_form_trend"] = feat_df["avg_fin_last3"] - feat_df["avg_fin_last5"]
 
+    # v3.94: drv_dnf_recovery_rate — interaction: driver had a DNF last race AND
+    # their 5-race avg finish is ≤12 (still a competitive driver, not backmarker).
+    # Flags drivers who DNF'd last race but have the pace to bounce back into points.
+    # Value=1 only when last_dnf=1 AND avg_fin_last5 ≤ 12; else 0.
+    feat_df["drv_dnf_recovery_rate"] = (
+        feat_df["last_dnf"] * (feat_df["avg_fin_last5"] <= 12).astype(float)
+    )
+
+    # ── v3.96–v4.03: all-model validated features (20 candidates tested, 4 kept) ─
+    # Tested via scripts/09_test_features_all_models.py (all 5 models: rf_reg,
+    # lgb_reg, ridge, rf_clf, xgb_clf; train 2020-2022, test 2023).
+    # Accept: avg delta all 5 models > 0 pts/race.
+    # Joined from data/aux/ lookup tables, computed once per circuit/year.
+
+    # v3.96 + v3.97: circ_vsc_rate (+0.18) and circ_sc_vsc_combined (+0.21).
+    # circ_sc_rate alone was DISCARDED (-0.73). VSC rate and combined SC+VSC
+    # total disruption index both provide marginal signal via classifiers.
+    _sc_path = Path(__file__).parent.parent / "data" / "aux" / "sc_vsc_by_circuit.csv"
+    if _sc_path.exists() and "circ_vsc_rate" not in feat_df.columns:
+        _sc_df = pd.read_csv(_sc_path)
+        _sc_feat = []
+        for (cid, yr), _grp in feat_df.groupby(["circuit_id", "year"]):
+            _past = _sc_df[
+                (_sc_df["circuit_id"] == cid) &
+                (_sc_df["year"] >= yr - 5) & (_sc_df["year"] < yr)
+            ]
+            _sc_mean  = _past["sc_count"].mean()  if len(_past) > 0 else 0.5
+            _vsc_mean = _past["vsc_count"].mean() if len(_past) > 0 else 0.3
+            _sc_feat.append({
+                "circuit_id": cid, "year": yr,
+                "circ_vsc_rate":        _vsc_mean,
+                "circ_sc_vsc_combined": _sc_mean + _vsc_mean,
+            })
+        _sc_feat_df = pd.DataFrame(_sc_feat)
+        feat_df = feat_df.merge(_sc_feat_df, on=["circuit_id", "year"], how="left")
+        feat_df["circ_vsc_rate"]        = feat_df["circ_vsc_rate"].fillna(0.3)
+        feat_df["circ_sc_vsc_combined"] = feat_df["circ_sc_vsc_combined"].fillna(0.8)
+
+    # v3.98: circ_avg_pit_stops (+0.19) — avg pit stops per race at this circuit
+    # (last 5 years, Kaggle). circ_pit_stop_var was DISCARDED (-1.26 avg).
+    _pit_path = Path(__file__).parent.parent / "data" / "aux" / "pit_stops_by_circuit.csv"
+    if _pit_path.exists() and "circ_avg_pit_stops" not in feat_df.columns:
+        _pit_df = pd.read_csv(_pit_path)
+        _pit_feat = []
+        for (cid, yr), _grp in feat_df.groupby(["circuit_id", "year"]):
+            _past = _pit_df[
+                (_pit_df["circuit_id"] == cid) &
+                (_pit_df["year"] >= yr - 5) & (_pit_df["year"] < yr)
+            ]
+            _pit_feat.append({
+                "circuit_id": cid, "year": yr,
+                "circ_avg_pit_stops": _past["avg_pit_stops"].mean() if len(_past) > 0 else 2.1,
+            })
+        _pit_feat_df = pd.DataFrame(_pit_feat)
+        feat_df = feat_df.merge(_pit_feat_df, on=["circuit_id", "year"], how="left")
+        feat_df["circ_avg_pit_stops"] = feat_df["circ_avg_pit_stops"].fillna(2.1)
+
+    # v4.03: circ_collision_rate (+0.26) — collision/accident DNF rate per
+    # driver-start at this circuit (Kaggle status codes).
+    _dnf_circ_path = Path(__file__).parent.parent / "data" / "aux" / "dnf_circuit_history.csv"
+    if _dnf_circ_path.exists() and "circ_collision_rate" not in feat_df.columns:
+        _cdf = pd.read_csv(_dnf_circ_path)
+        if "collision_dnf_rate" in _cdf.columns:
+            _cf = []
+            for (cid, yr), _grp in feat_df.groupby(["circuit_id", "year"]):
+                _past = _cdf[(_cdf["circuit_id"] == cid) & (_cdf["year"] < yr)]
+                _cf.append({
+                    "circuit_id": cid, "year": yr,
+                    "circ_collision_rate": _past["collision_dnf_rate"].mean()
+                    if len(_past) > 0 else 0.04,
+                })
+            feat_df = feat_df.merge(pd.DataFrame(_cf), on=["circuit_id", "year"], how="left")
+            feat_df["circ_collision_rate"] = feat_df["circ_collision_rate"].fillna(0.04)
+
     # Fill remaining NaNs with column median
     for col in FEATURE_COLS:
         if col in feat_df.columns:

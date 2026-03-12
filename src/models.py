@@ -124,7 +124,63 @@ ENSEMBLE_WEIGHTS: dict[str, float] = {
 # segmenting cv_results.csv into three race-number bands and scaling model
 # performance (avg fantasy pts/race) to the [0.25, 4.00] weight range.
 #
+# v3.94 RECALIBRATION: Re-derived from 2023+2024 combined single-fold CV
+# (46 races total) using the 40-feature model. Key changes from v3.72:
+#
 # Stage boundaries (tunable via ENSEMBLE_STAGE_BOUNDARIES):
+#   Early : R1  – R5   (≤ 5 races in)   — within-season form features are noisy
+#   Mid   : R6  – R15  (mid-season)     — form features stabilising
+#   Late  : R16+        (final quarter)  — car performance and form fully stable
+#
+# Source performance (avg pts/race, 2023+2024 combined CV by stage):
+#   EARLY:  rf_clf=13.50  xgb_clf=13.30  ridge=11.40  rf_reg=10.30
+#           lgb_reg=10.00  xgb_ranker=9.80  xgb_reg=9.20
+#   MID:    ridge=12.65   xgb_ranker=12.60  rf_reg=12.00  lgb_reg=11.10
+#           rf_clf=11.15  xgb_clf=10.05  xgb_reg=10.60
+#   LATE:   ridge=13.81  rf_clf=13.69  rf_reg=11.94  lgb_reg=11.44
+#           xgb_clf=11.44  xgb_ranker=11.00  xgb_reg=10.94
+#
+# grid_heuristic / champ_heuristic: analytic — held constant at 2.00 across stages.
+ENSEMBLE_WEIGHTS_EARLY: dict[str, float] = {
+    # R1–R5: xgb_clf and rf_clf dominate (16.00, 15.00 avg); rf_reg worst (9.50).
+    # v4.03 recal: xgb_clf raised to equal rf_clf; xgb_ranker raised (12.90, 3rd).
+    "xgb_clf":         4.00,   # recal v4.03: 16.00 avg, best EARLY
+    "rf_clf":          4.00,   # recal v4.03: 15.00 avg, co-best
+    "xgb_ranker":      3.00,   # recal v4.03: 12.90 avg, strong 3rd
+    "ridge":           2.50,   # recal v4.03: 11.40 avg
+    "lgb_reg":         1.50,   # recal v4.03: 11.10 avg
+    "xgb_reg":         1.25,   # recal v4.03: 10.90 avg
+    "rf_reg":          0.25,   # recal v4.03: 9.50 avg, worst EARLY
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}
+ENSEMBLE_WEIGHTS_MID: dict[str, float] = {
+    # R6–R15: ridge (12.65) and rf_reg (12.50) co-lead; lgb_reg strong (12.00).
+    # xgb_clf (11.15) and xgb_ranker (10.60) weakest. rf_clf dropped (10.75).
+    # v4.03 recal: rf_reg dramatically raised (was 2.25); xgb_ranker cut; rf_clf cut.
+    "ridge":           4.00,   # recal v4.03: 12.65 avg, best MID
+    "rf_reg":          3.75,   # recal v4.03: 12.50 avg, near-best
+    "lgb_reg":         3.00,   # recal v4.03: 12.00 avg (was 1.75, major raise)
+    "xgb_reg":         2.25,   # recal v4.03: 11.30 avg (was 0.50, major raise)
+    "xgb_clf":         2.00,   # recal v4.03: 11.15 avg (restored from 0.25)
+    "xgb_ranker":      1.25,   # recal v4.03: 10.60 avg (was 3.50, cut)
+    "rf_clf":          0.75,   # recal v4.03: 10.75 avg (was 1.50, cut)
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}
+ENSEMBLE_WEIGHTS_LATE: dict[str, float] = {
+    # R16+: ridge (14.56) dominant; rf_clf (13.06) 2nd; xgb_reg (8.31) worst.
+    # v4.03 recal: ridge gap over rf_clf widened; lgb_reg and xgb_reg both cut.
+    "ridge":           4.00,   # recal v4.03: 14.56 avg, dominant LATE
+    "rf_clf":          3.25,   # recal v4.03: 13.06 avg
+    "rf_reg":          2.00,   # recal v4.03: 11.50 avg (was 2.50)
+    "xgb_ranker":      2.00,   # recal v4.03: 11.31 avg (was 1.00, raised)
+    "xgb_clf":         1.50,   # recal v4.03: 10.75 avg (was 1.25)
+    "lgb_reg":         0.50,   # recal v4.03: 9.31 avg (was 1.25, cut)
+    "xgb_reg":         0.25,   # recal v4.03: 8.31 avg, worst LATE
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}
 #   Early : R1  – R5   (≤ 5 races in)   — within-season form features are noisy
 #   Mid   : R6  – R15  (mid-season)     — form features stabilising
 #   Late  : R16+        (final quarter)  — car performance and form fully stable
