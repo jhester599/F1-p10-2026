@@ -160,3 +160,92 @@ overwhelms the grid position signal when an elite driver starts from the back.
 | Model correct? | *(to be filled after race)* |
 
 ---
+
+---
+
+## Round 02 · Chinese Grand Prix · Shanghai International Circuit
+**Date:** March 22, 2026 · **Sprint weekend** · Qualifying: March 21, 2026
+**Model version:** v4.03 · **Features:** 44 · **Ensemble stage:** EARLY (R1–R5)
+
+---
+
+### Qualifying Grid
+
+| Pos | Driver | Team | Notes |
+|-----|--------|------|-------|
+| P1  | Kimi Antonelli | Mercedes | Pole |
+| P2  | George Russell | Mercedes | |
+| P3  | Lewis Hamilton | Ferrari | |
+| P4  | Charles Leclerc | Ferrari | |
+| P5  | Oscar Piastri | McLaren | |
+| P6  | Lando Norris | McLaren | |
+| P7  | Pierre Gasly | Alpine | |
+| P8  | Max Verstappen | Red Bull | |
+| **P9**  | **Isack Hadjar** | **Red Bull** | |
+| **P10** | **Oliver Bearman** | **Haas** | |
+| P11 | Nico Hulkenberg | Audi | |
+| P12 | Franco Colapinto | Alpine | |
+| P13 | Esteban Ocon | Haas | |
+| P14 | Liam Lawson | Racing Bulls | |
+| P15 | Arvid Lindblad | Racing Bulls | |
+| P16 | Gabriel Bortoleto | Audi | |
+| P17 | Carlos Sainz | Williams | |
+| P18 | Alex Albon | Williams | |
+| P19 | Fernando Alonso | Aston Martin | |
+| P20 | Valtteri Bottas | Cadillac | |
+| P21 | Lance Stroll | Aston Martin | |
+| P22 | Sergio Perez | Cadillac | |
+
+> **Sprint weekend note:** FP2 was not run. The `fp2_position` feature used the
+> FP1 fallback chain as designed (FP2 → FP1 → qualifying position). Shanghai
+> overtaking difficulty = 8.3 (empirically derived; grid order is very sticky).
+
+---
+
+### Model Picks
+
+8 models run under the v4.03 ensemble with EARLY-stage adaptive weights
+(`xgb_clf` and `rf_clf` weighted highest at 4.00 each for R1–R5).
+
+| Model | Type | Pick | Grid | Score | Notes |
+|-------|------|------|------|-------|-------|
+| **ensemble** | Weighted blend (EARLY) | **hadjar** | P9 | 0.7349 | |
+| **lgb_reg** | Regressor | **hadjar** | P9 | pred: 10.09 | |
+| **ridge** | Regressor | **hadjar** | P9 | pred: 10.06 | |
+| **rf_clf** | Classifier (EV) | **hadjar** | P9 | EV: 11.87 pts | |
+| **xgb_clf** | Classifier (EV) | **hulkenberg** | P11 | EV: 13.84 pts | |
+| **xgb_ranker** | Pairwise ranker | **ocon** | P13 | score: 0.398 | |
+| **xgb_reg** | Regressor | **max_verstappen** | P8 | pred: 10.09 | |
+| **rf_reg** | Regressor | **gasly** | P7 | pred: 10.03 | |
+
+#### Consensus Vote
+
+| Driver | Votes | Models |
+|--------|-------|--------|
+| **hadjar** | **4** | ensemble, lgb_reg, ridge, rf_clf |
+| hulkenberg | 1 | xgb_clf |
+| ocon | 1 | xgb_ranker |
+| max_verstappen | 1 | xgb_reg |
+| gasly | 1 | rf_reg |
+
+---
+
+### Recommendation: Isack Hadjar (Red Bull, P9 grid)
+
+Strong consensus across the ensemble, both regressors with career-form weighting
+(lgb_reg, ridge), and the RF classifier. Hadjar sits directly adjacent to the P10
+zone at a high-stickiness circuit (Shanghai 8.3/10). The tight P9–P13 cluster
+(Hadjar, Bearman, Hulkenberg, Colapinto, Ocon) means any of these drivers could
+realistically finish 10th, but the model weight behind Hadjar is clear.
+
+---
+
+### Actual Result
+
+| Field | Value |
+|-------|-------|
+| P10 finisher | *(to be filled after race)* |
+| Fantasy points earned | *(to be filled after race)* |
+| Model correct? | *(to be filled after race)* |
+
+---
