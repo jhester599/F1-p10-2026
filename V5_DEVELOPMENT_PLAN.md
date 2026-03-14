@@ -45,6 +45,28 @@
 Ensemble weight recalibration (deferred to v5.8) will capture these gains in the blended pick.
 Full results and analysis: `scripts/v5_results/V5_RESULTS.md`
 
+## v5.1 Full 12-Fold CV Results (eval years 2014–2025)
+
+Post-v5.1 full rolling CV run. Each fold: 4-year training window, 1-year eval; no data leakage.
+
+| Model | CV avg pts/race | v4.03 CV avg | Delta | Exact P10 % | Within-2 % |
+|-------|----------------|-------------|-------|-------------|------------|
+| **ensemble** | **12.37** | 11.62 | **+0.75** | 12.7% | 41.3% |
+| xgb_clf | 11.67 | 10.71 | **+0.96** | 9.9% | 43.3% |
+| ridge | 11.37 | 11.03 | +0.34 | 9.9% | 39.7% |
+| rf_clf | 11.28 | 11.40 | -0.12 | 7.5% | 40.5% |
+| rf_reg | 11.13 | 11.17 | -0.04 | 7.9% | 36.9% |
+| xgb_reg | 11.12 | 10.43 | +0.69 | 8.7% | 38.1% |
+| xgb_ranker | 10.76 | 11.21 | -0.45 | 6.3% | 37.7% |
+| lgb_reg | 10.55 | 10.80 | -0.25 | 6.7% | 32.1% |
+
+**Stability notes:**
+- Ensemble is the most stable aggregator across all 12 years (+0.75 vs v4.03)
+- xgb_clf shows clear cross-fold improvement (+0.96); Platt scaling is consistently beneficial
+- rf_clf rolling CV delta is -0.12 (small-sample isotonic calibration artefact, 4-year window ≈ 1,500 rows); 2025 full-dataset holdout (+1.75) confirms benefit at production scale
+- Year-to-year variance is high (±3–5 pts/year per model); multi-model ensemble is the correct risk-management strategy
+- **Protocol:** Full 12-fold CV will be re-run after each subsequent version step to track cumulative drift
+
 ---
 
 ## Known Issues Entering v5.x

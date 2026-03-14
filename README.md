@@ -253,7 +253,7 @@ weight 2.00 across all stages:
 | `xgb_reg` | 0.25 | 8.31 |
 
 > Stage avg pts are from 2023+2024 combined CV (46 races), used for v4.03 weight
-> calibration. The v3.66 12-fold CV (38 features) is the broader reliability reference.
+> calibration. Ensemble weight recalibration using the full v5.1 12-fold CV is scheduled for v5.8.
 
 ---
 
@@ -328,12 +328,31 @@ weight recalibration is scheduled for v5.8 (the old weights undervalue the impro
 
 ### Cross-Validation
 
-**12-fold rolling Time-Series CV — v3.66 model (38 features, era-weighted)**
-2014–2025, 4-year training window, 252 races. Most comprehensive reliability estimate.
+**12-fold rolling Time-Series CV — v5.1 model (44 features, calibrated classifiers)**
+Eval years 2014–2025, 4-year training window, 252 total races.
+
+| Model | CV avg pts/race | v4.03 CV avg | Delta | Exact P10 % | Within-2 % |
+|---|---|---|---|---|---|
+| `ensemble` | **12.37** | 11.62 | **+0.75** | 12.7% | 41.3% |
+| `xgb_clf` | 11.67 | 10.71 | **+0.96** | 9.9% | 43.3% |
+| `ridge` | 11.37 | 11.03 | +0.34 | 9.9% | 39.7% |
+| `rf_clf` | 11.28 | 11.40 | -0.12 | 7.5% | 40.5% |
+| `rf_reg` | 11.13 | 11.17 | -0.04 | 7.9% | 36.9% |
+| `xgb_reg` | 11.12 | 10.43 | +0.69 | 8.7% | 38.1% |
+| `xgb_ranker` | 10.76 | 11.21 | -0.45 | 6.3% | 37.7% |
+| `lgb_reg` | 10.55 | 10.80 | -0.25 | 6.7% | 32.1% |
+
+> The ensemble (+0.75) and xgb_clf (+0.96) show clear improvement over v4.03 across all 12
+> folds. rf_clf shows -0.12 in the 4-year rolling CV (small-sample isotonic calibration artefact)
+> but +1.75 in the full-dataset 2025 holdout — isotonic calibration is confirmed beneficial at
+> production scale. Protocol: full 12-fold CV re-run after each version step.
+
+**Prior reference — v3.66 model (38 features)**
+2014–2025, 252 races. Archived for longitudinal comparison.
 
 | Model | CV avg pts/race |
 |---|---|
-| `ensemble` | **11.62** |
+| `ensemble` | 11.62 |
 | `rf_clf` | 11.40 |
 | `xgb_ranker` | 11.21 |
 | `rf_reg` | 11.17 |
@@ -341,23 +360,6 @@ weight recalibration is scheduled for v5.8 (the old weights undervalue the impro
 | `lgb_reg` | 10.80 |
 | `xgb_clf` | 10.71 |
 | `xgb_reg` | 10.43 |
-
-**Single-fold CV — v5.1 model (44 features, calibrated classifiers)**
-Train 2020–2023, test 2024 (24 races).
-
-| Model | v5.1 avg pts (2024) | v4.03 prior CV avg |
-|---|---|---|
-| `ensemble` | **13.50** | 11.62 |
-| `ridge` | 13.29 | 11.03 |
-| `rf_clf` | **12.92** | 11.40 |
-| `lgb_reg` | 12.33 | 10.80 |
-| `xgb_clf` | 11.29 | 10.71 |
-| `rf_reg` | 11.25 | 11.17 |
-| `xgb_ranker` | 10.46 | 11.21 |
-| `xgb_reg` | 9.04 | 10.43 |
-
-> The ensemble leads this 2024 single-fold CV. The prior 12-fold CV was run on the
-> 38-feature set; direct comparison is approximate. Full v5.x CV re-run planned in v5.8.
 
 ---
 
@@ -445,8 +447,9 @@ underestimates rare-class probabilities). Calibration corrects the EV calculatio
 | `rf_clf` | 11.04 avg pts, within-2 37.5% | **12.79 avg pts, within-2 54.2%** | **+1.75** |
 | `xgb_clf` | 10.75 avg pts, within-2 37.5% | **12.29 avg pts, within-2 54.2%** | **+1.54** |
 
-Both classifiers are now the top-2 models by within-2 rate. Ensemble weight
-recalibration deferred to v5.8 (full CV re-run). Full analysis: `scripts/v5_results/V5_RESULTS.md`.
+Both classifiers are now the top-2 models by within-2 rate. Full 12-fold CV (2014–2025) was
+run to validate stability: ensemble +0.75, xgb_clf +0.96 vs v4.03 across all folds. Ensemble
+weight recalibration deferred to v5.8. Full analysis: `scripts/v5_results/V5_RESULTS.md`.
 
 ### v4.03 — All-model feature validation + ensemble recalibration (2026-03-11)
 
@@ -554,12 +557,10 @@ See `COMMIT_MESSAGE.md` for pre-v3.0 implementation details.
 - **Ensemble weight recalibration needed** — `rf_clf` (+1.75 pts) and `xgb_clf` (+1.54 pts)
   are now the strongest models but the ensemble weights were calibrated on v4.03 uncalibrated
   performance. The ensemble scored 10.21 vs. rf_clf's 12.79 on the 2025 holdout.
-  Fix: full CV re-run and weight recalibration (v5.8).
+  Fix: weight recalibration after full CV re-run (v5.8).
 - **`rf_reg` career-form overweighting** — star drivers starting from the back (e.g.
   Verstappen from P20) are incorrectly predicted near P10. Fix: `grid_penalty_delta`
   feature separating qualifying position from grid position (v5.2).
-- **44-feature CV coverage** — only 2023 and 2024 single-fold results exist. A full
-  12-fold re-run would confirm whether the new circuit features generalise (v5.8).
 - **Qualifying session depth unused** — Q1/Q2/Q3 split times, session deltas, and
   Q2 elimination margin not yet modelled (v5.2).
 

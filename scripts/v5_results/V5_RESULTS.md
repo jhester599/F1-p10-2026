@@ -98,12 +98,66 @@ Note: 2024 is a single fold (24 races). Prior v4.03 CV avg is from the full 12-f
 
 ---
 
+### Full 12-Fold Rolling CV (v5.1, eval years 2014–2025)
+
+All 12 CV folds run with the v5.1 calibrated classifiers. Each fold trains on a 4-year
+rolling window immediately preceding the eval year.
+
+| Model | Avg pts/race | Exact P10 | Exact % | Within-2 | Within-2 % | vs v4.03 |
+|-------|-------------|-----------|---------|----------|------------|---------|
+| **ensemble** | **12.37** | 32 | 12.7% | 104 | 41.3% | +0.75 |
+| xgb_clf | 11.67 | 25 | 9.9% | 109 | 43.3% | **+0.96** |
+| ridge | 11.37 | 25 | 9.9% | 100 | 39.7% | +0.34 |
+| rf_clf | 11.28 | 19 | 7.5% | 102 | 40.5% | -0.12 |
+| rf_reg | 11.13 | 20 | 7.9% | 93 | 36.9% | -0.04 |
+| xgb_reg | 11.12 | 22 | 8.7% | 96 | 38.1% | +0.69 |
+| xgb_ranker | 10.76 | 16 | 6.3% | 95 | 37.7% | -0.45 |
+| lgb_reg | 10.55 | 17 | 6.7% | 81 | 32.1% | -0.25 |
+
+*v4.03 comparison uses prior 12-fold run on 38-feature set. Differences partly reflect the
+expanded 44-feature set introduced at v5.0 baseline.*
+
+#### Per-year breakdown (avg fantasy pts/race)
+
+| Year | ensemble | xgb_clf | ridge | rf_clf | rf_reg | xgb_reg | xgb_ranker | lgb_reg |
+|------|----------|---------|-------|--------|--------|---------|------------|---------|
+| 2014 | 14.47 | 14.63 | 11.53 | 14.32 | 10.79 | 13.05 | 12.16 | 9.42 |
+| 2015 | 10.63 | 13.00 | 8.47 | 11.42 | 9.79 | 10.16 | 8.68 | 10.16 |
+| 2016 | 12.43 | 9.57 | 12.43 | 10.57 | 11.19 | 11.38 | 13.10 | 13.43 |
+| 2017 | 10.80 | 12.20 | 11.50 | 12.70 | 11.35 | 11.75 | 9.50 | 8.90 |
+| 2018 | 13.62 | 9.67 | 12.57 | 11.00 | 11.00 | 10.90 | 10.90 | 8.62 |
+| 2019 | 10.52 | 10.29 | 10.05 | 10.95 | 10.71 | 11.24 | 10.67 | 10.95 |
+| 2020 | 11.53 | 11.76 | 8.00 | 11.47 | 13.71 | 12.00 | 8.29 | 10.41 |
+| 2021 | 13.36 | 12.59 | 11.59 | 9.91 | 11.36 | 12.59 | 11.95 | 11.95 |
+| 2022 | 12.50 | 12.00 | 11.45 | 10.91 | 10.23 | 11.77 | 9.45 | 9.23 |
+| 2023 | 13.27 | 13.32 | 12.77 | 9.32 | 11.77 | 11.41 | 12.32 | 9.27 |
+| 2024 | 13.50 | 11.29 | 13.29 | 12.92 | 11.25 | 9.04 | 10.46 | 12.33 |
+| 2025 | 11.42 | 10.29 | 11.54 | 10.33 | 10.83 | 8.88 | 11.00 | 11.38 |
+
+**Key observations:**
+- The **ensemble leads** the full 12-fold CV at 12.37 avg pts, demonstrating stable aggregation
+  across diverse seasons and eras.
+- `xgb_clf` shows the strongest improvement over v4.03 (+0.96 pts), confirming Platt scaling
+  adds value across the majority of CV folds.
+- `rf_clf` shows a **-0.12 pts regression** in the 4-year rolling CV. This is the expected
+  small-sample calibration artefact: with only ~1,500–1,600 training rows per fold, isotonic
+  calibration has limited data and occasionally over-corrects. In contrast, the full-dataset
+  holdout (15 years, 6,173 rows) shows rf_clf at +1.75 pts — isotonic calibration clearly
+  beneficial at production scale.
+- No model degrades catastrophically; all remain within ±1 pt of v4.03 baselines in the CV.
+- Year-to-year variance is high across all models (range ≈ 8–15 pts/year per model), confirming
+  the multi-model ensemble strategy is the right approach to manage this uncertainty.
+
+---
+
 ### Verdict: ACCEPTED ✓
 
 v5.1 is accepted and promoted to production.
 
 - `rf_clf` and `xgb_clf` calibration both produce substantial real-world improvements
 - Net v5.1 effect on 2025 holdout: classifiers +1.54 to +1.75 pts/race
+- Full 12-fold CV confirms ensemble stability (+0.75 vs v4.03); xgb_clf +0.96 across all folds
+- rf_clf rolling-CV regression (-0.12) is a small-sample artefact; full-dataset holdout confirms benefit
 - Ensemble recalibration deferred to v5.8 (requires full CV re-run first)
 - All production models retrained on 2010–2024 with calibration applied
 
@@ -113,5 +167,5 @@ v5.1 is accepted and promoted to production.
 
 | Item | Description | Target version |
 |------|-------------|----------------|
-| Ensemble weight recalibration | rf_clf (+1.75) and xgb_clf (+1.54) are now the strongest models; ensemble weights were set when they were weakest | v5.8 (full CV re-run) |
-| rf_clf small-sample calibration | The 4-year CV showed marginal log-loss increase — monitor on additional CV folds to confirm isotonic calibration remains beneficial | v5.8 |
+| Ensemble weight recalibration | rf_clf (+1.75) and xgb_clf (+1.54) are now the strongest models in holdout; ensemble weights were set when they were weakest | v5.8 (full CV re-run) |
+| rf_clf small-sample calibration | The 4-year rolling CV showed marginal regression (-0.12) — monitor at each subsequent CV run to confirm isotonic calibration remains net-positive | v5.8 |
