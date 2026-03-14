@@ -1,12 +1,12 @@
-# F1 P10 Predictor · v5.2
+# F1 P10 Predictor · v5.3
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix, optimised for a
 fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetrically).
 
-**Current model:** 45 features · 8 models · season-stage adaptive ensemble weights
+**Current model:** 45 features · 9 models · season-stage adaptive ensemble weights
 **Benchmark:** `naive_grid_p10` — 14.04 avg pts/race on 2025 holdout (unbeaten)
-**Best 2025 holdout:** `lgb_reg` — 11.75 avg pts/race | **12-fold CV:** `ensemble` — 12.43 avg pts/race
-**v5.2 change:** `q1_gap_pct` (Q1 session time gap) added; `lgb_reg` regularization fixed (+1.46 CV improvement)
+**Best 2025 holdout:** `xgb_ranker` — 13.58 avg pts/race | **12-fold CV:** `ensemble` — 12.23 avg pts/race
+**v5.3 change:** `lgbm_ranker` (LambdaMART) added; `xgb_ranker` upgraded to `rank:ndcg` (+1.87 on 2025 holdout)
 
 ---
 
@@ -199,9 +199,14 @@ SCORING_VECTOR = [1, 2, 4, 6, 8, 10, 12, 15, 18, 25, 18, 15, 12, 10, 8, 6, 4, 2,
 
 ### XGBoost Ranker
 
-`xgb_ranker` uses `rank:pairwise`, directly optimising pairwise driver ordering within
-each race. Target label: `1 / (1 + |finish_position − 10|)` — P10 scores 1.0 with
-symmetric decay. Requires training rows sorted by `(year, round)` with a `qid` array.
+`xgb_ranker` uses `rank:ndcg` (v5.3 upgrade from `rank:pairwise`), optimising NDCG over
+the full race list. Integer relevance labels: `round(10/(1+|finish_pos−10|))` — P10→10,
+P9/P11→5, with symmetric decay. Uses `qid` (per-row group index) for race grouping.
+
+### LightGBM Ranker
+
+`lgbm_ranker` (v5.3) uses LambdaMART (`lambdarank` objective), an independent implementation
+for ensemble diversity. Uses `group` (array of per-race row counts) for grouping.
 
 ### WeightedEnsemble — Season-Stage Adaptive Weights
 
@@ -212,51 +217,55 @@ weight 2.00 across all stages:
 - **`grid_heuristic`**: `1 / (1 + |grid_position − 10|)`
 - **`champ_heuristic`**: `1 / (1 + |champ_pos − 10|)` (clipped to [1, 20])
 
-**Early-season weights — R1–R5** *(classifiers dominate; within-season form is sparse)*
+Weights recalibrated from v5.3 12-fold CV (252 races) per-stage performance.
 
-| Model | Weight | Stage avg pts |
+**Early-season weights — R1–R5** *(classifiers dominate; rf_clf and xgb_reg lead)*
+
+| Model | Weight | 12-fold CV stage avg |
 |---|---|---|
-| `xgb_clf` | 4.00 | 16.00 |
-| `rf_clf` | 4.00 | 15.00 |
-| `xgb_ranker` | 3.00 | 12.90 |
-| `ridge` | 2.50 | 11.40 |
+| `rf_clf` | 4.00 | 12.93 |
+| `xgb_reg` | 3.00 | 12.33 |
+| `xgb_clf` | 3.00 | 12.28 |
 | `grid_heuristic` | 2.00 | — |
 | `champ_heuristic` | 2.00 | — |
-| `lgb_reg` | 1.50 | 11.10 |
-| `xgb_reg` | 1.25 | 10.90 |
-| `rf_reg` | 0.25 | 9.50 |
+| `lgbm_ranker` | 1.50 | 11.15 |
+| `lgb_reg` | 0.75 | 10.62 |
+| `ridge` | 1.00 | 10.80 |
+| `xgb_ranker` | 0.50 | 10.43 |
+| `rf_reg` | 0.25 | 10.32 |
 
-**Mid-season weights — R6–R15** *(form features stabilising; regressors improve)*
+**Mid-season weights — R6–R15** *(xgb_clf leads; ridge and rf_clf strong)*
 
-| Model | Weight | Stage avg pts |
+| Model | Weight | 12-fold CV stage avg |
 |---|---|---|
-| `ridge` | 4.00 | 12.65 |
-| `rf_reg` | 3.75 | 12.50 |
-| `lgb_reg` | 3.00 | 12.00 |
-| `xgb_reg` | 2.25 | 11.30 |
+| `xgb_clf` | 4.00 | 11.77 |
+| `ridge` | 3.00 | 11.31 |
+| `rf_clf` | 2.50 | 11.13 |
+| `rf_reg` | 2.25 | 11.08 |
+| `xgb_reg` | 2.00 | 10.96 |
 | `grid_heuristic` | 2.00 | — |
 | `champ_heuristic` | 2.00 | — |
-| `xgb_clf` | 2.00 | 11.15 |
-| `xgb_ranker` | 1.25 | 10.60 |
-| `rf_clf` | 0.75 | 10.75 |
+| `lgb_reg` | 1.25 | 10.69 |
+| `lgbm_ranker` | 0.75 | 10.41 |
+| `xgb_ranker` | 0.25 | 10.25 |
 
-**Late-season weights — R16+** *(car performance and form fully stable; ridge dominant)*
+**Late-season weights — R16+** *(ridge dominant; rf_clf strong; xgb_ranker best stage)*
 
-| Model | Weight | Stage avg pts |
+| Model | Weight | 12-fold CV stage avg |
 |---|---|---|
-| `ridge` | 4.00 | 14.56 |
-| `rf_clf` | 3.25 | 13.06 |
+| `ridge` | 4.00 | 12.03 |
+| `rf_clf` | 3.75 | 11.89 |
+| `xgb_reg` | 3.00 | 11.49 |
+| `lgb_reg` | 2.50 | 11.22 |
+| `rf_reg` | 2.50 | 11.13 |
 | `grid_heuristic` | 2.00 | — |
 | `champ_heuristic` | 2.00 | — |
-| `rf_reg` | 2.00 | 11.50 |
-| `xgb_ranker` | 2.00 | 11.31 |
-| `xgb_clf` | 1.50 | 10.75 |
-| `lgb_reg` | 0.50 | 9.31 |
-| `xgb_reg` | 0.25 | 8.31 |
+| `xgb_ranker` | 2.25 | 11.01 |
+| `lgbm_ranker` | 1.00 | 10.35 |
+| `xgb_clf` | 0.25 | 9.88 |
 
-> Stage avg pts are from 2023+2024 combined CV (46 races), used for v4.03 weight
-> calibration. Ensemble weight recalibration using the full v5.2 12-fold CV is scheduled for v5.8.
-> As of v5.2, `lgb_reg` is the top 2025 holdout model (11.75) but its late-season weight is only 0.50 — recalibration will capture this gain.
+> Weights calibrated from v5.3 12-fold CV per-stage performance (linear scaling min→0.25, max→4.00).
+> xgb_ranker rank:ndcg is particularly strong on recent data (13.58 on 2025 holdout, 13.21 on 2024 CV fold).
 
 ---
 
@@ -288,7 +297,38 @@ python scripts/03_train_models.py --cv                   # full 12-fold (use --r
 
 ## Results
 
-### 2025 Holdout — v5.2 (45 features, trained on 2010–2024, 24 races)
+### 2025 Holdout — v5.3 (45 features, 9 models, trained on 2010–2024, 24 races)
+
+| Model | Avg pts/race | Delta vs v5.2 | Exact P10 | Within 2 |
+|---|---|---|---|---|
+| naive_grid_p10 | **14.04** | — | — | — |
+| `xgb_ranker` | **13.58** | **+1.87** | 3 | 62.5% |
+| `lgb_reg` | 11.75 | 0.00 | 2 | 29.2% |
+| `xgb_clf` | 11.54 | 0.00 | 2 | 45.8% |
+| `rf_clf` | 11.46 | 0.00 | 3 | 41.7% |
+| `ridge` | 10.79 | 0.00 | 0 | 37.5% |
+| `lgbm_ranker` | 10.67 | new | 0 | 41.7% |
+| `ensemble` | 10.29 | -0.75 | 2 | 29.2% |
+| `rf_reg` | 9.58 | 0.00 | 0 | 29.2% |
+| `xgb_reg` | 8.33 | 0.00 | 1 | 20.8% |
+
+**v5.3 changes:**
+- `lgbm_ranker` (LambdaMART, LightGBM) added as 9th model
+- `xgb_ranker` upgraded from `rank:pairwise` to `rank:ndcg` — **+1.87 pts on 2025 holdout** (best individual model in project)
+- Integer relevance labels: `round(10/(1+|pos-10|))` — required by both XGBoost 3.x and LightGBM 4.x ranking objectives
+- Ensemble weights recalibrated from v5.3 12-fold CV per-stage performance
+- Note: 24-race holdout has high variance. Ensemble weight recalibration favors xgb_reg (strong in 12-fold CV) which underperforms on 2025 specifically.
+
+**Recommended picks for 2026 (v5.3):**
+
+| Season stage | Pick | Rationale |
+|---|---|---|
+| R1–R5 | `rf_clf` or `xgb_reg` | Both strongest in EARLY stage (CV: 12.93, 12.33); xgb_ranker also strong |
+| R6–R15 | `xgb_clf` / `ridge` | xgb_clf leads MID (CV: 11.77); ridge stable (11.31) |
+| R16+ | `ridge` / `rf_clf` | Both lead LATE (CV: 12.03, 11.89); xgb_ranker strong in 2025 LATE |
+| Any | `xgb_ranker` | Best 2025 holdout (13.58); rank:ndcg particularly effective on recent data |
+
+### 2025 Holdout — v5.2 (archived reference)
 
 | Model | Avg pts/race | Delta vs v5.1 | Exact P10 | Within 2 |
 |---|---|---|---|---|
@@ -297,38 +337,10 @@ python scripts/03_train_models.py --cv                   # full 12-fold (use --r
 | `xgb_ranker` | 11.71 | +0.04 | 2 | 45.8% |
 | `xgb_clf` | 11.54 | -0.75 | 2 | 45.8% |
 | `rf_clf` | 11.46 | -1.33 | 3 | 41.7% |
-| `ensemble` | **11.04** | **+0.83** | 3 | 33.3% |
+| `ensemble` | 11.04 | +0.83 | 3 | 33.3% |
 | `ridge` | 10.79 | 0.00 | 0 | 37.5% |
 | `rf_reg` | 9.58 | -0.42 | 0 | 29.2% |
 | `xgb_reg` | 8.33 | -4.09 | 1 | 20.8% |
-
-**v5.2 changes:**
-- Added `q1_gap_pct` (45th feature): Q1 session lap time gap to pole (%)
-- Fixed `lgb_reg` L1/L2 regularization that was suppressing the correlated new feature; `lgb_reg` is now the top individual model on 2025 holdout
-- Note: 24-race sample has high variance. `xgb_reg` (-4.09) reflects 2025-specific patterns; 12-fold CV shows +0.32 improvement for xgb_reg
-
-**Recommended picks for 2026 (v5.2):**
-
-| Season stage | Pick | Rationale |
-|---|---|---|
-| R1–R5 | `lgb_reg` or `xgb_clf` | lgb_reg leads 2025 holdout; xgb_clf strong in CV and 2025 |
-| R6–R15 | `lgb_reg` / `ridge` | lgb_reg leads 2024 CV (13.79); ridge stable across eras |
-| R16+ | `ridge` / `rf_clf` | Ridge leads late-season; rf_clf within-2 rate strong |
-| Any | `ensemble` | Best 12-fold CV aggregate (12.43); most stable across seasons |
-
-### 2025 Holdout — v5.1 (archived reference)
-
-| Model | Avg pts/race | Delta vs v4.03 | Exact P10 | Within 2 |
-|---|---|---|---|---|
-| naive_grid_p10 | **14.04** | — | 3 | — |
-| `rf_clf` | **12.79** | **+1.75** | 2 | 54.2% |
-| `xgb_reg` | 12.42 | 0.00 | 1 | 41.7% |
-| `xgb_clf` | **12.29** | **+1.54** | 2 | 54.2% |
-| `lgb_reg` | 11.96 | 0.00 | 2 | 37.5% |
-| `xgb_ranker` | 11.67 | 0.00 | 1 | 41.7% |
-| `ridge` | 10.79 | 0.00 | 0 | 37.5% |
-| `ensemble` | 10.21 | -0.25 | 1 | 25.0% |
-| `rf_reg` | 10.00 | 0.00 | 0 | 20.8% |
 
 ### 2025 Holdout — v4.03 (archived reference)
 
@@ -346,23 +358,24 @@ python scripts/03_train_models.py --cv                   # full 12-fold (use --r
 
 ### Cross-Validation
 
-**12-fold rolling Time-Series CV — v5.2 model (45 features, lgb_reg no-reg)**
+**12-fold rolling Time-Series CV — v5.3 model (45 features, 9 models)**
 Eval years 2014–2025, 4-year training window, 252 total races.
 
-| Model | v5.2 CV avg | v5.1 CV avg | Delta | Exact P10 % |
+| Model | v5.3 CV avg | v5.2 CV avg | Delta | Exact P10 % |
 |---|---|---|---|---|
-| `ensemble` | **12.43** | 12.37 | **+0.06** | 11.9% |
-| `rf_clf` | 11.77 | 11.28 | **+0.50** | 8.3% |
-| `xgb_reg` | 11.44 | 11.12 | **+0.32** | 11.1% |
-| `ridge` | 11.39 | 11.37 | +0.02 | 9.5% |
-| `xgb_clf` | 11.35 | 11.67 | -0.32 | 8.7% |
-| `rf_reg` | 10.91 | 11.13 | -0.22 | 8.3% |
-| `lgb_reg` | 10.83 | 10.55 | **+0.27** | 6.3% |
-| `xgb_ranker` | 10.55 | 10.76 | -0.21 | 6.7% |
+| `ensemble` | **12.23** | 12.43 | -0.20* | 11.1% |
+| `rf_clf` | 11.77 | 11.77 | 0.00 | 8.3% |
+| `xgb_reg` | 11.44 | 11.44 | 0.00 | 11.1% |
+| `ridge` | 11.39 | 11.39 | 0.00 | 9.5% |
+| `xgb_clf` | 11.35 | 11.35 | 0.00 | 8.7% |
+| `rf_reg` | 10.91 | 10.91 | 0.00 | 8.3% |
+| `lgb_reg` | 10.83 | 10.83 | 0.00 | 6.3% |
+| `lgbm_ranker` | 10.57 | n/a | new | 6.7% |
+| `xgb_ranker` | 10.51 | 10.55 | -0.04 | 5.6% |
 
-> Average improvement across all models: +0.05 pts/race. Ensemble leads at 12.43 avg pts.
-> rf_clf +0.50 (qualifying depth helps calibrated classifiers). lgb_reg +0.27 (reg fix).
-> xgb_clf -0.32 is within fold-level noise; monitoring at next CV run scheduled.
+> *Ensemble CV drop reflects placeholder lgbm_ranker weight during CV run; weights since recalibrated.
+> Non-ranker model scores identical to v5.2 (same feature set and hyperparameters).
+> xgb_ranker rank:ndcg is +1.87 pts on 2025 holdout vs pairwise — strongest 2025 improvement.
 > Protocol: full 12-fold CV re-run after each version step.
 
 **v5.1 archived (44 features, calibrated classifiers):**

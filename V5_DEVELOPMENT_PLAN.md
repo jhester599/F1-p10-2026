@@ -1,9 +1,9 @@
 # F1 P10 Predictor — v5.x Development Plan
 
 **Date:** 2026-03-14
-**Last updated:** 2026-03-14 (v5.2 implemented and validated)
+**Last updated:** 2026-03-14 (v5.3 implemented and validated)
 **Starting point:** v4.03 (44 features, 8 models, 2025 holdout best: xgb_reg 12.42 pts/race)
-**Current version:** v5.2 (2025 holdout best: lgb_reg 11.75 pts/race; 12-fold CV: ensemble 12.43)
+**Current version:** v5.3 (2025 holdout best: xgb_ranker 13.58 pts/race; 12-fold CV: ensemble 12.23)
 **Objective:** Beat the naive grid-P10 baseline (14.04 pts/race on 2025 holdout) through iterative,
  measured improvements beginning at v5.1.
 **Sources:** Internal known-issues audit + Gemini Deep Research Report (2026-03-13)
@@ -27,7 +27,28 @@
 **Primary target:** ensemble ≥ 13.00 avg pts/race (2025 holdout).
 **Stretch target:** any model ≥ 14.04 (beats naive baseline).
 
-## v5.2 Results Summary (current version)
+## v5.3 Results Summary (current version)
+
+| Model | v5.2 holdout | v5.3 holdout | Δ | v5.3 CV avg |
+|-------|-------------|-------------|---|------------|
+| **naive_grid_p10** | **14.04** | **14.04** | — | — |
+| **xgb_ranker** | 11.71 | **13.58** | **+1.87** | 10.51 |
+| lgb_reg | 11.75 | 11.75 | 0.00 | 10.83 |
+| xgb_clf | 11.54 | 11.54 | 0.00 | 11.35 |
+| rf_clf | 11.46 | 11.46 | 0.00 | 11.77 |
+| ridge | 10.79 | 10.79 | 0.00 | 11.39 |
+| lgbm_ranker | n/a | 10.67 | new | 10.57 |
+| ensemble | 11.04 | 10.29 | -0.75 | 12.23 |
+| rf_reg | 9.58 | 9.58 | 0.00 | 10.91 |
+| xgb_reg | 8.33 | 8.33 | 0.00 | 11.44 |
+
+**Key outcomes:**
+- `xgb_ranker` rank:ndcg jumps to **13.58** on 2025 holdout (+1.87 vs v5.2 pairwise) — best individual model in project history vs naive baseline gap
+- `lgbm_ranker` added as new 9th model (lambdarank), contributing ensemble diversity
+- Ensemble weights recalibrated based on v5.3 12-fold CV (252 races); `ensemble` dips on 2025 holdout due to xgb_reg high weight + poor 2025 performance
+- Full results and analysis: `scripts/v5_results/V5_RESULTS.md`
+
+## v5.2 Results Summary (archived)
 
 | Model | v5.1 holdout | v5.2 holdout | Δ | v5.2 CV avg |
 |-------|-------------|-------------|---|------------|
@@ -457,6 +478,26 @@ Recalibrate after single-fold CV confirms delta.
 Compare CV avg pts for `lgbm_ranker` vs. `xgb_ranker` on 2024 holdout.
 Accept `lgbm_ranker` only if avg pts ≥ `xgb_ranker` − 0.10.
 
+### v5.3 Implementation Results (ACCEPTED ✓)
+
+**Status:** Implemented and validated 2026-03-14
+
+**Key implementation notes:**
+- Integer relevance labels required (`round(10/(1+|pos-10|)).astype(int)`) — both XGBoost 3.x rank:ndcg and LightGBM 4.x lambdarank reject float labels with "label must be 0 or positive integer"
+- `LGBMRanker` uses `group=` (array of per-race group sizes); `XGBRanker` uses `qid=` (per-row group index)
+- Regularization removed from `lgbm_ranker` (same reasoning as lgb_reg v5.2 — L1 suppresses correlated features)
+- Ensemble EARLY/MID/LATE weights recalibrated from v5.3 12-fold CV per-stage data
+
+**Results:**
+| Model | 12-fold CV avg | 2025 holdout | Accept criterion |
+|-------|---------------|-------------|-----------------|
+| lgbm_ranker | 10.57 | 10.67 | xgb_ranker(CV) - 0.10 = 10.41 ✓ |
+| xgb_ranker (rank:ndcg) | 10.51 | **13.58** | — |
+
+- `lgbm_ranker` accepted (10.57 ≥ 10.41 threshold)
+- `xgb_ranker` rank:ndcg is dramatically better on 2025 holdout (+1.87 pts vs pairwise)
+- Both rankers contribute ensemble diversity (consistently ~10.5 in 12-fold CV)
+
 ---
 
 ## v5.4 — FP2 Race Pace Features (Base Pace + Degradation Rate)
@@ -641,7 +682,7 @@ the v5.x performance ranking.
 |---------|--------|-----------|--------|----------------|--------|
 | **v5.1** | Probability calibration (CalibratedClassifierCV) | Issue #5 | Low | rf_clf **+1.75**, xgb_clf **+1.54** pts (2025 holdout) | **COMPLETE** ✓ |
 | **v5.2** | Qualifying session analysis + grid penalty delta (7 candidates, keep only those with lift) | Issues #1, #7, #11 | Medium | +0.5–2.0 pts | Active |
-| **v5.3** | LGBMRanker (LambdaMART / rank:ndcg) | Issue #6 | Medium | +0.3–0.8 pts | Active |
+| **v5.3** | LGBMRanker (LambdaMART / rank:ndcg) | Issue #6 | Medium | xgb_ranker +1.87 on 2025 holdout | **DONE** ✓ |
 | **v5.4** | FP2 base pace + degradation rate features | Issue #8 | High | +0.5–2.0 pts | Active |
 | **v5.5** | Constructor pit stop xPT feature | Issue #9 | Medium | +0.2–0.5 pts | Active |
 | **v5.6** | Blue flag vulnerability feature | Gemini report | Low-Med | +0.1–0.4 pts | Active |

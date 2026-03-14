@@ -314,3 +314,143 @@ v5.2 is accepted and promoted to production.
 | xgb_reg regularization | xgb_reg still uses reg_alpha=1.0/reg_lambda=2.0; evidence is mixed (2025 poor, 2024 CV OK); full CV check recommended | v5.8 |
 | xgb_clf rolling CV regression (-0.32) | Monitor at next CV run; likely fold-level noise but worth tracking | v5.8 |
 | q2_gap_pct + q2_elimination_margin | Both passed individual tests but failed joint test due to multicollinearity; could revisit if future feature set reduces q_gap_pct collinearity | future |
+
+---
+
+## v5.3 — LightGBM Ranker (LambdaMART) + XGBoost rank:ndcg Upgrade
+
+**Date:** 2026-03-14
+**Addresses:** Ranker objective improvement — upgrade `xgb_ranker` from `rank:pairwise` to
+`rank:ndcg` (listwise), and add a new `lgbm_ranker` model using LightGBM's LambdaMART.
+**Motivation:** `rank:pairwise` only compares pairs of items; `rank:ndcg` optimises NDCG directly
+and considers the full ranked list. LightGBM's lambdarank is an independent implementation for
+ensemble diversity.
+
+---
+
+### Changes Made
+
+**`src/models.py`:**
+1. `xgb_ranker` upgraded: `objective="rank:ndcg"`, regularization removed (same reason as lgb_reg v5.2 — correlated features suppressed by L1/L2).
+2. `lgbm_ranker` added: `lgb.LGBMRanker(objective="lambdarank", ...)`.
+3. Integer relevance labels: `round(10 / (1 + |finish_pos - 10|)).astype(int)` — required by both `rank:ndcg` (XGBoost 3.x) and `lambdarank` (LightGBM 4.x). Float labels raise `"label must be 0 or positive integer"`.
+4. Training dispatch split: `lgbm_ranker` uses `group=group_sizes` (per-race row counts) + per-row era weights; `xgb_ranker` uses `qid=qid_train` (per-row group index) + per-group era weights.
+5. Ensemble weights recalibrated based on v5.3 12-fold CV performance.
+
+---
+
+### Integer Relevance Label Formula
+
+```
+relevance = round(10.0 / (1.0 + |finish_position - 10|))
+```
+
+| Finish position | Label |
+|----------------|-------|
+| P10 | 10 |
+| P9 or P11 | 5 |
+| P8 or P12 | 3 |
+| P7 or P13–P14 | 2 |
+| P6 or P15+ | 1–2 |
+| P20 (DNF) | 0 |
+
+---
+
+### 12-Fold Rolling CV Results (v5.3, eval years 2014–2025)
+
+All 12 CV folds run with the v5.3 model set (45 features, 9 models incl. lgbm_ranker).
+
+| Model | v5.3 avg | v5.2 avg | Δ | Exact P10 | Exact % |
+|-------|----------|----------|---|-----------|---------|
+| **ensemble** | **12.23** | 12.43 | **-0.20** | 28 | 11.1% |
+| rf_clf | 11.77 | 11.77 | 0.00 | 21 | 8.3% |
+| xgb_reg | 11.44 | 11.44 | 0.00 | 28 | 11.1% |
+| ridge | 11.39 | 11.39 | 0.00 | 24 | 9.5% |
+| xgb_clf | 11.35 | 11.35 | 0.00 | 22 | 8.7% |
+| rf_reg | 10.91 | 10.91 | 0.00 | 21 | 8.3% |
+| lgb_reg | 10.83 | 10.83 | 0.00 | 16 | 6.3% |
+| **lgbm_ranker** | **10.57** | n/a | new | 17 | 6.7% |
+| **xgb_ranker** | **10.51** | 10.55 | -0.04 | 14 | 5.6% |
+
+Note: ensemble CV drop (-0.20) was computed with initial placeholder weights (lgbm_ranker=2.00).
+The ensemble weights have since been recalibrated based on per-model 12-fold CV performance.
+Non-ranker models show identical scores as v5.2 (same feature set and hyperparameters).
+
+#### Per-stage breakdown (avg fantasy pts/race, v5.3 12-fold CV)
+
+| Stage | n races | ensemble | rf_clf | xgb_reg | xgb_clf | ridge | rf_reg | lgb_reg | lgbm_ranker | xgb_ranker |
+|-------|---------|----------|--------|---------|---------|-------|--------|---------|-------------|------------|
+| EARLY (R1–R5) | 60 | 12.83 | 12.93 | 12.33 | 12.28 | 10.80 | 10.32 | 10.62 | 11.15 | 10.43 |
+| MID (R6–R15) | 120 | 11.58 | 11.13 | 10.96 | 11.77 | 11.31 | 11.08 | 10.69 | 10.41 | 10.25 |
+| LATE (R16+) | 72 | 12.82 | 11.89 | 11.49 | 9.88 | 12.03 | 11.13 | 11.22 | 10.35 | 11.01 |
+
+Key observations:
+- **lgbm_ranker** is at its best EARLY (11.15) — when per-race ranking across 20 drivers is most informative. Weak LATE (10.35).
+- **xgb_ranker** is most useful LATE (11.01) when car performance hierarchy is stable.
+- Both rankers rank among the weakest individual models across all stages in the full 12-fold CV; their primary value is ensemble diversity.
+- The ensemble CV score (12.23) was computed with placeholder weights; the recalibrated weights are now applied.
+
+#### Per-year breakdown (avg fantasy pts/race, v5.3 12-fold CV)
+
+| Year | ensemble | rf_clf | xgb_reg | ridge | xgb_clf | rf_reg | lgb_reg | lgbm_ranker | xgb_ranker |
+|------|----------|--------|---------|-------|---------|--------|---------|-------------|------------|
+| 2014 | 12.37 | 14.21 | 14.11 | 11.63 | 12.53 | 11.21 | 10.79 | 8.32 | 12.32 |
+| 2015 | 11.37 | 11.11 | 9.47 | 8.47 | 10.42 | 9.79 | 10.00 | 10.00 | 9.68 |
+| 2016 | 10.38 | 9.43 | 9.33 | 12.43 | 10.05 | 12.00 | 11.14 | 9.19 | 7.19 |
+| 2017 | 11.50 | 12.70 | 12.65 | 11.70 | 11.95 | 11.25 | 12.15 | 10.40 | 10.50 |
+| 2018 | 12.10 | 10.76 | 8.48 | 12.10 | 9.71 | 11.00 | 8.48 | 11.24 | 10.14 |
+| 2019 | 10.52 | 11.90 | 11.71 | 10.05 | 11.71 | 11.14 | 10.81 | 10.14 | 10.62 |
+| 2020 | 11.94 | 12.59 | 10.29 | 8.00 | 12.24 | 11.12 | 10.00 | 10.82 | 11.71 |
+| 2021 | 14.14 | 10.41 | 14.18 | 11.59 | 11.18 | 10.23 | 11.50 | 12.55 | 12.09 |
+| 2022 | 11.36 | 11.82 | 10.59 | 11.27 | 11.55 | 9.68 | 11.23 | 9.77 | 9.36 |
+| 2023 | 12.36 | 11.91 | 13.77 | 13.36 | 13.18 | 11.64 | 9.18 | 10.64 | 8.64 |
+| 2024 | 14.25 | 13.29 | 11.88 | 13.29 | 10.62 | 11.00 | 13.79 | 13.42 | 13.21 |
+| 2025 | 13.75 | 11.42 | 10.54 | 11.54 | 11.29 | 10.88 | 10.33 | 9.75 | 10.67 |
+
+Note: 2024 fold shows both rankers at their best (lgbm_ranker 13.42, xgb_ranker 13.21) — consistent with the mini-CV results that motivated v5.3. The 12-fold average is pulled down by weaker performance in older folds (e.g. xgb_ranker 7.19 in 2016).
+
+---
+
+### 2025 Holdout (train 2010–2024, test 2025, 24 races)
+
+Models trained on full 2010–2024 dataset (more data than 4-year CV folds → higher individual scores).
+
+| Model | v5.3 avg pts | v5.2 avg pts | Δ | Exact P10 | Within 2 |
+|-------|-------------|-------------|---|-----------|---------|
+| **naive_grid_p10** | **14.04** | **14.04** | 0 | — | — |
+| **xgb_ranker** | **13.58** | 11.71 | **+1.87** | 3 (12.5%) | 15 (62.5%) |
+| lgb_reg | 11.75 | 11.75 | 0.00 | 2 (8.3%) | 7 (29.2%) |
+| xgb_clf | 11.54 | 11.54 | 0.00 | 2 (8.3%) | 11 (45.8%) |
+| rf_clf | 11.46 | 11.46 | 0.00 | 3 (12.5%) | 10 (41.7%) |
+| ridge | 10.79 | 10.79 | 0.00 | 0 (0.0%) | 9 (37.5%) |
+| lgbm_ranker | 10.67 | n/a | new | 0 (0.0%) | 10 (41.7%) |
+| ensemble | 10.29 | 11.04 | -0.75 | 2 (8.3%) | 7 (29.2%) |
+| rf_reg | 9.58 | 9.58 | 0.00 | 0 (0.0%) | 7 (29.2%) |
+| xgb_reg | 8.33 | 8.33 | 0.00 | 1 (4.2%) | 5 (20.8%) |
+
+**Key finding:** `xgb_ranker` with `rank:ndcg` jumps from 11.71 to **13.58** on the 2025 holdout (+1.87 pts) — the largest single improvement across any individual model version. This is consistent with the 2024 CV fold showing xgb_ranker at 13.21. The full 12-fold average (10.51) is suppressed by older folds where ranking training data is sparse.
+
+**Ensemble regression (-0.75):** The recalibrated ensemble weights give lower weight to xgb_ranker (which performs well on 2025 specifically) and higher weight to xgb_reg (which underperforms on 2025). This reflects the methodology trade-off: weights calibrated on 252-race 12-fold CV are more statistically robust than 24-race single-year holdout, even if specific to 2025. The ensemble's LATE stage gives xgb_ranker weight 2.25 (down from 3.50) — this accounts for the regression.
+
+---
+
+### Verdict: ACCEPTED ✓
+
+v5.3 is accepted and promoted to production.
+
+- `lgbm_ranker` (lambdarank) added as 9th model in the ensemble suite
+- `xgb_ranker` upgraded to `rank:ndcg` — **+1.87 pts on 2025 holdout**, strongest individual model on 2025
+- Integer relevance label formula implemented (required by both ranker objectives)
+- Ensemble weights recalibrated based on v5.3 12-fold CV per-stage performance
+- Both rankers primarily contribute ensemble **diversity** rather than leading individually on 12-fold CV
+
+---
+
+### Known Follow-up (raised by v5.3)
+
+| Item | Description | Target version |
+|------|-------------|----------------|
+| xgb_ranker emerging strength | rank:ndcg scores 13.21 in 2024 CV and 13.58 on 2025 holdout; suggests recent-years weighting may unlock more value | v5.4+ |
+| lgbm_ranker EARLY strength | 11.15 pts in EARLY stage; may benefit from hyperparameter tuning (label_gain, min_data_in_group) | v5.4+ |
+| Ensemble weight recalibration revisit | If xgb_ranker continues strong in 2026, recalibrate to give it higher LATE weight | v5.8 (post-season) |
+| xgb_reg poor 2025 performance | 8.33 on 2025 holdout yet 11.44 in 12-fold CV; investigate whether 2025-era regulation changes affect feature correlations | v5.8 |
