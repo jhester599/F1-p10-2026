@@ -1,8 +1,9 @@
 # F1 P10 Predictor — v5.x Development Plan
 
 **Date:** 2026-03-14
-**Last updated:** 2026-03-14 (pended v5.7, v5.9; expanded v5.2 with full qualifying session analysis)
+**Last updated:** 2026-03-14 (v5.1 implemented and validated)
 **Starting point:** v4.03 (44 features, 8 models, 2025 holdout best: xgb_reg 12.42 pts/race)
+**Current version:** v5.1 (2025 holdout best: rf_clf 12.79 pts/race)
 **Objective:** Beat the naive grid-P10 baseline (14.04 pts/race on 2025 holdout) through iterative,
  measured improvements beginning at v5.1.
 **Sources:** Internal known-issues audit + Gemini Deep Research Report (2026-03-13)
@@ -26,6 +27,24 @@
 **Primary target:** ensemble ≥ 13.00 avg pts/race (2025 holdout).
 **Stretch target:** any model ≥ 14.04 (beats naive baseline).
 
+## v5.1 Results Summary (current version)
+
+| Model | v4.03 holdout | v5.1 holdout | Delta |
+|-------|--------------|-------------|-------|
+| **naive_grid_p10** | **14.04** | **14.04** | — |
+| rf_clf | 11.04 | **12.79** | **+1.75** |
+| xgb_reg | 12.42 | 12.42 | 0.00 |
+| xgb_clf | 10.75 | **12.29** | **+1.54** |
+| lgb_reg | 11.96 | 11.96 | 0.00 |
+| xgb_ranker | 11.67 | 11.67 | 0.00 |
+| ridge | 10.79 | 10.79 | 0.00 |
+| ensemble | 10.46 | 10.21 | -0.25 |
+| rf_reg | 10.00 | 10.00 | 0.00 |
+
+**Key outcome:** rf_clf and xgb_clf are now the #1 and #3 strongest models.
+Ensemble weight recalibration (deferred to v5.8) will capture these gains in the blended pick.
+Full results and analysis: `scripts/v5_results/V5_RESULTS.md`
+
 ---
 
 ## Known Issues Entering v5.x
@@ -36,7 +55,7 @@
 | 2 | Race 1 cold-start — form features all zero at R1; ~2–3 pt gap vs. rest of season | High | **Pended → v5.9 (mid-season update)** |
 | 3 | 44-feature CV gap — only 2023/2024 single-fold results; full 12-fold CV not rerun since 38-feature set | Medium | Addressed in v5.8 |
 | 4 | Baseline unbeaten — naive `grid_p10` (14.04) beats all ML models on 2025 holdout | High | Persistent — target of full v5.x roadmap |
-| 5 | Probability miscalibration — `rf_clf` and `xgb_clf` produce flat, distorted probability distributions; EV calculations are unreliable | High | Addressed in v5.1 |
+| 5 | Probability miscalibration — `rf_clf` and `xgb_clf` produce flat, distorted probability distributions; EV calculations are unreliable | High | **RESOLVED v5.1** — rf_clf +1.75 pts, xgb_clf +1.54 pts |
 | 6 | `xgb_ranker` using `rank:pairwise`; listwise (LambdaMART / `rank:ndcg`) not yet tested | Medium | Addressed in v5.3 |
 | 7 | Qualifying position vs. grid position conflated — grid penalties (e.g. engine change +10) assign misleading pace signal | High | Addressed in v5.2 |
 | 8 | FP2 position used as raw rank rather than race-pace proxy; does not capture tire degradation | Medium | Addressed in v5.4 |
@@ -109,11 +128,12 @@ Each version follows the same validation protocol:
 
 ---
 
-## v5.1 — Probability Calibration for Multi-Class EV Models
+## v5.1 — Probability Calibration for Multi-Class EV Models ✓ COMPLETE
 
 **Addresses:** Known issue #5 (probability miscalibration)
 **Gemini rank:** #1 (Very High impact / Low effort)
-**Effort:** ~1 hour
+**Status:** Implemented 2026-03-14. rf_clf +1.75 pts, xgb_clf +1.54 pts on 2025 holdout.
+**Full results:** `scripts/v5_results/V5_RESULTS.md`
 
 ### Problem
 `rf_clf` and `xgb_clf` use raw tree probabilities for EV calculation. Random Forests
@@ -561,7 +581,7 @@ the v5.x performance ranking.
 
 | Version | Change | Addresses | Effort | Expected delta | Status |
 |---------|--------|-----------|--------|----------------|--------|
-| **v5.1** | Probability calibration (CalibratedClassifierCV) | Issue #5 | Low | +0.3–0.8 pts | Active |
+| **v5.1** | Probability calibration (CalibratedClassifierCV) | Issue #5 | Low | rf_clf **+1.75**, xgb_clf **+1.54** pts (2025 holdout) | **COMPLETE** ✓ |
 | **v5.2** | Qualifying session analysis + grid penalty delta (7 candidates, keep only those with lift) | Issues #1, #7, #11 | Medium | +0.5–2.0 pts | Active |
 | **v5.3** | LGBMRanker (LambdaMART / rank:ndcg) | Issue #6 | Medium | +0.3–0.8 pts | Active |
 | **v5.4** | FP2 base pace + degradation rate features | Issue #8 | High | +0.5–2.0 pts | Active |

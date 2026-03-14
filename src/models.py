@@ -12,6 +12,9 @@ We train three families of models on the 2010–2024 data:
                                    for every p in 1..20.
      Select = driver that maximises Expected Fantasy Points:
        EV(driver) = Σ_{p=1}^{20}  P(finish=p) × SCORING_VECTOR[p-1]
+     v5.1: Both classifiers are wrapped in CalibratedClassifierCV to correct
+     for tree-based probability distortion (RF flattens distributions away
+     from 0/1; XGBoost softmax systematically mis-estimates minority classes).
 
   C) Learning-to-Rank (v3.4) → rank drivers within each race using a
      P10-centred relevance score: relevance = 1 / (1 + |finish_pos - 10|).
@@ -23,7 +26,9 @@ Models trained:
   3. Gradient Boosting (XGBoost) Regressor
   4. LightGBM Regressor
   5. Random Forest Classifier  (multi-class: finish_position 1–20, select by EV)
+     v5.1: wrapped in CalibratedClassifierCV(method='isotonic', cv=5)
   6. XGBoost Classifier        (multi-class: finish_position 1–20, select by EV)
+     v5.1: wrapped in CalibratedClassifierCV(method='sigmoid', cv=5)
   7. XGBoost Ranker            (rank:pairwise, P10-centred relevance target)  ← v3.4
   8. WeightedEnsemble          (CV-weighted blend of all base models)
 
@@ -51,6 +56,7 @@ from typing import Any
 import joblib
 import numpy as np
 import pandas as pd
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import Ridge
 from sklearn.pipeline import Pipeline
@@ -360,13 +366,22 @@ def _make_models() -> dict[str, Any]:
             random_state=42,
             n_jobs=-1,
         ),
-        "rf_clf": RandomForestClassifier(
-            n_estimators=400,
-            max_depth=8,
-            min_samples_leaf=5,
-            class_weight="balanced",
-            random_state=42,
-            n_jobs=-1,
+        # v5.1: wrapped in CalibratedClassifierCV to correct histogram flattening.
+        # Random Forests push probabilities away from 0 and 1; isotonic regression
+        # (a non-parametric monotonic calibration) restores empirical frequencies.
+        # cv=5 uses 5-fold internal CV so calibration is not fit on the training
+        # data itself, preventing overfitting the probability adjustment layer.
+        "rf_clf": CalibratedClassifierCV(
+            estimator=RandomForestClassifier(
+                n_estimators=400,
+                max_depth=8,
+                min_samples_leaf=5,
+                class_weight="balanced",
+                random_state=42,
+                n_jobs=-1,
+            ),
+            method="isotonic",
+            cv=5,
         ),
     }
 
@@ -383,17 +398,26 @@ def _make_models() -> dict[str, Any]:
             n_jobs=-1,
             verbosity=0,
         )
-        models["xgb_clf"] = XGBClassifier(
-            n_estimators=500,
-            max_depth=5,
-            learning_rate=0.05,
-            subsample=0.8,
-            colsample_bytree=0.8,
-            objective="multi:softprob",
-            random_state=42,
-            n_jobs=-1,
-            verbosity=0,
-            eval_metric="mlogloss",
+        # v5.1: wrapped in CalibratedClassifierCV with Platt Scaling (sigmoid).
+        # XGBoost softmax probabilities are better calibrated than RF but still
+        # distorted for minority classes (rare finishing positions). Sigmoid
+        # (logistic regression on the raw scores) is more stable than isotonic
+        # when the effective per-class sample count is smaller (fewer boosting trees).
+        models["xgb_clf"] = CalibratedClassifierCV(
+            estimator=XGBClassifier(
+                n_estimators=500,
+                max_depth=5,
+                learning_rate=0.05,
+                subsample=0.8,
+                colsample_bytree=0.8,
+                objective="multi:softprob",
+                random_state=42,
+                n_jobs=-1,
+                verbosity=0,
+                eval_metric="mlogloss",
+            ),
+            method="sigmoid",
+            cv=5,
         )
         # v3.4 — Learning-to-Rank model.
         # Uses rank:pairwise objective which optimises pairwise ordering within
