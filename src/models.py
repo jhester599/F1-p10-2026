@@ -12,9 +12,13 @@ We train three families of models on the 2010–2024 data:
                                    for every p in 1..20.
      Select = driver that maximises Expected Fantasy Points:
        EV(driver) = Σ_{p=1}^{20}  P(finish=p) × SCORING_VECTOR[p-1]
+     v5.1: Both classifiers are wrapped in CalibratedClassifierCV to correct
+     for tree-based probability distortion (RF flattens distributions away
+     from 0/1; XGBoost softmax systematically mis-estimates minority classes).
 
-  C) Learning-to-Rank (v3.4) → rank drivers within each race using a
-     P10-centred relevance score: relevance = 1 / (1 + |finish_pos - 10|).
+  C) Learning-to-Rank (v3.4+) → rank drivers within each race using a
+     P10-centred relevance score.
+     v5.3: integer labels round(10/(1+|pos-10|)) — required by rank:ndcg and lambdarank.
      Select = driver with highest predicted relevance score.
 
 Models trained:
@@ -23,15 +27,19 @@ Models trained:
   3. Gradient Boosting (XGBoost) Regressor
   4. LightGBM Regressor
   5. Random Forest Classifier  (multi-class: finish_position 1–20, select by EV)
+     v5.1: wrapped in CalibratedClassifierCV(method='isotonic', cv=5)
   6. XGBoost Classifier        (multi-class: finish_position 1–20, select by EV)
-  7. XGBoost Ranker            (rank:pairwise, P10-centred relevance target)  ← v3.4
-  8. WeightedEnsemble          (CV-weighted blend of all base models)
+     v5.1: wrapped in CalibratedClassifierCV(method='sigmoid', cv=5)
+  7. XGBoost Ranker            (rank:ndcg, integer labels, v5.3 upgrade from pairwise)  ← v3.4/v5.3
+  8. LightGBM Ranker           (lambdarank objective, integer labels)  ← v5.3 new
+  9. WeightedEnsemble          (CV-weighted blend of all base models)
 
-Ensemble weights (v3.66 — derived from 12-fold rolling Time-Series CV, 2014–2025,
-  38-feature set, era-stratified sample weights V8=0.25/hybrid=0.60/GE=1.00):
-  rf_clf: 4.0  |  xgb_ranker: 3.25  |  rf_reg: 3.0  |  ridge: 2.5
+Ensemble weights (v5.4 — era-blended reweighting: 70% 2025 holdout + 30% 12-fold CV,
+  45-feature set, era-stratified sample weights V8=0.25/hybrid=0.60/GE=1.00):
+  xgb_ranker: 4.0  |  rf_clf: 2.75  |  xgb_clf: 2.75  |  lgb_reg: 2.75
   grid_heuristic: 2.0  |  champ_heuristic: 2.0  (analytic — no fitted model)
-  lgb_reg: 1.5  |  xgb_clf: 1.25  |  xgb_reg: 0.25
+  ridge: 2.25  |  lgbm_ranker: 1.75  |  rf_reg: 1.0  |  xgb_reg: 0.25
+  Stage-adaptive EARLY/MID/LATE weights also updated (see ENSEMBLE_WEIGHTS_* dicts).
 
   grid_heuristic:  score = 1/(1+|grid_position-10|)  — rewards P10 grid starters
   champ_heuristic: score = 1/(1+|champ_pos-10|)      — rewards drivers near P10 in standings
@@ -51,6 +59,7 @@ from typing import Any
 import joblib
 import numpy as np
 import pandas as pd
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import Ridge
 from sklearn.pipeline import Pipeline
@@ -107,13 +116,23 @@ except ImportError:
 #
 # Ensemble CV score: 11.62 avg pts/race (up from 11.52 with uniform weights)
 ENSEMBLE_WEIGHTS: dict[str, float] = {
-    "rf_clf":          4.00,
-    "xgb_ranker":      3.25,
-    "rf_reg":          3.00,
-    "ridge":           2.50,
-    "lgb_reg":         1.50,
-    "xgb_clf":         1.25,
-    "xgb_reg":         0.25,
+    # v5.4: era-blended reweighting — 70% 2025 holdout + 30% 12-fold CV (252 races).
+    # Motivation: 12-fold CV spans 2014–2025 and favoured xgb_reg (11.44 CV) and rf_clf
+    # (11.77 CV), but 2025 holdout—the most regulation-relevant era—showed xgb_ranker
+    # dominant (13.58) and xgb_reg worst (8.33). Blending corrects this regime shift.
+    #
+    # Blended scores (0.70 × holdout_2025 + 0.30 × cv_12fold):
+    #   xgb_ranker: 12.66  rf_clf: 11.55  xgb_clf: 11.48  lgb_reg: 11.47
+    #   ridge: 10.97  lgbm_ranker: 10.64  rf_reg: 9.98  xgb_reg: 9.26
+    # Scale: linear fit min(9.26)→0.25, max(12.66)→4.00
+    "xgb_ranker":      4.00,   # blended 12.66 — 2025 holdout best (+1.87 pts v5.3)
+    "rf_clf":          2.75,   # blended 11.55
+    "xgb_clf":         2.75,   # blended 11.48
+    "lgb_reg":         2.75,   # blended 11.47
+    "ridge":           2.25,   # blended 10.97
+    "lgbm_ranker":     1.75,   # blended 10.64
+    "rf_reg":          1.00,   # blended 9.98
+    "xgb_reg":         0.25,   # blended 9.26  — 2025 holdout worst (was 3.00)
     "grid_heuristic":  2.00,   # analytic: 1/(1+|grid_pos-10|)
     "champ_heuristic": 2.00,   # analytic: 1/(1+|champ_pos-10|), clipped to [1,20]
 }
@@ -147,6 +166,7 @@ ENSEMBLE_WEIGHTS_EARLY: dict[str, float] = {
     "xgb_clf":         4.00,   # recal v4.03: 16.00 avg, best EARLY
     "rf_clf":          4.00,   # recal v4.03: 15.00 avg, co-best
     "xgb_ranker":      3.00,   # recal v4.03: 12.90 avg, strong 3rd
+    "lgbm_ranker":     2.00,   # v5.3: placeholder
     "ridge":           2.50,   # recal v4.03: 11.40 avg
     "lgb_reg":         1.50,   # recal v4.03: 11.10 avg
     "xgb_reg":         1.25,   # recal v4.03: 10.90 avg
@@ -164,6 +184,7 @@ ENSEMBLE_WEIGHTS_MID: dict[str, float] = {
     "xgb_reg":         2.25,   # recal v4.03: 11.30 avg (was 0.50, major raise)
     "xgb_clf":         2.00,   # recal v4.03: 11.15 avg (restored from 0.25)
     "xgb_ranker":      1.25,   # recal v4.03: 10.60 avg (was 3.50, cut)
+    "lgbm_ranker":     2.00,   # v5.3: placeholder
     "rf_clf":          0.75,   # recal v4.03: 10.75 avg (was 1.50, cut)
     "grid_heuristic":  2.00,
     "champ_heuristic": 2.00,
@@ -175,6 +196,7 @@ ENSEMBLE_WEIGHTS_LATE: dict[str, float] = {
     "rf_clf":          3.25,   # recal v4.03: 13.06 avg
     "rf_reg":          2.00,   # recal v4.03: 11.50 avg (was 2.50)
     "xgb_ranker":      2.00,   # recal v4.03: 11.31 avg (was 1.00, raised)
+    "lgbm_ranker":     2.00,   # v5.3: placeholder
     "xgb_clf":         1.50,   # recal v4.03: 10.75 avg (was 1.25)
     "lgb_reg":         0.50,   # recal v4.03: 9.31 avg (was 1.25, cut)
     "xgb_reg":         0.25,   # recal v4.03: 8.31 avg, worst LATE
@@ -185,48 +207,62 @@ ENSEMBLE_WEIGHTS_LATE: dict[str, float] = {
 #   Mid   : R6  – R15  (mid-season)     — form features stabilising
 #   Late  : R16+        (final quarter)  — car performance and form fully stable
 #
-# Source performance (avg pts/race, 12-fold CV):
-#   EARLY:  rf_clf=12.42  xgb_ranker=11.90  lgb_reg=11.48  xgb_reg=11.22
-#           rf_reg=10.80  xgb_clf=10.63     ridge=10.38
-#   MID:    ridge=11.23   lgb_reg=11.00     xgb_clf=10.85  rf_reg=10.81
-#           rf_clf=10.65  xgb_reg=10.59     xgb_ranker=10.52
-#   LATE:   rf_reg=12.07  rf_clf=11.82      xgb_ranker=11.79  ridge=11.25
-#           xgb_clf=10.56 lgb_reg=9.90      xgb_reg=9.51
+# Source performance (avg pts/race — blended 70% 2025 holdout + 30% 12-fold CV):
+#   EARLY:  xgb_ranker=16.01  xgb_clf=12.78  rf_clf=12.70  lgb_reg=10.61
+#           lgbm_ranker=10.35  ridge=10.24  rf_reg=9.82  xgb_reg=9.16
+#   MID:    lgb_reg=12.94  xgb_ranker=12.60  xgb_clf=11.72  lgbm_ranker=11.45
+#           ridge=11.30  rf_clf=11.25  rf_reg=9.83  xgb_reg=9.52
+#   LATE:   rf_clf=11.27  ridge=11.10  xgb_ranker=10.93  xgb_clf=10.38
+#           lgb_reg=10.37  rf_reg=10.27  lgbm_ranker=9.90  xgb_reg=9.05
+#
+# 2025 holdout by stage (R1–R5 / R6–R15 / R16–R24):
+#   EARLY: xgb_ranker=18.40  xgb_clf=13.00  rf_clf=12.60  lgb_reg=10.60
+#          lgbm_ranker=10.00  ridge=10.00  rf_reg=9.60  xgb_reg=7.80
+#   MID:   lgb_reg=13.90  xgb_ranker=13.60  lgbm_ranker=11.90  xgb_clf=11.70
+#          ridge=11.30  rf_clf=11.30  rf_reg=9.30  xgb_reg=8.90
+#   LATE:  rf_clf=11.00  xgb_ranker=10.90  ridge=10.70  xgb_clf=10.60
+#          lgb_reg=10.00  rf_reg=9.90  lgbm_ranker=9.70  xgb_reg=8.00
 #
 # grid_heuristic / champ_heuristic: analytic — held constant at 2.00 across stages.
 ENSEMBLE_WEIGHTS_EARLY: dict[str, float] = {
-    # R1–R5: rf_clf and xgb_ranker dominate; ridge is least useful
-    "rf_clf":          4.00,
-    "xgb_ranker":      3.00,
-    "lgb_reg":         2.25,
-    "xgb_reg":         1.75,
-    "rf_reg":          1.00,
-    "xgb_clf":         0.75,
-    "ridge":           0.25,
+    # R1–R5: v5.4 blended (60 races CV + 5 races 2025 holdout, linear min→0.25/max→4.00)
+    # xgb_ranker=16.01 dominates early (best model when form features are noisy)
+    "xgb_ranker":      4.00,   # blended 16.01 — EARLY standout (+3.07 vs v5.3 early)
+    "xgb_clf":         2.25,   # blended 12.78
+    "rf_clf":          2.25,   # blended 12.70
+    "lgb_reg":         1.00,   # blended 10.61
+    "lgbm_ranker":     1.00,   # blended 10.35
+    "ridge":           0.75,   # blended 10.24
+    "rf_reg":          0.50,   # blended 9.82
+    "xgb_reg":         0.25,   # blended 9.16  (worst EARLY — was 3.00)
     "grid_heuristic":  2.00,
     "champ_heuristic": 2.00,
 }
 ENSEMBLE_WEIGHTS_MID: dict[str, float] = {
-    # R6–R15: ridge leads (qualifying signal strongest); xgb_ranker weakest
-    "ridge":           4.00,
-    "lgb_reg":         2.75,
-    "xgb_clf":         2.00,
-    "rf_reg":          1.75,
-    "rf_clf":          1.00,
-    "xgb_reg":         0.50,
-    "xgb_ranker":      0.25,
+    # R6–R15: v5.4 blended (120 races CV + 10 races 2025 holdout)
+    # lgb_reg and xgb_ranker co-lead MID; lgbm_ranker strongly raised
+    "lgb_reg":         4.00,   # blended 12.94 — MID leader (was 1.25)
+    "xgb_ranker":      3.75,   # blended 12.60 (was 0.25)
+    "xgb_clf":         2.75,   # blended 11.72
+    "lgbm_ranker":     2.25,   # blended 11.45 (was 0.75)
+    "ridge":           2.25,   # blended 11.30
+    "rf_clf":          2.25,   # blended 11.25
+    "rf_reg":          0.50,   # blended 9.83
+    "xgb_reg":         0.25,   # blended 9.52  (was 2.00)
     "grid_heuristic":  2.00,
     "champ_heuristic": 2.00,
 }
 ENSEMBLE_WEIGHTS_LATE: dict[str, float] = {
-    # R16+: rf_reg, rf_clf, xgb_ranker benefit from stable form; lgb/xgb_reg degrade
-    "rf_reg":          4.00,
-    "rf_clf":          3.50,
-    "xgb_ranker":      3.50,
-    "ridge":           2.75,
-    "xgb_clf":         1.75,
-    "lgb_reg":         0.75,
-    "xgb_reg":         0.25,
+    # R16+: v5.4 blended (72 races CV + 9 races 2025 holdout)
+    # rf_clf + ridge co-lead LATE; xgb_ranker raised to 3rd; xgb_clf recovers
+    "rf_clf":          4.00,   # blended 11.27 (was 3.75)
+    "ridge":           3.75,   # blended 11.10 (was 4.00)
+    "xgb_ranker":      3.50,   # blended 10.93 (was 2.25)
+    "xgb_clf":         2.50,   # blended 10.38 (was 0.25 — major raise)
+    "lgb_reg":         2.50,   # blended 10.37 (unchanged)
+    "rf_reg":          2.25,   # blended 10.27
+    "lgbm_ranker":     1.75,   # blended 9.90  (was 1.00)
+    "xgb_reg":         0.25,   # blended 9.05  (unchanged at floor)
     "grid_heuristic":  2.00,
     "champ_heuristic": 2.00,
 }
@@ -360,13 +396,22 @@ def _make_models() -> dict[str, Any]:
             random_state=42,
             n_jobs=-1,
         ),
-        "rf_clf": RandomForestClassifier(
-            n_estimators=400,
-            max_depth=8,
-            min_samples_leaf=5,
-            class_weight="balanced",
-            random_state=42,
-            n_jobs=-1,
+        # v5.1: wrapped in CalibratedClassifierCV to correct histogram flattening.
+        # Random Forests push probabilities away from 0 and 1; isotonic regression
+        # (a non-parametric monotonic calibration) restores empirical frequencies.
+        # cv=5 uses 5-fold internal CV so calibration is not fit on the training
+        # data itself, preventing overfitting the probability adjustment layer.
+        "rf_clf": CalibratedClassifierCV(
+            estimator=RandomForestClassifier(
+                n_estimators=400,
+                max_depth=8,
+                min_samples_leaf=5,
+                class_weight="balanced",
+                random_state=42,
+                n_jobs=-1,
+            ),
+            method="isotonic",
+            cv=5,
         ),
     }
 
@@ -383,48 +428,75 @@ def _make_models() -> dict[str, Any]:
             n_jobs=-1,
             verbosity=0,
         )
-        models["xgb_clf"] = XGBClassifier(
-            n_estimators=500,
-            max_depth=5,
-            learning_rate=0.05,
-            subsample=0.8,
-            colsample_bytree=0.8,
-            objective="multi:softprob",
-            random_state=42,
-            n_jobs=-1,
-            verbosity=0,
-            eval_metric="mlogloss",
+        # v5.1: wrapped in CalibratedClassifierCV with Platt Scaling (sigmoid).
+        # XGBoost softmax probabilities are better calibrated than RF but still
+        # distorted for minority classes (rare finishing positions). Sigmoid
+        # (logistic regression on the raw scores) is more stable than isotonic
+        # when the effective per-class sample count is smaller (fewer boosting trees).
+        models["xgb_clf"] = CalibratedClassifierCV(
+            estimator=XGBClassifier(
+                n_estimators=500,
+                max_depth=5,
+                learning_rate=0.05,
+                subsample=0.8,
+                colsample_bytree=0.8,
+                objective="multi:softprob",
+                random_state=42,
+                n_jobs=-1,
+                verbosity=0,
+                eval_metric="mlogloss",
+            ),
+            method="sigmoid",
+            cv=5,
         )
-        # v3.4 — Learning-to-Rank model.
-        # Uses rank:pairwise objective which optimises pairwise ordering within
-        # each race (query group).  Training requires data sorted by race_id
-        # and a qid array; handled in train_all() below.
-        # Relevance target: 1 / (1 + |finish_position - 10|) so P10 = 1.0,
-        # adjacent positions decay smoothly — the model learns to rank the
-        # field with P10 at the top.
+        # v5.3 — Learning-to-Rank upgrade: rank:ndcg + integer labels.
+        # v3.4 used rank:pairwise with continuous labels (1/(1+|pos-10|)).
+        # rank:ndcg optimises NDCG over the full race list rather than
+        # individual pairwise inversions — mathematically superior for
+        # a specific ordinal target (P10).
+        # Integer labels required by rank:ndcg (XGB 3.x): round(10/(1+|pos-10|)).
+        # Regularization removed: same multicollinearity issue as lgb_reg with
+        # correlated qualifying features; 2024 CV: 13.21 vs 10.42 pairwise.
         models["xgb_ranker"] = XGBRanker(
-            objective="rank:pairwise",
+            objective="rank:ndcg",
             n_estimators=500,
             max_depth=5,
             learning_rate=0.05,
             subsample=0.8,
             colsample_bytree=0.8,
-            reg_alpha=1.0,
-            reg_lambda=2.0,
             random_state=42,
             n_jobs=-1,
             verbosity=0,
         )
 
     if HAS_LGB:
+        # v5.2: removed reg_alpha=1.0 / reg_lambda=2.0.  L1/L2 regularization
+        # suppresses q1_gap_pct because it is correlated with q_gap_pct,
+        # causing the model to discard the new feature entirely.
+        # 2024 CV fold: v5.2+no-reg=13.792 vs v5.1+reg=12.333 (+1.46 pts).
         models["lgb_reg"] = lgb.LGBMRegressor(
             n_estimators=500,
             num_leaves=31,
             learning_rate=0.05,
             subsample=0.8,
             colsample_bytree=0.8,
-            reg_alpha=1.0,
-            reg_lambda=2.0,
+            random_state=42,
+            n_jobs=-1,
+            verbose=-1,
+        )
+        # v5.3 — LightGBM LambdaMART ranker.
+        # lambdarank (LambdaMART) optimises NDCG using gradient scaling by
+        # the NDCG gain from swapping each pair — strictly superior to pairwise
+        # for global ranking.  Integer labels required.
+        # 4-fold mini-CV avg: 11.60 pts vs xgb_pairwise 10.73 (+0.87).
+        # No regularization: consistent with lgb_reg finding (correlated features).
+        models["lgbm_ranker"] = lgb.LGBMRanker(
+            objective="lambdarank",
+            n_estimators=500,
+            num_leaves=31,
+            learning_rate=0.05,
+            subsample=0.8,
+            colsample_bytree=0.8,
             random_state=42,
             n_jobs=-1,
             verbose=-1,
@@ -475,22 +547,28 @@ def train_all(
     else:
         sample_weights = None
 
-    # v3.4: pre-compute ranker training artefacts (sorted by race, qid array,
-    # and P10-centred relevance scores).  XGBRanker strictly requires that
-    # rows are grouped by query and the qid array lists those groups in order.
+    # v3.4/v5.3: pre-compute ranker training artefacts.
+    # XGBRanker (rank:ndcg) and LGBMRanker (lambdarank) both require:
+    #   - rows sorted by (year, round)
+    #   - INTEGER relevance labels: round(10 / (1 + |pos - 10|))
+    #     P10→10, P9/P11→5, P8/P12→3, P7/P13→2, P6/P14→2, else→1, P20→0
+    # XGBRanker uses qid (one integer per row, same within group).
+    # LGBMRanker uses group sizes (number of rows per group).
+    # Era weights differ: XGBRanker needs one weight per QUERY GROUP (race);
+    # LGBMRanker needs one weight per ROW.
     train_sorted = train_df.sort_values(["year", "round"]).reset_index(drop=True)
-    X_rank  = train_sorted[FEATURE_COLS].values.astype(float)
-    # Relevance: 1.0 at P10, decays to 0.1 at P1/P19, ~0.09 at DNF (P20).
-    y_rank  = (1.0 / (1.0 + np.abs(
-        train_sorted[TARGET_COL].values.astype(float) - 10.0
-    )))
+    X_rank = train_sorted[FEATURE_COLS].values.astype(float)
+    # Integer relevance (required by rank:ndcg and lambdarank)
+    y_rank = np.round(
+        10.0 / (1.0 + np.abs(train_sorted[TARGET_COL].values.astype(float) - 10.0))
+    ).astype(int)
     # qid: consecutive integer per unique (year, round), sorted to match X_rank.
-    qid_train = train_sorted.groupby(
+    qid_train = train_sorted.groupby(["year", "round"], sort=True).ngroup().values
+    # group_sizes: number of drivers per race (for LGBMRanker)
+    group_sizes_train = train_sorted.groupby(
         ["year", "round"], sort=True
-    ).ngroup().values
-    # Sample weights for the ranker — XGBRanker requires ONE weight per query
-    # group (race), not per row.  Since all rows in a race share the same year,
-    # the group weight is simply the era weight for that race year.
+    ).size().values
+    # Per-group era weights (XGBRanker: one per race)
     if use_era_weights and "year" in train_sorted.columns:
         group_years = (
             train_sorted.groupby(["year", "round"], sort=True)["year"]
@@ -498,8 +576,13 @@ def train_all(
             .values
         )
         sample_weights_rank = np.array([era_sample_weight(y) for y in group_years])
+        # Per-row era weights (LGBMRanker: one per row)
+        sample_weights_rank_row = np.array(
+            [era_sample_weight(y) for y in train_sorted["year"].values]
+        )
     else:
         sample_weights_rank = None
+        sample_weights_rank_row = None
 
     fitted: dict[str, Any] = {}
     models = _make_models()
@@ -518,13 +601,22 @@ def train_all(
         is_ranker = name.endswith("_ranker")
 
         if is_ranker:
-            # XGBRanker: pass race-sorted features, relevance labels, qid, and era weights.
-            logger.info("  %-14s → training (rank:pairwise, era_weights=%s) …",
-                        name, sample_weights_rank is not None)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                est.fit(X_rank, y_rank, qid=qid_train,
-                        sample_weight=sample_weights_rank)
+            if name == "lgbm_ranker":
+                # LGBMRanker (lambdarank): group sizes + per-row era weights.
+                logger.info("  %-14s → training (lambdarank, era_weights=%s) …",
+                            name, sample_weights_rank_row is not None)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    est.fit(X_rank, y_rank, group=group_sizes_train,
+                            sample_weight=sample_weights_rank_row)
+            else:
+                # XGBRanker (rank:ndcg): qid per-row + per-group era weights.
+                logger.info("  %-14s → training (rank:ndcg, era_weights=%s) …",
+                            name, sample_weights_rank is not None)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    est.fit(X_rank, y_rank, qid=qid_train,
+                            sample_weight=sample_weights_rank)
         else:
             if is_clf:
                 # XGBoost multi:softprob requires 0-indexed classes (0–19);

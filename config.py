@@ -182,6 +182,8 @@ FEATURE_COLS = [
     "circ_sc_vsc_combined",      # v3.97: circ_sc_rate + circ_vsc_rate total disruption index +0.21 avg
     "circ_avg_pit_stops",        # v3.98: avg pit stop count per race at this circuit (last 5 yrs, Kaggle) +0.19 avg
     "circ_collision_rate",       # v4.03: collision/accident DNF rate per driver-start at circuit (Kaggle) +0.26 avg
+    # --- qualifying session depth (v5.2) ---
+    "q1_gap_pct",                # v5.2: driver's Q1 time gap to pole (%). Universally available; +0.448 avg on 2024 CV.
 ]
 
 TARGET_COL = "finish_position"
