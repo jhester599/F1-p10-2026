@@ -103,6 +103,9 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                 qual_map[did] = {
                     "grid_position": _safe_float(qr.get("position"), np.nan),
                     "best_q_time":   best,
+                    "q1_time":       q1,
+                    "q2_time":       q2,
+                    "q3_time":       q3,
                 }
 
             # --- FP2 position (fallback: FP1, then qualifying position) ---
@@ -122,6 +125,15 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
             # Pole time = fastest Q3 time among all drivers
             q3_times  = [v["best_q_time"] for v in qual_map.values() if v["best_q_time"] is not None]
             pole_time = min(q3_times) if q3_times else None
+
+            # Q2-to-Q3 cutoff: slowest Q2 time among drivers who made Q3.
+            # A driver needed a Q2 time faster (lower) than this value to advance.
+            # Any Q2-eliminated driver has q2_time > q3_cutoff_time.
+            q3_qualifiers_q2 = [
+                v["q2_time"] for v in qual_map.values()
+                if v["q3_time"] is not None and v["q2_time"] is not None
+            ]
+            q3_cutoff_time = max(q3_qualifiers_q2) if q3_qualifiers_q2 else None
 
             # --- race results ---
             for rr in fetcher.results(year, rnd):
@@ -157,6 +169,7 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     "driver_id":       did,
                     "constructor_id":  cid,
                     "grid_position":   grid,
+                    "actual_grid":     _safe_float(rr.get("grid"), np.nan),
                     "finish_position": min(int(pos), DNF_POSITION),
                     "points":          pts,
                     "is_dnf":          is_dnf,
@@ -164,6 +177,10 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     "pole_time":       pole_time,
                     "q_gap_pct":       q_gap_pct,
                     "fp2_position":    fp2_pos,
+                    "q1_time":         q_info.get("q1_time"),
+                    "q2_time":         q_info.get("q2_time"),
+                    "q3_time":         q_info.get("q3_time"),
+                    "q3_cutoff_time":  q3_cutoff_time,
                 })
 
     df = pd.DataFrame(rows)
@@ -514,6 +531,13 @@ def build_feature_matrix(
                 "team_finish_std_season": team_finish_std_season,
                 "circ_recent_fin":       circ_recent_fin,
                 "drv_in_points_last5":   drv_in_points_last5,
+                # v5.2: pass-through qualifying session raw times for candidate features
+                "actual_grid":      row.get("actual_grid", np.nan),
+                "q1_time":          row.get("q1_time"),
+                "q2_time":          row.get("q2_time"),
+                "q3_time":          row.get("q3_time"),
+                "q3_cutoff_time":   row.get("q3_cutoff_time"),
+                "pole_time":        row.get("pole_time"),
             })
 
             # update history AFTER extracting features (no leakage)
@@ -633,6 +657,94 @@ def build_feature_matrix(
         if col in feat_df.columns:
             med = feat_df[col].median()
             feat_df[col] = feat_df[col].fillna(med)
+
+    # ── v5.2: Qualifying session candidate features ────────────────────────────
+    # These are NOT in FEATURE_COLS yet — tested individually in
+    # scripts/11_test_v52_qualifying.py.  Accepted features will be added to
+    # FEATURE_COLS and the version incremented.
+    #
+    # All features use only data available after qualifying, before race start.
+    # NaN → median fill applied after computation (no leakage risk: all values
+    # come from the same race's qualifying session, not future races).
+
+    # A. grid_penalty_delta: actual race grid minus qualifying position.
+    #    Positive = driver starts worse than they qualified (engine/gearbox penalty).
+    #    Zero = no penalty.  Negative = promoted by others' penalties.
+    if "actual_grid" in feat_df.columns:
+        feat_df["grid_penalty_delta"] = (
+            feat_df["actual_grid"].fillna(feat_df["grid_position"])
+            - feat_df["grid_position"]
+        ).clip(-10, 20)
+
+    # B. qual_session_reached: ordinal 1/2/3 indicating Q1/Q2/Q3 elimination.
+    #    3 = reached Q3 (top-10 pace), 2 = Q2 only, 1 = Q1 eliminated.
+    if "q3_time" in feat_df.columns:
+        feat_df["qual_session_reached"] = np.where(
+            feat_df["q3_time"].notna(), 3,
+            np.where(feat_df["q2_time"].notna(), 2, 1)
+        ).astype(float)
+
+    # C. q2_gap_pct: gap of driver's Q2 time to overall pole time (%).
+    #    Most relevant session for P8-P15 starters.  NaN for Q1-eliminated.
+    if "q2_time" in feat_df.columns and "pole_time" in feat_df.columns:
+        mask_q2 = feat_df["q2_time"].notna() & feat_df["pole_time"].notna() & (feat_df["pole_time"] > 0)
+        feat_df["q2_gap_pct"] = np.nan
+        feat_df.loc[mask_q2, "q2_gap_pct"] = (
+            (feat_df.loc[mask_q2, "q2_time"] - feat_df.loc[mask_q2, "pole_time"])
+            / feat_df.loc[mask_q2, "pole_time"] * 100.0
+        )
+        # Fallback for Q1-eliminated and missing: use existing q_gap_pct
+        feat_df["q2_gap_pct"] = feat_df["q2_gap_pct"].fillna(feat_df["q_gap_pct"])
+
+    # D. q1_gap_pct: gap of driver's Q1 time to overall pole time (%).
+    #    Available for all drivers; most informative for Q1-eliminated.
+    if "q1_time" in feat_df.columns and "pole_time" in feat_df.columns:
+        mask_q1 = feat_df["q1_time"].notna() & feat_df["pole_time"].notna() & (feat_df["pole_time"] > 0)
+        feat_df["q1_gap_pct"] = np.nan
+        feat_df.loc[mask_q1, "q1_gap_pct"] = (
+            (feat_df.loc[mask_q1, "q1_time"] - feat_df.loc[mask_q1, "pole_time"])
+            / feat_df.loc[mask_q1, "pole_time"] * 100.0
+        )
+        feat_df["q1_gap_pct"] = feat_df["q1_gap_pct"].fillna(feat_df["q_gap_pct"])
+
+    # E. q2_to_q1_delta: improvement from Q1 to Q2 relative to pole (% points).
+    #    Positive = driver went faster relative to pole in Q2.  Null for Q1-elim.
+    if "q2_gap_pct" in feat_df.columns and "q1_gap_pct" in feat_df.columns:
+        mask_q2reached = feat_df["q2_time"].notna()
+        feat_df["q2_to_q1_delta"] = np.nan
+        feat_df.loc[mask_q2reached, "q2_to_q1_delta"] = (
+            feat_df.loc[mask_q2reached, "q1_gap_pct"]
+            - feat_df.loc[mask_q2reached, "q2_gap_pct"]
+        )
+        feat_df["q2_to_q1_delta"] = feat_df["q2_to_q1_delta"].fillna(0.0)
+
+    # F. q3_to_q2_delta: improvement from Q2 to Q3 relative to pole (% points).
+    #    Positive = driver extracted more pace in Q3.  Only defined for Q3 drivers.
+    if "q2_gap_pct" in feat_df.columns and "q_gap_pct" in feat_df.columns:
+        # q_gap_pct uses best qualifying time (= Q3 time for Q3 drivers)
+        mask_q3reached = feat_df["q3_time"].notna()
+        feat_df["q3_to_q2_delta"] = np.nan
+        feat_df.loc[mask_q3reached, "q3_to_q2_delta"] = (
+            feat_df.loc[mask_q3reached, "q2_gap_pct"]
+            - feat_df.loc[mask_q3reached, "q_gap_pct"]
+        )
+        feat_df["q3_to_q2_delta"] = feat_df["q3_to_q2_delta"].fillna(0.0)
+
+    # G. q2_elimination_margin: how far Q2-eliminated driver was from making Q3 (%).
+    #    Small positive = narrowly missed Q3; large positive = clearly Q2 pace.
+    #    Defined only for Q2-eliminated drivers; 0 for Q3 drivers and Q1-elim.
+    if "q2_time" in feat_df.columns and "q3_cutoff_time" in feat_df.columns:
+        mask_q2elim = (
+            feat_df["q2_time"].notna()
+            & feat_df["q3_time"].isna()
+            & feat_df["q3_cutoff_time"].notna()
+            & (feat_df["q3_cutoff_time"] > 0)
+        )
+        feat_df["q2_elimination_margin"] = 0.0
+        feat_df.loc[mask_q2elim, "q2_elimination_margin"] = (
+            (feat_df.loc[mask_q2elim, "q2_time"] - feat_df.loc[mask_q2elim, "q3_cutoff_time"])
+            / feat_df.loc[mask_q2elim, "q3_cutoff_time"] * 100.0
+        ).clip(0, None)  # margin must be ≥ 0 (Q2-elim driver was slower than cutoff)
 
     logger.info("Feature matrix: %d rows × %d cols", len(feat_df), len(feat_df.columns))
     return feat_df

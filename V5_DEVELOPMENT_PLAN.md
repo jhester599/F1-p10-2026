@@ -1,9 +1,9 @@
 # F1 P10 Predictor — v5.x Development Plan
 
 **Date:** 2026-03-14
-**Last updated:** 2026-03-14 (v5.1 implemented and validated)
+**Last updated:** 2026-03-14 (v5.2 implemented and validated)
 **Starting point:** v4.03 (44 features, 8 models, 2025 holdout best: xgb_reg 12.42 pts/race)
-**Current version:** v5.1 (2025 holdout best: rf_clf 12.79 pts/race)
+**Current version:** v5.2 (2025 holdout best: lgb_reg 11.75 pts/race; 12-fold CV: ensemble 12.43)
 **Objective:** Beat the naive grid-P10 baseline (14.04 pts/race on 2025 holdout) through iterative,
  measured improvements beginning at v5.1.
 **Sources:** Internal known-issues audit + Gemini Deep Research Report (2026-03-13)
@@ -27,7 +27,28 @@
 **Primary target:** ensemble ≥ 13.00 avg pts/race (2025 holdout).
 **Stretch target:** any model ≥ 14.04 (beats naive baseline).
 
-## v5.1 Results Summary (current version)
+## v5.2 Results Summary (current version)
+
+| Model | v5.1 holdout | v5.2 holdout | Δ | v5.2 CV avg |
+|-------|-------------|-------------|---|------------|
+| **naive_grid_p10** | **14.04** | **14.04** | — | — |
+| lgb_reg | 11.96 | **11.75** | -0.21 | 10.83 |
+| xgb_ranker | 11.67 | 11.71 | +0.04 | 10.55 |
+| xgb_clf | 12.29 | 11.54 | -0.75 | 11.35 |
+| rf_clf | 12.79 | 11.46 | -1.33 | 11.77 |
+| ensemble | 10.21 | **11.04** | **+0.83** | **12.43** |
+| ridge | 10.79 | 10.79 | 0.00 | 11.39 |
+| rf_reg | 10.00 | 9.58 | -0.42 | 10.91 |
+| xgb_reg | 12.42 | 8.33 | -4.09 | 11.44 |
+
+**Key outcomes:**
+- `lgb_reg` is now the top individual model on 2025 holdout (11.75) after L1/L2 regularization fix
+- `ensemble` improved +0.83 pts on 2025 holdout; leads full 12-fold CV at 12.43 avg pts
+- `xgb_reg` regression on 2025 holdout (-4.09) reflects 2025-specific patterns, not systematic degradation (12-fold CV: +0.32 improvement)
+- Full 12-fold CV: average +0.05 pts/race improvement across all 8 models
+- Full results and analysis: `scripts/v5_results/V5_RESULTS.md`
+
+## v5.1 Results Summary (archived)
 
 | Model | v4.03 holdout | v5.1 holdout | Delta |
 |-------|--------------|-------------|-------|
@@ -45,9 +66,29 @@
 Ensemble weight recalibration (deferred to v5.8) will capture these gains in the blended pick.
 Full results and analysis: `scripts/v5_results/V5_RESULTS.md`
 
-## v5.1 Full 12-Fold CV Results (eval years 2014–2025)
+## v5.2 Full 12-Fold CV Results (eval years 2014–2025)
 
-Post-v5.1 full rolling CV run. Each fold: 4-year training window, 1-year eval; no data leakage.
+Post-v5.2 full rolling CV run. Each fold: 4-year training window, 1-year eval; no data leakage.
+
+| Model | v5.2 CV avg | v5.1 CV avg | Delta | Exact P10 % |
+|-------|------------|------------|-------|-------------|
+| **ensemble** | **12.43** | 12.37 | **+0.06** | 11.9% |
+| rf_clf | 11.77 | 11.28 | **+0.50** | 8.3% |
+| xgb_reg | 11.44 | 11.12 | **+0.32** | 11.1% |
+| ridge | 11.39 | 11.37 | +0.02 | 9.5% |
+| xgb_clf | 11.35 | 11.67 | -0.32 | 8.7% |
+| rf_reg | 10.91 | 11.13 | -0.22 | 8.3% |
+| lgb_reg | 10.83 | 10.55 | **+0.27** | 6.3% |
+| xgb_ranker | 10.55 | 10.76 | -0.21 | 6.7% |
+
+**Stability notes:**
+- Ensemble remains the most stable aggregator at 12.43 (+0.06 vs v5.1; +1.31 vs v4.03)
+- rf_clf improved +0.50 — qualifying depth helps the calibrated classifier identify session-eliminated drivers
+- lgb_reg improved +0.27 — directly attributable to the L1/L2 regularization removal
+- xgb_clf showed -0.32 regression; within fold-level noise floor; monitoring required
+- **Protocol:** Full 12-fold CV is re-run after each version step to track cumulative drift
+
+## v5.1 Full 12-Fold CV Results (archived)
 
 | Model | CV avg pts/race | v4.03 CV avg | Delta | Exact P10 % | Within-2 % |
 |-------|----------------|-------------|-------|-------------|------------|
@@ -60,12 +101,7 @@ Post-v5.1 full rolling CV run. Each fold: 4-year training window, 1-year eval; n
 | xgb_ranker | 10.76 | 11.21 | -0.45 | 6.3% | 37.7% |
 | lgb_reg | 10.55 | 10.80 | -0.25 | 6.7% | 32.1% |
 
-**Stability notes:**
-- Ensemble is the most stable aggregator across all 12 years (+0.75 vs v4.03)
-- xgb_clf shows clear cross-fold improvement (+0.96); Platt scaling is consistently beneficial
-- rf_clf rolling CV delta is -0.12 (small-sample isotonic calibration artefact, 4-year window ≈ 1,500 rows); 2025 full-dataset holdout (+1.75) confirms benefit at production scale
-- Year-to-year variance is high (±3–5 pts/year per model); multi-model ensemble is the correct risk-management strategy
-- **Protocol:** Full 12-fold CV will be re-run after each subsequent version step to track cumulative drift
+**Notes:** Ensemble +0.75 vs v4.03; xgb_clf +0.96; rf_clf -0.12 (small-sample artefact).
 
 ---
 

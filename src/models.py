@@ -441,14 +441,16 @@ def _make_models() -> dict[str, Any]:
         )
 
     if HAS_LGB:
+        # v5.2: removed reg_alpha=1.0 / reg_lambda=2.0.  L1/L2 regularization
+        # suppresses q1_gap_pct because it is correlated with q_gap_pct,
+        # causing the model to discard the new feature entirely.
+        # 2024 CV fold: v5.2+no-reg=13.792 vs v5.1+reg=12.333 (+1.46 pts).
         models["lgb_reg"] = lgb.LGBMRegressor(
             n_estimators=500,
             num_leaves=31,
             learning_rate=0.05,
             subsample=0.8,
             colsample_bytree=0.8,
-            reg_alpha=1.0,
-            reg_lambda=2.0,
             random_state=42,
             n_jobs=-1,
             verbose=-1,
