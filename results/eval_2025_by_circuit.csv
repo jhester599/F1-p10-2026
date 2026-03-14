@@ -1,5 +1,5 @@
 circuit_id,model,avg_pts,n
-albert_park,ensemble,4.0,1
+albert_park,ensemble,18.0,1
 albert_park,lgb_reg,2.0,1
 albert_park,lgbm_ranker,6.0,1
 albert_park,rf_clf,0.0,1
@@ -26,7 +26,7 @@ bahrain,ridge,1.0,1
 bahrain,xgb_clf,10.0,1
 bahrain,xgb_ranker,18.0,1
 bahrain,xgb_reg,12.0,1
-baku,ensemble,8.0,1
+baku,ensemble,10.0,1
 baku,lgb_reg,8.0,1
 baku,lgbm_ranker,18.0,1
 baku,rf_clf,18.0,1
@@ -44,7 +44,7 @@ catalunya,ridge,12.0,1
 catalunya,xgb_clf,1.0,1
 catalunya,xgb_ranker,18.0,1
 catalunya,xgb_reg,4.0,1
-hungaroring,ensemble,10.0,1
+hungaroring,ensemble,18.0,1
 hungaroring,lgb_reg,25.0,1
 hungaroring,lgbm_ranker,4.0,1
 hungaroring,rf_clf,0.0,1
@@ -71,7 +71,7 @@ interlagos,ridge,2.0,1
 interlagos,xgb_clf,18.0,1
 interlagos,xgb_ranker,15.0,1
 interlagos,xgb_reg,2.0,1
-jeddah,ensemble,1.0,1
+jeddah,ensemble,0.0,1
 jeddah,lgb_reg,15.0,1
 jeddah,lgbm_ranker,12.0,1
 jeddah,rf_clf,18.0,1
@@ -206,7 +206,7 @@ yas_marina,ridge,10.0,1
 yas_marina,xgb_clf,10.0,1
 yas_marina,xgb_ranker,2.0,1
 yas_marina,xgb_reg,15.0,1
-zandvoort,ensemble,15.0,1
+zandvoort,ensemble,12.0,1
 zandvoort,lgb_reg,12.0,1
 zandvoort,lgbm_ranker,6.0,1
 zandvoort,rf_clf,15.0,1

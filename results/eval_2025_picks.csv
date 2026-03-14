@@ -1,5 +1,5 @@
 year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pts,exact
-2025,1,Australian Grand Prix,albert_park,ensemble,alonso,hamilton,17,4,0
+2025,1,Australian Grand Prix,albert_park,ensemble,gasly,hamilton,11,18,0
 2025,1,Australian Grand Prix,albert_park,ridge,tsunoda,hamilton,12,15,0
 2025,1,Australian Grand Prix,albert_park,lgb_reg,sainz,hamilton,18,2,0
 2025,1,Australian Grand Prix,albert_park,rf_clf,hadjar,hamilton,20,0,0
@@ -35,7 +35,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,4,Bahrain Grand Prix,bahrain,xgb_ranker,tsunoda,bearman,9,18,0
 2025,4,Bahrain Grand Prix,bahrain,lgbm_ranker,hadjar,bearman,13,12,0
 2025,4,Bahrain Grand Prix,bahrain,xgb_clf,doohan,bearman,14,10,0
-2025,5,Saudi Arabian Grand Prix,jeddah,ensemble,tsunoda,hadjar,19,1,0
+2025,5,Saudi Arabian Grand Prix,jeddah,ensemble,gasly,hadjar,20,0,0
 2025,5,Saudi Arabian Grand Prix,jeddah,ridge,tsunoda,hadjar,19,1,0
 2025,5,Saudi Arabian Grand Prix,jeddah,lgb_reg,sainz,hadjar,8,15,0
 2025,5,Saudi Arabian Grand Prix,jeddah,rf_clf,albon,hadjar,9,18,0
@@ -116,7 +116,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,13,Belgian Grand Prix,spa,xgb_ranker,gasly,gasly,10,25,1
 2025,13,Belgian Grand Prix,spa,lgbm_ranker,bearman,gasly,11,18,0
 2025,13,Belgian Grand Prix,spa,xgb_clf,ocon,gasly,15,8,0
-2025,14,Hungarian Grand Prix,hungaroring,ensemble,bortoleto,antonelli,6,10,0
+2025,14,Hungarian Grand Prix,hungaroring,ensemble,hadjar,antonelli,11,18,0
 2025,14,Hungarian Grand Prix,hungaroring,ridge,stroll,antonelli,7,12,0
 2025,14,Hungarian Grand Prix,hungaroring,lgb_reg,antonelli,antonelli,10,25,1
 2025,14,Hungarian Grand Prix,hungaroring,rf_clf,bearman,antonelli,20,0,0
@@ -125,7 +125,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,14,Hungarian Grand Prix,hungaroring,xgb_ranker,tsunoda,antonelli,17,4,0
 2025,14,Hungarian Grand Prix,hungaroring,lgbm_ranker,tsunoda,antonelli,17,4,0
 2025,14,Hungarian Grand Prix,hungaroring,xgb_clf,lawson,antonelli,8,15,0
-2025,15,Dutch Grand Prix,zandvoort,ensemble,lawson,ocon,12,15,0
+2025,15,Dutch Grand Prix,zandvoort,ensemble,sainz,ocon,13,12,0
 2025,15,Dutch Grand Prix,zandvoort,ridge,lawson,ocon,12,15,0
 2025,15,Dutch Grand Prix,zandvoort,lgb_reg,sainz,ocon,13,12,0
 2025,15,Dutch Grand Prix,zandvoort,rf_clf,alonso,ocon,8,15,0
@@ -143,7 +143,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,16,Italian Grand Prix,monza,xgb_ranker,albon,hadjar,7,12,0
 2025,16,Italian Grand Prix,monza,lgbm_ranker,bortoleto,hadjar,8,15,0
 2025,16,Italian Grand Prix,monza,xgb_clf,alonso,hadjar,19,1,0
-2025,17,Azerbaijan Grand Prix,baku,ensemble,lawson,hadjar,5,8,0
+2025,17,Azerbaijan Grand Prix,baku,ensemble,tsunoda,hadjar,6,10,0
 2025,17,Azerbaijan Grand Prix,baku,ridge,tsunoda,hadjar,6,10,0
 2025,17,Azerbaijan Grand Prix,baku,lgb_reg,lawson,hadjar,5,8,0
 2025,17,Azerbaijan Grand Prix,baku,rf_clf,bortoleto,hadjar,11,18,0
