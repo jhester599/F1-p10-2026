@@ -1,6 +1,7 @@
 # F1 P10 Predictor — v5.x Development Plan
 
 **Date:** 2026-03-14
+**Last updated:** 2026-03-14 (pended v5.7, v5.9; expanded v5.2 with full qualifying session analysis)
 **Starting point:** v4.03 (44 features, 8 models, 2025 holdout best: xgb_reg 12.42 pts/race)
 **Objective:** Beat the naive grid-P10 baseline (14.04 pts/race on 2025 holdout) through iterative,
  measured improvements beginning at v5.1.
@@ -29,18 +30,68 @@
 
 ## Known Issues Entering v5.x
 
-| # | Issue | Severity | Introduced |
-|---|-------|----------|------------|
-| 1 | `rf_reg` career-form overweighting — elite drivers starting last (e.g. Verstappen P20) predicted near P10 | High | v1.x |
-| 2 | Race 1 cold-start — form features all zero at R1; ~2–3 pt gap vs. rest of season | High | v1.x |
-| 3 | 44-feature CV gap — only 2023/2024 single-fold results; full 12-fold CV not rerun since 38-feature set | Medium | v3.80 |
-| 4 | Baseline unbeaten — naive `grid_p10` (14.04) beats all ML models on 2025 holdout | High | persistent |
-| 5 | Probability miscalibration — `rf_clf` and `xgb_clf` produce flat, distorted probability distributions; EV calculations are unreliable | High | v1.x |
-| 6 | `xgb_ranker` using `rank:pairwise`; listwise (LambdaMART / `rank:ndcg`) not yet tested | Medium | v3.4 |
-| 7 | Qualifying position vs. grid position conflated — grid penalties (e.g. engine change +10) assign misleading pace signal | High | v1.x |
-| 8 | FP2 position used as raw rank rather than race-pace proxy; does not capture tire degradation | Medium | v3.1 |
-| 9 | No team-level pit stop execution feature — undercut probability is unmodeled | Low–Medium | — |
-| 10 | 2026 regulations (no DRS, Active Aero / MOM, 50/50 ICE-electric) will break historical overtaking and grid-stickiness assumptions | Critical (ongoing) | 2026 |
+| # | Issue | Severity | Status |
+|---|-------|----------|--------|
+| 1 | `rf_reg` career-form overweighting — elite drivers starting last (e.g. Verstappen P20) predicted near P10 | High | Addressed in v5.2 |
+| 2 | Race 1 cold-start — form features all zero at R1; ~2–3 pt gap vs. rest of season | High | **Pended → v5.9 (mid-season update)** |
+| 3 | 44-feature CV gap — only 2023/2024 single-fold results; full 12-fold CV not rerun since 38-feature set | Medium | Addressed in v5.8 |
+| 4 | Baseline unbeaten — naive `grid_p10` (14.04) beats all ML models on 2025 holdout | High | Persistent — target of full v5.x roadmap |
+| 5 | Probability miscalibration — `rf_clf` and `xgb_clf` produce flat, distorted probability distributions; EV calculations are unreliable | High | Addressed in v5.1 |
+| 6 | `xgb_ranker` using `rank:pairwise`; listwise (LambdaMART / `rank:ndcg`) not yet tested | Medium | Addressed in v5.3 |
+| 7 | Qualifying position vs. grid position conflated — grid penalties (e.g. engine change +10) assign misleading pace signal | High | Addressed in v5.2 |
+| 8 | FP2 position used as raw rank rather than race-pace proxy; does not capture tire degradation | Medium | Addressed in v5.4 |
+| 9 | No team-level pit stop execution feature — undercut probability is unmodeled | Low–Medium | Addressed in v5.5 |
+| 10 | 2026 regulations (no DRS, Active Aero / MOM, 50/50 ICE-electric) will break historical overtaking and grid-stickiness assumptions | Critical (ongoing) | **Pended → v5.7 (mid-season update)** |
+| 11 | Qualifying analysis limited to final grid result — Q1/Q2/Q3 session splits, session deltas, and elimination margin not yet modeled | Medium | Addressed in v5.2 |
+
+---
+
+## Pended Work (Mid-Season Updates)
+
+The following versions require real-world 2026 race data to calibrate properly and are
+**intentionally deferred** until mid-season (after R7–R8, approximately June 2026).
+
+### v5.7 — 2026 Regulatory Era: Circuit Feature Recalibration *(PENDED)*
+
+**Target activation:** After R7 (minimum 5 races of 2026 data collected)
+**Addresses:** Known issue #10
+**Reason for deferral:** The 2026 regulations (no DRS, Active Aero X/Z-Mode, MOM energy
+override, 50/50 ICE-electric split, smaller chassis) have never been raced. There is no
+empirical data to calibrate the proposed `circ_energy_demand`, `circ_mom_effectiveness`,
+or new `overtaking_difficulty` corrections. Applying guesses early risks degrading
+prediction quality vs. retaining the 2014–2025 calibrated values.
+
+**When to activate:**
+- ≥5 completed 2026 races in the data cache
+- At least 2 circuits have been raced more than once (gives ρ(qual,finish) sample)
+- Observed DNF rates for new PU constructors are measurable (≥10 driver-race starts)
+
+**Planned changes (unchanged from original spec):**
+- Add `circ_energy_demand` and `circ_mom_effectiveness` to `FEATURE_COLS`
+- Add `new_pu_manufacturer_flag` for Audi/RBPT early-season infant mortality
+- Add `ERA_WEIGHTS["2026"] = 2.00` in `config.py`
+- Recalibrate `OVERTAKING_DIFFICULTY` using blended 2026 Spearman ρ correction factor
+
+---
+
+### v5.9 — Race 1 Cold-Start Fix *(PENDED)*
+
+**Target activation:** Pre-season 2027 (off-season maintenance window)
+**Addresses:** Known issue #2
+**Reason for deferral:** The cross-year carry-over fix and pre-season test data
+integration require structural changes to the feature engineering pipeline that
+are safest to implement, test, and validate during the off-season — not mid-season
+while live predictions are being made.
+
+**When to activate:**
+- Off-season (November 2026 – January 2027)
+- Bahrain pre-season test data available in FastF1 for the upcoming season
+- Full re-run of historical R1 rows with carry-over imputation completed and validated
+
+**Planned changes (unchanged from original spec):**
+- Cross-year form carry-over: use prior season's last 3 races as R1 form features
+- Pre-season test data imputation via FastF1 testing sessions
+- Season-opener sub-stage in `ENSEMBLE_STAGE_BOUNDARIES` (R1 vs. R2–R5)
 
 ---
 
@@ -101,46 +152,181 @@ Use `method='isotonic'` for rf_clf (larger effective dataset) and `method='sigmo
 
 ---
 
-## v5.2 — Grid Penalty Delta Feature
+## v5.2 — Qualifying Session Analysis & Grid Penalty Delta
 
-**Addresses:** Known issues #1 (career-form overweighting), #7 (qual vs. grid conflation)
-**Gemini rank:** part of #3 feature engineering section
-**Effort:** ~2 hours
+**Addresses:** Known issues #1, #7, #11 (qual vs. grid conflation; Q1/Q2/Q3 unexploited)
+**Gemini rank:** part of feature engineering section
+**Effort:** ~1 day (feature engineering + per-variable evaluation)
 
-### Problem
+### Problem A: Grid Position Conflates Pace and Penalty
+
 `grid_position` conflates two signals:
 - **Raw car pace** (should predict finishing order)
 - **Grid penalty applied** (a driver who qualifies P3 but starts P13 due to engine
-  change has P3 car pace, not P13 pace — yet the model treats them as a P13 car)
+  change has P3 car pace — yet the model treats them as a P13 car)
 
-When elite drivers take engine penalties and start P20, `rf_reg` (which uses
-`career_avg_fin` heavily) correctly identifies their pace but maps them to ~P10 because
-career average ≈ P6 and the model lacks a "they will easily pass through P10 without
-stopping" signal.
+When elite drivers take engine penalties and start P20, `rf_reg` correctly identifies
+their pace (via `career_avg_fin`) but maps them to ~P10 because career average ≈ P6
+and the model lacks a signal that "they will pass through P10 at speed without stopping."
 
-### Change
-In `src/feature_engineering.py`, add a new feature:
+### Problem B: Qualifying Depth Entirely Unused
 
+The current model uses only `grid_position` (post-penalty) and `q_gap_pct` (gap to pole
+in Q3, or best qualifying session). The full qualifying session structure contains
+substantially richer signal:
+
+- **Q1 result:** which drivers were eliminated early — a strong negative indicator of race pace
+- **Q2 result:** midfield separation — most relevant session for P8–P12 grid starters
+- **Q3 result:** top-10 pace hierarchy — most informative for front-runners
+- **Q1→Q2 improvement delta:** drivers who improve significantly through the sessions may
+  have better race pace than their final grid position implies (fuel strategy, tyre choice)
+- **Q2→Q3 improvement delta:** whether a driver made the most of their pace ceiling in Q3
+- **Q2 elimination margin:** how close to the Q3 cut a driver was — a driver who misses
+  Q3 by 0.05s has fundamentally different race pace than one who misses by 0.5s
+
+### Candidate Features — Evaluate Each Individually
+
+All candidates below are to be **tested one at a time** against the 2024 single-fold CV.
+**Only accept a feature if it produces avg pts improvement ≥ +0.05 pts/race across
+both classification and regression families, OR ≥ +0.10 pts in one family.**
+Document the result for every candidate regardless of outcome.
+
+#### A. `grid_penalty_delta` (primary fix for issue #7)
 ```python
-# Already available: grid_position (starting position after penalties)
-# Already available: q_position or qual_position (qualifying result)
-# New feature:
 grid_penalty_delta = grid_position - qual_position
-# Positive = grid is WORSE than qual (engine penalty, etc.)
+# Positive = grid is WORSE than qual (engine/gearbox penalty applied)
 # Negative = grid is BETTER (others' penalties promoted this driver)
-# Zero = no penalty applied
+# Zero     = no penalty applied
+```
+**Hypothesis:** Strong positive delta (≥+5) signals a fast car out of position that
+will pass through the P10 zone without staying; negative delta signals a promoted
+driver likely to regress to natural pace.
+
+---
+
+#### B. `qual_session_reached` (Q1/Q2/Q3 elimination stage)
+```python
+qual_session_reached = 1  # eliminated in Q1
+                    = 2  # eliminated in Q2
+                    = 3  # reached Q3
+```
+**Hypothesis:** Q1 eliminatees starting near P10 (due to penalties by others) are
+unlikely to sustain a P10 finish; Q3 participants starting near P10 have proven
+top-10 pace. This is a 3-level ordinal variable — test as both integer and one-hot.
+
+---
+
+#### C. `q2_gap_pct` (Q2 qualifying gap to P1 overall)
+```python
+q2_gap_pct = (q2_best_lap - overall_best_lap) / overall_best_lap
+# For drivers eliminated in Q1: use Q1 best lap / overall best lap
+# For Q3 drivers: same as existing q_gap_pct but from Q2 specifically
+```
+**Hypothesis:** Q2 is the most predictive session for midfield (P8–P15) race pace
+because it reflects the exact performance level of drivers who will start in the P10
+zone. The current `q_gap_pct` uses Q3 time for Q3 participants — this feature fills
+the gap for Q2-eliminated drivers where `q_gap_pct` may be missing or estimated.
+
+---
+
+#### D. `q1_gap_pct` (Q1 qualifying gap to P1 overall)
+```python
+q1_gap_pct = (q1_best_lap - overall_best_lap) / overall_best_lap
+# Only meaningful for Q1-eliminated drivers; null/0 for Q3 participants
+```
+**Hypothesis:** Weak signal — Q1 times are set on cold tyres with fuel aboard and
+have the highest variance. Test but expect low lift; likely to be rejected.
+
+---
+
+#### E. `q2_to_q1_delta` (session-over-session improvement, Q2 vs Q1)
+```python
+# For drivers who reached Q2:
+q2_to_q1_delta = q1_best_lap_pct - q2_best_lap_pct
+# Positive = driver improved relative to pole from Q1 to Q2 (better pace in Q2)
+# Negative = driver got slower relative to pole in Q2 (tyre/track condition artefact)
+# Null for Q1-eliminated drivers
+```
+**Hypothesis:** Drivers who improve significantly from Q1 to Q2 may have
+reserved their best tyres — indicating better race-pace potential than their
+Q2 result alone implies. Modest signal expected.
+
+---
+
+#### F. `q3_to_q2_delta` (session-over-session improvement, Q3 vs Q2)
+```python
+# For Q3 participants only:
+q3_to_q2_delta = q2_best_lap_pct - q3_best_lap_pct
+# Positive = driver improved into Q3 (extracted more pace with low-fuel run)
+# Negative = driver underperformed in Q3 relative to Q2
+# Null for non-Q3 drivers
+```
+**Hypothesis:** A driver who underperforms in Q3 relative to Q2 may have race pace
+better than their grid position implies (e.g. they set a banker lap and aborted
+final run). Narrow applicability — only relevant for P10–P15 starters who just
+missed Q3 cut or narrowly made it.
+
+---
+
+#### G. `q2_elimination_margin` (closeness to Q3 cut)
+```python
+# For Q2-eliminated drivers:
+q2_cutoff_time = Q3_slowest_qualifier_lap_time
+q2_elimination_margin = (driver_q2_best_lap - q2_cutoff_time) / q2_cutoff_time
+# Small positive = narrowly missed Q3; large positive = comfortably eliminated
+# Null for Q3 drivers and Q1-eliminated drivers
+```
+**Hypothesis:** A driver who misses Q3 by 0.02s (margin ≈ 0.0002) has essentially
+the same pace as the P10 qualifier. A driver who misses by 0.8s does not. This is
+the most direct measure of "is this Q2-eliminated driver a credible P10 candidate?"
+
+---
+
+### Evaluation Protocol for v5.2 Features
+
+Run each candidate as an independent single-feature addition to the v5.1 baseline:
+
+```bash
+# For each candidate feature X:
+python scripts/08_test_new_features.py \
+    --baseline-features v5.1 \
+    --test-feature X \
+    --cv-years 2024 \
+    --output scripts/v5_results/v52_feature_X.csv
 ```
 
-Add `"grid_penalty_delta"` to `FEATURE_COLS` in `config.py`.
+Record in `scripts/v5_results/V52_QUALIFYING_RESULTS.md`:
 
-Also ensure the data pipeline (Jolpica API fetch in `data_fetch.py`) separately
-stores `qualifying_position` and `grid_position` — verify these are already distinct
-fields (qual results come from `/qualifying` endpoint, grid from `/results`).
+| Feature | cv_2024_delta | clf_delta | reg_delta | Accept? | Notes |
+|---------|--------------|-----------|-----------|---------|-------|
+| `grid_penalty_delta` | | | | | |
+| `qual_session_reached` | | | | | |
+| `q2_gap_pct` | | | | | |
+| `q1_gap_pct` | | | | | |
+| `q2_to_q1_delta` | | | | | |
+| `q3_to_q2_delta` | | | | | |
+| `q2_elimination_margin` | | | | | |
+
+**Acceptance rule:** Include a feature in the permanent feature set only if:
+- Avg pts improvement ≥ +0.05 pts/race on 2024 single-fold CV across both model families, OR
+- ≥ +0.10 pts in one family (classifier OR regressor) with no regression in the other
+
+After all individual evaluations, run the accepted subset together to check for
+multicollinearity (features may be individually positive but jointly redundant).
+
+### Data Requirements
+Verify Jolpica API cache contains separate Q1/Q2/Q3 session data per driver:
+- `/f1/{year}/{round}/qualifying` — returns all three session times per driver
+- Check `data_fetch.py` to confirm `q1Time`, `q2Time`, `q3Time` are stored
+
+If Q1/Q2/Q3 times are not currently persisted, update `data_fetch.py` to store all
+three session times in the raw cache before building features.
 
 ### Expected Outcome
-- `rf_reg` stops picking Verstappen-from-P20 scenarios
-- Models learn: `grid_penalty_delta > 5` → driver will pass through P10 zone at speed
-- `grid_penalty_delta < 0` → inherited position may not reflect true pace
+- `grid_penalty_delta` accepted (high confidence) → fixes issue #1 and #7
+- `q2_gap_pct` and `q2_elimination_margin` likely accepted (medium confidence)
+- `qual_session_reached` possibly accepted as ordinal (moderate signal)
+- `q1_gap_pct`, `q2_to_q1_delta`, `q3_to_q2_delta` likely borderline or rejected
 
 ---
 
@@ -311,6 +497,10 @@ Add `"blue_flag_vulnerability"` to `FEATURE_COLS`.
 data in the Jolpica cache. Total race laps per circuit can be stored in a small
 `circuit_laps.csv` lookup table.
 
+**Note:** The `q2_gap_pct` and `q2_elimination_margin` features from v5.2 provide
+directly complementary inputs for this calculation — `blue_flag_vulnerability` should
+be evaluated after v5.2 is complete.
+
 ### Expected Outcome
 - Penalizes P10 starters at circuits/seasons with dominant front-runners
   (e.g. Red Bull 2023 dominance era at any circuit)
@@ -318,84 +508,15 @@ data in the Jolpica cache. Total race laps per circuit can be stored in a small
 
 ---
 
-## v5.7 — 2026 Regulatory Era: Circuit Feature Recalibration
+## v5.7 — 2026 Regulatory Era: Circuit Feature Recalibration *(PENDED — mid-season)*
 
-**Addresses:** Known issue #10 (2026 regulations break historical assumptions)
-**Gemini rank:** #4 (High impact / Medium effort)
-**Effort:** ~1 day
-
-### Context
-The 2026 technical regulations introduce:
-- **No DRS** → replaced by Active Aero (X-Mode / Z-Mode)
-- **Manual Override Mode (MOM)** — +0.5MJ electrical boost for 1-second trailing car
-- **50/50 ICE/Electric split** — race pace becomes energy management, not pure fuel flow
-- **Smaller, lighter cars** (768kg, 1900mm) — different tire degradation profiles
-- **New PU manufacturers** (Audi, RBPT-Ford) — elevated "infant mortality" DNF rates
-
-None of the current historical features account for these changes. All models will
-inherit 2014–2025 dynamics that may not transfer to 2026 races. The 2026 era weighting
-in `ERA_WEIGHTS` needs a new entry once enough 2026 races have occurred.
-
-### Changes
-
-#### 1. New circuit-level features in `config.py`:
-```python
-# Energy Recovery Potential: number of heavy braking zones per circuit
-# High ERP → more electrical harvest → longer MOM availability
-CIRCUIT_ENERGY_DEMAND: dict[str, float] = {
-    "monaco":    9.0,  # many corners, short straights, high harvest
-    "monza":     2.0,  # few braking zones, long straights → battery drain risk
-    "jeddah":    3.0,  # long high-speed straights, limited harvest points
-    "interlagos": 7.0, # hilly, many heavy braking zones
-    # ... all 24 circuits
-}
-
-# MOM Override Effectiveness: % of lap on straights where MOM can deploy
-# High → overtaking via MOM is easy → higher finishing position variance
-CIRCUIT_MOM_EFFECTIVENESS: dict[str, float] = {
-    "monza":     0.42,  # ~42% of lap at full throttle, but battery drains fast
-    "monaco":    0.18,  # short straights, MOM rarely decisive
-    "spa":       0.38,  # long Kemmel straight — high MOM effectiveness
-    # ...
-}
-```
-
-Add to `FEATURE_COLS`:
-- `circ_energy_demand` — circuit's energy recovery potential (1–10 scale)
-- `circ_mom_effectiveness` — fraction of lap where MOM can create overtaking opportunity
-
-#### 2. Infant mortality DNF penalty for new PU manufacturers:
-```python
-# In feature_engineering.py, for 2026 season:
-# New PU entrants: Audi (Sauber), RBPT-Ford (Red Bull/RB)
-# Apply elevated DNF prior for races 1–8 of 2026 season
-NEW_2026_PU_CONSTRUCTORS = {"sauber", "red_bull", "rb"}  # verify constructor IDs
-```
-
-Add feature `new_pu_manufacturer_flag` (boolean: 1 if constructor is running
-a new-for-2026 PU in early-season races).
-
-#### 3. Era weight update:
-Once ≥5 races of 2026 data are available, add:
-```python
-ERA_WEIGHTS["2026"] = 2.00  # double-weight the new regulatory era
-```
-And update `era_sample_weight()` accordingly.
-
-#### 4. Recalibrate `overtaking_difficulty` index:
-The existing values are calibrated on DRS-era data (2014–2024). With no DRS,
-circuits that were "sticky" due to DRS-train effects may become more fluid.
-After 5+ races, re-derive Spearman ρ(qual, finish) on 2026 data and update
-`OVERTAKING_DIFFICULTY` with a blended 2026 correction factor.
-
-### Expected Outcome
-- Model adapts to new regulatory physics rather than blindly applying 2024 patterns
-- New PU entrant DNF risk correctly penalizes Audi/RBPT drivers in early 2026 races
-- MOM effectiveness modifies overtaking probability at each circuit correctly
+**Addresses:** Known issue #10
+**Target activation:** After R7 (≥5 completed 2026 races)
+**See:** [Pended Work](#pended-work-mid-season-updates) section above for full specification.
 
 ---
 
-## v5.8 — Full 44-Feature CV Re-Run
+## v5.8 — Full CV Re-Run with v5.x Feature Set
 
 **Addresses:** Known issue #3 (CV gap after 44-feature expansion)
 **Effort:** ~2–4 hours compute
@@ -422,88 +543,35 @@ After all folds, recalibrate `ENSEMBLE_WEIGHTS`, `ENSEMBLE_WEIGHTS_EARLY`,
 the v5.x performance ranking.
 
 ### Expected Outcome
-- Accurate ensemble weights for the full 44+ feature set
+- Accurate ensemble weights for the full v5.x feature set
 - Better EARLY/MID/LATE calibration — particularly important for 2026 season opener
 - Documented CV table in `results/cv_results_v5x.csv`
 
 ---
 
-## v5.9 — Race 1 Cold-Start Fix
+## v5.9 — Race 1 Cold-Start Fix *(PENDED — pre-season 2027)*
 
-**Addresses:** Known issue #2 (R1 form features are zero)
-**Effort:** ~3 hours
-
-### Problem
-At the season opener (race_num=1), all rolling-form features are zero:
-- `avg_fin_last3`, `avg_fin_last5` → 0
-- `drv_p10_zone_rate_last10` → 0
-- `team_avg_fin_season` → 0
-- `drv_form_trend` → 0
-
-Models trained on mid-season data with populated form features perform poorly.
-The EARLY stage ensemble (R1–R5) compensates but the ~2–3 pt gap persists.
-
-### Change
-Three complementary fixes:
-
-#### A. Pre-season testing imputation
-After Bahrain pre-season test (typically February), extract relative pace order
-from FastF1 testing data and use as proxy for initial-race form features:
-
-```python
-# scripts/01c_fetch_preseason_test.py
-# Extract best lap time relative to field from each day of testing
-# Rank drivers by pre-season test performance
-# Use as fp2_position proxy for R1 feature imputation
-```
-
-#### B. Cross-year form carry-over
-For R1 features, instead of zero, use the last 3 races of the *previous season*
-(already available in the data cache):
-
-```python
-# In feature_engineering.py R1 imputation:
-if race_num == 1:
-    avg_fin_last3 = driver_prev_season_last3_races_avg
-    avg_fin_last5 = driver_prev_season_last5_races_avg
-```
-
-This is factually correct — a driver's form from Abu Dhabi 2025 is meaningful
-context for Australia 2026.
-
-#### C. Season-opener ensemble boost for classifiers
-The EARLY stage weights already favour classifiers (rf_clf, xgb_clf) over
-regressors at R1. Add an R1-specific sub-stage:
-
-```python
-ENSEMBLE_STAGE_BOUNDARIES: tuple[int, int, int] = (1, 5, 15)
-# Stage "opener" = race_num == 1 → heavily weight rf_clf + xgb_clf + heuristics
-# Stage "early"  = 2–5
-# Stage "mid"    = 6–15
-# Stage "late"   = 16+
-```
-
-### Expected Outcome
-- R1 avg pts gap closes from ~2–3 pts below season average to ~1 pt below
-- Cross-year carry-over improves form feature quality at R1 without data leakage
+**Addresses:** Known issue #2
+**Target activation:** Off-season November 2026 – January 2027
+**See:** [Pended Work](#pended-work-mid-season-updates) section above for full specification.
 
 ---
 
 ## Version Summary Table
 
-| Version | Change | Addresses | Effort | Expected delta |
-|---------|--------|-----------|--------|----------------|
-| **v5.1** | Probability calibration (CalibratedClassifierCV) | Issue #5 | Low | +0.3–0.8 pts (classifiers) |
-| **v5.2** | Grid penalty delta feature | Issues #1, #7 | Low-Med | +0.5–1.5 pts |
-| **v5.3** | LGBMRanker (LambdaMART / rank:ndcg) | Issue #6 | Medium | +0.3–0.8 pts |
-| **v5.4** | FP2 base pace + degradation rate features | Issue #8 | High | +0.5–2.0 pts |
-| **v5.5** | Constructor pit stop xPT feature | Issue #9 | Medium | +0.2–0.5 pts |
-| **v5.6** | Blue flag vulnerability feature | Gemini report | Low-Med | +0.1–0.4 pts |
-| **v5.7** | 2026 regulatory era circuit features + era weight | Issue #10 | Medium | context-dependent |
-| **v5.8** | Full CV re-run with v5.x feature set | Issue #3 | Low (compute) | ensemble recalibration |
-| **v5.9** | Race 1 cold-start fix (cross-year carry-over) | Issue #2 | Medium | +1.0–2.5 pts at R1 |
+| Version | Change | Addresses | Effort | Expected delta | Status |
+|---------|--------|-----------|--------|----------------|--------|
+| **v5.1** | Probability calibration (CalibratedClassifierCV) | Issue #5 | Low | +0.3–0.8 pts | Active |
+| **v5.2** | Qualifying session analysis + grid penalty delta (7 candidates, keep only those with lift) | Issues #1, #7, #11 | Medium | +0.5–2.0 pts | Active |
+| **v5.3** | LGBMRanker (LambdaMART / rank:ndcg) | Issue #6 | Medium | +0.3–0.8 pts | Active |
+| **v5.4** | FP2 base pace + degradation rate features | Issue #8 | High | +0.5–2.0 pts | Active |
+| **v5.5** | Constructor pit stop xPT feature | Issue #9 | Medium | +0.2–0.5 pts | Active |
+| **v5.6** | Blue flag vulnerability feature | Gemini report | Low-Med | +0.1–0.4 pts | Active |
+| **v5.7** | 2026 regulatory era circuit features + era weight | Issue #10 | Medium | context-dependent | **PENDED (≥R7 2026)** |
+| **v5.8** | Full CV re-run with v5.x feature set | Issue #3 | Low (compute) | ensemble recalibration | Active |
+| **v5.9** | Race 1 cold-start fix (cross-year carry-over) | Issue #2 | Medium | +1.0–2.5 pts at R1 | **PENDED (pre-season 2027)** |
 
-**Cumulative target:** ensemble ≥ 13.0 avg pts/race on 2026 season data by v5.5.
+**Cumulative target:** ensemble ≥ 13.0 avg pts/race on 2026 season data by v5.6.
 
 ---
 
@@ -523,7 +591,7 @@ python scripts/04_evaluate_2025.py
 #    version, model, cv_2024_avg, holdout_2025_avg, delta_vs_prev
 ```
 
-Record each version's results in a new `V5_RESULTS.md` in `scripts/v5_results/`.
+Record each version's results in `scripts/v5_results/V5_RESULTS.md`.
 
 ---
 
@@ -538,6 +606,8 @@ Record each version's results in a new `V5_RESULTS.md` in `scripts/v5_results/`.
 5. **Do not remove** the grid/champ heuristics from the ensemble — they provide +0.37 pts/race
 6. **Do not apply 2026 circuit ratings** retroactively to 2024 training data —
    era weights exist precisely to handle this boundary
+7. **Do not accept all qualifying features together** without testing each one individually
+   first — qualifying variables are correlated and joint acceptance can hide redundancy
 
 ---
 
@@ -557,3 +627,5 @@ The naive `grid_p10` strategy scores 14.04 avg pts/race because:
 - Undercut execution (pit stop variance promotes/demotes drivers across the P10 zone)
 
 Features in v5.2–v5.6 directly target all four of these scenarios.
+The qualifying session analysis in v5.2 specifically targets the grid-penalty scenario,
+which is both the most frequent and the most egregious failure mode of the current models.
