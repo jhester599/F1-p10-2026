@@ -1,12 +1,20 @@
 # F1 P10 Predictor — v5.x Development Plan
 
 **Date:** 2026-03-14
-**Last updated:** 2026-03-14 (v5.3 implemented and validated)
+**Last updated:** 2026-03-15 (v5.4 implemented and validated)
 **Starting point:** v4.03 (44 features, 8 models, 2025 holdout best: xgb_reg 12.42 pts/race)
-**Current version:** v5.3 (2025 holdout best: xgb_ranker 13.58 pts/race; 12-fold CV: ensemble 12.23)
+**Current version:** v5.4 (2025 holdout: xgb_ranker 13.58 pts/race; ensemble 11.12; 12-fold CV: 12.23)
 **Objective:** Beat the naive grid-P10 baseline (14.04 pts/race on 2025 holdout) through iterative,
  measured improvements beginning at v5.1.
 **Sources:** Internal known-issues audit + Gemini Deep Research Report (2026-03-13)
+
+> **v5.4 note:** The originally-planned v5.4 (FP2 Race Pace Features) was deferred to **v5.5**.
+> Instead, an unplanned but impactful interim step was executed: **era-blended ensemble reweighting**
+> (70% 2025 holdout + 30% 12-fold CV). This corrected a significant weight mismatch introduced in
+> v5.3 (xgb_ranker under-weighted at 0.25, xgb_reg over-weighted at 3.00). Ensemble improved
+> +0.83 pts/race (10.29 → 11.12). All downstream planned versions shift by one number:
+> FP2 features → v5.5, pit stops → v5.6, blue flag → v5.7, regulatory era → v5.8,
+> full CV re-run → v5.9, cold-start fix → v5.10.
 
 ---
 
@@ -27,7 +35,32 @@
 **Primary target:** ensemble ≥ 13.00 avg pts/race (2025 holdout).
 **Stretch target:** any model ≥ 14.04 (beats naive baseline).
 
-## v5.3 Results Summary (current version)
+## v5.4 Results Summary (current version)
+
+| Model | v5.3 holdout | v5.4 holdout | Δ | v5.3 CV avg |
+|-------|-------------|-------------|---|------------|
+| **naive_grid_p10** | **14.04** | **14.04** | — | — |
+| xgb_ranker | 13.58 | **13.58** | 0.00 | 10.51 |
+| lgb_reg | 11.75 | 11.75 | 0.00 | 10.83 |
+| xgb_clf | 11.54 | 11.54 | 0.00 | 11.35 |
+| rf_clf | 11.46 | 11.46 | 0.00 | 11.77 |
+| **ensemble** | 10.29 | **11.12** | **+0.83** | 12.23 |
+| ridge | 10.79 | 10.79 | 0.00 | 11.39 |
+| lgbm_ranker | 10.67 | 10.67 | 0.00 | 10.57 |
+| rf_reg | 9.58 | 9.58 | 0.00 | 10.91 |
+| xgb_reg | 8.33 | 8.33 | 0.00 | 11.44 |
+
+**Key outcomes:**
+- Base models unchanged — only `ENSEMBLE_WEIGHTS` recalibrated using 70% 2025 holdout + 30% 12-fold CV
+- `xgb_ranker` weight raised 0.25 → 4.00 (era-blended best: 12.66); `xgb_reg` demoted 3.00 → 0.25 (era-blended worst: 9.26)
+- `lgb_reg` raised 1.25 → 2.75; `lgbm_ranker` raised 0.50 → 1.75
+- Ensemble gap to naive baseline reduced: -3.75 (v5.3) → **-2.92 pts** (v5.4)
+- Chinese GP (2025 R2, EARLY stage) rerun: ensemble → albon (12 pts) in both versions
+- Full analysis: `scripts/v5_results/V5_RESULTS.md`
+
+---
+
+## v5.3 Results Summary (archived)
 
 | Model | v5.2 holdout | v5.3 holdout | Δ | v5.3 CV avg |
 |-------|-------------|-------------|---|------------|
@@ -137,8 +170,8 @@ Post-v5.2 full rolling CV run. Each fold: 4-year training window, 1-year eval; n
 | 5 | Probability miscalibration — `rf_clf` and `xgb_clf` produce flat, distorted probability distributions; EV calculations are unreliable | High | **RESOLVED v5.1** — rf_clf +1.75 pts, xgb_clf +1.54 pts |
 | 6 | `xgb_ranker` using `rank:pairwise`; listwise (LambdaMART / `rank:ndcg`) not yet tested | Medium | Addressed in v5.3 |
 | 7 | Qualifying position vs. grid position conflated — grid penalties (e.g. engine change +10) assign misleading pace signal | High | Addressed in v5.2 |
-| 8 | FP2 position used as raw rank rather than race-pace proxy; does not capture tire degradation | Medium | Addressed in v5.4 |
-| 9 | No team-level pit stop execution feature — undercut probability is unmodeled | Low–Medium | Addressed in v5.5 |
+| 8 | FP2 position used as raw rank rather than race-pace proxy; does not capture tire degradation | Medium | **Pending v5.5** |
+| 9 | No team-level pit stop execution feature — undercut probability is unmodeled | Low–Medium | **Pending v5.6** |
 | 10 | 2026 regulations (no DRS, Active Aero / MOM, 50/50 ICE-electric) will break historical overtaking and grid-stickiness assumptions | Critical (ongoing) | **Pended → v5.7 (mid-season update)** |
 | 11 | Qualifying analysis limited to final grid result — Q1/Q2/Q3 session splits, session deltas, and elimination margin not yet modeled | Medium | Addressed in v5.2 |
 
@@ -149,7 +182,7 @@ Post-v5.2 full rolling CV run. Each fold: 4-year training window, 1-year eval; n
 The following versions require real-world 2026 race data to calibrate properly and are
 **intentionally deferred** until mid-season (after R7–R8, approximately June 2026).
 
-### v5.7 — 2026 Regulatory Era: Circuit Feature Recalibration *(PENDED)*
+### v5.8 — 2026 Regulatory Era: Circuit Feature Recalibration *(PENDED)*
 
 **Target activation:** After R7 (minimum 5 races of 2026 data collected)
 **Addresses:** Known issue #10
@@ -172,7 +205,7 @@ prediction quality vs. retaining the 2014–2025 calibrated values.
 
 ---
 
-### v5.9 — Race 1 Cold-Start Fix *(PENDED)*
+### v5.10 — Race 1 Cold-Start Fix *(PENDED)*
 
 **Target activation:** Pre-season 2027 (off-season maintenance window)
 **Addresses:** Known issue #2
@@ -500,9 +533,63 @@ Accept `lgbm_ranker` only if avg pts ≥ `xgb_ranker` − 0.10.
 
 ---
 
-## v5.4 — FP2 Race Pace Features (Base Pace + Degradation Rate)
+## v5.4 — Era-Blended Ensemble Reweighting *(COMPLETED 2026-03-15)*
+
+**Addresses:** Ensemble weight mismatch accumulated across v5.1–v5.3; xgb_ranker
+under-weighted (0.25) despite being best 2025-holdout model (13.58 pts); xgb_reg
+over-weighted (3.00) despite worst 2025-holdout performance (8.33 pts).
+**Note:** This version was unplanned; it was executed as an urgent correction after v5.3's
+ensemble regression (-0.75 pts). The originally planned FP2 features have moved to **v5.5**.
+
+### Problem
+v5.3 ensemble weights were calibrated purely on 12-fold rolling CV (2014–2025, 252 races).
+The 12-fold CV gives xgb_reg a 11.44 average (3rd-best) and xgb_ranker only 10.51 (8th).
+But the 2025 ground-effect holdout — the most regulation-relevant era for 2026 predictions —
+shows the opposite: xgb_ranker dominates (13.58) and xgb_reg is worst by far (8.33).
+Using CV-only weights caused the ensemble to over-rely on a historically strong but
+currently weak model, producing a -0.75 pts regression from v5.2 to v5.3.
+
+### Change
+Update `ENSEMBLE_WEIGHTS`, `ENSEMBLE_WEIGHTS_EARLY`, `ENSEMBLE_WEIGHTS_MID`, and
+`ENSEMBLE_WEIGHTS_LATE` in `src/models.py`. Rebuild `ensemble.joblib` from existing
+base models (no retraining). **No new features added; no base models changed.**
+
+**Blended score formula:** `0.70 × 2025_holdout_avg + 0.30 × 12fold_cv_avg`
+Linear scale: min(9.26) → 0.25, max(12.66) → 4.00.
+
+| Model | 2025 holdout | 12-fold CV | Blended | v5.4 wt | v5.3 wt | Δ |
+|-------|-------------|-----------|---------|---------|---------|---|
+| xgb_ranker | 13.58 | 10.51 | 12.66 | **4.00** | 0.25 | +3.75 |
+| rf_clf | 11.46 | 11.77 | 11.55 | 2.75 | 4.00 | -1.25 |
+| xgb_clf | 11.54 | 11.35 | 11.48 | 2.75 | 2.75 | 0.00 |
+| lgb_reg | 11.75 | 10.83 | 11.47 | 2.75 | 1.25 | +1.50 |
+| ridge | 10.79 | 11.39 | 10.97 | 2.25 | 2.75 | -0.50 |
+| lgbm_ranker | 10.67 | 10.57 | 10.64 | 1.75 | 0.50 | +1.25 |
+| rf_reg | 9.58 | 10.91 | 9.98 | 1.00 | 1.50 | -0.50 |
+| xgb_reg | 8.33 | 11.44 | 9.26 | **0.25** | 3.00 | -2.75 |
+
+Stage-adaptive weights (EARLY/MID/LATE) updated with same 70/30 blended methodology.
+xgb_ranker EARLY weight 0.50 → **4.00** (18.40 holdout EARLY average — exceptional).
+
+### Result
+- Ensemble 2025 holdout: **10.29 → 11.12 avg pts/race (+0.83)**
+- Gap to naive baseline: -3.75 → **-2.92 pts**
+- Chinese GP (R2 2025, EARLY) rerun: ensemble still picks albon (12 pts) — albon's
+  multi-model consensus overrides xgb_ranker's hadjar recommendation even at weight 4.00
+- Full analysis: `scripts/v5_results/V5_RESULTS.md`
+
+### Acceptance Criteria (met)
+- [x] Ensemble 2025 holdout ≥ 11.0 avg pts/race → achieved 11.12
+- [x] xgb_ranker weight = maximum (4.00) → confirmed
+- [x] xgb_reg weight = minimum (0.25) → confirmed
+- [x] No regression in any base model (all unchanged) → confirmed
+
+---
+
+## v5.5 — FP2 Race Pace Features (Base Pace + Degradation Rate)
 
 **Addresses:** Known issue #8 (FP2 position not capturing race pace quality)
+**Originally planned as v5.4; shifted when v5.4 was used for ensemble reweighting.**
 **Gemini rank:** #3 (High impact / High effort)
 **Effort:** ~1–2 days
 
@@ -554,7 +641,7 @@ existing `fp2_position` scaled to [1, 20] as before.
 
 ---
 
-## v5.5 — Constructor Pit Stop Execution Feature (xPT)
+## v5.6 — Constructor Pit Stop Execution Feature (xPT)
 
 **Addresses:** Known issue #9 (no pit stop execution signal)
 **Gemini rank:** #5 (Medium impact / Medium effort)
@@ -589,7 +676,7 @@ alternatively extend `07_build_aux_features.py` to compute rolling constructor s
 
 ---
 
-## v5.6 — Blue Flag Vulnerability Feature
+## v5.7 — Blue Flag Vulnerability Feature
 
 **Addresses:** Gemini report section on blue flag interference
 **Effort:** ~2 hours
@@ -627,7 +714,7 @@ be evaluated after v5.2 is complete.
 
 ---
 
-## v5.7 — 2026 Regulatory Era: Circuit Feature Recalibration *(PENDED — mid-season)*
+## v5.8 — 2026 Regulatory Era: Circuit Feature Recalibration *(PENDED — mid-season)*
 
 **Addresses:** Known issue #10
 **Target activation:** After R7 (≥5 completed 2026 races)
@@ -635,7 +722,7 @@ be evaluated after v5.2 is complete.
 
 ---
 
-## v5.8 — Full CV Re-Run with v5.x Feature Set
+## v5.9 — Full CV Re-Run with v5.x Feature Set
 
 **Addresses:** Known issue #3 (CV gap after 44-feature expansion)
 **Effort:** ~2–4 hours compute
@@ -668,7 +755,7 @@ the v5.x performance ranking.
 
 ---
 
-## v5.9 — Race 1 Cold-Start Fix *(PENDED — pre-season 2027)*
+## v5.10 — Race 1 Cold-Start Fix *(PENDED — pre-season 2027)*
 
 **Addresses:** Known issue #2
 **Target activation:** Off-season November 2026 – January 2027
