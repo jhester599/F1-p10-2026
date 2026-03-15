@@ -136,7 +136,10 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
             q3_cutoff_time = max(q3_qualifiers_q2) if q3_qualifiers_q2 else None
 
             # --- race results ---
-            for rr in fetcher.results(year, rnd):
+            race_results = fetcher.results(year, rnd)
+            # Total race laps = winner's lap count (publicly known pre-race from circuit schedule)
+            race_laps = max((int(rr.get("laps", 0)) for rr in race_results), default=0)
+            for rr in race_results:
                 did  = rr["Driver"]["driverId"]
                 cid  = rr["Constructor"]["constructorId"]
                 pos  = _safe_float(rr.get("position"), DNF_POSITION)
@@ -181,6 +184,7 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     "q2_time":         q_info.get("q2_time"),
                     "q3_time":         q_info.get("q3_time"),
                     "q3_cutoff_time":  q3_cutoff_time,
+                    "race_laps":       race_laps,
                 })
 
     df = pd.DataFrame(rows)
@@ -458,6 +462,7 @@ def build_feature_matrix(
                 "grid_displacement_behind":  grid_displacement_behind,
                 "historical_dnf_rate":       historical_dnf_rate,
                 "overtaking_difficulty":     overtaking_difficulty,
+                "race_laps":                 int(row.get("race_laps", 0)),
             })
 
             # ── Category B candidate features (feature_exploration v3.6) ────
@@ -745,6 +750,119 @@ def build_feature_matrix(
             (feat_df.loc[mask_q2elim, "q2_time"] - feat_df.loc[mask_q2elim, "q3_cutoff_time"])
             / feat_df.loc[mask_q2elim, "q3_cutoff_time"] * 100.0
         ).clip(0, None)  # margin must be ≥ 0 (Q2-elim driver was slower than cutoff)
+
+    # ── v5.5: FP2 long-run pace candidate features ────────────────────────────
+    # Extracted from FastF1 by scripts/01b_fetch_fp2_pace.py.
+    # NOT in FEATURE_COLS yet — tested individually in scripts/12_test_v55_fp2.py.
+    # Accepted features will be added to FEATURE_COLS and version incremented.
+    #
+    # fp2_base_pace_delta:   driver's best-stint regression intercept minus session
+    #                        median (seconds).  Negative = faster than median → better pace.
+    # fp2_degradation_rate:  slope of LapTime ~ LapNumber regression for best long-run
+    #                        stint (sec/lap).  Positive = tyre deg; negative = improving.
+    # fp2_long_run_laps:     number of laps in the qualifying stint (≥5 guaranteed).
+    #
+    # NaN fallback: 0.0 for delta/rate, 0 for laps (driver absent from session or
+    # wet session skipped).  0.0 is session-neutral (no information).
+    _fp2_cache_path = Path(__file__).parent.parent / "data" / "processed" / "fp2_pace_cache.parquet"
+    if _fp2_cache_path.exists():
+        _fp2_df = pd.read_parquet(_fp2_cache_path)
+        if len(_fp2_df) > 0:
+            feat_df = feat_df.merge(
+                _fp2_df[["year", "round", "driver_id",
+                          "fp2_base_pace_delta", "fp2_degradation_rate", "fp2_long_run_laps"]],
+                on=["year", "round", "driver_id"],
+                how="left",
+            )
+            feat_df["fp2_base_pace_delta"]  = feat_df["fp2_base_pace_delta"].fillna(0.0)
+            feat_df["fp2_degradation_rate"] = feat_df["fp2_degradation_rate"].fillna(0.0)
+            feat_df["fp2_long_run_laps"]    = feat_df["fp2_long_run_laps"].fillna(0).astype(int)
+            logger.info(
+                "v5.5 FP2 pace features merged: %d non-zero rows",
+                (feat_df["fp2_long_run_laps"] > 0).sum()
+            )
+        else:
+            feat_df["fp2_base_pace_delta"]  = 0.0
+            feat_df["fp2_degradation_rate"] = 0.0
+            feat_df["fp2_long_run_laps"]    = 0
+    else:
+        # Cache not built yet — silently create zero-filled columns so
+        # the dataset builds without FP2 features.  Run 01b_fetch_fp2_pace.py first.
+        feat_df["fp2_base_pace_delta"]  = 0.0
+        feat_df["fp2_degradation_rate"] = 0.0
+        feat_df["fp2_long_run_laps"]    = 0
+
+    # ── v5.6: Constructor pit stop execution candidate features ──────────────
+    # Computed by scripts/01c_fetch_pit_stop_times.py from Jolpica pit stop API.
+    # NOT in FEATURE_COLS yet — tested individually in scripts/13_test_v56_pitstops.py.
+    # Accepted features will be added to FEATURE_COLS and version incremented.
+    #
+    # con_xpt_relative_median: median of (stop_duration - race_median) over last 10 races
+    #   for this constructor.  Negative = faster than field average.
+    # con_xpt_std: mean std dev of stop durations per race over last 10 races.
+    #   Lower = more consistent pit crew.
+    #
+    # Join key: constructor_id (same for both drivers of each team).
+    # NaN fallback: global median for con_xpt_relative_median (neutral),
+    #               global median for con_xpt_std.
+    _xpt_cache_path = Path(__file__).parent.parent / "data" / "processed" / "constructor_pit_times.parquet"
+    if _xpt_cache_path.exists():
+        _xpt_df = pd.read_parquet(_xpt_cache_path)
+        if len(_xpt_df) > 0:
+            feat_df = feat_df.merge(
+                _xpt_df[["year", "round", "constructor_id",
+                          "con_xpt_relative_median", "con_xpt_std"]],
+                on=["year", "round", "constructor_id"],
+                how="left",
+            )
+            # Fallback: fill NaN with global median (neutral — no information)
+            for _col in ["con_xpt_relative_median", "con_xpt_std"]:
+                _med = feat_df[_col].median()
+                feat_df[_col] = feat_df[_col].fillna(_med if not np.isnan(_med) else 0.0)
+            logger.info(
+                "v5.6 constructor xpt features merged: %d non-null rows",
+                feat_df["con_xpt_relative_median"].notna().sum()
+            )
+        else:
+            feat_df["con_xpt_relative_median"] = 0.0
+            feat_df["con_xpt_std"]             = 0.0
+    else:
+        feat_df["con_xpt_relative_median"] = 0.0
+        feat_df["con_xpt_std"]             = 0.0
+
+    # ── v5.7: Blue flag vulnerability candidate feature ───────────────────────
+    # Captures the interaction between a driver's pace gap to pole and the
+    # number of race laps.  A driver who is X% slower than pole per lap will be
+    # approximately (X/100 * race_laps) laps behind the leader at race end.
+    # Values ≥ 1.0 indicate the driver is mathematically likely to be lapped,
+    # causing 1.5–3 second time losses that can drop them out of P10.
+    #
+    # Formula: blue_flag_vulnerability = q_gap_pct / 100 * race_laps
+    #   q_gap_pct: driver's best qualifying time gap to pole (%)
+    #   race_laps: total laps for this circuit (captured from race results)
+    #
+    # This is a pure pre-race calculation (circuit laps are published on the
+    # schedule; q_gap_pct is from qualifying).  No data leakage.
+    # NaN fallback: 0.0 (no vulnerability signal).
+    if "race_laps" in feat_df.columns and "q_gap_pct" in feat_df.columns:
+        mask_bfv = (
+            feat_df["race_laps"].notna() & (feat_df["race_laps"] > 0) &
+            feat_df["q_gap_pct"].notna()
+        )
+        feat_df["blue_flag_vulnerability"] = 0.0
+        feat_df.loc[mask_bfv, "blue_flag_vulnerability"] = (
+            feat_df.loc[mask_bfv, "q_gap_pct"] / 100.0 *
+            feat_df.loc[mask_bfv, "race_laps"]
+        ).clip(0, None)
+        n_nonzero = (feat_df["blue_flag_vulnerability"] > 0).sum()
+        logger.info(
+            "v5.7 blue flag vulnerability: %d non-zero rows, mean=%.3f, max=%.2f",
+            n_nonzero,
+            feat_df.loc[feat_df["blue_flag_vulnerability"] > 0, "blue_flag_vulnerability"].mean(),
+            feat_df["blue_flag_vulnerability"].max(),
+        )
+    else:
+        feat_df["blue_flag_vulnerability"] = 0.0
 
     logger.info("Feature matrix: %d rows × %d cols", len(feat_df), len(feat_df.columns))
     return feat_df

@@ -184,6 +184,10 @@ FEATURE_COLS = [
     "circ_collision_rate",       # v4.03: collision/accident DNF rate per driver-start at circuit (Kaggle) +0.26 avg
     # --- qualifying session depth (v5.2) ---
     "q1_gap_pct",                # v5.2: driver's Q1 time gap to pole (%). Universally available; +0.448 avg on 2024 CV.
+    "q2_gap_pct",                # v5.2: driver's Q2 time gap to pole (%). Most informative for P8–P15 starters; +0.135 avg.
+    "q2_elimination_margin",     # v5.2: how far Q2-eliminated driver missed Q3 cut (%). 0 for Q3/Q1 drivers; +0.312 avg.
+    # --- constructor pit execution (v5.6) ---
+    "con_xpt_std",               # v5.6: mean std dev of normalized pit stop durations over last 10 races (sec). Lower = more consistent. +0.167 reg, -0.062 clf.
 ]
 
 TARGET_COL = "finish_position"

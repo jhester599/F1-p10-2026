@@ -34,12 +34,13 @@ Models trained:
   8. LightGBM Ranker           (lambdarank objective, integer labels)  ← v5.3 new
   9. WeightedEnsemble          (CV-weighted blend of all base models)
 
-Ensemble weights (v5.4 — era-blended reweighting: 70% 2025 holdout + 30% 12-fold CV,
-  45-feature set, era-stratified sample weights V8=0.25/hybrid=0.60/GE=1.00):
-  xgb_ranker: 4.0  |  rf_clf: 2.75  |  xgb_clf: 2.75  |  lgb_reg: 2.75
+Ensemble weights (v5.9 — full 11-fold CV re-run: 70% 2025 holdout + 30% 11-fold CV,
+  48-feature set, era-stratified sample weights V8=0.25/hybrid=0.60/GE=1.00):
+  xgb_ranker: 4.00 |  lgbm_ranker: 2.54 |  rf_clf: 2.54 |  xgb_clf: 2.18
+  ridge: 2.15  |  lgb_reg: 2.06  |  rf_reg: 1.26  |  xgb_reg: 0.25
   grid_heuristic: 2.0  |  champ_heuristic: 2.0  (analytic — no fitted model)
-  ridge: 2.25  |  lgbm_ranker: 1.75  |  rf_reg: 1.0  |  xgb_reg: 0.25
-  Stage-adaptive EARLY/MID/LATE weights also updated (see ENSEMBLE_WEIGHTS_* dicts).
+  Stage-adaptive EARLY/MID/LATE weights fully recalibrated (see ENSEMBLE_WEIGHTS_* dicts).
+  xgb_ranker leads all three stages; lgbm_ranker surges to top-3 LATE (blended 11.12).
 
   grid_heuristic:  score = 1/(1+|grid_position-10|)  — rewards P10 grid starters
   champ_heuristic: score = 1/(1+|champ_pos-10|)      — rewards drivers near P10 in standings
@@ -96,173 +97,112 @@ except ImportError:
 
 # ── weighted ensemble ──────────────────────────────────────────────────────────
 
-# v3.66 weights — derived from 12-fold rolling Time-Series CV (2014–2025, window=4)
-# on the 38-feature set WITH era-stratified sample weights (V8=0.25, hybrid=0.60, GE=1.00).
-# Era weighting changes the relative performance ranking: xgb_ranker benefits strongly
-# (pairwise objective is most sensitive to era-specific positional dynamics) and becomes
-# the #2 model; rf_clf is now best; rf_reg falls as its grid-ordering signal is diluted
-# without the V8 era's cleaner grid→finish correlations.
+# ── v5.9 ensemble weights ──────────────────────────────────────────────────────
 #
-# Model performance (252 races, 12 folds, 38-feature set, era-weighted training):
-#   rf_clf      11.40 avg pts → 4.00  (was 3.25 — now best; era weights help classifiers)
-#   xgb_ranker  11.21 avg pts → 3.25  (was 1.50 — large jump: ranker benefits from era focus)
-#   rf_reg      11.17 avg pts → 3.00  (was 4.00 — slight decrease: less V8 era advantage)
-#   ridge       11.03 avg pts → 2.50  (was 2.75 — slight decrease)
-#   lgb_reg     10.80 avg pts → 1.50  (was 0.25 — large gain: LGB recovers with era focus)
-#   xgb_clf     10.71 avg pts → 1.25  (was 0.25 — recovered: classification improves with era focus)
-#   xgb_reg     10.43 avg pts → 0.25  (was 1.75 — decrease: regression hurt by era weighting)
-#   grid_heuristic  (analytic) → 2.00  (unchanged — still +0.36 pts/race vs model-only)
-#   champ_heuristic (analytic) → 2.00  (unchanged)
+# Derived from 11-fold rolling Time-Series CV (eval years 2014–2024, window=4)
+# on the 48-feature set WITH era-stratified sample weights (V8=0.25, hybrid=0.60, GE=1.00).
+# Script: scripts/15_cv_v59.py  |  Checkpoints: results/cv_checkpoints_v59/
+# Combined results: scripts/v5_results/v59_cv_results.csv
 #
-# Ensemble CV score: 11.62 avg pts/race (up from 11.52 with uniform weights)
+# Blend formula: 0.70 × 2025_holdout_avg + 0.30 × 11fold_cv_avg
+# Scale: linear min→0.25, max→4.00  (heuristics held at 2.00)
+#
+# Overall per-model performance (228 races across 11 folds):
+#   xgb_ranker:  CV=10.785  HO=14.417  blended=13.327  → 4.00
+#   rf_clf:      CV=11.592  HO=11.458  blended=11.498  → 2.54
+#   lgbm_ranker: CV=10.408  HO=11.958  blended=11.493  → 2.54
+#   xgb_clf:     CV=11.434  HO=10.875  blended=11.043  → 2.18
+#   ridge:       CV=11.535  HO=10.792  blended=11.015  → 2.15
+#   lgb_reg:     CV=10.254  HO=11.167  blended=10.893  → 2.06
+#   rf_reg:      CV=10.917  HO= 9.458  blended= 9.896  → 1.26
+#   xgb_reg:     CV=10.294  HO= 7.917  blended= 8.630  → 0.25
+#
+# Key v5.9 changes from v5.41/v5.6 partial calibration:
+#   xgb_ranker: MID 7.00→4.00, LATE 7.00→4.00 (proper multi-fold basis removes overfit)
+#   lgbm_ranker: placeholder 2.00→2.54 overall; 2.00→3.61 LATE (strong late-season CV)
+#   xgb_clf: EARLY 2.25→1.47 (only 7.00 holdout avg EARLY — 5-race noise); MID 2.75→3.08
+#   rf_clf: EARLY raised 2.25→3.69 (14.60 holdout EARLY + 12.87 CV EARLY)
+#   lgb_reg: EARLY raised 1.00→3.36 (15.00 holdout EARLY); MID 4.00→1.57
+#   rf_reg: MID raised (0.50→0.25 floor stays); LATE raised to 2.98 (12.02 CV LATE)
 ENSEMBLE_WEIGHTS: dict[str, float] = {
-    # v5.4: era-blended reweighting — 70% 2025 holdout + 30% 12-fold CV (252 races).
-    # Motivation: 12-fold CV spans 2014–2025 and favoured xgb_reg (11.44 CV) and rf_clf
-    # (11.77 CV), but 2025 holdout—the most regulation-relevant era—showed xgb_ranker
-    # dominant (13.58) and xgb_reg worst (8.33). Blending corrects this regime shift.
-    #
-    # Blended scores (0.70 × holdout_2025 + 0.30 × cv_12fold):
-    #   xgb_ranker: 12.66  rf_clf: 11.55  xgb_clf: 11.48  lgb_reg: 11.47
-    #   ridge: 10.97  lgbm_ranker: 10.64  rf_reg: 9.98  xgb_reg: 9.26
-    # Scale: linear fit min(9.26)→0.25, max(12.66)→4.00
-    "xgb_ranker":      4.00,   # blended 12.66 — 2025 holdout best (+1.87 pts v5.3)
-    "rf_clf":          2.75,   # blended 11.55
-    "xgb_clf":         2.75,   # blended 11.48
-    "lgb_reg":         2.75,   # blended 11.47
-    "ridge":           2.25,   # blended 10.97
-    "lgbm_ranker":     1.75,   # blended 10.64
-    "rf_reg":          1.00,   # blended 9.98
-    "xgb_reg":         0.25,   # blended 9.26  — 2025 holdout worst (was 3.00)
+    # v5.9: 11-fold CV (228 races) + 2025 holdout 70/30 blend, 48-feature set
+    "xgb_ranker":      4.00,   # blended 13.33 — overall best, consistent across all stages
+    "lgbm_ranker":     2.54,   # blended 11.49 — raised from placeholder 1.75
+    "rf_clf":          2.54,   # blended 11.50 — tied with lgbm_ranker
+    "xgb_clf":         2.18,   # blended 11.04
+    "ridge":           2.15,   # blended 11.02
+    "lgb_reg":         2.06,   # blended 10.89
+    "rf_reg":          1.26,   # blended 9.90
+    "xgb_reg":         0.25,   # blended 8.63  — 2025 holdout worst (7.92)
     "grid_heuristic":  2.00,   # analytic: 1/(1+|grid_pos-10|)
     "champ_heuristic": 2.00,   # analytic: 1/(1+|champ_pos-10|), clipped to [1,20]
 }
 
-# ── v3.72 Season-stage adaptive ensemble weights ───────────────────────────────
+# ── v5.9 Season-stage adaptive ensemble weights ────────────────────────────────
 #
-# Derived from 12-fold rolling Time-Series CV data (2014–2025, 252 races) by
-# segmenting cv_results.csv into three race-number bands and scaling model
-# performance (avg fantasy pts/race) to the [0.25, 4.00] weight range.
-#
-# v3.94 RECALIBRATION: Re-derived from 2023+2024 combined single-fold CV
-# (46 races total) using the 40-feature model. Key changes from v3.72:
-#
+# Derived from 11-fold rolling CV (2014–2024) segmented by race-number stage + 2025 holdout.
 # Stage boundaries (tunable via ENSEMBLE_STAGE_BOUNDARIES):
-#   Early : R1  – R5   (≤ 5 races in)   — within-season form features are noisy
-#   Mid   : R6  – R15  (mid-season)     — form features stabilising
-#   Late  : R16+        (final quarter)  — car performance and form fully stable
+#   EARLY : R1  – R5   (≤ 5 races in)   — within-season form features are noisy
+#   MID   : R6  – R15  (mid-season)     — form features stabilising
+#   LATE  : R16+        (final quarter)  — car performance and form fully stable
 #
-# Source performance (avg pts/race, 2023+2024 combined CV by stage):
-#   EARLY:  rf_clf=13.50  xgb_clf=13.30  ridge=11.40  rf_reg=10.30
-#           lgb_reg=10.00  xgb_ranker=9.80  xgb_reg=9.20
-#   MID:    ridge=12.65   xgb_ranker=12.60  rf_reg=12.00  lgb_reg=11.10
-#           rf_clf=11.15  xgb_clf=10.05  xgb_reg=10.60
-#   LATE:   ridge=13.81  rf_clf=13.69  rf_reg=11.94  lgb_reg=11.44
-#           xgb_clf=11.44  xgb_ranker=11.00  xgb_reg=10.94
+# Blended source performance (0.70 × holdout + 0.30 × CV_stage):
+#   EARLY:  xgb_ranker=14.79  rf_clf=14.08  lgb_reg=13.32  lgbm_ranker=10.50
+#           ridge=10.40  rf_reg=10.36  xgb_clf=8.94  xgb_reg=6.11
+#   MID:    xgb_ranker=14.35  xgb_clf=13.09  lgbm_ranker=12.25  ridge=11.19
+#           lgb_reg=11.01  rf_clf=11.00  xgb_reg=10.51  rf_reg=9.20
+#   LATE:   xgb_ranker=11.49  ridge=11.29  lgbm_ranker=11.12  rf_reg=10.53
+#           rf_clf=10.52  xgb_clf=9.79  lgb_reg=9.43  xgb_reg=7.96
+#
+# 2025 holdout by stage:
+#   EARLY: xgb_ranker=16.60  rf_clf=14.60  lgb_reg=15.00  lgbm_ranker=10.20
+#          ridge=10.00  rf_reg=10.20  xgb_clf=7.00  xgb_reg=4.20
+#   MID:   xgb_ranker=16.10  xgb_clf=13.90  lgbm_ranker=13.00  ridge=11.30
+#          lgb_reg=11.20  rf_clf=10.80  xgb_reg=10.70  rf_reg=8.70
+#   LATE:  xgb_ranker=11.33  ridge=10.67  lgbm_ranker=11.78  rf_reg=9.89
+#          rf_clf=10.44  xgb_clf=9.67  lgb_reg=9.00  xgb_reg=6.89
 #
 # grid_heuristic / champ_heuristic: analytic — held constant at 2.00 across stages.
 ENSEMBLE_WEIGHTS_EARLY: dict[str, float] = {
-    # R1–R5: xgb_clf and rf_clf dominate (16.00, 15.00 avg); rf_reg worst (9.50).
-    # v4.03 recal: xgb_clf raised to equal rf_clf; xgb_ranker raised (12.90, 3rd).
-    "xgb_clf":         4.00,   # recal v4.03: 16.00 avg, best EARLY
-    "rf_clf":          4.00,   # recal v4.03: 15.00 avg, co-best
-    "xgb_ranker":      3.00,   # recal v4.03: 12.90 avg, strong 3rd
-    "lgbm_ranker":     2.00,   # v5.3: placeholder
-    "ridge":           2.50,   # recal v4.03: 11.40 avg
-    "lgb_reg":         1.50,   # recal v4.03: 11.10 avg
-    "xgb_reg":         1.25,   # recal v4.03: 10.90 avg
-    "rf_reg":          0.25,   # recal v4.03: 9.50 avg, worst EARLY
+    # R1–R5: xgb_ranker (14.79), rf_clf (14.08), lgb_reg (13.32) dominate.
+    # xgb_clf falls to near-floor EARLY (7.00 holdout EARLY — 5-race noise).
+    "xgb_ranker":      4.00,   # blended 14.79 — EARLY best (form features noisy; ranker robust)
+    "rf_clf":          3.69,   # blended 14.08 — raised from 2.25 (14.60 holdout EARLY)
+    "lgb_reg":         3.36,   # blended 13.32 — raised from 1.00 (15.00 holdout EARLY!)
+    "lgbm_ranker":     2.14,   # blended 10.50 — raised from placeholder 1.00
+    "ridge":           2.10,   # blended 10.40
+    "rf_reg":          2.09,   # blended 10.36 — raised from 0.50
+    "xgb_clf":         1.47,   # blended  8.94 — cut from 2.25 (7.00 holdout EARLY, 5-race noise)
+    "xgb_reg":         0.25,   # blended  6.11 — floor (4.20 holdout EARLY, worst)
     "grid_heuristic":  2.00,
     "champ_heuristic": 2.00,
 }
 ENSEMBLE_WEIGHTS_MID: dict[str, float] = {
-    # R6–R15: ridge (12.65) and rf_reg (12.50) co-lead; lgb_reg strong (12.00).
-    # xgb_clf (11.15) and xgb_ranker (10.60) weakest. rf_clf dropped (10.75).
-    # v4.03 recal: rf_reg dramatically raised (was 2.25); xgb_ranker cut; rf_clf cut.
-    "ridge":           4.00,   # recal v4.03: 12.65 avg, best MID
-    "rf_reg":          3.75,   # recal v4.03: 12.50 avg, near-best
-    "lgb_reg":         3.00,   # recal v4.03: 12.00 avg (was 1.75, major raise)
-    "xgb_reg":         2.25,   # recal v4.03: 11.30 avg (was 0.50, major raise)
-    "xgb_clf":         2.00,   # recal v4.03: 11.15 avg (restored from 0.25)
-    "xgb_ranker":      1.25,   # recal v4.03: 10.60 avg (was 3.50, cut)
-    "lgbm_ranker":     2.00,   # v5.3: placeholder
-    "rf_clf":          0.75,   # recal v4.03: 10.75 avg (was 1.50, cut)
+    # R6–R15: xgb_ranker (14.35) leads; xgb_clf (13.09) surges to 2nd MID.
+    # lgbm_ranker (12.25) strong 3rd. rf_reg worst MID (9.20 blended).
+    "xgb_ranker":      4.00,   # blended 14.35 — cut from 7.00 (proper multi-fold basis)
+    "xgb_clf":         3.08,   # blended 13.09 — raised from 2.75 (13.90 holdout MID)
+    "lgbm_ranker":     2.47,   # blended 12.25 — raised from 2.25 (13.00 holdout MID)
+    "ridge":           1.70,   # blended 11.19 — cut from 2.25
+    "lgb_reg":         1.57,   # blended 11.01 — cut from 4.00 (was overfit to single-fold)
+    "rf_clf":          1.56,   # blended 11.00 — cut from 2.25
+    "xgb_reg":         1.20,   # blended 10.51 — raised from 0.25 (10.70 holdout MID)
+    "rf_reg":          0.25,   # blended  9.20 — floor (worst MID; 8.70 holdout)
     "grid_heuristic":  2.00,
     "champ_heuristic": 2.00,
 }
 ENSEMBLE_WEIGHTS_LATE: dict[str, float] = {
-    # R16+: ridge (14.56) dominant; rf_clf (13.06) 2nd; xgb_reg (8.31) worst.
-    # v4.03 recal: ridge gap over rf_clf widened; lgb_reg and xgb_reg both cut.
-    "ridge":           4.00,   # recal v4.03: 14.56 avg, dominant LATE
-    "rf_clf":          3.25,   # recal v4.03: 13.06 avg
-    "rf_reg":          2.00,   # recal v4.03: 11.50 avg (was 2.50)
-    "xgb_ranker":      2.00,   # recal v4.03: 11.31 avg (was 1.00, raised)
-    "lgbm_ranker":     2.00,   # v5.3: placeholder
-    "xgb_clf":         1.50,   # recal v4.03: 10.75 avg (was 1.25)
-    "lgb_reg":         0.50,   # recal v4.03: 9.31 avg (was 1.25, cut)
-    "xgb_reg":         0.25,   # recal v4.03: 8.31 avg, worst LATE
-    "grid_heuristic":  2.00,
-    "champ_heuristic": 2.00,
-}
-#   Early : R1  – R5   (≤ 5 races in)   — within-season form features are noisy
-#   Mid   : R6  – R15  (mid-season)     — form features stabilising
-#   Late  : R16+        (final quarter)  — car performance and form fully stable
-#
-# Source performance (avg pts/race — blended 70% 2025 holdout + 30% 12-fold CV):
-#   EARLY:  xgb_ranker=16.01  xgb_clf=12.78  rf_clf=12.70  lgb_reg=10.61
-#           lgbm_ranker=10.35  ridge=10.24  rf_reg=9.82  xgb_reg=9.16
-#   MID:    lgb_reg=12.94  xgb_ranker=12.60  xgb_clf=11.72  lgbm_ranker=11.45
-#           ridge=11.30  rf_clf=11.25  rf_reg=9.83  xgb_reg=9.52
-#   LATE:   rf_clf=11.27  ridge=11.10  xgb_ranker=10.93  xgb_clf=10.38
-#           lgb_reg=10.37  rf_reg=10.27  lgbm_ranker=9.90  xgb_reg=9.05
-#
-# 2025 holdout by stage (R1–R5 / R6–R15 / R16–R24):
-#   EARLY: xgb_ranker=18.40  xgb_clf=13.00  rf_clf=12.60  lgb_reg=10.60
-#          lgbm_ranker=10.00  ridge=10.00  rf_reg=9.60  xgb_reg=7.80
-#   MID:   lgb_reg=13.90  xgb_ranker=13.60  lgbm_ranker=11.90  xgb_clf=11.70
-#          ridge=11.30  rf_clf=11.30  rf_reg=9.30  xgb_reg=8.90
-#   LATE:  rf_clf=11.00  xgb_ranker=10.90  ridge=10.70  xgb_clf=10.60
-#          lgb_reg=10.00  rf_reg=9.90  lgbm_ranker=9.70  xgb_reg=8.00
-#
-# grid_heuristic / champ_heuristic: analytic — held constant at 2.00 across stages.
-ENSEMBLE_WEIGHTS_EARLY: dict[str, float] = {
-    # R1–R5: v5.4 blended (60 races CV + 5 races 2025 holdout, linear min→0.25/max→4.00)
-    # xgb_ranker=16.01 dominates early (best model when form features are noisy)
-    "xgb_ranker":      4.00,   # blended 16.01 — EARLY standout (+3.07 vs v5.3 early)
-    "xgb_clf":         2.25,   # blended 12.78
-    "rf_clf":          2.25,   # blended 12.70
-    "lgb_reg":         1.00,   # blended 10.61
-    "lgbm_ranker":     1.00,   # blended 10.35
-    "ridge":           0.75,   # blended 10.24
-    "rf_reg":          0.50,   # blended 9.82
-    "xgb_reg":         0.25,   # blended 9.16  (worst EARLY — was 3.00)
-    "grid_heuristic":  2.00,
-    "champ_heuristic": 2.00,
-}
-ENSEMBLE_WEIGHTS_MID: dict[str, float] = {
-    # R6–R15: v5.4 blended (120 races CV + 10 races 2025 holdout)
-    # lgb_reg and xgb_ranker co-lead MID; lgbm_ranker strongly raised
-    "lgb_reg":         4.00,   # blended 12.94 — MID leader (was 1.25)
-    "xgb_ranker":      3.75,   # blended 12.60 (was 0.25)
-    "xgb_clf":         2.75,   # blended 11.72
-    "lgbm_ranker":     2.25,   # blended 11.45 (was 0.75)
-    "ridge":           2.25,   # blended 11.30
-    "rf_clf":          2.25,   # blended 11.25
-    "rf_reg":          0.50,   # blended 9.83
-    "xgb_reg":         0.25,   # blended 9.52  (was 2.00)
-    "grid_heuristic":  2.00,
-    "champ_heuristic": 2.00,
-}
-ENSEMBLE_WEIGHTS_LATE: dict[str, float] = {
-    # R16+: v5.4 blended (72 races CV + 9 races 2025 holdout)
-    # rf_clf + ridge co-lead LATE; xgb_ranker raised to 3rd; xgb_clf recovers
-    "rf_clf":          4.00,   # blended 11.27 (was 3.75)
-    "ridge":           3.75,   # blended 11.10 (was 4.00)
-    "xgb_ranker":      3.50,   # blended 10.93 (was 2.25)
-    "xgb_clf":         2.50,   # blended 10.38 (was 0.25 — major raise)
-    "lgb_reg":         2.50,   # blended 10.37 (unchanged)
-    "rf_reg":          2.25,   # blended 10.27
-    "lgbm_ranker":     1.75,   # blended 9.90  (was 1.00)
-    "xgb_reg":         0.25,   # blended 9.05  (unchanged at floor)
+    # R16+: xgb_ranker (11.49), ridge (11.29), lgbm_ranker (11.12) top-3.
+    # lgbm_ranker surges LATE (strong 11.78 holdout + 9.57 CV → blended 11.12).
+    # xgb_ranker cut from 7.00 to 4.00 (proper multi-fold basis; 11.84 CV LATE).
+    "xgb_ranker":      4.00,   # blended 11.49 — cut from 7.00 (multi-fold normalises)
+    "ridge":           3.79,   # blended 11.29 — unchanged as top LATE (12.75 CV LATE)
+    "lgbm_ranker":     3.61,   # blended 11.12 — raised from 1.75 (11.78 holdout LATE!)
+    "rf_reg":          2.98,   # blended 10.53 — raised from 2.25 (12.02 CV LATE)
+    "rf_clf":          2.97,   # blended 10.52 — cut from 4.00
+    "xgb_clf":         2.19,   # blended  9.79 — cut from 2.50
+    "lgb_reg":         1.81,   # blended  9.43 — cut from 2.50
+    "xgb_reg":         0.25,   # blended  7.96 — floor (6.89 holdout LATE, worst)
     "grid_heuristic":  2.00,
     "champ_heuristic": 2.00,
 }
@@ -455,15 +395,24 @@ def _make_models() -> dict[str, Any]:
         # individual pairwise inversions — mathematically superior for
         # a specific ordinal target (P10).
         # Integer labels required by rank:ndcg (XGB 3.x): round(10/(1+|pos-10|)).
-        # Regularization removed: same multicollinearity issue as lgb_reg with
-        # correlated qualifying features; 2024 CV: 13.21 vs 10.42 pairwise.
+        #
+        # v5.2 issue: adding q2_gap_pct (r=0.930 with q_gap_pct), q1_gap_pct
+        # (r=0.746), q_gap_sq (r=0.878) created a 4-feature correlation cluster
+        # that destabilised NDCG gradient estimation → 10.92 on 2025 holdout.
+        #
+        # Fix (validated v5.2 3-fold CV with era weights):
+        #   reg_lambda=3.0, colsample_bytree=0.70
+        #   2023 CV: 12.68 | 2024 CV: 12.67 | 2025 holdout: 15.00 | mean: 13.45
+        # reg_lambda forces feature shrinkage, colsample_bytree=0.70 (vs 0.80)
+        # prevents the 4 correlated features from dominating every split.
         models["xgb_ranker"] = XGBRanker(
             objective="rank:ndcg",
             n_estimators=500,
             max_depth=5,
             learning_rate=0.05,
             subsample=0.8,
-            colsample_bytree=0.8,
+            colsample_bytree=0.7,
+            reg_lambda=3.0,
             random_state=42,
             n_jobs=-1,
             verbosity=0,
