@@ -493,6 +493,21 @@ qualifying progression features overlap with `grid_position`.
 
 ## Development History
 
+### v5.9.1 — Codebase consolidation and bug fixes (2026-03-18)
+
+Cleanup pass: removed duplicate root-level files, fixed import paths, restored corrupted
+files, and synced stale modules.
+
+| Change | Detail |
+|---|---|
+| **Restore `predict_race.py`** | File was corrupted (24 KB of null bytes since commit `68fe7cb`). Restored from `5dad6af`, then updated to v5.2+ feature set (q1/q2 gaps, `q2_elimination_margin`, `con_xpt_std`). Fixed aux feature name mismatches (`circ_sc_rate`→`circ_vsc_rate`, etc.). |
+| **Remove root `data_fetch.py`** | Duplicate of `src/data_fetch.py`. All imports already reference `src.data_fetch`. Root copy deleted. |
+| **Consolidate `01_fetch_data.py`** | Root copy (253 lines, bulk fetch + FastF1 + archive) moved to `scripts/01_fetch_data.py`, replacing the obsolete 80-line version that lacked bulk endpoints, FastF1 support, and had an unused `use_cache` variable (Issue #4). |
+| **Sync `src/data_fetch.py`** | Was stale at 205 lines; synced to full 560-line version with FastF1 support, bulk fetch, and `_status_is_finish()` precedence fix. |
+| **Fix `02_build_dataset.py` import** | `from data_fetch` → `from src.data_fetch` |
+| **Fix duplicate dict key in `config.py`** | Removed duplicate `portimao` entry in `OVERTAKING_DIFFICULTY` |
+| **Fix `_status_is_finish()` precedence** | Added explicit parentheses: `s == "finished" or (s.startswith("+") and "lap" in s)` |
+
 ### v5.9 — Full 11-fold CV re-run + ensemble recalibration (2026-03-15)
 
 11-fold rolling Time-Series CV (eval years 2014–2024, 4-year training window, 228 races,
