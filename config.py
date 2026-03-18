@@ -106,7 +106,6 @@ OVERTAKING_DIFFICULTY: dict[str, float] = {
     "shanghai":   8.3,   # n=7, rho=0.741, dnf=0.126
     "portimao":  10.0,   # n=2, rho=0.827, dnf=0.050
     "singapore":  4.8,   # alias for marina_bay
-    "portimao":  10.0,   # n=2, rho=0.827, dnf=0.050
 }
 
 # ── Street circuits ───────────────────────────────────────────────────────────
