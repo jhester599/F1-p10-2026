@@ -54,7 +54,7 @@ def parse_laptime(t: Optional[str]) -> Optional[float]:
 def _status_is_finish(status: str) -> bool:
     """Return True if the status string represents a classified finish."""
     s = status.lower()
-    return s == "finished" or s.startswith("+") and "lap" in s
+    return s == "finished" or (s.startswith("+") and "lap" in s)
 
 
 # ── fetcher class ──────────────────────────────────────────────────────────────
