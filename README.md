@@ -1,4 +1,4 @@
-# F1 P10 Predictor · v5.9
+# F1 P10 Predictor · v5.9.1
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix, optimised for a
 fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetrically).
@@ -7,6 +7,8 @@ fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetric
 **Benchmark:** `naive_grid_p10` — 14.04 avg pts/race on 2025 holdout
 **Best 2025 holdout:** `xgb_ranker` — **14.42 avg pts/race ✓ beats naive baseline**
 **Ensemble (v5.9):** 12.67 avg pts/race
+**v5.9.1 change (2026-03-18):** Codebase consolidation — restored corrupted `predict_race.py`,
+removed duplicate root-level files, fixed import paths, synced stale modules. No model changes.
 **v5.9 change:** Full 11-fold rolling CV re-run (2014–2024, 228 races); all 4 ENSEMBLE_WEIGHTS
 dicts recalibrated using 70% 2025 holdout + 30% 11-fold CV; removes circular validation overfit
 in xgb_ranker MID/LATE (7.00→4.00); discovers lgbm_ranker genuine late-season strength (1.75→3.61).
