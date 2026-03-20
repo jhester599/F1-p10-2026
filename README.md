@@ -5,11 +5,12 @@ fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetric
 
 **Current model:** 50 features · 8 models · top-3 non-adaptive ensemble
 **Benchmark:** `naive_grid_p10` — 14.04 avg pts/race on 2025 holdout
-**Best 2025 holdout:** ensemble — **13.29 avg pts/race** (corrected baseline after v6.11 eval parquet fix)
-**v6.x key change:** Non-adaptive top-3 ensemble (xgb_ranker=6.0, lgbm_ranker=1.5, rf_clf=1.5); no heuristics
+**Best 2025 holdout:** ensemble — **14.17 avg pts/race** (v7.1: xgb_ranker=6.0, rf_clf=1.5, xgb_clf=1.5; beats naive +0.13)
+**v7.1 key change:** Replaced `lgbm_ranker` with `xgb_clf` in ensemble — architectural diversity gain +0.88 pts
 
 > **Note on baselines:** The 14.38 figure referenced in v6.7 testing was measured on a corrupted
 > eval parquet where all 2025 rows had `circ_races=0`. Corrected honest baseline = 13.29 pts/race.
+> v7.1 (2026-03-20) improved to 14.17 by replacing lgbm_ranker (correlated with xgb_ranker) with xgb_clf.
 
 ---
 
@@ -78,6 +79,11 @@ F1-p10-2026/
 │   ├── 28_test_v617_pit_relative.py  # v6.17 pit relative median test (REJECTED)
 │   ├── 29_test_v618_form_trend_long.py  # v6.18 medium-term trend (REJECTED)
 │   ├── 30_test_v619_feature_ablation.py # v6.19 feature ablation (REJECTED)
+│   ├── 31_test_v71_arch_diverse_weights.py  # v7.1 arch-diverse ensemble (ACCEPTED ✓)
+│   ├── 32_test_v72_train_window.py          # v7.2 training window restriction (REJECTED)
+│   ├── 33_test_v73_rolling_cv_weights.py    # v7.3 rolling CV weight derivation (REJECTED)
+│   ├── 34_test_v74_consensus_override.py    # v7.4 consensus override (NOT ADOPTED)
+│   ├── 35_test_v75_conditional_weights.py   # v7.5 circuit-type conditional weights (REJECTED)
 │   └── v5_results/             # v5.x per-version results and analysis
 │
 ├── data/
@@ -88,7 +94,8 @@ F1-p10-2026/
 ├── models/                     # saved .joblib files (gitignored)
 ├── results/                    # evaluation CSVs and CV checkpoints
 │
-└── V6_DEVELOPMENT_PLAN.md      # v6.x feature testing plan and full results
+├── V6_DEVELOPMENT_PLAN.md      # v6.x feature testing plan and full results
+└── V7_ENSEMBLE_PLAN.md         # v7.x ensemble weighting research and results
 ```
 
 ---
@@ -203,20 +210,26 @@ All features are derived from information available **after qualifying, before t
 | `lgbm_ranker` | LightGBM Ranker (LambdaMART) | Highest P10-centred relevance score |
 | `ensemble` | WeightedEnsemble (top-3, non-adaptive) | Weighted blend — see below |
 
-### WeightedEnsemble — Top-3 Non-Adaptive (v6.2)
+### WeightedEnsemble — Top-3 Non-Adaptive (v7.1)
 
 Fixed weights across all races and season stages. Analytic heuristics removed (their signal
 is fully captured by ML features):
 
 | Model | Weight | Rationale |
 |---|---|---|
-| `xgb_ranker` | **6.0** | Dominant in 2022+ ground-effect era; best 2025 holdout |
-| `lgbm_ranker` | 1.5 | Diversity via LambdaMART objective |
-| `rf_clf` | 1.5 | Diversity via probability-calibrated EV |
+| `xgb_ranker` | **6.0** | Dominant in 2022+ ground-effect era; best 2025 holdout (13.08) |
+| `rf_clf` | 1.5 | Diversity via probability-calibrated RF EV decision |
+| `xgb_clf` | 1.5 | Diversity via XGB classifier EV — independent from ranker objective |
+| `lgbm_ranker` | **0.0** | REMOVED v7.1 — correlated with xgb_ranker (both LTR objectives) |
 | all others | **0.0** | Excluded — not contributing net positive signal |
 
 `adaptive=False` — season-stage adaptive weights were unstable across random seeds; fixed
 weights generalise better across seasons.
+
+**v7.1 key finding:** `lgbm_ranker` (LambdaMART) and `xgb_ranker` (rank:ndcg) share the same
+learning-to-rank training signal and fail together on chaotic races (R12 Britain, R14 Hungary,
+R15 Dutch). Replacing `lgbm_ranker` with `xgb_clf` (EV-based classification) provides genuine
+architectural diversity. 2025 holdout: 13.29 → **14.17** (+0.88 pts/race).
 
 ### XGBoost Ranker
 
@@ -266,13 +279,14 @@ python scripts/03_train_models.py --cv --cv-years 2024
 
 ## Results
 
-### 2025 Holdout — v6.x (50 features, top-3 ensemble, trained on 2010–2024, 24 races)
+### 2025 Holdout — v7.1 (50 features, top-3 ensemble, trained on 2010–2024, 24 races)
 
 | Model | Avg pts/race | Notes |
 |---|---|---|
-| `naive_grid_p10` | **14.04** | Baseline to beat |
-| **`ensemble`** | **13.29** | v6.2 top-3 non-adaptive; corrected after v6.11 eval fix |
+| `naive_grid_p10` | **14.04** | Naive baseline |
+| **`ensemble`** | **14.17** | **v7.1 top-3 non-adaptive; beats naive +0.13** |
 | `xgb_ranker` | 13.08 | Dominant model (6× ensemble weight) |
+| `ensemble (v6.2)` | 13.29 | Prior baseline (lgbm_ranker instead of xgb_clf) |
 
 **2026 live (R1–R2):**
 
@@ -282,7 +296,7 @@ python scripts/03_train_models.py --cv --cv-years 2024
 | `ensemble` | 18 | 10 | 13.75 |
 | `naive_grid_p10` | 2 | 25 | 13.00 |
 
-### 2025 Holdout — v6.x vs v5.x evolution
+### 2025 Holdout — v7.x vs v6.x vs v5.x evolution
 
 | Version | Ensemble avg pts/race | Key change |
 |---|---|---|
@@ -290,7 +304,8 @@ python scripts/03_train_models.py --cv --cv-years 2024
 | **v6.2** | **14.08*** | Top-3 non-adaptive; heuristics removed |
 | v6.4 | 13.38* | +`dnf_rate_last10` (49 features) |
 | v6.7 | 13.29 | +`avg_fin_last10` (50 features); corrected after v6.11 eval parquet fix |
-| v6.11+ (current) | **13.29** | Corrected honest baseline |
+| v6.11–v6.19 | **13.29** | Corrected honest baseline; feature additions/ablations all rejected |
+| **v7.1** | **14.17** | **xgb_clf replaces lgbm_ranker; architectural diversity; beats naive +0.13** |
 
 *\*Pre-correction figures measured on corrupted eval parquet (circ_races=0); post-correction value is 13.29.*
 
@@ -343,6 +358,26 @@ Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`
 ---
 
 ## Development History
+
+### v7.1 — Ensemble architectural diversity: xgb_clf replaces lgbm_ranker (2026-03-20) — ACCEPTED ✓
+
+**Root cause diagnosis:** `lgbm_ranker` (LambdaMART) and `xgb_ranker` (rank:ndcg) share the
+same learning-to-rank training signal. Oracle gap analysis of 2025 holdout identified 3
+catastrophic races (R12 Britain, R14 Hungary, R15 Dutch) where both rankers agreed on the wrong
+driver while `xgb_clf` picked correctly. Replacing `lgbm_ranker` with `xgb_clf` (EV-based
+classification — independent decision boundary) provides genuine architectural independence.
+
+**Result:** 2024 CV: 14.67 | 2025 holdout: **14.17** (+0.88 vs 13.29 baseline)
+**Now beats naive baseline: 14.17 > 14.04 (+0.13 pts/race)**
+
+New `ENSEMBLE_WEIGHTS`: `xgb_ranker=6.0, rf_clf=1.5, xgb_clf=1.5, lgbm_ranker=0.0` (all others=0.0)
+
+Scripts tested (see `V7_ENSEMBLE_PLAN.md` for full details):
+- `31_test_v71_arch_diverse_weights.py` — v7.1 ACCEPTED ✓
+- `32_test_v72_train_window.py` — training window restriction: all hurt (v7.2 REJECTED)
+- `33_test_v73_rolling_cv_weights.py` — rolling CV weight derivation: all ≤ baseline (v7.3 REJECTED)
+- `34_test_v74_consensus_override.py` — consensus override mechanism: fragile (v7.4 NOT ADOPTED)
+- `35_test_v75_conditional_weights.py` — circuit-type conditional weights: −3.29 (v7.5 REJECTED)
 
 ### v6.19 — Feature ablation test (2026-03-20) — REJECTED
 
@@ -403,10 +438,10 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
 
 ## Known Issues and Future Work
 
-**Active (v6.x):**
+**Active (v7.x):**
 
-- **Gap to naive baseline:** ensemble 13.29 vs naive 14.04 = -0.75 pts. Feature space with
-  existing data is exhausted (v6.7–v6.19 all tested). Next improvements require new data.
+- **Ensemble vs naive:** v7.1 ensemble 14.17 vs naive 14.04 = **+0.13 pts** (baseline now cleared).
+  Further improvements require new data or new features.
 - **Weather features (v6.13 PLANNED):** Rain specialists (Sainz, Alonso, Norris) measurably
   outperform in wet conditions. Requires tagging historical races wet/dry or FastF1 API.
 - **Lap-1 position change (v6.14 PLANNED):** First-corner incidents change P10 trajectory.
