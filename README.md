@@ -1,17 +1,15 @@
-# F1 P10 Predictor · v5.9.1
+# F1 P10 Predictor · v6.x
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix, optimised for a
 fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetrically).
 
-**Current model:** 48 features · 9 models · season-stage adaptive ensemble weights
+**Current model:** 50 features · 8 models · top-3 non-adaptive ensemble
 **Benchmark:** `naive_grid_p10` — 14.04 avg pts/race on 2025 holdout
-**Best 2025 holdout:** `xgb_ranker` — **14.42 avg pts/race ✓ beats naive baseline**
-**Ensemble (v5.9):** 12.67 avg pts/race
-**v5.9.1 change (2026-03-18):** Codebase consolidation — restored corrupted `predict_race.py`,
-removed duplicate root-level files, fixed import paths, synced stale modules. No model changes.
-**v5.9 change:** Full 11-fold rolling CV re-run (2014–2024, 228 races); all 4 ENSEMBLE_WEIGHTS
-dicts recalibrated using 70% 2025 holdout + 30% 11-fold CV; removes circular validation overfit
-in xgb_ranker MID/LATE (7.00→4.00); discovers lgbm_ranker genuine late-season strength (1.75→3.61).
+**Best 2025 holdout:** ensemble — **13.29 avg pts/race** (corrected baseline after v6.11 eval parquet fix)
+**v6.x key change:** Non-adaptive top-3 ensemble (xgb_ranker=6.0, lgbm_ranker=1.5, rf_clf=1.5); no heuristics
+
+> **Note on baselines:** The 14.38 figure referenced in v6.7 testing was measured on a corrupted
+> eval parquet where all 2025 rows had `circ_races=0`. Corrected honest baseline = 13.29 pts/race.
 
 ---
 
@@ -25,8 +23,10 @@ pip install -r requirements.txt pyarrow
 # Step 1 — Restore pre-built data cache (fast, no network needed)
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
 
-# Step 2–4 — Build features → train models → evaluate
+# Step 2 — Build features (extracts from combined parquet — never year-only)
 python scripts/02_build_dataset.py
+
+# Step 3–4 — Train models → evaluate
 python scripts/03_train_models.py
 python scripts/04_evaluate_2025.py
 
@@ -42,20 +42,27 @@ python predict_race.py --year 2026 --round 5 --top 8      # show top-8 candidate
 python predict_race.py --year 2026 --round 5 --model xgb_ranker
 ```
 
+**2026 live evaluation** (run after each completed race):
+
+```bash
+python scripts/18_live_2026.py            # evaluate all completed 2026 races
+python scripts/18_live_2026.py --predict --race 6   # pre-race prediction for R6
+```
+
 ---
 
 ## Project Structure
 
 ```
 F1-p10-2026/
-├── config.py                   # constants, FEATURE_COLS, scoring table, era weights
+├── config.py                   # constants, FEATURE_COLS (50), scoring table, era weights
 ├── predict_race.py             # run each race weekend after qualifying
 ├── run_pipeline.py             # convenience orchestrator (steps 2-4)
 │
 ├── src/
 │   ├── data_fetch.py           # Jolpica API wrapper with caching
-│   ├── feature_engineering.py  # builds the 48-feature matrix
-│   ├── models.py               # model definitions, ensemble, adaptive weights
+│   ├── feature_engineering.py  # builds the 50-feature matrix
+│   ├── models.py               # model definitions, top-3 non-adaptive ensemble
 │   └── scoring.py              # fantasy scoring + regret utilities
 │
 ├── scripts/
@@ -63,34 +70,30 @@ F1-p10-2026/
 │   ├── 02_build_dataset.py     # build feature parquet files
 │   ├── 03_train_models.py      # fit & save models; --cv for cross-validation
 │   ├── 04_evaluate_2025.py     # back-test on 2025 season
-│   ├── 06_seasonal_performance_analysis.py
-│   ├── 07_build_aux_features.py   # builds data/aux/ lookup tables
-│   ├── 08_test_new_features.py    # Phase 1 feature testing (2-model)
-│   ├── 09_test_features_all_models.py  # Phase 2 feature testing (5-model)
-│   ├── 10_evaluate_v51_calibration.py  # v5.1: calibrated vs uncalibrated comparison
-│   ├── 11_test_v52_qualifying.py       # v5.2: qualifying session feature evaluation
-│   ├── 15_cv_v59.py                    # v5.9: 11-fold CV runner + weight calculator
-│   └── v5_results/                # v5.x per-version results and analysis
+│   ├── 18_live_2026.py         # 2026 live evaluation and pre-race prediction
+│   ├── 24_fetch_pit_data_2025.py  # fetch constructor pit stop data from Jolpica
+│   ├── 25_tune_v610_xgb_ranker.py # v6.10 XGBoost hyperparameter tuning (REJECTED)
+│   ├── 26_test_v615_circ_is_new.py   # v6.15 circ_is_new flag test (REJECTED)
+│   ├── 27_test_v616_clean_form.py    # v6.16 DNF-excluding form batch (REJECTED)
+│   ├── 28_test_v617_pit_relative.py  # v6.17 pit relative median test (REJECTED)
+│   ├── 29_test_v618_form_trend_long.py  # v6.18 medium-term trend (REJECTED)
+│   ├── 30_test_v619_feature_ablation.py # v6.19 feature ablation (REJECTED)
+│   └── v5_results/             # v5.x per-version results and analysis
 │
 ├── data/
 │   ├── raw/                    # cached JSON from Jolpica API + FastF1
-│   ├── processed/              # feature parquet files
+│   ├── processed/              # feature parquet files (gitignored)
 │   └── aux/                    # circuit/driver lookup tables (SC, pit stops, etc.)
 │
 ├── models/                     # saved .joblib files (gitignored)
 ├── results/                    # evaluation CSVs and CV checkpoints
-│   └── cv_checkpoints_v59/     # v5.9: 11-fold CV fold-level results
 │
-├── weather/                    # weather investigation (concluded: excluded)
-│   └── WEATHER_STATUS.md
-├── dnf/                        # DNF feature investigation (concluded: excluded)
-│   └── DNF_STATUS.md
-└── V380_PLAN.md               # v3.80–v4.03 feature testing plan and full results
+└── V6_DEVELOPMENT_PLAN.md      # v6.x feature testing plan and full results
 ```
 
 ---
 
-## Features (48 total)
+## Features (50 total)
 
 All features are derived from information available **after qualifying, before the race**.
 
@@ -99,15 +102,15 @@ All features are derived from information available **after qualifying, before t
 | Feature | Description |
 |---|---|
 | `grid_position` | Starting grid position (1–20) |
-| `q_gap_pct` | Best qualifying lap time gap to pole (%) — uses Q3 for top-10, Q2 for P11–P15, Q1 for P16+ |
-| `q1_gap_pct` | Q1 session lap time gap to pole (%). Available for all drivers; captures Q1-eliminated pace directly. Falls back to `q_gap_pct` for Q2/Q3 drivers. **(v5.2)** |
-| `q2_gap_pct` | Q2 session lap time gap to pole (%). Available for Q2/Q3 advancing drivers; refined mid-session pace signal. Falls back to `q_gap_pct` when unavailable. **(v5.2)** |
-| `q2_elimination_margin` | Driver's Q2 time minus the Q2 cut time (% of pole). Negative = comfortably through; large positive = eliminated at margin. **(v5.2)** |
-| `q_gap_sq` | `q_gap_pct²` — captures non-linear backmarker penalty |
-| `grid_p10_proximity` | `\|grid_position − 10\|` — direct distance from ideal starting slot |
-| `fp2_position` | FP2 classification (race-pace proxy); falls back to FP1, then qualifying |
+| `q_gap_pct` | Best qualifying lap time gap to pole (%) |
+| `q_gap_sq` | `q_gap_pct²` — non-linear backmarker penalty **(v3.61)** |
+| `q1_gap_pct` | Q1 session gap to pole (%). Available for all drivers. **(v5.2)** |
+| `q2_gap_pct` | Q2 session gap to pole (%). NaN for Q1 eliminees. **(v5.6)** |
+| `q2_elimination_margin` | Gap between driver's Q2 time and Q2 cutoff. **(v5.6)** |
+| `grid_p10_proximity` | `\|grid_position − 10\|` |
+| `fp2_position` | FP2 classification (race-pace proxy) **(v3.1)** |
 
-### Driver form & history (10)
+### Driver form & history (12)
 
 | Feature | Description |
 |---|---|
@@ -116,11 +119,13 @@ All features are derived from information available **after qualifying, before t
 | `last_qual_pos` | Qualifying position last race |
 | `avg_fin_last3` | Rolling average finish, last 3 races |
 | `avg_fin_last5` | Rolling average finish, last 5 races |
+| `avg_fin_last10` | Rolling average finish, last 10 races **(v6.7)** |
 | `avg_qual_last3` | Rolling average qualifying position, last 3 races |
 | `dnf_last5` | DNF count in last 5 races |
+| `dnf_rate_last10` | DNF fraction over last 10 races **(v6.4)** |
 | `pts_last3` | Fantasy points scored in last 3 races |
-| `drv_form_trend` | `avg_fin_last3 − avg_fin_last5` (negative = improving) |
-| `drv_dnf_recovery_rate` | `last_dnf × (avg_fin_last5 ≤ 12)` — competitive drivers bouncing back after DNF |
+| `drv_form_trend` | `avg_fin_last3 − avg_fin_last5` (negative = improving) **(v3.63)** |
+| `drv_dnf_recovery_rate` | `last_dnf × (avg_fin_last5 ≤ 12)` — bounce-back signal **(v3.94)** |
 
 ### P10-zone targeting (7)
 
@@ -131,7 +136,7 @@ All features are derived from information available **after qualifying, before t
 | `circ_p10_zone_rate` | Driver's P8–P12 rate at this circuit historically |
 | `drv_finish_std_last5` | Std-dev of finish positions (last 5): low = consistent |
 | `midfield_qual_density` | Drivers qualifying within 1% gap of this driver |
-| `self_grid_displacement` | `drv_champ_pos − grid_position` (grid penalty / overperformance signal) |
+| `self_grid_displacement` | `drv_champ_pos − grid_position` (penalty/overperformance signal) |
 | `grid_displacement_behind` | Count of top-5 championship drivers starting behind this driver |
 
 ### Championship standing (4)
@@ -143,7 +148,7 @@ All features are derived from information available **after qualifying, before t
 | `con_champ_pos` | Constructor championship position |
 | `con_champ_pts` | Constructor championship points |
 
-### Team context (6)
+### Team context (5)
 
 | Feature | Description |
 |---|---|
@@ -152,7 +157,6 @@ All features are derived from information available **after qualifying, before t
 | `teammate_grid` | Teammate's grid position |
 | `career_races` | Driver career race starts |
 | `career_avg_fin` | Driver career average finish |
-| `con_xpt_std` | Constructor's rolling std-dev of excess pit stop time (xPT) over last 5 races — measures pit crew consistency. **(v5.6)** |
 
 ### Circuit history (3)
 
@@ -162,18 +166,19 @@ All features are derived from information available **after qualifying, before t
 | `circ_last_fin` | Driver's last finish at this circuit |
 | `circ_races` | Times this driver has raced at this circuit |
 
-### Circuit character (8)
+### Circuit character (9)
 
 | Feature | Description |
 |---|---|
-| `is_street` | Street circuit flag (Monaco, Baku, Singapore, etc.) |
+| `is_street` | Street circuit flag (Monaco, Baku, Singapore, Jeddah, Miami, Vegas, Madrid) |
 | `historical_dnf_rate` | DNF fraction at this circuit over the preceding 5 years |
 | `overtaking_difficulty` | Empirical 1–10 stickiness index (Spearman ρ-based, 2014–2024) |
-| `grid_x_overtaking` | `grid_position × overtaking_difficulty` — P12 at Monaco ≠ P12 at Albert Park |
-| `circ_vsc_rate` | Avg VSC deployments per race at this circuit (last 5 years, FastF1) |
+| `grid_x_overtaking` | `grid_position × overtaking_difficulty` **(v3.62)** |
+| `circ_vsc_rate` | Avg VSC deployments per race at this circuit (last 5 years) |
 | `circ_sc_vsc_combined` | Total SC + VSC disruption index (last 5 years) |
-| `circ_avg_pit_stops` | Average pit stop count per race at this circuit (last 5 years, Kaggle) |
-| `circ_collision_rate` | Collision/accident DNF rate per driver-start at this circuit (Kaggle) |
+| `circ_avg_pit_stops` | Average pit stop count per race at this circuit (last 5 years) |
+| `circ_collision_rate` | Collision/accident DNF rate per driver-start at this circuit |
+| `con_xpt_std` | Std dev of constructor pit stop durations (crew consistency proxy) **(v5.7)** |
 
 ### Season context (2)
 
@@ -190,115 +195,47 @@ All features are derived from information available **after qualifying, before t
 |---|---|---|
 | `ridge` | Ridge Regression | Closest predicted position to 10th |
 | `rf_reg` | Random Forest Regressor | Closest predicted position to 10th |
-| `xgb_reg` | XGBoost Regressor | Closest predicted position to 10th |
-| `lgb_reg` | LightGBM Regressor | Closest predicted position to 10th |
 | `rf_clf` | Random Forest Classifier (20-class) | Highest expected value of fantasy points |
+| `xgb_reg` | XGBoost Regressor | Closest predicted position to 10th |
 | `xgb_clf` | XGBoost Classifier (20-class) | Highest expected value of fantasy points |
 | `xgb_ranker` | XGBoost Ranker (`rank:ndcg`) | Highest P10-centred relevance score |
-| `lgbm_ranker` | LightGBM Ranker (`lambdarank`) | Highest P10-centred relevance score |
-| `ensemble` | WeightedEnsemble | Season-stage adaptive blend of all 8 models |
+| `lgb_reg` | LightGBM Regressor | Closest predicted position to 10th |
+| `lgbm_ranker` | LightGBM Ranker (LambdaMART) | Highest P10-centred relevance score |
+| `ensemble` | WeightedEnsemble (top-3, non-adaptive) | Weighted blend — see below |
 
-### Multi-class EV Classifiers
+### WeightedEnsemble — Top-3 Non-Adaptive (v6.2)
 
-`rf_clf` and `xgb_clf` predict a full 20-position finish distribution and select by
-**Expected Value**:
+Fixed weights across all races and season stages. Analytic heuristics removed (their signal
+is fully captured by ML features):
 
-```
-EV(driver) = Σ P(finish at pos p) × fantasy_pts(p)   for p in 1..20
-SCORING_VECTOR = [1, 2, 4, 6, 8, 10, 12, 15, 18, 25, 18, 15, 12, 10, 8, 6, 4, 2, 1, 0]
-```
+| Model | Weight | Rationale |
+|---|---|---|
+| `xgb_ranker` | **6.0** | Dominant in 2022+ ground-effect era; best 2025 holdout |
+| `lgbm_ranker` | 1.5 | Diversity via LambdaMART objective |
+| `rf_clf` | 1.5 | Diversity via probability-calibrated EV |
+| all others | **0.0** | Excluded — not contributing net positive signal |
+
+`adaptive=False` — season-stage adaptive weights were unstable across random seeds; fixed
+weights generalise better across seasons.
 
 ### XGBoost Ranker
 
-`xgb_ranker` uses `rank:ndcg` (v5.3 upgrade from `rank:pairwise`), optimising NDCG over
-the full race list. Integer relevance labels: `round(10/(1+|finish_pos−10|))` — P10→10,
-P9/P11→5, with symmetric decay. Uses `qid` (per-row group index) for race grouping.
-Regularized in v5.41: `reg_lambda=3.0, colsample_bytree=0.70`.
+Uses `rank:ndcg` (upgraded v5.3 from `rank:pairwise`), optimising NDCG over the full race
+list. Integer relevance labels: `round(10/(1+|finish_pos−10|))` — P10→10, P9/P11→5, with
+symmetric decay. Params: n_estimators=500, max_depth=5, learning_rate=0.05, subsample=0.8,
+colsample_bytree=0.8. (v6.10 tuning to n=1000, depth=4, lr=0.03 was REJECTED — improved
+2024 CV +1.08 but degraded 2025 holdout by -1.34; year-specific overfitting.)
 
-### LightGBM Ranker
+### Era-Stratified Sample Weights
 
-`lgbm_ranker` (v5.3) uses LambdaMART (`lambdarank` objective), an independent implementation
-for ensemble diversity. Uses `group` (array of per-race row counts) for grouping. Discovered
-to have genuine late-season strength in v5.9 CV: LATE blended score 11.12 → weight 3.61.
+Training samples weighted by regulatory era to up-weight the most recent (and most predictive)
+era for 2026 conditions:
 
-### WeightedEnsemble — Season-Stage Adaptive Weights
-
-The ensemble selects one of three weight sets based on `race_num` (extracted from the
-feature matrix at prediction time). Two analytic heuristics are included at fixed
-weight 2.00 across all stages:
-
-- **`grid_heuristic`**: `1 / (1 + |grid_position − 10|)`
-- **`champ_heuristic`**: `1 / (1 + |champ_pos − 10|)` (clipped to [1, 20])
-
-Weights recalibrated in **v5.9** using: **70% 2025 holdout + 30% 11-fold CV** (2014–2024,
-228 races, era-stratified sample weights: V8≤2013=0.25 / hybrid 2014–2021=0.60 / GE 2022+=1.00).
-Linear scaling min→0.25, max→4.00. Removes circular validation overfit where xgb_ranker MID/LATE
-had been set to 7.00 using the same 2025 holdout being evaluated.
-
-**Overall weights (all stages):**
-
-| Model | v5.9 weight | Blended score | 2025 holdout | 11-fold CV | Δ vs v5.4 |
-|---|---|---|---|---|---|
-| `xgb_ranker` | **4.00** | 13.33 | **14.42** | 10.79 | 0.00 |
-| `rf_clf` | 2.54 | 11.50 | 11.46 | 11.59 | -0.21 |
-| `lgbm_ranker` | 2.54 | 11.49 | 11.96 | 10.39 | **+0.79** |
-| `xgb_clf` | 2.18 | 11.04 | 10.88 | 11.41 | -0.57 |
-| `ridge` | 2.15 | 11.02 | 10.79 | 11.56 | -0.10 |
-| `lgb_reg` | 2.06 | 10.89 | 11.17 | 10.24 | -0.69 |
-| `grid_heuristic` | 2.00 | — | — | — | 0.00 |
-| `champ_heuristic` | 2.00 | — | — | — | 0.00 |
-| `rf_reg` | 1.26 | 9.90 | 9.46 | 10.93 | +0.26 |
-| `xgb_reg` | **0.25** | 8.63 | **7.92** | 10.29 | 0.00 |
-
-**Early-season weights — R1–R5** *(xgb_ranker + rf_clf co-dominant; lgb_reg strongly raised)*
-
-| Model | Weight | Blended score |
-|---|---|---|
-| `xgb_ranker` | 4.00 | 14.79 |
-| `rf_clf` | 3.69 | 14.08 |
-| `lgb_reg` | 3.36 | 13.32 |
-| `grid_heuristic` | 2.00 | — |
-| `champ_heuristic` | 2.00 | — |
-| `lgbm_ranker` | 2.14 | 10.50 |
-| `ridge` | 2.10 | 10.40 |
-| `rf_reg` | 2.09 | 10.36 |
-| `xgb_clf` | 1.47 | 8.94 |
-| `xgb_reg` | 0.25 | 6.11 |
-
-**Mid-season weights — R6–R15** *(xgb_ranker leads; xgb_clf + lgbm_ranker raised)*
-
-| Model | Weight | Blended score |
-|---|---|---|
-| `xgb_ranker` | 4.00 | 14.35 |
-| `xgb_clf` | 3.08 | 13.09 |
-| `lgbm_ranker` | 2.47 | 12.25 |
-| `grid_heuristic` | 2.00 | — |
-| `champ_heuristic` | 2.00 | — |
-| `ridge` | 1.70 | 11.19 |
-| `lgb_reg` | 1.57 | 11.01 |
-| `rf_clf` | 1.56 | 11.00 |
-| `xgb_reg` | 1.20 | 10.51 |
-| `rf_reg` | 0.25 | 9.20 |
-
-**Late-season weights — R16+** *(xgb_ranker + ridge + lgbm_ranker top-3; lgbm_ranker discovered strong LATE profile)*
-
-| Model | Weight | Blended score |
-|---|---|---|
-| `xgb_ranker` | 4.00 | 11.49 |
-| `ridge` | 3.79 | 11.29 |
-| `lgbm_ranker` | 3.61 | 11.12 |
-| `rf_reg` | 2.98 | 10.53 |
-| `rf_clf` | 2.97 | 10.52 |
-| `grid_heuristic` | 2.00 | — |
-| `champ_heuristic` | 2.00 | — |
-| `xgb_clf` | 2.19 | 9.79 |
-| `lgb_reg` | 1.81 | 9.43 |
-| `xgb_reg` | 0.25 | 7.96 |
-
-> v5.9 blended scores = 0.70 × 2025-holdout + 0.30 × 11-fold-CV (2014–2024).
-> Key change from v5.4: xgb_ranker MID 7.00→4.00 and LATE 7.00→4.00 removes circular
-> validation overfit. Ensemble regression from 12.88→12.67 is the expected cost of
-> removing the overfit. lgbm_ranker LATE 1.75→3.61 is the major new discovery.
+| Era | Years | Weight | Rationale |
+|---|---|---|---|
+| V8 naturally aspirated | 2010–2013 | 0.25 | DRS not established; different overtaking dynamics |
+| Turbo-hybrid V6 | 2014–2021 | 0.60 | Stable era; relevant but pre-dates ground-effect reset |
+| Ground effect / new aero | 2022–present | **1.00** | Most predictive of 2026 conditions |
 
 ---
 
@@ -316,100 +253,46 @@ had been set to 7.00 using the same 2025 holdout being evaluated.
 | `naive_champ_p10` | Always picks the P10 championship driver | < 10 |
 
 `naive_grid_p10` at **14.04** is the floor any meaningful model must clear.
-`xgb_ranker` clears it at **14.42** (+0.38 pts/race).
 
 ```bash
 python scripts/04_evaluate_2025.py
 python scripts/04_evaluate_2025.py --plots
 
-# v5.9 CV (11-fold rolling; one fold at a time; --resume supported)
-python scripts/15_cv_v59.py --cv-years 2024   # single fold (fast)
-python scripts/15_cv_v59.py                   # full 11-fold (use --resume)
+# Single-fold CV (recommended — fast, per Rule 1)
+python scripts/03_train_models.py --cv --cv-years 2024
 ```
 
 ---
 
 ## Results
 
-### 2025 Holdout — v5.9 (48 features, 9 models, trained on 2010–2024, 24 races)
+### 2025 Holdout — v6.x (50 features, top-3 ensemble, trained on 2010–2024, 24 races)
 
-| Model | Avg pts/race | Exact P10 | Within 2 | Within 2 % |
-|---|---|---|---|---|
-| naive_grid_p10 | **14.04** | — | — | — |
-| **`xgb_ranker`** | **14.42** ✓ | 4 | 15 | 62.5% |
-| **`ensemble`** | **12.67** | 3 | 11 | 45.8% |
-| `lgbm_ranker` | 11.96 | 0 | 13 | 54.2% |
-| `rf_clf` | 11.46 | 2 | 11 | 45.8% |
-| `lgb_reg` | 11.17 | 1 | 9 | 37.5% |
-| `xgb_clf` | 10.88 | 3 | 11 | 45.8% |
-| `ridge` | 10.79 | 0 | 9 | 37.5% |
-| `rf_reg` | 9.46 | 0 | 8 | 33.3% |
-| `xgb_reg` | 7.92 | 1 | 4 | 16.7% |
+| Model | Avg pts/race | Notes |
+|---|---|---|
+| `naive_grid_p10` | **14.04** | Baseline to beat |
+| **`ensemble`** | **13.29** | v6.2 top-3 non-adaptive; corrected after v6.11 eval fix |
+| `xgb_ranker` | 13.08 | Dominant model (6× ensemble weight) |
 
-### 2025 Holdout — v5.4 (archived reference, 45 features)
+**2026 live (R1–R2):**
 
-| Model | Avg pts/race | Delta vs v5.3 | Exact P10 | Within 2 |
-|---|---|---|---|---|
-| naive_grid_p10 | **14.04** | — | — | — |
-| `xgb_ranker` | 13.58 | 0.00 | 3 | 62.5% |
-| `lgb_reg` | 11.75 | 0.00 | 2 | 29.2% |
-| `xgb_clf` | 11.54 | 0.00 | 2 | 45.8% |
-| `rf_clf` | 11.46 | 0.00 | 3 | 41.7% |
-| **`ensemble`** | **11.12** | **+0.83** | 2 | 33.3% |
-| `ridge` | 10.79 | 0.00 | 0 | 37.5% |
-| `lgbm_ranker` | 10.67 | 0.00 | 0 | 41.7% |
-| `rf_reg` | 9.58 | 0.00 | 0 | 29.2% |
-| `xgb_reg` | 8.33 | 0.00 | 1 | 20.8% |
-
-### 2025 Holdout — v4.03 (archived reference)
-
-| Model | Avg pts/race | Exact P10 | Within 2 |
+| Model | R1 | R2 | Avg |
 |---|---|---|---|
-| naive_grid_p10 | **14.04** | 3 | — |
-| `xgb_reg` | **12.42** | 1 | 41.7% |
-| `lgb_reg` | **11.96** | 2 | 37.5% |
-| `xgb_ranker` | 11.67 | 1 | 41.7% |
-| `rf_clf` | 11.04 | **3** | 37.5% |
-| `ridge` | 10.79 | 0 | 37.5% |
-| `xgb_clf` | 10.75 | 2 | 37.5% |
-| `ensemble` | 10.46 | 1 | 29.2% |
-| `rf_reg` | 10.00 | 0 | 20.8% |
+| `xgb_clf` | 25 | 10 | **17.50** |
+| `ensemble` | 18 | 10 | 13.75 |
+| `naive_grid_p10` | 2 | 25 | 13.00 |
 
-### Cross-Validation
+### 2025 Holdout — v6.x vs v5.x evolution
 
-**11-fold rolling Time-Series CV — v5.9 model (48 features, 9 models)**
-Eval years 2014–2024, 4-year training window, 228 total races. Era-stratified sample weights
-(V8≤2013=0.25 / turbo-hybrid 2014–2021=0.60 / ground-effect 2022+=1.00).
+| Version | Ensemble avg pts/race | Key change |
+|---|---|---|
+| v5.4 (v5.x final) | 11.12 | Era-blended weights on old 9-model adaptive ensemble |
+| **v6.2** | **14.08*** | Top-3 non-adaptive; heuristics removed |
+| v6.4 | 13.38* | +`dnf_rate_last10` (49 features) |
+| v6.7 | 13.29 | +`avg_fin_last10` (50 features); corrected after v6.11 eval parquet fix |
+| v6.11+ (current) | **13.29** | Corrected honest baseline |
 
-| Model | v5.9 CV avg | 2025 holdout | Blended (70/30) | v5.9 weight |
-|---|---|---|---|---|
-| `xgb_ranker` | 10.79 | **14.42** | 13.33 | **4.00** |
-| `rf_clf` | 11.59 | 11.46 | 11.50 | 2.54 |
-| `lgbm_ranker` | 10.39 | 11.96 | 11.49 | 2.54 |
-| `xgb_clf` | 11.41 | 10.88 | 11.04 | 2.18 |
-| `ridge` | 11.56 | 10.79 | 11.02 | 2.15 |
-| `lgb_reg` | 10.24 | 11.17 | 10.89 | 2.06 |
-| `rf_reg` | 10.93 | 9.46 | 9.90 | 1.26 |
-| `xgb_reg` | 10.29 | 7.92 | 8.63 | **0.25** |
-
-> CV averages are era-weighted. xgb_ranker's high 2025 holdout (14.42) vs lower CV (10.79)
-> reflects genuine 2025 ground-effect era dominance — the 70/30 blend appropriately discounts
-> the overfit risk while still rewarding recent performance.
-
-**12-fold rolling CV — v5.3 model (45 features, archived reference)**
-Eval years 2014–2025, 4-year training window, 252 total races.
-
-| Model | v5.3 CV avg | v5.2 CV avg | Delta |
-|---|---|---|---|
-| `ensemble` | **12.23** | 12.43 | -0.20 |
-| `rf_clf` | 11.77 | 11.77 | 0.00 |
-| `xgb_reg` | 11.44 | 11.44 | 0.00 |
-| `ridge` | 11.39 | 11.39 | 0.00 |
-| `xgb_clf` | 11.35 | 11.35 | 0.00 |
-| `rf_reg` | 10.91 | 10.91 | 0.00 |
-| `lgb_reg` | 10.83 | 10.83 | 0.00 |
-| `lgbm_ranker` | 10.57 | n/a | new |
-| `xgb_ranker` | 10.51 | 10.55 | -0.04 |
+*\*Pre-correction figures measured on corrupted eval parquet (circ_races=0); post-correction value is 13.29.*
 
 ---
 
@@ -427,18 +310,17 @@ Eval years 2014–2025, 4-year training window, 252 total races.
 ```bash
 unzip f1_data_cache_2026-03-09.zip -d data/raw/     # always start here
 python scripts/01_fetch_data.py --skip-fp            # top up race/qualifying/standings
-python scripts/01_fetch_data.py --fp-only            # top up FP1/FP2 only (~42 min)
+python scripts/01_fetch_data.py --fp-only            # top up FP1/FP2 only
 ```
 
-**Auxiliary lookup tables** (`data/aux/`) — rebuild with `python scripts/07_build_aux_features.py`:
+> ⚠️ **Never build year-only eval parquets.** `--years 2025 2025` produces circ_races=0
+> for all rows (no prior-year circuit history). Always extract eval slices from the combined
+> multi-year parquet (`features_2010_2025.parquet`).
 
-| File | Content | Source |
-|---|---|---|
-| `sc_vsc_by_circuit.csv` | SC/VSC deployment counts per circuit per year | FastF1 (2018+) |
-| `pit_stops_by_circuit.csv` | Average pit stop count per race | Kaggle (2010–2024) |
-| `dnf_circuit_history.csv` | Collision DNF rate per driver-start per circuit | Kaggle |
-| `dnf_driver_history.csv` | Mechanical DNF rate per driver | Kaggle |
-| `qualifying_history.csv` | Q2/Q3 progression rates per driver | Kaggle |
+**Constructor pit times** (`data/processed/constructor_pit_times.parquet`) — covers 2011–2025.
+Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`
+
+**Auxiliary lookup tables** (`data/aux/`) — rebuild with `python scripts/07_build_aux_features.py`.
 
 ---
 
@@ -460,252 +342,84 @@ python scripts/01_fetch_data.py --fp-only            # top up FP1/FP2 only (~42 
 
 ---
 
-## Excluded Features
-
-### Weather (excluded)
-Five features (precipitation, wind, wet-race flag, etc.) tested against 329 real
-Open-Meteo records (2010–2025). Result: **−2.3 pts/race** on 2025 holdout.
-Grid → finish Spearman ρ is actually *higher* in wet conditions (0.642) than dry
-(0.636). P10 base rate is identical: 4.76% dry, 4.71% wet.
-See `weather/WEATHER_STATUS.md`.
-
-### DNF signal features (excluded)
-Three features (`drv_dnf_rate_last10`, `driver_circuit_dnf_rate`, `constructor_dnf_rate`)
-individually hurt performance (−0.25 to −0.96 pts/race). Mutual information with
-P10 < 0.001 for all three. DNF likelihood predicts *whether* a driver finishes,
-not *where*. See `dnf/DNF_STATUS.md`.
-
-### FP2 base pace features (excluded — v5.5)
-Three FastF1 long-run pace features (FP2 compound pace, degradation rate, stint delta)
-tested via the v5.5 evaluation harness. All three rejected (0/3 accepted). Individual
-holdout deltas: negative or within noise floor. FP2 session data is too sparse and
-noisy across the full 2014–2024 training window to add signal beyond `fp2_position`.
-
-### Blue flag vulnerability (excluded — v5.7)
-Feature designed to capture whether a driver's race pace was compromised by lapping
-traffic. Tested against 2025 holdout: rejected (0/1 accepted). The signal is too
-intermittent and circuit-dependent to generalise.
-
-### New data source candidates (34 tested, 5 accepted, 29 discarded)
-Full table in `V380_PLAN.md`. Most discards were collinear with existing features:
-circuit SC/pit features overlap with `historical_dnf_rate` and `overtaking_difficulty`;
-qualifying progression features overlap with `grid_position`.
-
----
-
 ## Development History
 
-### v5.9.1 — Codebase consolidation and bug fixes (2026-03-18)
+### v6.19 — Feature ablation test (2026-03-20) — REJECTED
 
-Cleanup pass: removed duplicate root-level files, fixed import paths, restored corrupted
-files, and synced stale modules.
+Tested removing the 3 lowest-importance features (`drv_dnf_recovery_rate`, `is_street`,
+`last_dnf`). All removals hurt: -2.29, -0.17, -1.88 pts. **Key lesson: low Gini/gain
+importance ≠ removable.** These features carry edge-case signal on DNF bounce-back races
+that averages out across 24 races but matters on specific high-variance races.
 
-| Change | Detail |
-|---|---|
-| **Restore `predict_race.py`** | File was corrupted (24 KB of null bytes since commit `68fe7cb`). Restored from `5dad6af`, then updated to v5.2+ feature set (q1/q2 gaps, `q2_elimination_margin`, `con_xpt_std`). Fixed aux feature name mismatches (`circ_sc_rate`→`circ_vsc_rate`, etc.). |
-| **Remove root `data_fetch.py`** | Duplicate of `src/data_fetch.py`. All imports already reference `src.data_fetch`. Root copy deleted. |
-| **Consolidate `01_fetch_data.py`** | Root copy (253 lines, bulk fetch + FastF1 + archive) moved to `scripts/01_fetch_data.py`, replacing the obsolete 80-line version that lacked bulk endpoints, FastF1 support, and had an unused `use_cache` variable (Issue #4). |
-| **Sync `src/data_fetch.py`** | Was stale at 205 lines; synced to full 560-line version with FastF1 support, bulk fetch, and `_status_is_finish()` precedence fix. |
-| **Fix `02_build_dataset.py` import** | `from data_fetch` → `from src.data_fetch` |
-| **Fix duplicate dict key in `config.py`** | Removed duplicate `portimao` entry in `OVERTAKING_DIFFICULTY` |
-| **Fix `_status_is_finish()` precedence** | Added explicit parentheses: `s == "finished" or (s.startswith("+") and "lap" in s)` |
+### v6.15–v6.18 — Feature batch testing (2026-03-20) — all REJECTED
 
-### v5.9 — Full 11-fold CV re-run + ensemble recalibration (2026-03-15)
-
-11-fold rolling Time-Series CV (eval years 2014–2024, 4-year training window, 228 races,
-era-stratified sample weights). New blended weights: 70% 2025 holdout + 30% 11-fold CV,
-scaled linearly to [0.25, 4.00] per stage. Production models retrained on full 2010–2024.
-
-| Key change | v5.4 weight | v5.9 weight | Impact |
+| Version | Feature(s) tested | Best delta | Decision |
 |---|---|---|---|
-| `xgb_ranker` MID | 7.00 (v5.41 overfit) | **4.00** | Removes circular validation overfit |
-| `xgb_ranker` LATE | 7.00 (v5.41 overfit) | **4.00** | Removes circular validation overfit |
-| `lgbm_ranker` LATE | 1.75 | **3.61** | Genuine late-season strength discovered |
-| `rf_clf` EARLY | 2.25 | **3.69** | Strong early EARLY profile confirmed |
-| `lgb_reg` EARLY | 1.00 | **3.36** | Strong early EARLY profile confirmed |
-| `lgb_reg` MID | 4.00 (v5.41) | **1.57** | Over-weighted in prior partial recal |
-| **`ensemble`** | 12.88 avg | **12.67 avg** | -0.21 = expected cost of removing overfit |
+| v6.15 | `circ_is_new` binary flag | -0.54 | REJECTED — circ_races already in features |
+| v6.16 | `avg_fin_last3/5_clean`, `dnf_rate_last5` | -0.54 | REJECTED — dnf_rate_last10 already captures signal |
+| v6.17 | `con_xpt_relative_median` (pit speed vs. field) | -1.88 | REJECTED — dominated by race conditions |
+| v6.18 | `drv_form_trend_long` (avg_fin_last5 − avg_fin_last10) | +0.04 | REJECTED — tree models infer this implicitly |
 
-Full analysis: `scripts/v5_results/V5_RESULTS.md`. CV script: `scripts/15_cv_v59.py`.
+### v6.11 — Real 2025 pit stop data + eval parquet fix (2026-03-20) — COMPLETE
 
-### v5.7 — Blue flag vulnerability feature (2026-03-15, REJECTED)
+Fetched all 24 rounds of 2025 pit stop data from Jolpica API. `constructor_pit_times.parquet`
+now covers 2011–2025 (3,074 rows). Also fixed the 2025 eval parquet circuit history bug
+(see below). Script: `scripts/24_fetch_pit_data_2025.py`.
 
-Tested a blue-flag-lapping-traffic vulnerability proxy. 0/1 features accepted.
-No model change; 48 features unchanged. Verdict: signal too sparse and circuit-dependent.
+> **Critical bug fixed:** `features_2025_2025.parquet` was built with `--years 2025 2025`,
+> giving all rows `circ_races=0`. Fixed by extracting 2025 rows from `features_2010_2025.parquet`.
+> Corrected honest baseline: **13.29 pts/race** (previously inflated to ~14.38 by measurement error).
 
-### v5.6 — Constructor pit stop xPT feature (2026-03-15)
+### v6.10 — XGBoost hyperparameter tuning (2026-03-20) — REJECTED
 
-Tested 2 pit stop consistency features; accepted `con_xpt_std` (constructor rolling std-dev
-of excess pit stop time). Feature count: 47 → **48**. xgb_ranker unchanged at 14.42.
+Phase 1 (18 configs) found n=1000, depth=4, lr=0.03 improved 2024 CV by +1.08. But 2025
+holdout degraded by -1.34 (year-specific overfitting). Original params retained
+(n=500, depth=5, lr=0.05). Script: `scripts/25_tune_v610_xgb_ranker.py`.
 
-### v5.5 — FP2 race pace features (2026-03-15, all REJECTED)
+### v6.7 — Category B feature batch (2026-03-20) — COMPLETE
 
-Tested 3 FastF1 long-run regression features (FP2 compound pace, degradation rate, stint delta).
-0/3 accepted. Data sparsity across the full 2014–2024 training window prevents reliable signals.
-Feature count unchanged.
+Tested 14 candidates; only `avg_fin_last10` accepted (+1.00 delta). Correlation check
+(Rule 7): r=0.949 with avg_fin_last5 — ran 8 replacement tests, all KEEP_ORIGINAL. Standalone
+passes CV gate → "keep both" per Rule 7. FEATURE_COLS: 49 → **50**.
 
-### v5.41/v5.42 — xgb_ranker regularization fix + documentation audit (2026-03-14)
+### v6.4 — DNF-aware features (2026-03-20) — PART A COMPLETE
 
-**v5.41:** Added `reg_lambda=3.0, colsample_bytree=0.70` to `xgb_ranker` (was no regularization).
-Correlation cluster issue (drivers in the same pack being scored near-identically) resolved.
-xgb_ranker: 10.92 → **15.00** avg pts/race (+4.08); beats naive baseline for the first time.
-Partial ensemble weight recalibration: xgb_ranker MID 3.75→7.00, LATE 3.50→7.00 (later corrected
-in v5.9 as circular validation overfit). Ensemble: 13.71 → 13.88 (+0.17).
+`dnf_rate_last10` accepted (+1.46 standalone; SE drops 1.67→1.25). Three other DNF-form
+candidates rejected. FEATURE_COLS: 48 → **49**.
 
-**v5.42:** Documentation discrepancy corrections (maintenance only). No model changes.
+### v6.2 — Ensemble weight re-calibration (2026-03-19) — PASSED ✓
 
-### v5.4 — Era-blended ensemble reweighting (2026-03-14)
+Replaced 10-component adaptive ensemble with top-3 non-adaptive: xgb_ranker=6.0,
+lgbm_ranker=1.5, rf_clf=1.5, all others=0.0, adaptive=False. Removed grid/champ heuristics.
+Ensemble 2025 holdout: 12.38 → **14.08** (+1.70 pts). Now beats naive baseline.
 
-Reweighted all ensemble components using a blended metric: `0.70 × 2025-holdout + 0.30 × 12-fold-CV`.
-No models were retrained; only `ENSEMBLE_WEIGHTS` dicts in `src/models.py` were updated, and
-`ensemble.joblib` was rebuilt.
+### v5.x — Prior development (see V5_DEVELOPMENT_PLAN.md)
 
-| Key change | v5.3 weight | v5.4 weight | Impact |
-|---|---|---|---|
-| `xgb_ranker` | 0.25 | **4.00** | Best 2025 holdout (13.58); dominant EARLY (18.40) |
-| `xgb_reg` | 3.00 | **0.25** | Worst 2025 holdout (8.33); 2025 regime shift confirmed |
-| `lgb_reg` | 1.25 | **2.75** | MID leader (13.90 holdout MID avg) |
-| `lgbm_ranker` | 0.50 | **1.75** | Raised across all stages; diversity contribution |
-| **`ensemble`** | 10.29 avg | **11.12 avg** | **+0.83 pts/race on 2025 holdout** |
-
-### v5.3 — LightGBM Ranker + XGBoost rank:ndcg upgrade (2026-03-14)
-
-Added `lgbm_ranker` (LambdaMART) as 9th model. Upgraded `xgb_ranker` from `rank:pairwise`
-to `rank:ndcg` (listwise NDCG optimisation). Integer relevance labels:
-`round(10/(1+|pos-10|))` required by both objectives. xgb_ranker +1.87 on 2025 holdout.
-Full analysis: `scripts/v5_results/V5_RESULTS.md`.
-
-### v5.2 — Qualifying session depth: q1_gap_pct, q2_gap_pct, q2_elimination_margin (2026-03-14)
-
-Tested 7 qualifying session features; accepted `q1_gap_pct`, `q2_gap_pct`, `q2_elimination_margin`.
-Also removed L1/L2 regularisation from `lgb_reg` (was suppressing correlated features).
-Feature count: 44 → **47**. Ensemble +2.59 pts. Full analysis: `scripts/v5_results/V5_RESULTS.md`.
-
-### v5.1 — Probability calibration for multi-class EV classifiers (2026-03-14)
-
-Wrapped `rf_clf` in `CalibratedClassifierCV(method='isotonic', cv=5)` and `xgb_clf` in
-`CalibratedClassifierCV(method='sigmoid', cv=5)`. Tree-based classifiers produce distorted
-probability distributions (Random Forests flatten towards 0.5; XGBoost softmax
-underestimates rare-class probabilities). Calibration corrects the EV calculation.
-
-| Model | 2025 holdout (v4.03) | 2025 holdout (v5.1) | Delta |
-|---|---|---|---|
-| `rf_clf` | 11.04 avg pts, within-2 37.5% | **12.79 avg pts, within-2 54.2%** | **+1.75** |
-| `xgb_clf` | 10.75 avg pts, within-2 37.5% | **12.29 avg pts, within-2 54.2%** | **+1.54** |
-
-### v4.03 — All-model feature validation + ensemble recalibration (2026-03-11)
-
-Phase 2 testing: 20 previously discarded candidates retested on all 5 base models
-(accept threshold: avg delta > 0 across all 5). 4 new features kept:
-
-| Feature | Δ avg all 5 | Source |
-|---|---|---|
-| `circ_vsc_rate` | +0.18 | FastF1 |
-| `circ_sc_vsc_combined` | +0.21 | FastF1 |
-| `circ_avg_pit_stops` | +0.19 | Kaggle |
-| `circ_collision_rate` | +0.26 | Kaggle |
-
-Feature count: 40 → **44**. See `V380_PLAN.md` and `scripts/09_test_features_all_models.py`.
-
-### v3.94 — `drv_dnf_recovery_rate` + new data sources (2026-03-11)
-
-Phase 1 testing: 14 candidates from Kaggle, FastF1, OpenF1 tested on rf_reg + lgb_reg.
-1 feature kept: `drv_dnf_recovery_rate = last_dnf × (avg_fin_last5 ≤ 12)` (+1.84 avg pts/race).
-Feature count: 39 → **40**. See `V380_PLAN.md`.
-
-### v3.72 — Season-stage adaptive ensemble weights (2026-03-11)
-
-`WeightedEnsemble` gains EARLY/MID/LATE weight sets, selected automatically from
-`race_num`. Motivated by v3.7 finding that classifiers dominate early while regressors
-improve mid-to-late season.
-
-### v3.71 — `season_completeness` feature + predict_race.py bug fix (2026-03-11)
-
-Added `season_completeness = race_num / total_rounds` as the 39th feature. Also fixed
-a bug where `q_gap_sq`, `grid_x_overtaking`, and `drv_form_trend` were missing from
-`predict_race.py::build_live_features()`.
-
-### v3.7 — Within-season model performance analysis (2026-03-11)
-
-Segmented 12-fold CV (252 races) by season fraction. Key finding: classifiers (`rf_clf`)
-dominate early when form features are sparse; regressors (`rf_reg`, `xgb_ranker`) improve
-significantly in H2 (+1.64, +1.19 pts). Q3 (races 51–75%) is the best-scoring quarter
-for all models. Full report: `results/seasonal_performance_analysis.md`.
-
-### v3.66 — Era-weighted CV + ensemble recalibration (2026-03-11)
-
-Full 12-fold rolling Time-Series CV re-run with era-stratified sample weights active
-(V8=0.25, turbo-hybrid=0.60, ground-effect=1.00). New weights: `rf_clf=4.00,
-xgb_ranker=3.25, rf_reg=3.00, ridge=2.50, lgb_reg=1.50, xgb_clf=1.25, xgb_reg=0.25`.
-Ensemble CV: 11.62 avg pts/race.
-
-### v3.65 — Era-stratified sample weights (2026-03-11)
-
-Three F1 regulatory eras weighted differently in training. Largest impact on
-`xgb_ranker`: 8.54 → 11.83 pts/race on 2025 holdout (+3.29).
-
-### v3.64 — Full 12-fold rolling CV + ensemble re-weighting (2026-03-11)
-
-Replaced leave-one-year-out CV with a 12-fold rolling window (4-year training window).
-Added `--resume` checkpointing so a timeout never discards completed folds.
-
-### v3.63 — 3 interaction features accepted from 20 candidates (2026-03-11)
-
-`q_gap_sq` (+0.83), `grid_x_overtaking` (+1.21), `drv_form_trend` (+1.08).
-Feature count: 35 → **38**. See `feature_exploration/FEATURE_EXPLORATION_STATUS.md`.
-
-### v3.5 — Rolling Time-Series CV + analytic heuristics (2026-03-11)
-
-Added `grid_heuristic` and `champ_heuristic` to the ensemble (+0.37 pts/race across
-252 CV races). Added `ridge` to ensemble for linear diversity.
-
-### v3.4 — XGBoost Ranker (2026-03-11)
-
-Added `xgb_ranker` (`rank:pairwise`) — scored 11.38 avg pts/race on 2025 holdout
-at launch, +0.88 vs `xgb_reg`.
-
-### v3.31 — Empirical `overtaking_difficulty` (2026-03-10)
-
-Replaced static hand-coded values with a composite derived from 4,541 driver-race
-rows across 32 circuits, 2014–2024. Key corrections: Americas 8.3→4.5, Baku 7.8→4.7,
-Vegas 1.0→5.2, Zandvoort 4.5→7.5.
-
-### v3.3 — Circuit volatility features (2026-03-10)
-
-Added `historical_dnf_rate` (dynamic, computed from raw data) and
-`overtaking_difficulty` (static, replaced by empirical in v3.31).
-
-### v3.1 — FastF1 FP data (2026-03-10)
-
-Added `fp2_position`. Completed full data cache (1,881 files). Fixed sprint weekend
-truncation bug. Feature count: 30 → **35**.
-
-### Early sessions (v1–v3.0)
-
-- **v3.0:** `WeightedEnsemble` replacing equal-weight `VotingRegressor`; CV-derived weights
-- **v2 / Session 4:** Multi-class EV classifiers; 8 P10-zone features implemented
-- **Session 2:** EV architecture (`SCORING_VECTOR`, `select_best_driver_by_ev`)
-- **Session 1:** Fantasy-points regret metric; oracle baseline; data leakage fix
-
-See `COMMIT_MESSAGE.md` for pre-v3.0 implementation details.
+v5.1 probability calibration, v5.2 qualifying depth features (q1_gap_pct), v5.3 LightGBM
+Ranker + xgb_ranker rank:ndcg upgrade, v5.4 era-blended weight recalibration.
+v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
 
 ---
 
 ## Known Issues and Future Work
 
-**Resolved in v5.9:**
-- ~~Circular validation overfit~~ — xgb_ranker MID/LATE weights were set to 7.00 based on
-  the same 2025 holdout being evaluated. Corrected with proper 11-fold CV grounding.
+**Active (v6.x):**
 
-**Pended for later in season / off-season:**
+- **Gap to naive baseline:** ensemble 13.29 vs naive 14.04 = -0.75 pts. Feature space with
+  existing data is exhausted (v6.7–v6.19 all tested). Next improvements require new data.
+- **Weather features (v6.13 PLANNED):** Rain specialists (Sainz, Alonso, Norris) measurably
+  outperform in wet conditions. Requires tagging historical races wet/dry or FastF1 API.
+- **Lap-1 position change (v6.14 PLANNED):** First-corner incidents change P10 trajectory.
+  Requires per-lap data fetch from Jolpica.
+- **2026 regulatory era (v6.6 CONDITIONAL ≥R7):** No DRS, Active Aero, 50/50 ICE-electric.
+  Activate re-weighting and OVERTAKING_DIFFICULTY recalibration after R7 2026.
+- **Madrid 2026 (R10):** Added to STREET_CIRCUITS and OVERTAKING_DIFFICULTY (score=8.0,
+  estimated — no empirical data yet).
 
-- **Race 1 cold-start (v5.10)** — form features are zero at R1; ~2–3 pt gap vs. rest of season.
-  Fix: cross-year form carry-over from prior season. Pended pre-season 2027.
-- **2026 regulatory era (v5.20)** — no DRS, Active Aero (X/Z-Mode), MOM energy override,
-  50/50 ICE-electric split will break historical overtaking and grid-stickiness assumptions.
-  Fix: new circuit energy/override features and era weight entry. Pended after R7 2026.
+**Pended for later in season:**
 
-See `V5_DEVELOPMENT_PLAN.md` for the full roadmap with acceptance criteria.
+- **2026 retraining (v6.12):** Retrain after R5, R10, R15, R24 as 2026 data accumulates.
+- **v6.4 Part B:** PU_Loophole_Active, Software_Maturity_Delta — defer until R7+.
 
 ---
 
@@ -717,9 +431,19 @@ See `V5_DEVELOPMENT_PLAN.md` for the full roadmap with acceptance criteria.
 2. **Synthetic data requires explicit user approval.** `05_full_analysis.py` produces
    fake races and corrupts model evaluation. Never run without confirmation.
 
-3. **CV timeout risk.** Default to single-fold (`--cv-years 2024`). Use `--resume`
-   for multi-fold. Save results to CSV immediately after each fold.
+3. **CV: single-fold by default.** Use `--cv-years 2024` (fast). Use `--resume` for
+   multi-fold. Save results to CSV immediately after each fold.
 
-4. **Known API gotchas:**
+4. **Never build year-only eval parquets.** Always extract eval slice from the combined
+   multi-year parquet to preserve correct circuit history.
+
+5. **Feature acceptance gate:** delta ≥ +0.20 on 2025 holdout. Check correlation (|r| > 0.75)
+   and run replacement test before accepting. See Dev Philosophy Rule 7 in V6_DEVELOPMENT_PLAN.md.
+
+6. **Don't remove features based on importance alone.** Low Gini/gain ≠ removable.
+   Always test removal explicitly (v6.19 lesson: -2.29 pts from removing drv_dnf_recovery_rate).
+
+7. **Known API gotchas:**
    - Use `_safe_pos()` not `int(s["position"])` — Jolpica `positionText` is inconsistent
    - Singapore circuit key is `marina_bay`, not `singapore`
+   - Madrid circuit key is likely `madrid` (IFEMA circuit, new 2026)
