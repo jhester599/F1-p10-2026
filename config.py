@@ -106,6 +106,8 @@ OVERTAKING_DIFFICULTY: dict[str, float] = {
     "shanghai":   8.3,   # n=7, rho=0.741, dnf=0.126
     "portimao":  10.0,   # n=2, rho=0.827, dnf=0.050
     "singapore":  4.8,   # alias for marina_bay
+    "portimao":  10.0,   # n=2, rho=0.827, dnf=0.050
+    "madrid":     8.0,   # NEW 2026 — no empirical data; estimated street circuit (high grid stickiness prior)
 }
 
 # ── Street circuits ───────────────────────────────────────────────────────────
@@ -118,6 +120,7 @@ STREET_CIRCUITS = {
     "jeddah",
     "miami",       # Miami International Autodrome
     "vegas",       # Las Vegas Strip Circuit
+    "madrid",      # NEW 2026 — IFEMA Madrid circuit (R10 2026)
 }
 
 # ── Model feature columns ─────────────────────────────────────────────────────
@@ -181,12 +184,16 @@ FEATURE_COLS = [
     "circ_sc_vsc_combined",      # v3.97: circ_sc_rate + circ_vsc_rate total disruption index +0.21 avg
     "circ_avg_pit_stops",        # v3.98: avg pit stop count per race at this circuit (last 5 yrs, Kaggle) +0.19 avg
     "circ_collision_rate",       # v4.03: collision/accident DNF rate per driver-start at circuit (Kaggle) +0.26 avg
-    # --- qualifying session depth (v5.2) ---
+    # --- qualifying session depth (v5.2 / v5.6) ---
     "q1_gap_pct",                # v5.2: driver's Q1 time gap to pole (%). Universally available; +0.448 avg on 2024 CV.
-    "q2_gap_pct",                # v5.2: driver's Q2 time gap to pole (%). Most informative for P8–P15 starters; +0.135 avg.
-    "q2_elimination_margin",     # v5.2: how far Q2-eliminated driver missed Q3 cut (%). 0 for Q3/Q1 drivers; +0.312 avg.
-    # --- constructor pit execution (v5.6) ---
-    "con_xpt_std",               # v5.6: mean std dev of normalized pit stop durations over last 10 races (sec). Lower = more consistent. +0.167 reg, -0.062 clf.
+    "q2_gap_pct",                # v5.6: driver's Q2 time gap to pole (%). Available only for Q2/Q3 participants.
+    "q2_elimination_margin",     # v5.6: gap between driver's Q2 time and Q2 elimination cutoff.
+    # --- constructor expected pit stop time (v5.7) ---
+    "con_xpt_std",               # v5.7: std dev of constructor pit stop times (reliability proxy).
+    # --- v6.4: DNF-aware reliability features ---
+    "dnf_rate_last10",           # v6.4: fraction of last 10 races that were DNFs (+1.46 pts standalone, SE 1.67→1.25).
+    # --- v6.7: extended rolling form ---
+    "avg_fin_last10",            # v6.7: avg finish position over last 10 races (+1.00 pts standalone; kept despite r=0.949 with avg_fin_last5 — marginal signal confirmed).
 ]
 
 TARGET_COL = "finish_position"

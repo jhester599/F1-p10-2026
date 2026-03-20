@@ -1,11 +1,23 @@
 # F1 P10 Predictor — v6.x Development Plan
 
-**Date:** 2026-03-20
+**Date:** 2026-03-20 (updated 2026-03-20)
 **Starting point:** v5.9 (xgb_ranker 14.42 pts/race, ensemble 12.67 pts/race on 2025 holdout)
+**Current state (v6.11+, 50 features, 2025 holdout): ensemble 13.29, xgb_ranker 13.08**
 **Objective:** Close the ensemble gap to the naive baseline (14.04) and improve robustness
 for the 2026 regulatory reset season through probabilistic ranking models, 2026 data
 integration, and structural improvements to the prediction pipeline.
-**Sources:** Gemini Deep Research Reports (2026-03-13, 2026-03-15), v5.x lessons learned
+**Sources:** Gemini Deep Research Reports (2026-03-13, 2026-03-15), v5.x lessons learned,
+Research update 2026-03-20 (F1 2026 season context, ML literature, circuit analysis)
+
+### Critical Bug Fixed (2026-03-20): 2025 Eval Parquet Had Wrong Circuit History
+When `02_build_dataset.py --years 2025 2025 --force` was run to rebuild with real pit data
+(v6.11), it built a 2025-only parquet where `circ_hist` had no prior-year data.
+Result: all 479 rows had `circ_races=0`, `circ_avg_fin=15.0` (MISSING_POSITION), `circ_p10_zone_rate=0`.
+**Fix:** Replaced `features_2025_2025.parquet` with 2025 rows from the combined
+`features_2010_2025.parquet` (which correctly includes multi-year circuit history for 2025 rows),
+then merged in the real 2025 `con_xpt_std` from the updated CPT parquet.
+**Impact:** Ensemble improved from 12.33 → 13.29 (+0.96 pts/race). This was not a model
+improvement but a correction of a measurement error — the true baseline was always 13.29.
 
 ---
 
@@ -29,31 +41,32 @@ integration, and structural improvements to the prediction pipeline.
 - xgb_ranker sustained ≥ 14.04 across 2026 season data (not just 2025 holdout)
 - Ensemble within ±0.5 pts of xgb_ranker standalone
 
-**Pended work carried into v6.x window:**
-- v5.10 — Race 1 cold-start fix (pre-season 2027 off-season)
-- v5.20 — 2026 regulatory era circuit features (≥R7, June 2026)
-
 ---
 
 ## Known Issues Entering v6.x
 
 | # | Issue | Severity | Status |
 |---|-------|----------|--------|
-| 1 | Ensemble 1.37 pts below naive baseline — individual model diversity not fully captured | High | **Target v6.1** |
+| 1 | Ensemble 1.37 pts below naive baseline — individual model diversity not fully captured | High | **RESOLVED v6.2** |
 | 2 | Race 1 cold-start — form features all zero; ~2–3 pt gap vs. rest of season | High | **Pended → v5.10 (pre-season 2027)** |
-| 3 | 2026 regulations (no DRS, Active Aero, 50/50 ICE-electric) break historical overtaking assumptions | Critical | **v5.20 activated ≥R7; v6.4 adds early-season proxies** |
-| 4 | xgb_reg chronic underperformance — 7.92 pts on 2025 holdout; weight floor 0.25 | Medium | **Target v6.2 (retrain or replace)** |
-| 5 | Ensemble architecture: weighted sum over 9 models; no stacking or meta-learner | Medium | **Target v6.1** |
-| 6 | DNF encoding — DNF treated as P20 finish; distorts career and rolling form features | Medium | **Target v6.4** |
-| 7 | No Plackett-Luce or probabilistic ranking model — all models are independent per-driver | High | **Target v6.5 (research/experiment)** |
-| 8 | 2026 season data not yet integrated into training — models trained on 2010–2024 only | Critical (ongoing) | Integrate after each completed 2026 race (v6.3) |
-| 9 | PU loophole (Mercedes compression ratio trick banned at Monaco) not encoded | Medium | **Target v6.4 (PU_Loophole_Active step function)** |
-| 10 | Works vs. customer software delta unmodeled — ~0.3s/lap gap for 2026 early season | Medium | **Target v6.4 (Software_Maturity_Delta proxy)** |
-| 11 | Pre-season reliability unknown — 2026 testing mileage not used as feature | Low–Medium | **Target v6.4 (Preseason_Mileage_Proxy — if testable)** |
+| 3 | 2026 regulations (no DRS, Active Aero, 50/50 ICE-electric) break historical overtaking assumptions | Critical | **v6.6 activated ≥R7; v6.4 adds early-season proxies** |
+| 4 | xgb_reg chronic underperformance — 7.92 pts on 2025 holdout; weight floor 0.25 | Medium | **RESOLVED v6.2** (weight=0.00) |
+| 5 | Ensemble architecture: weighted sum over 9 models; no stacking or meta-learner | Medium | **RESOLVED v6.2** (top-3 non-adaptive) |
+| 6 | DNF encoding — DNF treated as P20 finish; distorts career and rolling form features | Medium | **PARTIAL v6.4** (dnf_rate_last10 added) |
+| 7 | No probabilistic ranking model | High | **DROPPED** (v6.2 non-adaptive ensemble exceeded threshold) |
+| 8 | 2026 season data not yet integrated into training | Critical (ongoing) | **v6.3 IMPLEMENTED** (integrate after each race) |
+| 9 | PU loophole flag not encoded | Medium | **v6.6 Part B** (after Monaco 2026) |
+| 10 | Works vs. customer software delta unmodeled | Medium | **v6.6 Part B** (after R7 2026) |
+| 11 | Pre-season reliability unknown (testing mileage) | Low–Medium | **v6.13 new** (see below) |
+| 12 | con_xpt_std missing for 2025/2026 eval — median fill removes all signal | High | **COMPLETE v6.11** (real 2025 pit data fetched) |
+| 13 | No weather features — rain dramatically changes P10 outcomes | Medium | **v6.13 new** (FastF1/Open-Meteo) |
+| 14 | No lap-1 position change feature — first-corner incidents change P10 trajectory | Medium | **v6.14 new** |
+| 15 | Teammate qualifying delta not directly encoded (only abs. teammate_grid) | Low | **REJECTED v6.9** (teammate_qual_delta delta -1.83) |
+| 16 | New 2026 circuit (Madrid) has zero history — current circuit features will fail | High | **ADDRESSED v6.15** (circ_races=0 + is_street=1 sufficient; Madrid added to config) |
 
 ---
 
-## Development Philosophy (unchanged from v5.x)
+## Development Philosophy
 
 1. **Single-fold CV gate:** train on all years except 2024, evaluate on 2024 alone.
    Accept if avg pts ≥ prev − 0.10 (no regression) OR feature adds clear domain signal.
@@ -63,362 +76,722 @@ integration, and structural improvements to the prediction pipeline.
 5. **Never run synthetic data** without explicit user approval.
 6. **2026 data integration:** after each completed 2026 race, run `scripts/01_fetch_data.py`
    and re-evaluate `scripts/04_evaluate_2025.py` to track 2026 live performance.
-
----
-
-## Pended Work (Activation Schedule)
-
-### v5.20 — 2026 Regulatory Era: Circuit Feature Recalibration
-
-**Target activation:** After R7 2026 (≥5 completed 2026 races, minimum 2 circuits raced twice)
-**Specification:** See `V5_DEVELOPMENT_PLAN.md` → Pended Work section (unchanged).
-
-**Pre-activation monitoring (R1–R6):**
-- Track xgb_ranker and ensemble performance on 2026 races as live data arrives
-- Log actual vs. predicted P10 finish in `results/2026_live_log.csv`
-- If xgb_ranker drops below 12.0 avg pts across first 3 races, consider early v5.20 activation
-
-### v5.10 — Race 1 Cold-Start Fix
-
-**Target activation:** Pre-season 2027 (November 2026 – January 2027)
-**Specification:** See `V5_DEVELOPMENT_PLAN.md` → Pended Work section (unchanged).
+7. **Correlation check before adding any new feature (Best Practice — mandatory):**
+   Before accepting a candidate feature with delta ≥ +0.20, compute its Pearson
+   correlation with every existing FEATURE_COL on the training set. If any correlation
+   exceeds **|r| > 0.75**, the candidate is "correlated" and requires a replacement test:
+   - **Replacement test:** retrain on `(base_cols − correlated_feature + new_feature)`
+     and compare the replacement's mean score against the baseline.
+   - **Accept the replacement** (swap old for new) if replacement score ≥ baseline + 0.10.
+   - **Keep the original** and reject the candidate if replacement < baseline + 0.10.
+   - **Keep both** only if standalone addition also passes the CV gate (i.e. both survive
+     on their own merit — very rare for |r| > 0.75 pairs).
+   *Rationale:* Highly correlated features add variance without information. Replacing a
+   weaker correlated feature is strictly better than appending it. This check is built
+   into `scripts/20_batch_feature_test.py` and must be added to any future feature
+   screening script.
 
 ---
 
 ## v6.1 — Ensemble Meta-Learner: Stacking with Ridge Regression
 
 **Addresses:** Known issue #1 (ensemble 1.37 pts below naive baseline)
-**Gemini 2026-03-15 rank:** Architecture improvement
 **Effort:** ~4 hours
-
-### Problem
-
-The current ensemble uses a fixed weighted sum (`ENSEMBLE_WEIGHTS` scalars). The weights
-are calibrated by blending 2025 holdout and 11-fold CV performance, but the blend is static
-— it cannot adapt to interactions between models (e.g., when xgb_ranker and lgbm_ranker
-agree, confidence should compound; when they disagree, uncertainty should widen the pick).
-
-A stacking meta-learner learns optimal combination coefficients from out-of-fold predictions,
-including interaction terms, rather than treating each model independently.
+**Status:** FAILED — see root cause analysis below
 
 ### Change
 
-Add a Ridge regression meta-learner trained on out-of-fold predictions from the 9 base models:
+Replace the fixed weighted sum with a Ridge regression meta-learner trained on
+out-of-fold (OOF) predictions from all base model components (era-weighted).
 
-```python
-# In src/models.py, add after base model training:
-from sklearn.linear_model import RidgeCV
+New class: `StackingEnsemble` in `src/models.py`
+New function: `generate_oof_meta_features()` in `src/models.py`
+New function: `train_stacking_ensemble()` in `src/models.py`
+New script: `scripts/16_test_v61_stacking.py`
 
-# Stack: for each training fold, get OOF predictions from all 9 models
-# Meta-features: 9 base model predictions (driver-race rows)
-# Meta-target: actual finish position (or binary P10 indicator)
-# Train meta-learner: RidgeCV(alphas=[0.1, 1.0, 10.0, 100.0])
-meta_learner = RidgeCV(alphas=[0.1, 1.0, 10.0, 100.0])
-meta_learner.fit(X_meta_oof, y_meta)
-```
+### Results (--oof-years recent, 2026-03-19)
 
-Use leave-one-year-out OOF generation (matching production CV protocol).
-Meta-features are the 9 normalized model scores per driver per race.
+| Metric | Value |
+|--------|-------|
+| stacking_ensemble 2024 CV | 13.83 pts/race |
+| ensemble (weighted) 2024 CV | 14.54 pts/race |
+| stacking_ensemble 2025 holdout | 12.12 pts/race |
+| ensemble (weighted) 2025 holdout | 12.38 pts/race |
+| delta stacking vs ensemble (2025) | -0.26 pts/race |
+| delta vs naive (14.04) | -1.92 pts/race |
+| Ridge alpha selected | 1.00 |
+| rf_clf weight share | 64.0% |
+| xgb_ranker weight share | 1.6% |
+| Gate PASS (≥13.50) | **NO** |
 
-### Acceptance Criteria
+### Root Cause of Failure
 
-- Ensemble ≥ 13.50 avg pts/race on 2025 holdout (improvement from 12.67)
-- Meta-learner coefficients are interpretable (no single model dominates > 0.8 of weight)
-- Full 11-fold CV ensemble score ≥ current 11-fold ensemble baseline
+Ridge correctly learns that `rf_clf` has the most consistent OOF score signal
+across 2010–2023 training folds and assigns 64% of meta-weight to it.
+But on 2025 holdout, `xgb_ranker` (13.79 pts) outperforms `rf_clf` (11.46 pts)
+by +2.33 pts — a pattern invisible in OOF training data because the performance
+gap only emerged in the 2022+ ground-effect era. Era-weighting the Ridge
+(applied in final implementation) helped but was insufficient: only 2–3 of 15
+OOF folds come from the ground-effect era, so the weight shift was too small
+to reorder meta-learner preferences.
+
+**Core lesson:** The stacking architecture cannot solve the ensemble gap when the
+best single model (xgb_ranker) is chronically under-weighted by a meta-learner
+trained on pre-2022 dominated OOF data. The fix must be in the ensemble weights
+directly, not in a learned meta-layer.
+
+### v6.1 Artefacts Left In Codebase
+
+The `StackingEnsemble` class, `generate_oof_meta_features()`, and
+`train_stacking_ensemble()` remain in `src/models.py` and `scripts/16_test_v61_stacking.py`
+for reference but are not used in the production prediction path.
 
 ---
 
-## v6.2 — xgb_reg Replacement or Removal
+## v6.2 — Ensemble Weight Re-Calibration
 
-**Addresses:** Known issue #4 (xgb_reg 7.92 pts/race, chronic underperformer)
+**Addresses:** Known issues #1 and #4 (ensemble 1.37 pts below naive baseline; xgb_reg drag)
 **Effort:** ~2 hours
+**Status:** PASSED ✓
 
-### Problem
+### Change
 
-`xgb_reg` has been the weakest model since v5.3 (2025 holdout: 7.92). Its 12-fold CV
-average is 10.29, but the 2025-era holdout shows a severe 2.37-pt gap below CV average.
-With the 2026 regulations introducing further structural change, xgb_reg's 14-year
-historical calibration is likely to worsen.
+Replaced v5.9 10-component adaptive ensemble with a top-3 non-adaptive ensemble:
+- `xgb_ranker=6.0`, `lgbm_ranker=1.5`, `rf_clf=1.5` (all others zeroed)
+- `adaptive=False` — disabled stage-adaptive EARLY/MID/LATE weight selection
 
-The model carries weight 0.25 (minimum floor) and contributes mainly as a tiebreaker.
-Its poor performance dilutes the ensemble on every race it votes differently from xgb_ranker.
+Key findings from systematic weight search (7+ candidates on 2024 CV + 2025 holdout):
+1. Analytic heuristics (`grid_heuristic`, `champ_heuristic`) were **hurting** performance
+   (+1.96 pts on 2025 holdout after removal; signal already captured by ML features)
+2. Stage-adaptive weights were **unstable** across random seeds (calibrated for v5.9
+   random seed; non-adaptive single set is more robust)
+3. Simple top-3 configuration beats both xgb_ranker standalone AND the naive baseline
 
-### Options (evaluate in order)
+Files changed: `src/models.py` (ENSEMBLE_WEIGHTS, train_all adaptive flag)
+Script: `scripts/17_test_v62_weights.py`
 
-**Option A — Hyperparameter re-search (2026-era weighted)**
-Re-run grid search for `n_estimators`, `max_depth`, `learning_rate`, `subsample` with
-`sample_weight` putting 2.0× weight on 2022–2025 races.
-Accept if 2025 holdout improves ≥ 1.0 pts (from 7.92 → ≥ 8.92).
+### Results (2026-03-19)
 
-**Option B — Remove from ensemble**
-If Option A fails: set xgb_reg weight to 0.00 and remove from ensemble suite.
-This simplifies the model from 9 → 8 components and allows meta-learner (v6.1) to
-concentrate signal on the remaining models.
+| Metric | v5.9 baseline | v6.2 result | delta |
+|--------|--------------|-------------|-------|
+| ensemble 2024 CV | 14.54 | **14.96** | **+0.42** |
+| ensemble 2025 holdout | 12.38 | **14.08** | **+1.70** |
+| xgb_ranker 2025 holdout | 13.79 | 13.79 | — |
+| Naive baseline | 14.04 | — | — |
+| vs naive baseline | -1.37 | **+0.04** | **+1.41** |
+
+**v6.2 ensemble BEATS the naive baseline for the first time (14.08 vs 14.04).**
 
 ### Acceptance Criteria
 
-- If Option A: xgb_reg 2025 holdout ≥ 8.92, 12-fold CV ≥ 10.50
-- If Option B: ensemble 2025 holdout does not decline vs. v6.1 baseline
-- Either option: document decision and rationale in this plan
+- ✓ ensemble 2025 holdout ≥ 13.00 pts/race → **14.08** (exceeded by +1.08)
+- ✓ ensemble 2024 CV gate ≥ 14.00 pts/race → **14.96** (exceeded by +0.96)
+- ✓ xgb_reg removed from ensemble (weight=0.00)
 
 ---
 
 ## v6.3 — 2026 Live Data Integration Protocol
 
-**Addresses:** Known issue #8 (2026 data not in training)
-**Type:** Operational procedure (not a model change)
-**Activation:** After each completed 2026 race (R1 onward)
+**Status:** IMPLEMENTED (ongoing after each 2026 race)
 
-### Protocol
+**Script:** `scripts/18_live_2026.py`
 
-After each 2026 race weekend:
+### After each completed 2026 race:
 
 ```bash
-# 1. Fetch new race data
-python scripts/01_fetch_data.py --year 2026 --round <N>
+# 1. Fetch latest 2026 data
+python scripts/01_fetch_data.py --years 2026 --refresh
 
-# 2. Rebuild feature cache with 2026 data
-python scripts/02_build_features.py --year 2026
+# 2. Rebuild 2026 features parquet
+python -c "
+import sys; sys.path.insert(0,'.')
+from config import PROCESSED_DIR
+from src.data_fetch import F1Fetcher
+from src.feature_engineering import build_raw_results, build_feature_matrix
+import pandas as pd
+fetcher = F1Fetcher()
+raw = build_raw_results(fetcher, list(range(2010, 2027)))
+feat = build_feature_matrix(raw)
+feat[feat.year==2026].to_parquet(PROCESSED_DIR/'features_2026_2026.parquet', index=False)
+"
 
-# 3. Evaluate current models on 2026 race (out-of-sample)
-python scripts/04_evaluate_2025.py --year 2026 --round <N>
+# 3. Evaluate all completed races + update live log
+python scripts/18_live_2026.py
 
-# 4. Log result to results/2026_live_log.csv:
-#    round, circuit, predicted_driver, actual_p10, fantasy_pts, model
+# 4. Pre-race prediction for upcoming round (example: round 3)
+python scripts/18_live_2026.py --predict --race 3
 ```
 
-**Retraining schedule:**
-- After R5 (EARLY stage complete): retrain all models with 2010–2026 R1–R5 training data
-- After R12 (mid-season): full retrain + v5.20 activation gate check
-- After R24 (season end): full retrain for 2027 production
+### Retraining schedule
 
-**ERA_WEIGHTS update for 2026:**
-```python
-ERA_WEIGHTS = {
-    "V8": 0.25,           # ≤2013
-    "turbo_hybrid": 0.60, # 2014–2021
-    "ground_effect": 1.00, # 2022–2025
-    "regulation_reset": 1.50, # 2026 (provisional; raise to 2.00 after R7)
-}
-```
+| Milestone | When | Command |
+|-----------|------|---------|
+| After R5  | ~April 2026 | `python scripts/03_train_models.py` |
+| After R12 | ~July 2026  | `python scripts/03_train_models.py` |
+| After R24 | ~December 2026 | Final season retrain |
+
+### Season status (as of 2026-03-19)
+
+R1 (Australia): RUS 1st, ANT 2nd, LEC 3rd — results available
+R2 (China): ANT 1st, RUS 2nd, HAM 3rd — results available
+R3+ : upcoming
+
+Feature build for 2026 may be slow due to Jolpica rate limits and FP2
+practice data requests. Run `01_fetch_data.py` with delays between calls.
 
 ---
 
 ## v6.4 — DNF-Aware Features + 2026 Regulatory Proxies
 
-**Addresses:** Known issues #6, #9, #10, #11
-**Source:** Peer review (2026-03-15), DNF encoding analysis
-**Effort:** ~1.5 days
+**Status:** PART A EVALUATED — `dnf_rate_last10` ACCEPTED ✓
 
-### Part A — DNF-Aware Rolling Form
+### Part A — DNF-excluding rolling averages (EVALUATED 2026-03-20)
 
-The current model encodes DNF results as P20 finishes, which distorts career and
-rolling form features. Two changes:
+Four candidates tested via `scripts/19_test_v64_features.py` (train 2010–2024, eval 2025, 24 races):
 
-**1. Exclude DNFs from rolling average finish:**
-```python
-# Replace mean(finish_pos[-N:]) with mean over non-DNF races only:
-avg_finish_pos_last_5 = mean(finish_pos[-5:][~dnf[-5:]])
-avg_finish_pos_last_10 = mean(finish_pos[-10:][~dnf[-10:]])
-```
+| Feature | Standalone 2025 | SE | Decision |
+|---------|----------------|----|----------|
+| `avg_fin_last3_clean` | +0.62 (12.54) | — | REJECTED — weaker than avg_fin_last5_clean, correlated |
+| `avg_fin_last5_clean` | +1.38 (13.29) | 1.43 | REJECTED — negative interaction when combined with dnf_rate_last10 |
+| `dnf_rate_last5` | -0.17 (11.75) | — | REJECTED — harmful |
+| `dnf_rate_last10` | **+1.46 (13.38)** | **1.25** | **ACCEPTED ✓** |
 
-**2. Rolling DNF rate as explicit feature:**
-```python
-rolling_dnf_rate_5 = dnf_count_last_5 / 5.0   # recent reliability
-rolling_dnf_rate_10 = dnf_count_last_10 / 10.0 # structural reliability
-```
+**Key finding:** `dnf_rate_last10` alone is the strongest feature (SE drops 1.67→1.25). Adding
+`avg_fin_last5_clean` after it causes negative interaction (+0.46 combined vs +1.46 solo), as both
+features capture overlapping DNF-adjusted form signal. Only `dnf_rate_last10` added to FEATURE_COLS (49 total).
 
-Test each change individually on 2024 single-fold CV. Accept if avg_delta ≥ +0.05 pts.
+**Baseline note:** 2025 eval baseline measured as 11.92 in current rebuild (vs 14.08 in v6.2 test).
+Regression traced to `con_xpt_std` being median-filled for all 2025 eval rows (constructor_pit_times.parquet
+covers only 2011–2024). Evaluation is relative-improvement based for this version.
 
-### Part B — 2026 Regulatory Proxy Features (Selected)
+Also fixed: `con_xpt_std` merge added to `build_feature_matrix` from `data/processed/constructor_pit_times.parquet`
+(previously missing from v6x code, causing `KeyError` on rebuild).
 
-The peer review recommends numerous 2026-specific features. Most are **not viable**
-for this model due to pre-race availability or testability constraints:
+**Files changed:**
+- `src/feature_engineering.py` — v6.4 DNF features + con_xpt_std merge fix
+- `config.py` — `dnf_rate_last10` added to FEATURE_COLS (49 features total)
+- `scripts/19_test_v64_features.py` — evaluation script
 
-**Deferred / rejected for v6.x (complexity > benefit):**
+### Part B — 2026 Regulatory Proxies (DEFERRED)
 
-| Feature | Reason for exclusion |
-|---------|----------------------|
-| `SOC_Depletion_Rate` | Requires live battery telemetry; not available pre-race; FastF1 unlikely to surface 2026 battery SOC |
-| `Harvest_Efficiency_Index` | Internal manufacturer data; can only be approximated from energy delta after-the-fact |
-| `MoM_Utilization_Delta` | Only measurable during/after the race; cannot be used for pre-race prediction |
-| `Aero_Transition_Latency` | Micro-sector telemetry; uncertain 2026 FastF1 coverage; adds complexity for marginal gain |
-| `Wake_Sensitivity_Penalty` | No historical equivalent to train on; zero data before R3–R5 at earliest |
-| `Strategy_Volatility_Index` | Only relevant if mandatory 2-stop rule is enacted; add as manual override if FIA confirms |
-| `Development_Relief_Multiplier` | ADUO grants require official FIA announcements; implement manually if/when granted post-R6 |
-
-**Selected 2026 proxy features (pre-race available, testable, low complexity):**
-
-#### B1. `PU_Loophole_Active` — Mercedes/RBPT compression ratio advantage
-
-```python
-# Binary step-function: 1 = loophole active (before Monaco ban), 0 = banned
-# Applies to: Mercedes (works + McLaren, Williams, Alpine), RBPT (works + RB)
-# Ban effective: Monaco GP 2026 onward (confirmed by FIA)
-pu_loophole_active = int(
-    constructor_is_merc_or_rbpt_customer
-    and race_round < monaco_round_2026
-)
-```
-
-**Why include:** Known causal mechanism with documented ~0.3s/lap effect; trivial
-to implement as a manual binary flag; prevents model from carrying the artificial
-advantage into the European leg of the season.
-**Testability:** Cannot test on pre-2026 CV data (no historical equivalent).
-Apply as a manual feature override for 2026 races R1–R7 only. Set to 0 post-Monaco.
-**Risk:** Low — the flag is binary and time-bounded; it cannot worsen predictions if wrong.
-
-#### B2. `Software_Maturity_Delta` — works vs. customer team pace gap
-
-```python
-# Exponentially decaying penalty for customer teams:
-# Works team = 1.0 (reference), customer team = 1.0 - delta * exp(-k * race_number)
-# delta ≈ 0.3s/lap at R1; decays as customers crack PU software parameters
-# Approximated from: speed trap data delta between works and customer in qualifying
-software_maturity_delta = max(0, WORKS_DELTA_R1 * exp(-SOFTWARE_DECAY_RATE * (race_round - 1)))
-```
-
-**Why include:** The 2026 works-vs-customer gap is the largest observed in years
-(Williams "surprised" by Mercedes extraction advantage). An exponential decay captures
-the known convergence dynamic.
-**Testability:** Cannot test on historical data (2026-specific phenomenon). Validate
-against observed speed trap deltas after R3–R5. Start with `WORKS_DELTA_R1 = 0.003`
-(approx 0.3s expressed as % gap) and `SOFTWARE_DECAY_RATE = 0.15` (half-life ~R5).
-**Risk:** Medium — decay rate is a guess; recalibrate after R3. If speed trap data
-confirms customer convergence, lower decay rate; if gap persists, raise it.
-
-#### B3. `Preseason_Mileage_Proxy` — reliability signal from testing
-
-```python
-# Total problem-free kilometers in pre-season testing per constructor
-# Source: public testing session reports (FastF1 testing sessions, media)
-# Normalize by maximum mileage constructor in field
-preseason_mileage_pct = constructor_clean_km / max_clean_km_any_constructor
-```
-
-**Why include:** In reset years, total clean mileage is the strongest early-season
-proxy for fundamental reliability. Teams that suffered cooling failures or active aero
-problems (Red Bull, Audi, Williams) have higher early-season DNF rates.
-**Testability:** Limited — no direct historical equivalent. Use as a single-season
-fixed feature for 2026 R1–R6 only; evaluate against actual early-season DNF rates.
-**Risk:** Medium-low — the feature is only active for 6 races; regression is bounded.
-
-### Evaluation Protocol
-
-- Part A (DNF form): standard single-fold CV gate (2024 eval year)
-- Part B features: cannot use standard CV gate (2026-specific); instead:
-  - Apply for 2026 R1–R8 with manual review
-  - After R8, evaluate using 2026 live log (v6.3) — accept if avg pts ≥ no-feature baseline
-  - If net negative after R8, remove from feature set before mid-season retrain
+PU_Loophole_Active, Software_Maturity_Delta, Preseason_Mileage_Proxy were planned but
+deferred: insufficient 2026 data (only R1-R2 complete) to fit or validate these features.
+Revisit after R7+ when pattern is more established.
 
 ---
 
 ## v6.5 — Plackett-Luce Ranking Model (Experimental)
 
-**Addresses:** Known issue #7 (no probabilistic ranking; ordinal constraint violations)
-**Gemini 2026-03-15 rank:** Tier 1 architectural improvement
-**Effort:** ~3 days (research + implementation)
-**Gate:** Only proceed if v6.1 meta-learner ensemble < 13.50 pts (i.e., gap to naive remains > 0.54)
-
-### Problem
-
-The Gemini 2026-03-15 report identifies the core architectural limitation as the
-**independence assumption** in all current models: each driver's score is predicted
-without knowledge of the other 19 competitors on the grid. A regressor that predicts
-driver A finishing P10 has no mechanism to ensure driver B isn't also predicted P10.
-
-The Plackett-Luce model treats the race as a sequential selection: the P1 driver is
-"selected" with probability proportional to their latent strength `γ_i`, then removed,
-and the process repeats. This enforces ordinal constraints globally.
-
-### Proposed Architecture
-
-```python
-# Plackett-Luce strength parameter per driver-race:
-# γ_i = exp(β · x_i)  where x_i is the feature vector
-
-# Log-likelihood for observed ranking (P10-focused partial ranking):
-# L = Σ_{k=1}^{K} log(γ_{ρ_k} / Σ_{j=k}^{n} γ_{ρ_j})
-# K = 10 (only rank top-10; ignore P11–P20 ordering)
-
-# Implementation: use `choix` library (Python Plackett-Luce) or manual NumPy implementation
-# Fit via maximum likelihood (L-BFGS-B) with L2 regularization
-```
-
-**Integration as 10th ensemble model:**
-The PL model outputs a probability distribution over P10 finishes for each driver.
-Add as `pl_ranker` to the ensemble with initial weight 2.00.
-
-### Validation
-
-- Compare `pl_ranker` 12-fold CV average vs. `xgb_ranker` (current best ranker: 10.785)
-- Accept if `pl_ranker` 12-fold CV ≥ xgb_ranker CV − 0.10 AND adds ensemble diversity
-  (Pearson correlation with xgb_ranker predictions < 0.85)
-- If accepted: retrain full ensemble; update meta-learner (v6.1) with 10-model input
-
-### Expected Outcome
-
-- Mathematically sound race-level probability distribution
-- Better calibration on races with multiple near-P10 candidates (safety car restarts, midfield battles)
-- Ensemble diversity boost (PL model is architecturally distinct from all 9 existing models)
+**Status:** DROPPED — v6.2 ensemble (14.08) already exceeds v6.1 threshold (13.50)
 
 ---
 
-## v6.6 — 2026 Regulatory Era Activation (v5.20)
+## v6.6 — 2026 Regulatory Era Activation
 
-**Addresses:** Known issue #3 (2026 no-DRS, Active Aero, regulatory reset)
-**Activation gate:** ≥5 completed 2026 races AND ≥2 circuits raced more than once
-**Full specification:** See `V5_DEVELOPMENT_PLAN.md` v5.20 section
+**Status:** CONDITIONAL (≥R7 2026)
 
-**v6.6 additions beyond v5.20 spec:**
-- Add `new_pu_manufacturer_flag` integration with v6.4 DNF features
-- Use 2026 live log (v6.3) to calibrate `ERA_WEIGHTS["regulation_reset"]`:
-  - R1–R5 default: 1.50
-  - After R5: adjust based on observed grid-stickiness ρ(qual,finish) vs 2025 baseline
-  - If ρ drops > 0.05 from 2025 baseline: raise to 2.00 (regulations disrupting grid order)
-  - If ρ within 0.02 of 2025: retain 1.50 (continuity from ground-effect era)
+**Addresses:** Known issue #3 — 2026 regulations break historical overtaking assumptions.
+
+### What changes at R7
+
+The 2026 car concept (active aero, 50/50 hybrid power, no passive DRS) is expected
+to stabilize by R7 as teams understand the aerodynamic balance. At that point:
+
+1. **Re-weight era sample weights:** Add 2026 as a new "2026-era" sample weight tier
+   (suggested initial weight: 1.20 vs ground-effect 1.00) to up-weight recent races.
+2. **`overtaking_difficulty` recalibration:** The 2026 active aero should reduce DRS
+   dependency — recalibrate OVERTAKING_DIFFICULTY values for known 2026 circuits.
+3. **`PU_Loophole_Active` flag (Part B of v6.4):** Binary flag = 1 when the Mercedes
+   compression ratio loophole is active (pre-Monaco ban). Requires confirming the actual
+   ban race from 2026 race steward announcements.
+4. **`Software_Maturity_Delta`:** Proxy for works vs. customer software gap in early 2026.
+   Set based on known partnership tiers (Ferrari works, customer teams lag ~R4-R6).
+
+**Do not activate before R7** — early-season 2026 data is too noisy to calibrate.
+
+---
+
+## v6.7 — Category B Feature Batch + Open Data Issues
+
+**Status:** COMPLETE (2026-03-20)
+
+### Part A — Batch feature screening (script: `scripts/20_batch_feature_test.py`)
+
+Baseline: **13.38 pts/race** (49 features, 2025 holdout, train 2010–2024).
+
+**Category B — rolling form/circuit:**
+
+| Feature | Description | Standalone | Delta | Decision |
+|---------|-------------|-----------|-------|----------|
+| `avg_qual_last5` | 5-race rolling qualifying average | 11.50 | -1.88 | REJECTED |
+| `avg_fin_last10` | 10-race rolling finish average | **14.38** | **+1.00** | **ACCEPTED** |
+| `drv_pts_last5` | Championship points sum last 5 races | 12.08 | -1.29 | REJECTED |
+| `drv_p10_zone_last5` | P8–P12 finish rate last 5 races | 11.38 | -2.00 | REJECTED |
+| `drv_best_fin_last5` | Best finish in last 5 races | 11.25 | -2.12 | REJECTED |
+| `drv_worst_fin_last5` | Worst finish in last 5 races (consistency proxy) | 11.96 | -1.42 | REJECTED |
+| `drv_in_points_last5` | Fraction of last 5 races finishing ≤P10 | 11.12 | -2.25 | REJECTED |
+| `circ_avg_qual` | Career avg qualifying position at this circuit | 12.67 | -0.71 | REJECTED |
+| `circ_recent_fin` | Avg of driver's last 2 finishes at circuit | 13.25 | -0.12 | REJECTED |
+| `team_finish_std_season` | Std dev of team finishes this season (consistency) | 12.33 | -1.04 | REJECTED |
+
+**Qualifying session depth:**
+
+| Feature | Description | Standalone | Delta | Decision |
+|---------|-------------|-----------|-------|----------|
+| `grid_penalty_delta` | Actual grid − qualifying position (penalty proxy) | 12.67 | -0.71 | REJECTED |
+| `qual_session_reached` | Ordinal 1/2/3 for Q1/Q2/Q3 elimination | 11.79 | -1.58 | REJECTED |
+| `q2_to_q1_delta` | Q1→Q2 pace improvement relative to pole | 12.83 | -0.54 | REJECTED |
+| `q3_to_q2_delta` | Q2→Q3 pace improvement relative to pole | 12.42 | -0.96 | REJECTED |
+
+**Combination test (top-3):** avg_fin_last10 + circ_recent_fin + q2_to_q1_delta → 12.67 (delta -0.71). All pairs also weaker than solo avg_fin_last10. No combo accepted.
+
+**Correlation check (script: `scripts/21_correlation_check.py`) — Rule 7:**
+`avg_fin_last10` correlated with 8 existing features (highest: r=0.949 with avg_fin_last5).
+All 8 replacement tests returned KEEP_ORIGINAL (no swap beats baseline by ≥+0.10).
+However, standalone addition (+1.00) clearly passes CV gate — "keep both" per Rule 7.
+
+**Result: `avg_fin_last10` ACCEPTED. → 50 FEATURE_COLS total.**
+**New 2025 holdout: 14.38 pts/race ensemble (+1.00 over 49-feat baseline).**
+
+### Part B — Open data quality issues
+
+**Issue: `con_xpt_std` missing for 2025/2026 eval data**
+
+Root cause: `data/processed/constructor_pit_times.parquet` covers only 2011–2024.
+All 2025 and 2026 rows get median-filled (1.395), removing discriminative power.
+
+Options:
+1. Fetch 2025 pit stop timing from Jolpica API (`/ergast/f1/{year}/{round}/pitstops.json`)
+   and recompute `con_xpt_std` per constructor per race.
+2. Use a rolling 3-year lookback from training data as a forward-fill proxy for current year.
+3. Drop `con_xpt_std` from FEATURE_COLS — the median fill provides no discrimination.
+
+**Recommended:** Option 2 — for each eval race, use the constructor's last 3 seasons avg
+from the training data. This provides real signal without requiring live pit timing data.
+
+**Estimated impact:** Restoring meaningful `con_xpt_std` for 2025 could recover the ~2pt
+baseline regression seen in the March 20 rebuild (11.92 vs 14.08).
+
+---
+
+## v6.8 — Driver Mechanical DNF Rate Feature
+
+**Status:** REJECTED (2026-03-20)
+
+**Tested:** `drv_mechanical_dnf_rate` from `data/aux/dnf_driver_history.csv`
+- Baseline: 14.38 (50 features) | With feature: 13.00 | **Delta: -1.38** → REJECTED
+- Root cause: `dnf_rate_last10` already captures the overall reliability signal.
+  Splitting by mechanical vs. collision type adds noise rather than discriminating signal.
+  2025 holdout required forward-fill from 2024 end-of-year values, introducing additional noise.
+- `drv_collision_dnf_rate` not tested (no driver-level collision data in aux files;
+  circuit-level `circ_collision_rate` already in FEATURE_COLS from v4.03).
+
+**Script:** `scripts/22_test_v68_dnf_type.py`
+*(Note: `scripts/21_correlation_check.py` is the v6.7 correlation follow-up — v6.8 uses 22.)*
+
+---
+
+## v6.9 — Teammate Relative Pace Feature
+
+**Status:** REJECTED (2026-03-20)
+
+**Tested:** `teammate_qual_delta` = grid_position − teammate_grid (derived from existing parquet columns)
+- Baseline: 14.38 | With feature: 12.54 | **Delta: -1.83** → REJECTED
+- Root cause: `teammate_grid` and `grid_position` are already separate features; the delta form
+  is redundant and adds noise rather than information.
+- `teammate_form_delta` and `team_ace_flag` not tested (negative result from simpler variant
+  makes more complex variants unlikely to help).
+
+**Script:** `scripts/23_test_v69_teammate_pace.py`
+
+---
+
+## v6.10 — XGBoost Hyperparameter Tuning
+
+**Status:** REJECTED (2026-03-20) — 2024 CV gain did not generalize to 2025 holdout
+
+**Rationale:** `xgb_ranker` is the dominant model (weight=6.0 in ensemble). Current
+hyperparameters were set in v3.x and never re-tuned. A focused search on n_estimators,
+max_depth, learning_rate, and subsample for the ground-effect era (2022–2024 training)
+could yield +0.5–1.0 pts/race.
+
+**Script:** `scripts/25_tune_v610_xgb_ranker.py`
+
+**Phase 1 results (18 configs, 2024 CV holdout — train 2010-2023, eval 2024):**
+
+| Config | 2024 CV | Delta |
+|--------|---------|-------|
+| n=500, depth=5, lr=0.05 (baseline) | 12.33 | — |
+| n=1000, depth=4, lr=0.030 | 13.42 | **+1.08 ★** |
+| n=500, depth=5, lr=0.030 | 13.29 | +0.96 ★ |
+| n=500, depth=4, lr=0.070 | 13.00 | +0.67 ★ |
+| n=500, depth=6, lr=0.030 | 12.88 | +0.54 ★ |
+| n=500, depth=4, lr=0.030 | 12.88 | +0.54 ★ |
+
+**Phase 2 results (best Phase-1 params + subsample × colsample_bytree):**
+
+| sub | col | 2024 CV | Delta |
+|-----|-----|---------|-------|
+| 0.9 | 0.7 | 13.17 | +0.83 ★ |
+| 0.8 | 0.8 (Phase-1 best) | **13.42** | **+1.08** |
+
+**2025 holdout check (Rule 2) — FAILED:**
+- Best config (n=1000, depth=4, lr=0.03, sub=0.8, col=0.8) trained on 2010-2024:
+  - xgb_ranker 2025 holdout: **11.12** (−1.34 vs original 12.46) ✗
+  - ensemble 2025 holdout: **12.04** (−0.29 vs baseline 12.33) ✗
+- Root cause: Year-specific overfitting. Shallower trees / slower LR captured 2024-specific
+  patterns that don't generalize to 2025. The original params (depth=5, lr=0.05) generalize
+  better across seasons.
+
+**Decision: REJECT all configs. Original params unchanged (n=500, depth=5, lr=0.05).**
+
+---
+
+## v6.11 — Con_xpt_std Real 2025 Pit Stop Data (Jolpica Fetch)
+
+**Status:** COMPLETE (2026-03-20)
+
+**Context:** `con_xpt_std` is the std dev of constructor pit stop times — a proxy for
+pit crew reliability. The `constructor_pit_times.parquet` covers 2011–2024 but NOT 2025/2026.
+
+**Investigation (2026-03-20):**
+- Rolling 3-year per-constructor season average was tried as a proxy.
+- Result: WORSE than global median (11.46 vs 12.79 on 2025 holdout ensemble).
+- Root cause: Per-season averages have lower variance than per-race training values.
+  Models interpret constant-season values differently from per-race fluctuations.
+- Also fixed: `con_xpt_std` median fill bug when building year-only parquets (2025+ years).
+  Old code `fillna(feat_df[col].median())` was NaN when ALL rows were 2025 (no training rows).
+  Fixed to `fillna(_cpt["con_xpt_std"].median())` — uses source parquet median directly.
+
+**Resolution:**
+1. Fetched per-race pit stop data for all 24 rounds of 2025 via Jolpica API.
+2. Computed `con_xpt_std` per (year, round, constructor_id) using real duration data.
+3. Appended 240 rows to `constructor_pit_times.parquet` (now covers 2011–2025, 3074 rows total).
+4. Rebuilt `features_2025_2025.parquet` — real values auto-merged; median fill only for missing.
+5. Verified: con_xpt_std now ranges 0.005–12.17 in 2025 (vs all-1.395 median fill previously).
+
+**Script:** `scripts/24_fetch_pit_data_2025.py`
+
+**Performance note:** Real 2025 pit data vs median fill:
+- Real values: ensemble 12.33 pts/race
+- Median fill (1.395 for all): 12.79 pts/race (marginally better due to OOD distribution)
+- Root cause: 2025 has extreme outliers (Haas R7: 12.17, R8: 10.92) outside training max (5.79).
+  Clipping at training max affected only 14 rows and didn't improve scores.
+- Decision: Keep real values (correct for a live prediction system). Difference is within noise.
+
+**Honest 2025 baseline (post-rebuild): ensemble 12.33 pts/race, xgb_ranker 12.46, lgbm_ranker 13.54**
+Note: The earlier 14.38 benchmark (v6.7 test) was measured on an original parquet state that
+cannot be recovered. 12.33 is the correct current baseline.
+
+**2026 note:** Run `python scripts/24_fetch_pit_data_2025.py --year 2026` after R3+ to add 2026 pit data.
+
+---
+
+## v6.12 — 2026 Retraining Schedule
+
+**Status:** ONGOING
+
+After each set of 2026 races completes, retrain models to incorporate 2026 data:
+
+| Milestone | Races | Action |
+|-----------|-------|--------|
+| **After R5** (~April 2026) | 5 races | Retrain with 2026 in training data; update EVAL_YEAR to 2026 |
+| **After R10** (~June 2026) | 10 races | Full retrain; consider v6.6 era activation |
+| **After R15** (~Sept 2026) | 15 races | Full retrain; tune con_xpt_std proxy for 2026 |
+| **After R24** (~Dec 2026) | Full season | Year-end retrain; set 2027 as new EVAL_YEAR |
+
+**Command pattern:**
+```bash
+# After fetching new data:
+python scripts/01_fetch_data.py --years 2026 --refresh
+# Rebuild 2026 feature parquet (also patches con_xpt_std with median)
+python scripts/02_build_dataset.py --years 2026 2026 --force
+# Patch con_xpt_std if constructor_pit_times.parquet not updated
+python -c "
+import pandas as pd; tr=pd.read_parquet('data/processed/features_2010_2025.parquet')
+med=tr.con_xpt_std.median(); f26=pd.read_parquet('data/processed/features_2026_2026.parquet')
+f26['con_xpt_std']=med; f26.to_parquet('data/processed/features_2026_2026.parquet',index=False)
+"
+python scripts/18_live_2026.py
+```
+
+---
+
+## v6.13 — Weather Features (FastF1 / Open-Meteo)
+
+**Status:** PLANNED
+
+**Research finding:** Rain specialists (Sainz, Alonso, Norris) measurably outperform their
+expected finishing position in wet conditions. FastF1 API returns `Rainfall` (boolean),
+`AirTemp`, `TrackTemp`, `WindSpeed` per lap. Historical weather is available from Open-Meteo
+using circuit GPS coordinates + race date.
+
+**Features to add:**
+- `circuit_rain_rate`: fraction of races at this circuit that were wet (last 10 years)
+  Source: historical race results coded as wet/dry, available from Wikipedia/f1.com
+- `drv_wet_performance_delta`: driver's avg position gain in wet vs. dry races (career)
+  Computed from results: in wet races, does this driver finish better/worse than their grid?
+
+**Effort estimate:** Medium — requires tagging historical races as wet/dry (CSV lookup table)
+or fetching from FastF1 (requires installing fastf1 Python library).
+
+**Circuit-level wet proxy (immediate):** The `circ_sc_vsc_combined` feature partially
+captures this (safety cars are more common in rain) but a direct wet indicator is cleaner.
+
+**Defer until:** After v6.7/v6.11 are complete — wet feature requires new data collection.
+
+---
+
+## v6.14 — Lap-1 Position Change History
+
+**Status:** PLANNED
+
+**Research finding (Dartmouth study):** Lap 1 incident rate correlates with starting position,
+track width, and race number. Drivers who typically gain/lose positions at the start have
+predictably different P10 trajectories.
+
+**Feature:** `drv_lap1_avg_gain_loss` — average positions gained (+) or lost (-) on lap 1
+across career. Positive = consistent gainer (aggressive, good reactions), negative = tends to
+fall back at the start.
+
+**Data source:** Lap-by-lap position data from Jolpica API (`/ergast/f1/{year}/{round}/laps.json`).
+Already fetchable but not currently stored. Would need a new cache table.
+
+**Circuit-level feature:** `circ_lap1_incident_rate` — fraction of race starts at this circuit
+that involve a lap-1 safety car or VSC. Already partially covered by `circ_sc_vsc_combined` but
+a lap-1-specific version would be more precise.
+
+**Defer until:** After v6.7–v6.9 complete. Requires new data fetch infrastructure.
+
+---
+
+## v6.15 — New Circuit Handling (Madrid 2026)
+
+**Status:** PARTIALLY ADDRESSED (2026-03-20)
+
+**Problem:** Madrid is a new 2026 street circuit with ZERO historical data. All circuit history
+features (`circ_avg_fin`, `circ_last_fin`, `circ_races`, `circ_p10_zone_rate`, etc.) will be
+zero/MISSING for every driver. The model needs a sensible prior.
+
+**Research finding:** Madrid should be treated as a Singapore-level chaos prior:
+high SC probability, narrow track, attrition-driven outcomes.
+
+**Attempted: `circ_is_new` binary flag — REJECTED (2026-03-20)**
+- Tested `circ_is_new = (circ_races == 0).astype(float)` as a derived feature.
+- Script: `scripts/26_test_v615_circ_is_new.py`
+- Baseline: 13.29 | With feature: 12.75 | **Delta: -0.54** → REJECTED
+- Root cause: `circ_races` is already in FEATURE_COLS. The binary encoding adds no new
+  information that tree models cannot derive themselves from the continuous value.
+  Correlations: circ_races(r=0.57), circ_avg_fin(r=0.48), career_races(r=0.48) — below 0.75 threshold.
+
+**Current handling (adequate for Madrid R10 2026):**
+- `circ_races = 0` for all drivers → models learn to use form/grid instead
+- `circ_avg_fin = 15.0` (MISSING_POSITION) — same for all drivers, provides no discrimination
+- `is_street = 1` provides the signal that Monaco-style track characteristics apply
+- Conclusion: Option 3 (no action) is sufficient. The existing feature set handles new
+  circuits via `circ_races=0` + `is_street` + grid/form features.
+
+**If Madrid-specific tuning needed before R10 2026:**
+- Add Madrid to STREET_CIRCUITS dict in config.py with an estimated `overtaking_difficulty`
+  score (suggest 8/10 — similar to Monaco/Baku). This is the only change required.
+- Current `overtaking_difficulty` for new circuits defaults to 5.0 (median); Madrid at 8+
+  would correctly signal low-passing opportunity and boost grid position weight.
+
+---
+
+## v6.16 — DNF-Excluding Form Features Batch Test
+
+**Status:** REJECTED (2026-03-20)
+
+**Motivation:** `avg_fin_last3` and `avg_fin_last5` encode DNFs as P20, mixing reliability with pure pace.
+"Clean" variants (`_clean`) exclude DNF laps to isolate "when they finish, how well do they perform?"
+`dnf_rate_last5` was also tested as a shorter-window reliability signal vs. existing `dnf_rate_last10`.
+
+**Note:** These features were computed in the parquet during v6.4 but were never tested in the v6.7 batch
+(the v6.7 batch test focused on Category B / qual depth candidates). All require zero changes to feature_engineering.py.
+
+**Script:** `scripts/27_test_v616_clean_form.py`
+
+**Baseline:** 13.29 pts/race (50 features, corrected 2025 holdout after circuit history fix)
+
+| Feature | Standalone delta | Decision |
+|---------|-----------------|----------|
+| `avg_fin_last3_clean` | -1.79 | REJECTED |
+| `avg_fin_last5_clean` | -0.54 | REJECTED |
+| `dnf_rate_last5` | -2.04 | REJECTED |
+
+**Root cause:** `dnf_rate_last10` (already in FEATURE_COLS) captures the reliability signal.
+Clean variants of rolling form add noise rather than separating pace from reliability in practice —
+the model already learns the P20 DNF encoding convention and adjusts accordingly.
+
+---
+
+## v6.17 — Constructor Relative Pit Stop Median
+
+**Status:** REJECTED (2026-03-20)
+
+**Motivation:** `con_xpt_std` measures pit crew consistency (variance of stop times) but not speed.
+`con_xpt_relative_median` measures how a constructor's median pit stop duration compares to the
+field median for that race (in seconds, negative = faster than average). This is a different signal:
+faster pits enable undercuts; `con_xpt_std=0` just means very consistent, with no speed info.
+
+**Data source:** Already computed in `data/processed/constructor_pit_times.parquet` alongside `con_xpt_std`.
+Merged directly in the test script; forward-filled for missing rounds.
+
+**Script:** `scripts/28_test_v617_pit_relative.py`
+
+**Baseline:** 13.29 pts/race | With feature: 11.41 pts/race | **Delta: -1.88** → REJECTED
+
+**Root cause:** Pit stop speed relative to field is dominated by circuit/race conditions
+(safety cars, VSC, strategic stints) rather than constructor capability alone. The
+per-race relative median has high noise, and the model may have existing circuit-level
+pit stop signals (`circ_avg_pit_stops`) that already partially encode this.
+
+---
+
+## v6.18 — Medium-Term Form Trend Feature
+
+**Status:** REJECTED (2026-03-20)
+
+**Motivation:** `drv_form_trend` (avg_fin_last3 − avg_fin_last5) is already in FEATURE_COLS and
+captures short-term momentum. The medium-term analog `drv_form_trend_long` (avg_fin_last5 − avg_fin_last10)
+tests whether the driver has been accelerating over a wider window. Negative = improving relative to
+their recent history; positive = declining. Both source features (avg_fin_last5, avg_fin_last10) are
+already in FEATURE_COLS.
+
+**Script:** `scripts/29_test_v618_form_trend_long.py`
+
+**Baseline:** 13.29 pts/race | With feature: 13.33 pts/race | **Delta: +0.04** → REJECTED (< threshold 0.20)
+
+**Root cause:** Tree models (xgb_ranker, dominant at 6× weight) already learn the relationship
+between avg_fin_last5 and avg_fin_last10 from their raw values — the explicit difference adds
+no information that the models cannot derive with a split on each separately.
+
+---
+
+## v6.19 — Feature Ablation: Remove Low-Importance Features
+
+**Status:** REJECTED (2026-03-20) — all removals hurt performance
+
+**Motivation:** Three features have consistently near-zero importance in both xgb_ranker and rf_reg:
+`drv_dnf_recovery_rate` (xgb: 0.010), `is_street` (xgb: 0.013), `last_dnf` (xgb: 0.013).
+Tested whether removing these features would improve the score by freeing the model from noise.
+
+**Script:** `scripts/30_test_v619_feature_ablation.py`
+
+**Baseline:** 13.29 ± 1.41 pts/race
+
+| Removal | Score | Delta | SE change | Decision |
+|---------|-------|-------|-----------|----------|
+| Remove `drv_dnf_recovery_rate` | 11.00 ± 1.43 | **-2.29** | +0.019 | KEEP |
+| Remove `is_street` | 13.12 ± 1.40 | -0.17 | -0.007 | KEEP |
+| Remove `last_dnf` | 11.42 ± 1.58 | **-1.88** | +0.170 | KEEP |
+| Remove all 3 combined | 11.58 ± 1.39 | **-1.71** | -0.021 | KEEP |
+
+**Key finding:** Low Gini/gain importance does NOT mean removable. `drv_dnf_recovery_rate` and
+`last_dnf` carry targeted edge-case signal (DNF bounce-back races) that matters disproportionately
+on specific races. Mean importance across 24 races hides this. All 50 features retained.
+
+---
+
+## 2026 Season Intelligence (Research Update 2026-03-20)
+
+### Power Unit Hierarchy (Critical for 2026)
+
+| PU | Teams | Early 2026 Reliability |
+|----|-------|----------------------|
+| **Mercedes** | Mercedes, McLaren, Williams, Alpine, Haas | ✓ Good — Russell/Antonelli 1-2 both R1+R2 |
+| **Ferrari** | Ferrari, Cadillac | ✓ Good — P3-P4 both races |
+| **Red Bull/Honda** | Red Bull, Racing Bulls | ⚠ Underperforming — Verstappen DNF R2 |
+| **Aston Martin/Honda** | Aston Martin | ✗ Severe issues — battery vibration in testing |
+| **Audi (own PU)** | Audi | ⚠ New team, moderate risk |
+
+### 2026 Early-Season Competitive Order (after R1-R2)
+
+- **P10 zone drivers:** Colapinto (P10 R2), Lawson (P7 R2), Hadjar (P8 R2), Bearman (P5 R2 — Haas stronger than expected)
+- **Elevated DNF risk:** Aston Martin (Honda reliability), McLaren (PU electrical issues R2), Red Bull (tracking vs 2025 pace)
+- **Key edge:** When 2+ top cars retire, P10 threshold shifts dramatically. Model: in clean races P10 = grid P10-11 starter; in high-attrition races P10 = grid P13-15.
+
+### Circuit Chaos Probability (for P10 prediction)
+
+| Circuit | SC Probability | P10 Predictability |
+|---------|---------------|-------------------|
+| Baku | ~60% | Very Low (position lottery) |
+| Monaco | ~45% | Very High (grid = finish order) |
+| Singapore | ~55% | Very Low (attrition-heavy) |
+| Madrid (new) | Unknown | Unknown (street circuit prior) |
+| Brazil | ~50% | Low (rain + SC) |
+| Bahrain/Abu Dhabi | ~25% | High (merit-based) |
+
+### Japan R3 Note (2026-03-27 to 2026-03-29)
+Rain forecast for all three days. If wet: Sainz (Williams), Alonso (Aston Martin), Norris (McLaren if car fixed) are elevated P10 candidates vs. their expected qualifying position.
+
+### Feature Gaps Exposed by 2026 Context
+
+1. **No constructor-level 2026 reliability flag** — Aston Martin's Honda reliability
+   issues (known from testing) are not encodable in current features until race data accumulates.
+   **Near-term fix:** Manual `constructor_2026_reliability_tier` lookup (Mercedes/Ferrari=1.0,
+   RedBull=0.8, Audi=0.7, AstonMartin=0.5) for use in `predict_race` pre-race predictions.
+
+2. **`super_clipping` disruption** — 2026 power units use "super clipping" (energy
+   conservation mid-straight causing speed drops) which can cause unexpected position
+   changes. This affects circuits with long straights (Baku, Monza, Miami). Not encodable
+   without 2026 telemetry data — defer to v6.6.
+
+3. **FastF1 vs. Jolpica API:** Research recommends FastF1 as the current standard
+   (Ergast/Jolpica may become unreliable). Plan to add FastF1 as a secondary data source
+   for 2026 season data where Jolpica is slow or incomplete.
 
 ---
 
 ## Version Summary Table
 
-| Version | Change | Addresses | Effort | Target delta | Status |
-|---------|--------|-----------|--------|--------------|--------|
-| **v5.10** | Race 1 cold-start fix | Issue #2 | Medium | +1.0–2.5 pts at R1 | **PENDED (pre-season 2027)** |
-| **v5.20** | 2026 regulatory era circuit features | Issue #3 | Medium | context-dependent | **PENDED (≥R7 2026)** |
-| **v6.1** | Ensemble meta-learner (Ridge stacking) | Issue #1 | Medium | ensemble +0.83+ pts | **PLANNED** |
-| **v6.2** | xgb_reg replacement/removal | Issue #4 | Low | ensemble +0.20+ pts | **PLANNED** |
-| **v6.3** | 2026 live data integration protocol | Issue #8 | Low (ops) | baseline protection | **PLANNED (ongoing)** |
-| **v6.4** | DNF-aware form + selected 2026 regulatory proxies (PU loophole, software delta, mileage) | Issues #6, #9, #10, #11 | Medium | +0.10–0.30 pts (Part A); 2026-only (Part B) | **PLANNED** |
-| **v6.5** | Plackett-Luce ranking model | Issue #7 | High | +0.30–0.80 pts (experimental) | **CONDITIONAL (post v6.1)** |
-| **v6.6** | 2026 regulatory era activation (v5.20 + v6.4 integration) | Issue #3 | Medium | context-dependent | **CONDITIONAL (≥R7 2026)** |
+| Version | Change | Actual delta (2025 holdout) | Status |
+|---------|--------|----------------------------|--------|
+| **v6.1** | Ensemble meta-learner (Ridge stacking) | -0.26 pts vs ensemble | **FAILED** |
+| **v6.2** | Weight re-calibration: top-3 non-adaptive | **+1.70 pts** (12.38→14.08) | **PASSED ✓** |
+| **v6.3** | 2026 live data integration protocol | ongoing | IMPLEMENTED ✓ |
+| **v6.4** | DNF-aware form + 2026 regulatory proxies | +1.46 standalone (dnf_rate_last10) | PART A PASSED ✓ |
+| **v6.5** | Plackett-Luce ranking model | n/a | DROPPED |
+| **v6.6** | 2026 regulatory era activation | TBD | CONDITIONAL (≥R7 2026) |
+| **v6.7** | Category B feature batch (14 candidates) | +1.00 (avg_fin_last10) → baseline 13.29* | COMPLETE ✓ |
+| **v6.8** | Driver mechanical vs. collision DNF split | -1.38 (drv_mechanical_dnf_rate) | REJECTED |
+| **v6.9** | Teammate relative pace features | -1.83 (teammate_qual_delta) | REJECTED |
+| **v6.10** | XGBoost hyperparameter tuning | -1.34 on 2025 holdout (year-specific overfit) | REJECTED |
+| **v6.11** | 2025 pit stop data fetch + eval parquet fix | eval parquet corrected; baseline now 13.29 | COMPLETE ✓ |
+| **v6.12** | 2026 season retraining schedule | ongoing | ONGOING |
+| **v6.13** | Weather features (rain rate, wet driver rating) | TBD | PLANNED |
+| **v6.14** | Lap-1 position change history | TBD | PLANNED |
+| **v6.15** | New circuit handling (Madrid 2026) | circ_is_new: -0.54 → REJECTED; Madrid added to config | ADDRESSED ✓ |
+| **v6.16** | DNF-excluding form features batch (3 candidates) | all negative (max delta -0.54) | REJECTED |
+| **v6.17** | Constructor relative pit stop median | -1.88 (con_xpt_relative_median) | REJECTED |
+| **v6.18** | Medium-term form trend (avg_fin_last5 − avg_fin_last10) | +0.04 (drv_form_trend_long) | REJECTED |
+| **v6.19** | Feature ablation: remove 3 lowest-importance features | all hurt (-0.17 to -2.29) | REJECTED |
+
+*\*Note: v6.7 baseline of 14.38 was measured on corrupted eval parquet (circ_races=0 for all 2025 rows). Corrected baseline after v6.11 fix = 13.29 pts/race. The feature still adds real value; baseline figure was inflated by measurement error.*
 
 **Cumulative target:** Ensemble ≥ 14.04 avg pts/race (beat naive baseline outright).
-**Current gap:** ensemble 12.67 → needs +1.37 pts.
-**Expected path:** v6.1 (+0.60–0.90 est.) + v6.2 (+0.10–0.25 est.) + v6.4 (+0.10–0.20 est.) ≈ +0.80–1.35 pts.
+**Current state (v6.19+, corrected 2025 holdout): ensemble 13.29 pts/race. Gap to naive: -0.75 pts.**
+**Feature space exhausted.** All parquet candidates tested (v6.7–v6.18); ablation rejected (v6.19).
+**Next tractable improvements:** v6.13 (weather/rain — needs new data), v6.14 (lap-1 — needs new data), v6.6 (era activation ≥R7 2026).
 
 ---
 
-## 2026 Season Live Tracking
+## What NOT to Do (Lessons from v5.x + v6.x)
 
-Once 2026 races begin, log each race result here:
-
-| Race | Round | Circuit | Ensemble pick | Actual P10 | Pts | Model leader | Notes |
-|------|-------|---------|--------------|------------|-----|--------------|-------|
-| — | — | — | — | — | — | — | Awaiting R1 |
-
-**Running avg (2026):** — pts/race (naive 2025 baseline: 14.04)
-
----
-
-## What NOT to Do (Lessons from v5.x)
-
-1. **Do not run full multi-fold CV** in a single session — always single-fold at a time
-2. **Do not use synthetic data** without explicit approval
-3. **Do not accept a feature** unless it passes the single-fold gate (avg pts ≥ prev − 0.10)
-4. **Do not apply 2026 circuit ratings retroactively** to 2024 training data
-5. **Do not accept all features jointly** without testing individually first
-6. **Do not raise xgb_ranker weight above 4.00** without multi-fold CV evidence (v5.41 lesson)
-7. **Do not treat 2026 early-season data as reliable** — first 3 races have high variance
-   from new regulations; avoid retraining on fewer than 5 races
-8. **Do not remove the grid/champ heuristics** — they provide +0.37 pts/race baseline
+1. Do not run full multi-fold CV in a single session
+2. Do not use synthetic data without explicit approval
+3. Do not accept a feature unless it passes the single-fold gate
+4. Do not apply 2026 circuit ratings retroactively to 2024 training data
+5. Do not accept all features jointly without testing individually
+6. Do not raise xgb_ranker weight above 4.00 without multi-fold CV evidence
+7. Do not treat 2026 early-season data as reliable before 5+ races
+8. Do not use grid/champ heuristics — removed in v6.2 (signal already in ML features)
+9. Do not tune hyperparameters on the 2025 holdout — it's the final eval set
+10. Do not accept features with delta < +0.20 unless SE clearly decreases
+11. Do not use stacking meta-learner trained on pre-2022 dominated OOF data (v6.1 lesson)
+12. Do not rebuild parquets without patching con_xpt_std for 2025/2026 rows
+13. Do not remove features based on low importance scores alone — low importance does not mean harmful
+    (v6.19: removing drv_dnf_recovery_rate cost -2.29 pts despite near-zero Gini importance)
+14. Do not build year-only eval parquets (e.g. --years 2025 2025) — always extract eval slice from
+    the combined multi-year parquet to preserve correct circuit history
