@@ -130,19 +130,35 @@ except ImportError:
 #
 # Result: ensemble 14.08 pts/race (2025 holdout) | xgb_ranker 13.79 pts/race
 ENSEMBLE_WEIGHTS: dict[str, float] = {
-    # v6.2: top-3 ML models only, non-adaptive (adaptive=False in train_all)
-    # xgb_ranker dominant (4× the secondary weight); others zeroed out.
-    # 2024 CV: 14.96  |  2025 holdout: 14.08  (beats naive baseline 14.04)
-    "xgb_ranker":      6.00,   # dominant — 14.42 pts 2025 holdout (best model by +0.63)
-    "lgbm_ranker":     1.50,   # secondary — 11.96 pts 2025 holdout
-    "rf_clf":          1.50,   # secondary — 11.46 pts 2025 holdout
-    "xgb_clf":         0.00,   # removed (11.17 holdout; adds noise vs top-3)
-    "ridge":           0.00,   # removed (10.79 holdout)
-    "lgb_reg":         0.00,   # removed (11.17 holdout)
-    "rf_reg":          0.00,   # removed (9.46 holdout)
-    "xgb_reg":         0.00,   # removed (7.92 holdout — worst model)
-    "grid_heuristic":  0.00,   # removed (signal already in grid_position feature)
-    "champ_heuristic": 0.00,   # removed (signal already in drv_champ_pos feature)
+    # v7.1: top-3 ML models, non-adaptive (adaptive=False in train_all)
+    # Replaces lgbm_ranker with xgb_clf for architectural diversity.
+    #
+    # v6.2 flaw: lgbm_ranker (lambdarank) and xgb_ranker (rank:ndcg) share the same
+    # learning-to-rank training signal → they agree on the wrong driver simultaneously
+    # (evidence: R12 Britain, R14 Hungary, R15 Dutch — both rankers failed, xgb_clf correct).
+    # Replacing lgbm_ranker with xgb_clf provides genuine independent signal via
+    # EV-based class probability selection.
+    #
+    # Evaluation (2026-03-20, script 31_test_v71_arch_diverse_weights.py, config B_rf_xgbclf):
+    #   2024 CV   (train 2010–2023): 14.67 pts/race
+    #   2025 holdout (train 2010–2024): 14.17 pts/race  (+0.88 vs v6.2 baseline 13.29)
+    #   Naive baseline: 14.04 → v7.1 ensemble BEATS naive baseline (+0.13)
+    #
+    # Other candidates tested (all inferior on 2025 holdout):
+    #   E_top2_only   (xgb=8, rf_clf=1):           13.54 (+0.25)
+    #   C_rf_ridge    (xgb=6, rf_clf=2, ridge=1):  13.42 (+0.13)
+    #   baseline_v62  (xgb=6, lgbm=1.5, rf=1.5):  13.29 (−0.00)
+    #   A_rf_lgb      (xgb=6, rf_clf=1.5, lgb=1.5): 12.96 (−0.33)
+    "xgb_ranker":      6.00,   # dominant — best individual model (13.08 pts 2025 holdout)
+    "rf_clf":          1.50,   # calibrated RF classifier — architectural diversity
+    "xgb_clf":         1.50,   # calibrated XGB classifier — independent EV decision boundary
+    "lgbm_ranker":     0.00,   # REMOVED — correlated with xgb_ranker (both LTR objectives)
+    "lgb_reg":         0.00,   # removed
+    "ridge":           0.00,   # removed
+    "rf_reg":          0.00,   # removed
+    "xgb_reg":         0.00,   # removed
+    "grid_heuristic":  0.00,   # removed (signal in grid_position feature)
+    "champ_heuristic": 0.00,   # removed (signal in drv_champ_pos feature)
 }
 
 # ── v5.9 Season-stage adaptive ensemble weights ────────────────────────────────

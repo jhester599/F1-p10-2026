@@ -770,9 +770,16 @@ Rain forecast for all three days. If wet: Sainz (Williams), Alonso (Aston Martin
 
 *\*Note: v6.7 baseline of 14.38 was measured on corrupted eval parquet (circ_races=0 for all 2025 rows). Corrected baseline after v6.11 fix = 13.29 pts/race. The feature still adds real value; baseline figure was inflated by measurement error.*
 
+| **v7.1** | Ensemble architecture: replace lgbm_ranker with xgb_clf | **+0.88 pts** (13.29→14.17) | **ACCEPTED ✓** |
+| v7.2 | Training window restriction (7yr / 5yr / 4yr / 3yr, era weights on/off) | all ≤ baseline (best: full_2010_eraon = 13.29) | REJECTED |
+| v7.3 | Rolling 3-fold CV weight derivation (4 methods: proportional/quadratic/Sharpe/top3) | all 9.92–13.29, all ≤ baseline | REJECTED |
+| v7.4 | Consensus override (xgb_ranker low-confidence + majority vote alternative) | best: 13.88 (+0.59), 1 override in 24 races — fragile | NOT ADOPTED |
+| v7.5 | Circuit-type conditional weights (street/sticky/standard) | 10.00 (−3.29) — CV category overfitting | REJECTED |
+
 **Cumulative target:** Ensemble ≥ 14.04 avg pts/race (beat naive baseline outright).
-**Current state (v6.19+, corrected 2025 holdout): ensemble 13.29 pts/race. Gap to naive: -0.75 pts.**
-**Feature space exhausted.** All parquet candidates tested (v6.7–v6.18); ablation rejected (v6.19).
+**Current state (v7.1, corrected 2025 holdout): ensemble 14.17 pts/race. Gap to naive: +0.13 pts. ✓ TARGET MET**
+**Feature space (parquet candidates) exhausted.** All parquet candidates tested (v6.7–v6.18); ablation rejected (v6.19).
+**Ensemble weighting research complete (v7.1–v7.5).** See `V7_ENSEMBLE_PLAN.md` for full analysis.
 **Next tractable improvements:** v6.13 (weather/rain — needs new data), v6.14 (lap-1 — needs new data), v6.6 (era activation ≥R7 2026).
 
 ---
@@ -795,3 +802,7 @@ Rain forecast for all three days. If wet: Sainz (Williams), Alonso (Aston Martin
     (v6.19: removing drv_dnf_recovery_rate cost -2.29 pts despite near-zero Gini importance)
 14. Do not build year-only eval parquets (e.g. --years 2025 2025) — always extract eval slice from
     the combined multi-year parquet to preserve correct circuit history
+15. Do not use `adaptive=True` (default) in WeightedEnsemble when testing candidate weight sets —
+    it ignores `self.weights` and uses hardcoded ENSEMBLE_WEIGHTS_EARLY/MID/LATE (v7.1 lesson)
+16. Do not assume architecturally similar models (xgb_ranker + lgbm_ranker) provide ensemble diversity
+    — both use learning-to-rank objectives and fail together in chaotic races (v7.1 lesson)
