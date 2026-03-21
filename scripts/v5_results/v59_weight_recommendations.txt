@@ -1,0 +1,105 @@
+======================================================================
+v5.9 ENSEMBLE WEIGHT RECOMMENDATIONS
+Based on 11-fold CV (2014–2024) + 2025 holdout (70/30 blend)
+Feature set: 48 features (48-feature v5.6 baseline)
+======================================================================
+
+── Per-model averages ──
+Model                  CV avg  2025 HO  Blended   Weight
+--------------------------------------------------------
+xgb_ranker             10.785   14.417   13.327     4.00
+lgbm_ranker            10.408   11.958   11.493     2.54
+rf_clf                 11.592   11.458   11.498     2.54
+xgb_clf                11.434   10.875   11.043     2.18
+lgb_reg                10.254   11.167   10.893     2.06
+ridge                  11.535   10.792   11.015     2.15
+rf_reg                 10.917    9.458    9.896     1.26
+xgb_reg                10.294    7.917    8.630     0.25
+
+── Stage averages (CV only) ──
+
+  EARLY:
+    xgb_ranker         CV= 10.58  HO= 16.60  blended= 14.79  weight= 4.00
+    lgbm_ranker        CV= 11.20  HO= 10.20  blended= 10.50  weight= 2.14
+    rf_clf             CV= 12.87  HO= 14.60  blended= 14.08  weight= 3.69
+    xgb_clf            CV= 13.45  HO=  7.00  blended=  8.94  weight= 1.47
+    lgb_reg            CV=  9.40  HO= 15.00  blended= 13.32  weight= 3.36
+    ridge              CV= 11.33  HO= 10.00  blended= 10.40  weight= 2.10
+    rf_reg             CV= 10.75  HO= 10.20  blended= 10.36  weight= 2.09
+    xgb_reg            CV= 10.58  HO=  4.20  blended=  6.11  weight= 0.25
+
+  MID:
+    xgb_ranker         CV= 10.28  HO= 16.10  blended= 14.35  weight= 4.00
+    lgbm_ranker        CV= 10.49  HO= 13.00  blended= 12.25  weight= 2.47
+    rf_clf             CV= 11.46  HO= 10.80  blended= 11.00  weight= 1.56
+    xgb_clf            CV= 11.21  HO= 13.90  blended= 13.09  weight= 3.08
+    lgb_reg            CV= 10.58  HO= 11.20  blended= 11.01  weight= 1.57
+    ridge              CV= 10.95  HO= 11.30  blended= 11.19  weight= 1.70
+    rf_reg             CV= 10.37  HO=  8.70  blended=  9.20  weight= 0.25
+    xgb_reg            CV= 10.06  HO= 10.70  blended= 10.51  weight= 1.20
+
+  LATE:
+    xgb_ranker         CV= 11.84  HO= 11.33  blended= 11.49  weight= 4.00
+    lgbm_ranker        CV=  9.57  HO= 11.78  blended= 11.12  weight= 3.61
+    rf_clf             CV= 10.70  HO= 10.44  blended= 10.52  weight= 2.97
+    xgb_clf            CV= 10.06  HO=  9.67  blended=  9.79  weight= 2.19
+    lgb_reg            CV= 10.43  HO=  9.00  blended=  9.43  weight= 1.81
+    ridge              CV= 12.75  HO= 10.67  blended= 11.29  weight= 3.79
+    rf_reg             CV= 12.02  HO=  9.89  blended= 10.53  weight= 2.98
+    xgb_reg            CV= 10.44  HO=  6.89  blended=  7.96  weight= 0.25
+
+======================================================================
+RECOMMENDED WEIGHT DICTS (paste into src/models.py)
+======================================================================
+
+ENSEMBLE_WEIGHTS: dict[str, float] = {
+    "xgb_ranker":            4.00,   # blended 13.33
+    "lgbm_ranker":           2.54,   # blended 11.49
+    "rf_clf":                2.54,   # blended 11.50
+    "xgb_clf":               2.18,   # blended 11.04
+    "ridge":                 2.15,   # blended 11.01
+    "lgb_reg":               2.06,   # blended 10.89
+    "rf_reg":                1.26,   # blended 9.90
+    "xgb_reg":               0.25,   # blended 8.63
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}
+
+ENSEMBLE_WEIGHTS_EARLY: dict[str, float] = {
+    "xgb_ranker":            4.00,   # blended 14.79
+    "rf_clf":                3.69,   # blended 14.08
+    "lgb_reg":               3.36,   # blended 13.32
+    "lgbm_ranker":           2.14,   # blended 10.50
+    "ridge":                 2.10,   # blended 10.40
+    "rf_reg":                2.09,   # blended 10.36
+    "xgb_clf":               1.47,   # blended 8.94
+    "xgb_reg":               0.25,   # blended 6.11
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}
+
+ENSEMBLE_WEIGHTS_MID: dict[str, float] = {
+    "xgb_ranker":            4.00,   # blended 14.35
+    "xgb_clf":               3.08,   # blended 13.09
+    "lgbm_ranker":           2.47,   # blended 12.25
+    "ridge":                 1.70,   # blended 11.19
+    "lgb_reg":               1.57,   # blended 11.01
+    "rf_clf":                1.56,   # blended 11.00
+    "xgb_reg":               1.20,   # blended 10.51
+    "rf_reg":                0.25,   # blended 9.20
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}
+
+ENSEMBLE_WEIGHTS_LATE: dict[str, float] = {
+    "xgb_ranker":            4.00,   # blended 11.49
+    "ridge":                 3.79,   # blended 11.29
+    "lgbm_ranker":           3.61,   # blended 11.12
+    "rf_reg":                2.98,   # blended 10.53
+    "rf_clf":                2.97,   # blended 10.52
+    "xgb_clf":               2.19,   # blended 9.79
+    "lgb_reg":               1.81,   # blended 9.43
+    "xgb_reg":               0.25,   # blended 7.96
+    "grid_heuristic":  2.00,
+    "champ_heuristic": 2.00,
+}

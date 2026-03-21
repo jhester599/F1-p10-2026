@@ -1,0 +1,2 @@
+feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+drv_p10_zone_last5,P8–P12 finish rate over last 5 races,DISCARD,12.611111111111112,12.194444444444445,0.0,-2.458333333333334,1.208333333333334,-1.229166666666667
