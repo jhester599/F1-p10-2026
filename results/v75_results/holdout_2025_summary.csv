@@ -1,0 +1,3 @@
+label,avg_pts,std,n,delta_baseline,delta_naive
+baseline_v62,13.29,6.91,24,0.0,-0.75
+v7.5_conditional,10.0,6.97,24,-3.29,-4.04

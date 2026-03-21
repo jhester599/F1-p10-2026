@@ -1,0 +1,6 @@
+label,avg_pts,std,n,delta_baseline,delta_naive
+baseline_v62,13.29,6.91,24,0.0,-0.75
+method_proportional,10.67,7.71,24,-2.62,-3.37
+method_top3_prop,10.46,7.17,24,-2.83,-3.58
+method_sharpe,10.33,6.23,24,-2.96,-3.71
+method_quadratic,9.92,6.57,24,-3.37,-4.12
