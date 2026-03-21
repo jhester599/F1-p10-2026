@@ -3,7 +3,7 @@
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix, optimised for a
 fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetrically).
 
-**Current model:** 51 features · 8 models · F_soft_all ensemble (v7.2 config)
+**Current model:** 51 features · 8 models · F_soft_all ensemble (v8.23, DART booster)
 **Benchmark:** `naive_grid_p10` — 14.04 avg pts/race on 2025 holdout
 **Current 2025 holdout:** ensemble — **14.21 avg pts/race** ✓ BEATS naive baseline (+0.17)
 
@@ -12,8 +12,9 @@ fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetric
 - v8.18: Fantasy-score ranker labels — FANTASY_POINTS[|pos-10|] instead of round(10/(1+|pos-10|)) · **+0.25 pts**
 - v8.23: DART booster for XGBRanker — dropout regularization (rate_drop=0.10) · **+0.25 pts**
 - **Total improvement: +0.92 pts/race** (13.29 → 14.21)
+- Post-v8.23: Feature/hyperparameter space exhausted (v8.24–v8.30 all rejected). **v8.23 is current production version.**
 
-> **Baseline history:** v7.2=13.29 (corrected, v7.1 claim of 14.17 not reproducible) →
+> **Baseline history:** v7.2=13.29 (corrected; v7.1 claim of 14.17 was not reproducible) →
 > v8.10=13.71 → v8.18=13.96 → **v8.23=14.21** (beats naive 14.04 by +0.17)
 
 ---
@@ -60,13 +61,13 @@ python scripts/18_live_2026.py --predict --race 6   # pre-race prediction for R6
 
 ```
 F1-p10-2026/
-├── config.py                   # constants, FEATURE_COLS (50), scoring table, era weights
+├── config.py                   # constants, FEATURE_COLS (51), scoring table, era weights
 ├── predict_race.py             # run each race weekend after qualifying
 ├── run_pipeline.py             # convenience orchestrator (steps 2-4)
 │
 ├── src/
 │   ├── data_fetch.py           # Jolpica API wrapper with caching
-│   ├── feature_engineering.py  # builds the 50-feature matrix
+│   ├── feature_engineering.py  # builds the 51-feature matrix
 │   ├── models.py               # model definitions, top-3 non-adaptive ensemble
 │   └── scoring.py              # fantasy scoring + regret utilities
 │
@@ -88,6 +89,22 @@ F1-p10-2026/
 │   ├── 33_test_v73_rolling_cv_weights.py    # v7.3 rolling CV weight derivation (REJECTED)
 │   ├── 34_test_v74_consensus_override.py    # v7.4 consensus override (NOT ADOPTED)
 │   ├── 35_test_v75_conditional_weights.py   # v7.5 circuit-type conditional weights (REJECTED)
+│   ├── 36_test_v81_grid_penalty_delta.py    # v8.1 grid penalty delta (REJECTED)
+│   ├── 38_test_v83_clean_form10.py          # v8.3 DNF-excluding form avg (REJECTED)
+│   ├── 40_test_v85_manufacturer_penalty.py  # v8.5 new manufacturer penalty (REJECTED)
+│   ├── 44_test_v89_des_knn.py               # v8.9 DES k-NN selection (REJECTED)
+│   ├── 45_test_v810_midfield_rank.py        # v8.10 grid_midfield_rank (ACCEPTED ✓)
+│   ├── 49_test_v818_fantasy_labels.py       # v8.18 fantasy-score labels (ACCEPTED ✓)
+│   ├── 51_test_v821_ranker_regularization.py # v8.21 ranker regularization (REJECTED)
+│   ├── 52_test_v822_grid_heuristic.py       # v8.22 grid heuristic restore (REJECTED)
+│   ├── 53_test_v823_dart_booster.py         # v8.23 DART booster (ACCEPTED ✓)
+│   ├── 54_test_v824_dart_extended.py        # v8.24 extended DART (REJECTED)
+│   ├── 55_test_v825_dart_params.py          # v8.25 DART param tuning (REJECTED)
+│   ├── 56_test_v826_team_fin_std.py         # v8.26 team finish std (REJECTED)
+│   ├── 57_test_v827_lgbm_tuning.py          # v8.27 lgbm_ranker tuning (REJECTED)
+│   ├── 58_test_v828_weight_recal.py         # v8.28 weight recalibration (REJECTED)
+│   ├── 59_test_v829_grid_vs_season_avg.py   # v8.29 grid vs season avg (REJECTED)
+│   ├── 60_test_v830_team_change.py          # v8.30 team change flag (REJECTED)
 │   └── v5_results/             # v5.x per-version results and analysis
 │
 ├── data/
@@ -104,11 +121,11 @@ F1-p10-2026/
 
 ---
 
-## Features (50 total)
+## Features (51 total)
 
 All features are derived from information available **after qualifying, before the race**.
 
-### Positional & qualifying (8)
+### Positional & qualifying (9)
 
 | Feature | Description |
 |---|---|
@@ -119,6 +136,7 @@ All features are derived from information available **after qualifying, before t
 | `q2_gap_pct` | Q2 session gap to pole (%). NaN for Q1 eliminees. **(v5.6)** |
 | `q2_elimination_margin` | Gap between driver's Q2 time and Q2 cutoff. **(v5.6)** |
 | `grid_p10_proximity` | `\|grid_position − 10\|` |
+| `grid_midfield_rank` | `\|grid_position − 10\|` / (midfield_density + 0.01) — normalised P10 proximity **(v8.10)** |
 | `fp2_position` | FP2 classification (race-pace proxy) **(v3.1)** |
 
 ### Driver form & history (12)
@@ -214,34 +232,37 @@ All features are derived from information available **after qualifying, before t
 | `lgbm_ranker` | LightGBM Ranker (LambdaMART) | Highest P10-centred relevance score |
 | `ensemble` | WeightedEnsemble (top-3, non-adaptive) | Weighted blend — see below |
 
-### WeightedEnsemble — Top-3 Non-Adaptive (v7.1)
+### WeightedEnsemble — F_soft_all Non-Adaptive (v8.23 current)
 
 Fixed weights across all races and season stages. Analytic heuristics removed (their signal
-is fully captured by ML features):
+is fully captured by ML features). `adaptive=False` — season-stage adaptive weights were
+unstable across random seeds; fixed weights generalise better across seasons.
 
 | Model | Weight | Rationale |
 |---|---|---|
-| `xgb_ranker` | **6.0** | Dominant in 2022+ ground-effect era; best 2025 holdout (13.08) |
-| `rf_clf` | 1.5 | Diversity via probability-calibrated RF EV decision |
-| `xgb_clf` | 1.5 | Diversity via XGB classifier EV — independent from ranker objective |
-| `lgbm_ranker` | **0.0** | REMOVED v7.1 — correlated with xgb_ranker (both LTR objectives) |
-| all others | **0.0** | Excluded — not contributing net positive signal |
+| `xgb_ranker` | **6.00** | Dominant — DART rank:ndcg; best individual model on 2025 holdout |
+| `lgbm_ranker` | 1.50 | Diversity: LambdaMART objective differs from ndcg; independent failure modes |
+| `rf_clf` | 1.50 | Diversity: probability-calibrated RF EV decision |
+| `xgb_clf` | 0.50 | Minor EV-based classification signal |
+| `lgb_reg` | 0.25 | Minor regressor diversity |
+| `ridge` | 0.25 | Minor linear model diversity |
+| `rf_reg`, `xgb_reg` | **0.00** | Excluded — not contributing net positive signal |
 
-`adaptive=False` — season-stage adaptive weights were unstable across random seeds; fixed
-weights generalise better across seasons.
+**Configuration history:** v7.1 claimed `xgb_clf=1.5, lgbm_ranker=0.0` (+0.88 pts) but was
+not reproducible on re-evaluation (2026-03-21). Verified best (v7.2/F_soft_all): lgbm_ranker
+retained at 1.5, with small diversity weights for xgb_clf/lgb_reg/ridge. v8.28 weight
+recalibration confirmed F_soft_all remains optimal post-DART. All 5 weight candidates tested
+returned 13.29–13.42 (below v8.23 14.21 which credits DART, not weight changes).
 
-**v7.1 key finding:** `lgbm_ranker` (LambdaMART) and `xgb_ranker` (rank:ndcg) share the same
-learning-to-rank training signal and fail together on chaotic races (R12 Britain, R14 Hungary,
-R15 Dutch). Replacing `lgbm_ranker` with `xgb_clf` (EV-based classification) provides genuine
-architectural diversity. 2025 holdout: 13.29 → **14.17** (+0.88 pts/race).
-
-### XGBoost Ranker
+### XGBoost Ranker (v8.23)
 
 Uses `rank:ndcg` (upgraded v5.3 from `rank:pairwise`), optimising NDCG over the full race
-list. Integer relevance labels: `round(10/(1+|finish_pos−10|))` — P10→10, P9/P11→5, with
-symmetric decay. Params: n_estimators=500, max_depth=5, learning_rate=0.05, subsample=0.8,
-colsample_bytree=0.8. (v6.10 tuning to n=1000, depth=4, lr=0.03 was REJECTED — improved
-2024 CV +1.08 but degraded 2025 holdout by -1.34; year-specific overfitting.)
+list. **Relevance labels (v8.18):** `FANTASY_POINTS[|finish_pos−10|]` — P10→25, P9/P11→18,
+with symmetric fantasy-score decay (replaces round(10/(1+|pos-10|)) from prior versions).
+**Booster (v8.23):** `dart` with rate_drop=0.10, skip_drop=0.50 (dropout regularization).
+Params: n_estimators=600, max_depth=5, learning_rate=0.05, subsample=0.8, colsample_bytree=0.8.
+(v6.10 tuning to n=1000, depth=4, lr=0.03 was REJECTED — improved 2024 CV +1.08 but degraded
+2025 holdout by -1.34; year-specific overfitting. DART param search exhausted at v8.25.)
 
 ### Era-Stratified Sample Weights
 
@@ -283,35 +304,41 @@ python scripts/03_train_models.py --cv --cv-years 2024
 
 ## Results
 
-### 2025 Holdout — v7.1 (50 features, top-3 ensemble, trained on 2010–2024, 24 races)
+### 2025 Holdout — v8.23 (51 features, F_soft_all ensemble, DART booster, trained on 2010–2024, 24 races)
 
 | Model | Avg pts/race | Notes |
 |---|---|---|
-| `naive_grid_p10` | **14.04** | Naive baseline |
-| **`ensemble`** | **14.17** | **v7.1 top-3 non-adaptive; beats naive +0.13** |
-| `xgb_ranker` | 13.08 | Dominant model (6× ensemble weight) |
-| `ensemble (v6.2)` | 13.29 | Prior baseline (lgbm_ranker instead of xgb_clf) |
+| `naive_grid_p10` | **14.04** | Naive baseline (floor) |
+| **`ensemble (v8.23)`** | **14.21** | **F_soft_all + DART + fantasy labels; beats naive +0.17 ✓** |
+| `xgb_ranker (v8.23)` | 13.08* | Dominant model (6× ensemble weight); \*individual model score |
+| `ensemble (v7.2/v8.x base)` | 13.29 | Corrected v7.2 baseline (F_soft_all weights, 50 features) |
+
+\* Note: v7.1 claimed ensemble 14.17 pts/race but this was **not reproducible** on re-evaluation
+(2026-03-21). The verified v7.2 baseline was 13.29. v8.23 improvements (+0.92 pts) are confirmed.
 
 **2026 live (R1–R2):**
 
-| Model | R1 | R2 | Avg |
+| Model | R1 (Australia) | R2 (China) | Avg |
 |---|---|---|---|
 | `xgb_clf` | 25 | 10 | **17.50** |
 | `ensemble` | 18 | 10 | 13.75 |
 | `naive_grid_p10` | 2 | 25 | 13.00 |
 
-### 2025 Holdout — v7.x vs v6.x vs v5.x evolution
+### 2025 Holdout — Version evolution (v5.x → v8.23)
 
 | Version | Ensemble avg pts/race | Key change |
 |---|---|---|
 | v5.4 (v5.x final) | 11.12 | Era-blended weights on old 9-model adaptive ensemble |
-| **v6.2** | **14.08*** | Top-3 non-adaptive; heuristics removed |
-| v6.4 | 13.38* | +`dnf_rate_last10` (49 features) |
-| v6.7 | 13.29 | +`avg_fin_last10` (50 features); corrected after v6.11 eval parquet fix |
-| v6.11–v6.19 | **13.29** | Corrected honest baseline; feature additions/ablations all rejected |
-| **v7.1** | **14.17** | **xgb_clf replaces lgbm_ranker; architectural diversity; beats naive +0.13** |
+| v6.2* | 14.08* | Top-3 non-adaptive; heuristics removed |
+| v6.4* | 13.38* | +`dnf_rate_last10` (49 features) |
+| v6.7 / v6.11–v6.19 | **13.29** | +`avg_fin_last10` (50 features); corrected honest baseline |
+| v7.2 (F_soft_all, verified) | **13.29** | Weight config confirmed; v7.1 claim of 14.17 not reproducible |
+| v8.10 | 13.71 | +`grid_midfield_rank` (51 features, +0.42 pts) |
+| v8.18 | 13.96 | Fantasy-score ranker labels (+0.25 pts) |
+| **v8.23** | **14.21** | **DART booster (+0.25 pts); beats naive 14.04 by +0.17 ✓** |
 
-*\*Pre-correction figures measured on corrupted eval parquet (circ_races=0); post-correction value is 13.29.*
+\*Pre-v6.11 figures measured on corrupted eval parquet (circ_races=0 for all 2025 rows);
+corrected honest baseline after v6.11 fix is 13.29.
 
 ---
 
@@ -363,25 +390,47 @@ Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`
 
 ## Development History
 
-### v7.1 — Ensemble architectural diversity: xgb_clf replaces lgbm_ranker (2026-03-20) — ACCEPTED ✓
+### v8.23 — DART booster for XGBRanker (2026-03-21) — ACCEPTED ✓ CURRENT
 
-**Root cause diagnosis:** `lgbm_ranker` (LambdaMART) and `xgb_ranker` (rank:ndcg) share the
-same learning-to-rank training signal. Oracle gap analysis of 2025 holdout identified 3
-catastrophic races (R12 Britain, R14 Hungary, R15 Dutch) where both rankers agreed on the wrong
-driver while `xgb_clf` picked correctly. Replacing `lgbm_ranker` with `xgb_clf` (EV-based
-classification — independent decision boundary) provides genuine architectural independence.
+**Change:** Switched XGBRanker booster from `gbtree` to `dart` (dropout-regularized trees).
+Params: rate_drop=0.10, skip_drop=0.50, n_estimators=600 (from 500). DART prevents
+co-adaptation of trees by randomly dropping them during training — reduces overfitting
+on the dominant P10-zone signal. +0.25 pts vs v8.18 baseline.
 
-**Result:** 2024 CV: 14.67 | 2025 holdout: **14.17** (+0.88 vs 13.29 baseline)
-**Now beats naive baseline: 14.17 > 14.04 (+0.13 pts/race)**
+**Result:** 2025 holdout: **14.21 pts/race** (+0.25 vs 13.96). **Beats naive 14.04 by +0.17.**
 
-New `ENSEMBLE_WEIGHTS`: `xgb_ranker=6.0, rf_clf=1.5, xgb_clf=1.5, lgbm_ranker=0.0` (all others=0.0)
+Post-v8.23 search (v8.24–v8.30): all rejected. DART params exhausted; lgbm_ranker tuning
+exhausted; weight recalibration returned 13.29–13.42; 3 new features rejected. Feature space
+appears saturated at 51 features.
+
+### v8.18 — Fantasy-score ranker relevance labels (2026-03-21) — ACCEPTED ✓
+
+**Change:** Replaced XGBRanker relevance labels from `round(10/(1+|pos-10|))` to
+`FANTASY_POINTS[|pos-10|]` — P10→25, P9/P11→18, etc. Labels now directly encode the fantasy
+scoring objective rather than a proxy. +0.25 pts on 2025 holdout (13.71 → 13.96).
+
+### v8.10 — grid_midfield_rank feature (2026-03-21) — ACCEPTED ✓
+
+**Feature:** `grid_midfield_rank = |grid_position − 10| / (midfield_qual_density + 0.01)`
+Normalised proximity to P10, penalised by how many drivers are bunched in the midfield.
+A driver at P11 with 6 others within 1% qualifying gap gets a higher rank than one with
+a clear 1% gap. +0.42 pts on 2025 holdout (13.29 → 13.71). This is the 51st feature.
+
+### v7.2 — Baseline verification (2026-03-21) — CORRECTED
+
+Re-evaluated all v7.1 weight configurations on 2026-03-21 (script `31_test_v71_arch_diverse_weights.py`).
+**v7.1 claim of 14.17 was not reproducible.** Verified best: F_soft_all config (13.29 pts/race).
+ENSEMBLE_WEIGHTS updated to F_soft_all. See `V7_ENSEMBLE_PLAN.md` for full weight candidate results.
+
+v7.1 attempted `xgb_clf replaces lgbm_ranker` but the B_rf_xgbclf config returned 12.42 (worse
+than v6.19 baseline of 13.29). The F_soft_all config (which retains lgbm_ranker at 1.5) was best.
 
 Scripts tested (see `V7_ENSEMBLE_PLAN.md` for full details):
-- `31_test_v71_arch_diverse_weights.py` — v7.1 ACCEPTED ✓
-- `32_test_v72_train_window.py` — training window restriction: all hurt (v7.2 REJECTED)
-- `33_test_v73_rolling_cv_weights.py` — rolling CV weight derivation: all ≤ baseline (v7.3 REJECTED)
-- `34_test_v74_consensus_override.py` — consensus override mechanism: fragile (v7.4 NOT ADOPTED)
-- `35_test_v75_conditional_weights.py` — circuit-type conditional weights: −3.29 (v7.5 REJECTED)
+- `31_test_v71_arch_diverse_weights.py` — 8 weight configs; F_soft_all ACCEPTED ✓ (13.29)
+- `32_test_v72_train_window.py` — training window restriction: all hurt (REJECTED)
+- `33_test_v73_rolling_cv_weights.py` — rolling CV weight derivation: all ≤ baseline (REJECTED)
+- `34_test_v74_consensus_override.py` — consensus override mechanism: fragile (NOT ADOPTED)
+- `35_test_v75_conditional_weights.py` — circuit-type conditional weights: −3.29 (REJECTED)
 
 ### v6.19 — Feature ablation test (2026-03-20) — REJECTED
 
@@ -442,23 +491,32 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
 
 ## Known Issues and Future Work
 
-**Active (v7.x):**
+**Active (v8.23 — current):**
 
-- **Ensemble vs naive:** v7.1 ensemble 14.17 vs naive 14.04 = **+0.13 pts** (baseline now cleared).
-  Further improvements require new data or new features.
-- **Weather features (v6.13 PLANNED):** Rain specialists (Sainz, Alonso, Norris) measurably
-  outperform in wet conditions. Requires tagging historical races wet/dry or FastF1 API.
-- **Lap-1 position change (v6.14 PLANNED):** First-corner incidents change P10 trajectory.
-  Requires per-lap data fetch from Jolpica.
-- **2026 regulatory era (v6.6 CONDITIONAL ≥R7):** No DRS, Active Aero, 50/50 ICE-electric.
-  Activate re-weighting and OVERTAKING_DIFFICULTY recalibration after R7 2026.
-- **Madrid 2026 (R10):** Added to STREET_CIRCUITS and OVERTAKING_DIFFICULTY (score=8.0,
-  estimated — no empirical data yet).
+- **Ensemble vs naive:** v8.23 ensemble **14.21** vs naive 14.04 = **+0.17 pts** ✓ (baseline cleared).
+- **Feature/hyperparameter space saturated:** All post-v8.23 tests (v8.24–v8.30) rejected.
+  Next significant improvement likely requires new data sources or architectural change (v9).
+- **v9 Heterogeneous Feature Subspaces (planned):** Assign each model a curated feature subspace
+  rather than using the same 51 features for all models. Implementation designed in
+  `V9_ENSEMBLE_SUBSPACE_PLAN.md`; code scaffolding done but not yet evaluated with real aux data.
+- **2026 regulatory era (CONDITIONAL ≥R7):** No DRS, Active Aero, 50/50 ICE-electric split.
+  Activate `OVERTAKING_DIFFICULTY` recalibration after R7 2026.
+- **Madrid 2026 (R10):** Added to `STREET_CIRCUITS` and `OVERTAKING_DIFFICULTY` (score=8.0,
+  estimated — no empirical data yet; derive empirically after R10).
+
+**Tested and concluded:**
+
+- **Weather features (v6.13):** TESTED — **REJECTED (−2.3 pts/race)**. Rain specialists exist
+  but predictive value insufficient to justify classification overhead.
+- **v7.1 architectural diversity (lgbm_ranker→xgb_clf):** Claim of 14.17 not reproducible.
+  F_soft_all (lgbm_ranker=1.5) verified as correct production config.
 
 **Pended for later in season:**
 
 - **2026 retraining (v6.12):** Retrain after R5, R10, R15, R24 as 2026 data accumulates.
-- **v6.4 Part B:** PU_Loophole_Active, Software_Maturity_Delta — defer until R7+.
+- **Plackett-Luce probabilistic ranking (v9.x):** Principled joint distribution; deferred.
+- **FP2 long-run pace features (v8.6):** Rejected on CV (restricted to 2018–2024); blocked
+  on 2025 data unavailability for holdout comparison.
 
 ---
 

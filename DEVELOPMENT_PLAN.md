@@ -1,8 +1,19 @@
-# Development Plan — Outstanding Implementation Work
+# Development Plan — Historical Implementation Log
 
-This document tracks changes that were **documented but not yet implemented** in
-prior sessions. Each phase is self-contained and can be committed independently
-to avoid timeout-related failures.
+> **STATUS AS OF 2026-03-21:** All phases in this document (Phases 1–5) and all v3.x
+> work are **COMPLETE**. The current production model is **v8.23** (51 features,
+> F_soft_all ensemble, DART booster, 14.21 pts/race on 2025 holdout — beats naive
+> baseline 14.04 by +0.17). For outstanding work see `V9_ENSEMBLE_SUBSPACE_PLAN.md`.
+>
+> This document is retained as a historical record of v3.x implementation phases,
+> CV experiments, and working rules. The Critical Rules in the next section remain
+> applicable to all future development sessions.
+
+---
+
+This document originally tracked changes that were **documented but not yet implemented** in
+prior sessions. All phases are now complete. Each phase was self-contained and committed
+independently to avoid timeout-related failures.
 
 ---
 
@@ -234,7 +245,8 @@ Update `README.md` to mark Session 2 and Session 3 as fully implemented.
 | v3.1 | Sprint weekend result fix (3 truncated rounds) | ✅ Done — 422 → 479 eval rows |
 | v3.1 | Full pipeline eval with 35 features | ✅ Done — ensemble 12.62 (+2.83 vs v3.0) |
 
-All phases complete. Model is at v3.4 specification (35 features, XGBRanker ensemble).
+All phases complete. Model subsequently evolved through v4.x, v5.x, v6.x, v7.x, and v8.x.
+Current production: **v8.23** (51 features, F_soft_all ensemble, DART booster, 14.21 pts/race).
 
 ### v3.41 — DNF Feature Exploration (completed 2026-03-10)
 

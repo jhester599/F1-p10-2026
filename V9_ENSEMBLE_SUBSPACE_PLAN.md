@@ -4,7 +4,7 @@
 **Branch:** `claude/f1-v9-development-toY7N`
 **Date:** 2026-03-21
 **Author:** v9 ML Lead
-**Baseline (v8.23):** ≈ 15.13 pts/race on 2025 holdout (naïve grid baseline: 14.04)
+**Baseline (v8.23):** 14.21 pts/race on 2025 holdout (naïve grid baseline: 14.04, +0.17 advantage)
 
 ---
 
@@ -302,7 +302,7 @@ pairwise gradient scaling by NDCG gain penalises noisy rank swaps.
 
 | Metric | Target |
 |---|---|
-| Ensemble pts/race (2025 holdout) | > 15.13 (v8.23 benchmark) |
+| Ensemble pts/race (2025 holdout) | > 14.21 (v8.23 benchmark) |
 | vs naïve grid baseline | > 14.04 |
 | Individual model regression gate | No model worse than −0.10 vs its v8.23 individual score |
 
@@ -412,9 +412,9 @@ All 51 FEATURE_COLS except:
 
 | Version | Ensemble pts/race | vs v8.23 | Notes |
 |---|---|---|---|
-| v8.23 (baseline) | ≈ 15.13 | — | DART booster, fantasy-score labels, grid_midfield_rank; real aux data |
-| Naïve grid baseline | 14.04 | −1.09 | Always pick P10 grid starter |
-| v9.0 (this run) | 11.04 | −4.09 | Heterogeneous feature subspaces; **stub aux data** (see note below) |
+| v8.23 (baseline) | **14.21** | — | DART booster, fantasy-score labels, grid_midfield_rank; real aux data |
+| Naïve grid baseline | 14.04 | −0.17 | Always pick P10 grid starter |
+| v9.0 (this run) | 11.04 | −3.17 | Heterogeneous feature subspaces; **stub aux data** (see note below) |
 
 > **Note on stub aux data:** The v9.0 run used constant-value stub files for 5 auxiliary
 > features (`circ_vsc_rate`, `circ_sc_vsc_combined`, `circ_avg_pit_stops`,
