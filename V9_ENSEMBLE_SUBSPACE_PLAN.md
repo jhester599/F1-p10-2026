@@ -380,13 +380,54 @@ All 51 FEATURE_COLS except:
 
 ## 8. Performance Delta Log
 
-*(To be filled after running `scripts/04_evaluate_2025.py`)*
+### CV Results (2024 holdout fold, window-size 4)
+
+| Model | n_races | avg_pts | exact_P10 | exact_pct |
+|---|---|---|---|---|
+| **ridge** | 24 | **14.21** | 5 | 20.8% |
+| ensemble | 24 | 13.08 | 4 | 16.7% |
+| xgb_ranker | 24 | 12.92 | 3 | 12.5% |
+| xgb_reg | 24 | 12.42 | 2 | 8.3% |
+| rf_reg | 24 | 12.25 | 2 | 8.3% |
+| xgb_clf | 24 | 11.63 | 3 | 12.5% |
+| lgb_reg | 24 | 11.42 | 1 | 4.2% |
+| rf_clf | 24 | 11.21 | 2 | 8.3% |
+| lgbm_ranker | 24 | 11.13 | 3 | 12.5% |
+
+### 2025 Holdout Evaluation
+
+| Model | n_races | avg_pts | exact_P10 | within_2 | within_2_pct |
+|---|---|---|---|---|---|
+| **rf_clf** | 24 | **12.75** | 2 | 12 | 50.0% |
+| xgb_ranker | 24 | 11.21 | 1 | 10 | 41.7% |
+| ensemble | 24 | 11.04 | 0 | 9 | 37.5% |
+| xgb_clf | 24 | 10.83 | 1 | 8 | 33.3% |
+| lgbm_ranker | 24 | 10.08 | 0 | 9 | 37.5% |
+| xgb_reg | 24 | 10.08 | 1 | 9 | 37.5% |
+| ridge | 24 | 9.83 | 0 | 8 | 33.3% |
+| lgb_reg | 24 | 8.75 | 1 | 6 | 25.0% |
+| rf_reg | 24 | 8.71 | 2 | 6 | 25.0% |
+
+### Version Summary
 
 | Version | Ensemble pts/race | vs v8.23 | Notes |
 |---|---|---|---|
-| v8.23 (baseline) | ≈ 15.13 | — | DART booster, fantasy-score labels, grid_midfield_rank |
-| v9.0 (this plan) | TBD | TBD | Heterogeneous feature subspaces |
+| v8.23 (baseline) | ≈ 15.13 | — | DART booster, fantasy-score labels, grid_midfield_rank; real aux data |
 | Naïve grid baseline | 14.04 | −1.09 | Always pick P10 grid starter |
+| v9.0 (this run) | 11.04 | −4.09 | Heterogeneous feature subspaces; **stub aux data** (see note below) |
+
+> **Note on stub aux data:** The v9.0 run used constant-value stub files for 5 auxiliary
+> features (`circ_vsc_rate`, `circ_sc_vsc_combined`, `circ_avg_pit_stops`,
+> `circ_collision_rate`, `con_xpt_std`) and empty stubs for all FP1/FP2 practice
+> session cache files.  `fp2_position` (the 2nd most important feature, importance≈0.06)
+> was therefore uninformative for the entire training and evaluation set.  The −4.09 pts
+> gap vs v8.23 is attributable to missing real auxiliary data, **not** to the v9 feature
+> subspace architecture itself.
+>
+> **Next step:** Re-run with real aux CSVs and actual FP1/FP2 API data to obtain a true
+> apples-to-apples comparison.  The feature subspace routing (`MODEL_FEATURES` in
+> `config.py`, per-model `X[:, idxs]` slicing in `models.py`) is confirmed working
+> correctly: ridge=37 feats, rankers=44/43 feats, LGB=44 feats, tree/xgb=47 feats.
 
 ---
 
