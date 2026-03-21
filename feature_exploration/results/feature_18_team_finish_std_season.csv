@@ -1,0 +1,2 @@
+feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+team_finish_std_season,Std dev of team finish positions this season,DISCARD,12.611111111111112,11.791666666666666,0.125,-2.583333333333334,0.0,-1.229166666666667
