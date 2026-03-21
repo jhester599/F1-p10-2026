@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-q_gap_sq,q_gap_pct² — quadratic qualifying pace penalty,KEEP,10.61111111111111,11.166666666666666,0.5,1.1666666666666679,0.0,0.8333333333333339

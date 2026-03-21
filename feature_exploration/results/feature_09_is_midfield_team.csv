@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-is_midfield_team,int(4 ≤ con_champ_pos ≤ 7) — midfield constructor flag,DISCARD,12.611111111111112,11.958333333333334,0.0,-1.958333333333334,0.0,-0.979166666666667

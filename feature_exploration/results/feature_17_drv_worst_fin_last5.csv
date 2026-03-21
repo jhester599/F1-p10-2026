@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-drv_worst_fin_last5,Worst finish position in last 5 races,DISCARD,12.611111111111112,12.111111111111109,0.0,-1.4166666666666679,-0.08333333333333393,-0.7083333333333339

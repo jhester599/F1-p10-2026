@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-circ_avg_qual,Driver's career avg qualifying at this circuit,DISCARD,12.611111111111112,12.805555555555557,0.0,-0.375,0.9583333333333339,-0.1875

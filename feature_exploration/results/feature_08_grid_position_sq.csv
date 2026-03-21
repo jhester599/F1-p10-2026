@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-grid_position_sq,grid_position² — non-linear grid position penalty,DISCARD,12.611111111111112,12.0,0.375,-2.208333333333334,0.0,-0.916666666666667

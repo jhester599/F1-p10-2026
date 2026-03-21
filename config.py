@@ -105,8 +105,7 @@ OVERTAKING_DIFFICULTY: dict[str, float] = {
     "ricard":   8.2,   # n=4, rho=0.724, dnf=0.125
     "shanghai":   8.3,   # n=7, rho=0.741, dnf=0.126
     "portimao":  10.0,   # n=2, rho=0.827, dnf=0.050
-    "singapore":  4.8,   # alias for marina_bay
-    "portimao":  10.0,   # n=2, rho=0.827, dnf=0.050
+    "singapore":  4.8,   # alias for marina_bay (Ergast uses "marina_bay" as circuit_id)
     "madrid":     8.0,   # NEW 2026 — no empirical data; estimated street circuit (high grid stickiness prior)
 }
 
@@ -194,6 +193,8 @@ FEATURE_COLS = [
     "dnf_rate_last10",           # v6.4: fraction of last 10 races that were DNFs (+1.46 pts standalone, SE 1.67→1.25).
     # --- v6.7: extended rolling form ---
     "avg_fin_last10",            # v6.7: avg finish position over last 10 races (+1.00 pts standalone; kept despite r=0.949 with avg_fin_last5 — marginal signal confirmed).
+    # --- v8.10: normalized midfield P10 proximity ---
+    "grid_midfield_rank",        # v8.10: |grid_position-10| / (midfield_qual_density+0.01). Max |r|=0.42. +0.38 pts on 2025 holdout.
 ]
 
 TARGET_COL = "finish_position"

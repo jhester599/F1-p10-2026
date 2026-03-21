@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-team_qual_fin_delta,team_avg_qual_season − team_avg_fin_season — team position-gain tendency,DISCARD,11.888888888888888,11.847222222222221,-0.4583333333333339,0.3333333333333339,0.0,-0.0625

@@ -1,5 +1,0 @@
-feature,corr_with_pos,corr_with_p10,mi_with_p10,mean_p10_rows,mean_non_p10,std_p10_rows,std_non_p10,n_p10,n_total
-drv_dnf_rate_last10,0.2778,0.0142,0.000625,0.2271,0.2146,0.1738,0.1884,320,6652
-driver_circuit_dnf_rate,0.0794,0.0194,0.00074,0.1977,0.1763,0.2522,0.2361,320,6652
-constructor_dnf_rate,0.2742,0.0231,0.0,0.2341,0.2144,0.1777,0.1829,320,6652
-historical_dnf_rate,0.0096,-0.0016,0.0,0.1929,0.1935,0.071,0.0718,320,6652

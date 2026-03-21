@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-avg_qual_last5,5-race rolling qualifying average,DISCARD,12.611111111111112,12.402777777777777,-0.7083333333333339,-0.5833333333333339,0.6666666666666661,-0.6458333333333339
