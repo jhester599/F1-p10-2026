@@ -199,6 +199,106 @@ FEATURE_COLS = [
 
 TARGET_COL = "finish_position"
 
+# ── v9.0: Heterogeneous Feature Subspaces ────────────────────────────────────
+#
+# Each model receives a curated feature subset that exploits its unique
+# architectural properties.  Rationale per model:
+#
+# ridge (37 features, remove 14):
+#   Linear model with StandardScaler → sensitive to non-linear transforms and
+#   near-perfect linear combinations.  Removed:
+#     - q_gap_sq           (= q_gap_pct²; non-linear; collinear with q_gap_pct)
+#     - avg_fin_last3      (r > 0.94 with avg_fin_last5; pure collinearity)
+#     - avg_fin_last10     (r = 0.949 with avg_fin_last5; documented but marginal)
+#     - drv_form_trend     (= avg_fin_last3 − avg_fin_last5; avg_fin_last3 removed)
+#     - drv_dnf_recovery_rate  (binary product interaction; non-linear for Ridge)
+#     - grid_p10_proximity (= |grid−10|; non-linear, Ridge can't utilise well)
+#     - grid_x_overtaking  (= grid × difficulty; interaction term; non-linear)
+#     - grid_midfield_rank (complex ratio; non-linear)
+#     - circ_sc_vsc_combined (= sc_rate + circ_vsc_rate; pure linear sum; collinear)
+#     - con_champ_pts      (r > 0.80 with con_champ_pos; retain position rank)
+#     - last_qual_pos      (r > 0.80 with grid_position for non-penalised starters)
+#     - team_avg_qual_season (r > 0.75 with team_avg_fin_season across seasons)
+#     - grid_displacement_behind (complex count; non-linear interaction)
+#     - season_completeness (= race_num / total_rounds; r ≈ 1.0 with race_num)
+#
+# rf_reg (47 features, remove 4):
+#   Random Forest regressor uses random subspace → robust to correlated features.
+#   Remove only clear linear redundancies that waste tree capacity:
+#     - q_gap_sq, drv_form_trend, circ_sc_vsc_combined, season_completeness
+#
+# rf_clf (47 features, remove 4):
+#   Calibrated Random Forest classifier (isotonic).  Same random subspace benefit.
+#   Remove race_num (season_completeness is better normalised for classification):
+#     - q_gap_sq, drv_form_trend, circ_sc_vsc_combined, race_num
+#
+# xgb_reg (47 features, remove 4):
+#   XGBoost regressor with L1/L2 regularization handles correlations.
+#   Remove clear quadratic redundancy and the season-stage linear duplicate:
+#     - q_gap_sq, drv_form_trend, circ_sc_vsc_combined, season_completeness
+#
+# xgb_clf (47 features, remove 4):
+#   XGBoost classifier with Platt-sigmoid calibration.  EV calculation benefits
+#   from the full position distribution; keep form features; prefer normalised
+#   season position (season_completeness) over raw race_num:
+#     - q_gap_sq, drv_form_trend, circ_sc_vsc_combined, race_num
+#
+# xgb_ranker (44 features, remove 7):
+#   DART booster (rate_drop=0.10) randomly drops trees during training, which
+#   amplifies the effect of redundant features: when a tree using feature A is
+#   dropped, a correlated feature B cannot fully compensate, producing unstable
+#   gradients.  Also, sparse features (many zeros) create noisy DART gradients.
+#     - q_gap_sq          (collinear with q_gap_pct; instability under dropout)
+#     - avg_fin_last3     (r > 0.94 with avg_fin_last5; 3-race window adds noise)
+#     - drv_form_trend    (derived from avg_fin_last3 − avg_fin_last5; redundant)
+#     - grid_p10_proximity (derived from grid_position; wastes DART tree capacity)
+#     - circ_sc_vsc_combined (collinear sum; DART drops amplify this)
+#     - last_qual_pos     (r > 0.80 with grid_position; redundant in ranker)
+#     - q2_elimination_margin (70–80% zeros; sparse feature → noisy DART gradients)
+#
+# lgb_reg (44 features, remove 7):
+#   LightGBM with NO regularization (reg_alpha/lambda removed in v5.2 to allow
+#   correlated features like q1_gap_pct to survive).  Without L1/L2 the model
+#   double-counts correlated features.  Remove the same correlated set as
+#   xgb_ranker (minus q2_elimination_margin, which is not harmful for LGB)
+#   plus season_completeness (collinear with race_num):
+#     - q_gap_sq, avg_fin_last3, drv_form_trend, grid_p10_proximity,
+#       circ_sc_vsc_combined, last_qual_pos, season_completeness
+#
+# lgbm_ranker (43 features, remove 8):
+#   LightGBM LambdaMART with NO regularization.  Same vulnerability as lgb_reg.
+#   Additionally remove avg_fin_last10 (r = 0.949 with avg_fin_last5): for ranking,
+#   lambdaMART benefits from fewer, cleaner form signals:
+#     - all lgb_reg exclusions + avg_fin_last10
+#
+_RIDGE_EXCL       = {"con_champ_pts", "last_qual_pos", "avg_fin_last3", "season_completeness",
+                      "team_avg_qual_season", "grid_p10_proximity", "grid_displacement_behind",
+                      "q_gap_sq", "grid_x_overtaking", "drv_form_trend",
+                      "drv_dnf_recovery_rate", "circ_sc_vsc_combined",
+                      "avg_fin_last10", "grid_midfield_rank"}
+_RF_REG_EXCL      = {"q_gap_sq", "drv_form_trend", "circ_sc_vsc_combined", "season_completeness"}
+_RF_CLF_EXCL      = {"q_gap_sq", "drv_form_trend", "circ_sc_vsc_combined", "race_num"}
+_XGB_REG_EXCL     = {"q_gap_sq", "drv_form_trend", "circ_sc_vsc_combined", "season_completeness"}
+_XGB_CLF_EXCL     = {"q_gap_sq", "drv_form_trend", "circ_sc_vsc_combined", "race_num"}
+_XGB_RANKER_EXCL  = {"q_gap_sq", "avg_fin_last3", "drv_form_trend", "grid_p10_proximity",
+                      "circ_sc_vsc_combined", "last_qual_pos", "q2_elimination_margin"}
+_LGB_REG_EXCL     = {"q_gap_sq", "avg_fin_last3", "drv_form_trend", "grid_p10_proximity",
+                      "circ_sc_vsc_combined", "last_qual_pos", "season_completeness"}
+_LGBM_RANKER_EXCL = {"q_gap_sq", "avg_fin_last3", "drv_form_trend", "grid_p10_proximity",
+                      "circ_sc_vsc_combined", "last_qual_pos", "season_completeness",
+                      "avg_fin_last10"}
+
+MODEL_FEATURES: dict[str, list[str]] = {
+    "ridge":       [f for f in FEATURE_COLS if f not in _RIDGE_EXCL],        # 37 features
+    "rf_reg":      [f for f in FEATURE_COLS if f not in _RF_REG_EXCL],       # 47 features
+    "rf_clf":      [f for f in FEATURE_COLS if f not in _RF_CLF_EXCL],       # 47 features
+    "xgb_reg":     [f for f in FEATURE_COLS if f not in _XGB_REG_EXCL],      # 47 features
+    "xgb_clf":     [f for f in FEATURE_COLS if f not in _XGB_CLF_EXCL],      # 47 features
+    "xgb_ranker":  [f for f in FEATURE_COLS if f not in _XGB_RANKER_EXCL],   # 44 features
+    "lgb_reg":     [f for f in FEATURE_COLS if f not in _LGB_REG_EXCL],      # 44 features
+    "lgbm_ranker": [f for f in FEATURE_COLS if f not in _LGBM_RANKER_EXCL],  # 43 features
+}
+
 # ── Era-stratified sample weights ─────────────────────────────────────────────
 # F1 has three hard regulatory eras with distinct positional dynamics.
 # Older eras teach conflicting patterns for interaction features

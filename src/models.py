@@ -76,7 +76,13 @@ from sklearn.metrics import mean_absolute_error
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from config import FEATURE_COLS, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS, era_sample_weight
+from config import FEATURE_COLS, MODEL_FEATURES, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS, era_sample_weight
+
+
+def _model_feature_indices(model_name: str) -> list[int]:
+    """Return column indices into FEATURE_COLS for this model's feature subset."""
+    feats = MODEL_FEATURES.get(model_name, FEATURE_COLS)
+    return [FEATURE_COLS.index(f) for f in feats]
 
 logger = logging.getLogger(__name__)
 
@@ -241,11 +247,17 @@ class WeightedEnsemble:
         base_models: dict[str, Any],
         weights: dict[str, float] | None = None,
         adaptive: bool = True,
+        model_feature_indices: dict[str, list[int]] | None = None,
     ):
         self.base_models = base_models          # {name: fitted estimator}
         self.weights = weights or ENSEMBLE_WEIGHTS
         # v3.72: when adaptive=True, weights are selected per-race based on race_num
         self.adaptive = adaptive
+        # v9.0: per-model column indices into the full FEATURE_COLS array.
+        # When set, score_drivers slices X[:, idxs] for each base model before
+        # calling predict, so models trained on feature subsets receive the right
+        # input width.  Falls back to the full X if a model is not present.
+        self.model_feature_indices: dict[str, list[int]] = model_feature_indices or {}
 
     # sklearn-compatible shim — the base models are already fitted
     def fit(self, X, y):
@@ -296,10 +308,14 @@ class WeightedEnsemble:
                 if model is None:
                     continue
 
+                # v9.0: slice X to the feature subset this model was trained on
+                idxs = self.model_feature_indices.get(name)
+                X_m  = X[:, idxs] if idxs is not None else X
+
                 is_clf    = name.endswith("_clf")
                 is_ranker = name.endswith("_ranker")
                 if is_clf and hasattr(model, "predict_proba"):
-                    proba   = model.predict_proba(X)
+                    proba   = model.predict_proba(X_m)
                     classes = list(model.classes_)
                     # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
                     offset  = 1 if min(classes) == 0 else 0
@@ -310,9 +326,9 @@ class WeightedEnsemble:
                 elif is_ranker:
                     # Ranker already outputs P10-centred relevance scores;
                     # use directly (they are already on a [0, 1]-ish scale).
-                    raw = model.predict(X).astype(float)
+                    raw = model.predict(X_m).astype(float)
                 else:
-                    preds = model.predict(X)
+                    preds = model.predict(X_m)
                     raw   = 1.0 / (1.0 + np.abs(preds - 10))
 
             # min-max normalise within this race
@@ -371,10 +387,13 @@ class StackingEnsemble:
         base_models: dict[str, Any],
         meta_learner: Any | None = None,
         component_names: list[str] | None = None,
+        model_feature_indices: dict[str, list[int]] | None = None,
     ):
         self.base_models = base_models
         self.meta_learner = meta_learner
         self.component_names = component_names or self.BASE_COMPONENT_NAMES
+        # v9.0: per-model column indices (same scheme as WeightedEnsemble)
+        self.model_feature_indices: dict[str, list[int]] = model_feature_indices or {}
 
     # sklearn-compatible shim — base models already fitted
     def fit(self, X, y):
@@ -406,11 +425,15 @@ class StackingEnsemble:
                 if model is None:
                     continue  # optional dep (XGB/LGB) not installed
 
+                # v9.0: slice X to this model's feature subset
+                idxs = self.model_feature_indices.get(name)
+                X_m  = X[:, idxs] if idxs is not None else X
+
                 is_clf    = name.endswith("_clf")
                 is_ranker = name.endswith("_ranker")
 
                 if is_clf and hasattr(model, "predict_proba"):
-                    proba   = model.predict_proba(X)
+                    proba   = model.predict_proba(X_m)
                     classes = list(model.classes_)
                     offset  = 1 if min(classes) == 0 else 0
                     sv      = np.array([SCORING_VECTOR[c + offset - 1]
@@ -418,9 +441,9 @@ class StackingEnsemble:
                     cls_idx = [i for i, c in enumerate(classes) if 1 <= c + offset <= 20]
                     raw     = proba[:, cls_idx] @ sv
                 elif is_ranker:
-                    raw = model.predict(X).astype(float)
+                    raw = model.predict(X_m).astype(float)
                 else:
-                    preds = model.predict(X)
+                    preds = model.predict(X_m)
                     raw   = 1.0 / (1.0 + np.abs(preds - 10))
 
             # per-race min-max normalisation
@@ -493,7 +516,10 @@ def generate_oof_meta_features(
         fold_base = {k: v for k, v in fold_fitted.items()
                      if k not in ("ensemble",)}
 
-        temp_stack = StackingEnsemble(base_models=fold_base)
+        # v9.0: pass per-model feature indices so _extract_base_scores slices correctly
+        _mfi = {n: _model_feature_indices(n) for n in MODEL_FEATURES}
+        temp_stack = StackingEnsemble(base_models=fold_base,
+                                      model_feature_indices=_mfi)
 
         for (yr, rnd), race_grp in te.groupby(["year", "round"]):
             X = race_grp[FEATURE_COLS].values.astype(float)
@@ -764,7 +790,6 @@ def train_all(
 
     Returns dict {model_name: fitted_estimator}.
     """
-    X = train_df[FEATURE_COLS].values.astype(float)
     y_reg  = train_df[TARGET_COL].values.astype(float)
     # Multi-class: predict full finish position (1–20), not binary is_p10
     y_clf  = train_df[TARGET_COL].values.astype(int)
@@ -838,24 +863,30 @@ def train_all(
         is_clf    = name.endswith("_clf")
         is_ranker = name.endswith("_ranker")
 
+        # v9.0: build model-specific feature matrix (subset of FEATURE_COLS)
+        model_feats = MODEL_FEATURES.get(name, FEATURE_COLS)
+        n_feats = len(model_feats)
+
         if is_ranker:
+            X_rank_m = train_sorted[model_feats].values.astype(float)
             if name == "lgbm_ranker":
                 # LGBMRanker (lambdarank): group sizes + per-row era weights.
-                logger.info("  %-14s → training (lambdarank, era_weights=%s) …",
-                            name, sample_weights_rank_row is not None)
+                logger.info("  %-14s → training (lambdarank, era_weights=%s, n_features=%d) …",
+                            name, sample_weights_rank_row is not None, n_feats)
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
-                    est.fit(X_rank, y_rank, group=group_sizes_train,
+                    est.fit(X_rank_m, y_rank, group=group_sizes_train,
                             sample_weight=sample_weights_rank_row)
             else:
                 # XGBRanker (rank:ndcg): qid per-row + per-group era weights.
-                logger.info("  %-14s → training (rank:ndcg, era_weights=%s) …",
-                            name, sample_weights_rank is not None)
+                logger.info("  %-14s → training (rank:ndcg, era_weights=%s, n_features=%d) …",
+                            name, sample_weights_rank is not None, n_feats)
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
-                    est.fit(X_rank, y_rank, qid=qid_train,
+                    est.fit(X_rank_m, y_rank, qid=qid_train,
                             sample_weight=sample_weights_rank)
         else:
+            X_m = train_df[model_feats].values.astype(float)
             if is_clf:
                 # XGBoost multi:softprob requires 0-indexed classes (0–19);
                 # RandomForest handles 1-indexed classes (1–20) natively.
@@ -863,25 +894,35 @@ def train_all(
             else:
                 y = y_reg
 
-            logger.info("  %-14s → training (era_weights=%s) …",
-                        name, sample_weights is not None)
+            logger.info("  %-14s → training (era_weights=%s, n_features=%d) …",
+                        name, sample_weights is not None, n_feats)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 if name == "ridge":
                     # Ridge is wrapped in a Pipeline(scaler, reg).
                     # Pass sample_weight via the step name prefix.
-                    est.fit(X, y, reg__sample_weight=sample_weights)
+                    est.fit(X_m, y, reg__sample_weight=sample_weights)
                 else:
-                    est.fit(X, y, sample_weight=sample_weights)
+                    est.fit(X_m, y, sample_weight=sample_weights)
 
         joblib.dump(est, out_path)
         fitted[name] = est
         logger.info("             saved → %s", out_path)
 
+    # v9.0: pre-compute per-model feature indices for the ensemble.
+    # Each index maps to a column in the full FEATURE_COLS array, so the
+    # ensemble can slice X (built from FEATURE_COLS) correctly per model.
+    mfi = {
+        name: _model_feature_indices(name)
+        for name in MODEL_FEATURES
+    }
+
     # Build and save WeightedEnsemble from fitted base models
     # v6.2: adaptive=False — single non-adaptive weight set (ENSEMBLE_WEIGHTS).
     # Stage-adaptive (EARLY/MID/LATE) disabled: single tuned set is more stable.
-    ensemble = WeightedEnsemble(base_models=fitted, adaptive=False)
+    # v9.0: pass model_feature_indices so the ensemble routes features correctly.
+    ensemble = WeightedEnsemble(base_models=fitted, adaptive=False,
+                                model_feature_indices=mfi)
     ensemble_path = MODELS_DIR / "ensemble.joblib"
     joblib.dump(ensemble, ensemble_path)
     fitted["ensemble"] = ensemble
@@ -894,7 +935,8 @@ def train_all(
     meta_path = MODELS_DIR / "stacking_meta.joblib"
     if meta_path.exists() and not force:
         meta_learner = joblib.load(meta_path)
-        stacking = StackingEnsemble(base_models=fitted, meta_learner=meta_learner)
+        stacking = StackingEnsemble(base_models=fitted, meta_learner=meta_learner,
+                                    model_feature_indices=mfi)
         stacking_path = MODELS_DIR / "stacking_ensemble.joblib"
         joblib.dump(stacking, stacking_path)
         fitted["stacking_ensemble"] = stacking
@@ -969,7 +1011,10 @@ def predict_race(
     fitted_models : dict
         Output of train_all() or load_all().
     """
-    X = race_features[FEATURE_COLS].values.astype(float)
+    # v9.0: build the full feature matrix (all FEATURE_COLS) once.
+    # WeightedEnsemble / StackingEnsemble receive X_full and slice internally.
+    # Base models receive model-specific slices via MODEL_FEATURES.
+    X_full = race_features[FEATURE_COLS].values.astype(float)
     out = race_features[["driver_id", "constructor_id", "grid_position"]].copy()
 
     picks: dict[str, str] = {}
@@ -978,13 +1023,17 @@ def predict_race(
         is_clf = name.endswith("_clf")
 
         if hasattr(est, "score_drivers"):
-            # WeightedEnsemble or StackingEnsemble — higher score = more likely P10
-            raw_scores = est.score_drivers(X)
+            # WeightedEnsemble or StackingEnsemble — receives full X and slices
+            # each base model to its own feature subset internally (v9.0).
+            raw_scores = est.score_drivers(X_full)
             scores = pd.Series(raw_scores, index=race_features["driver_id"].values)
             pick_driver = scores.idxmax()
         elif is_clf:
+            # v9.0: slice to model-specific features
+            feats = MODEL_FEATURES.get(name, FEATURE_COLS)
+            X_m   = race_features[feats].values.astype(float)
             if hasattr(est, "predict_proba"):
-                proba   = est.predict_proba(X)
+                proba   = est.predict_proba(X_m)
                 classes = list(est.classes_)
                 # Expected fantasy pts: EV = Σ P(finish=p) × SCORING_VECTOR[p-1]
                 # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
@@ -995,10 +1044,13 @@ def predict_race(
                 ev      = proba[:, cls_idx] @ sv
                 scores  = pd.Series(ev, index=race_features["driver_id"].values)
             else:
-                scores = pd.Series(est.predict(X), index=race_features["driver_id"].values)
+                scores = pd.Series(est.predict(X_m), index=race_features["driver_id"].values)
             pick_driver = scores.idxmax()
         else:
-            scores      = pd.Series(est.predict(X), index=race_features["driver_id"].values)
+            # v9.0: slice to model-specific features
+            feats  = MODEL_FEATURES.get(name, FEATURE_COLS)
+            X_m    = race_features[feats].values.astype(float)
+            scores = pd.Series(est.predict(X_m), index=race_features["driver_id"].values)
             pick_driver = _pick_p10(name, scores)
 
         picks[name] = pick_driver
