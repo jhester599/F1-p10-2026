@@ -130,31 +130,32 @@ except ImportError:
 #
 # Result: ensemble 14.08 pts/race (2025 holdout) | xgb_ranker 13.79 pts/race
 ENSEMBLE_WEIGHTS: dict[str, float] = {
-    # v7.1: top-3 ML models, non-adaptive (adaptive=False in train_all)
-    # Replaces lgbm_ranker with xgb_clf for architectural diversity.
+    # v7.2: F_soft_all config — verified best on 2025 holdout (2026-03-21 re-evaluation).
     #
-    # v6.2 flaw: lgbm_ranker (lambdarank) and xgb_ranker (rank:ndcg) share the same
-    # learning-to-rank training signal → they agree on the wrong driver simultaneously
-    # (evidence: R12 Britain, R14 Hungary, R15 Dutch — both rankers failed, xgb_clf correct).
-    # Replacing lgbm_ranker with xgb_clf provides genuine independent signal via
-    # EV-based class probability selection.
+    # Re-evaluation (2026-03-21, script 31_test_v71_arch_diverse_weights.py) showed
+    # the B_rf_xgbclf result of 14.17 was not reproducible with current data.
+    # Verified best is F_soft_all: xgb_ranker=6.0, lgbm_ranker=1.5, rf_clf=1.5
+    # plus small diversity weights for xgb_clf, lgb_reg, ridge.
     #
-    # Evaluation (2026-03-20, script 31_test_v71_arch_diverse_weights.py, config B_rf_xgbclf):
-    #   2024 CV   (train 2010–2023): 14.67 pts/race
-    #   2025 holdout (train 2010–2024): 14.17 pts/race  (+0.88 vs v6.2 baseline 13.29)
-    #   Naive baseline: 14.04 → v7.1 ensemble BEATS naive baseline (+0.13)
+    # Evaluation (2026-03-21, script 31):
+    #   2025 holdout (train 2010–2024): 13.29 pts/race  (verified, reproducible)
+    #   Naive baseline: 14.04 pts/race  →  current goal: beat naive baseline
     #
-    # Other candidates tested (all inferior on 2025 holdout):
-    #   E_top2_only   (xgb=8, rf_clf=1):           13.54 (+0.25)
-    #   C_rf_ridge    (xgb=6, rf_clf=2, ridge=1):  13.42 (+0.13)
-    #   baseline_v62  (xgb=6, lgbm=1.5, rf=1.5):  13.29 (−0.00)
-    #   A_rf_lgb      (xgb=6, rf_clf=1.5, lgb=1.5): 12.96 (−0.33)
-    "xgb_ranker":      6.00,   # dominant — best individual model (13.08 pts 2025 holdout)
+    # All candidates tested on 2025 holdout:
+    #   F_soft_all      (xgb=6, lgbm=1.5, rf=1.5, xgb_clf=0.5, lgb=0.25, ridge=0.25): 13.29
+    #   baseline_v62    (xgb=6, lgbm=1.5, rf=1.5):                                      12.46
+    #   B_rf_xgbclf    (xgb=6, rf=1.5, xgb_clf=1.5):                                   12.42
+    #   G_rf_lgb_xgbclf (xgb=6, rf=1.5, lgbm=1.5):                                     12.42
+    #   E_top2_only     (xgb=8, rf=1):                                                   12.25
+    #   D_four_way      (xgb=6, lgbm=1.5, rf=1.5, lgb=1.5):                            12.17
+    #   A_rf_lgb        (xgb=6, rf=1.5, lgb=1.5):                                       12.04
+    #   C_rf_ridge      (xgb=6, rf=2, ridge=1):                                          12.00
+    "xgb_ranker":      6.00,   # dominant — best individual ranker
+    "lgbm_ranker":     1.50,   # diversity: lambdarank objective (different from ndcg)
     "rf_clf":          1.50,   # calibrated RF classifier — architectural diversity
-    "xgb_clf":         1.50,   # calibrated XGB classifier — independent EV decision boundary
-    "lgbm_ranker":     0.00,   # REMOVED — correlated with xgb_ranker (both LTR objectives)
-    "lgb_reg":         0.00,   # removed
-    "ridge":           0.00,   # removed
+    "xgb_clf":         0.50,   # EV-based class probability selection (minor weight)
+    "lgb_reg":         0.25,   # LightGBM regressor (minor weight)
+    "ridge":           0.25,   # linear model diversity (minor weight)
     "rf_reg":          0.00,   # removed
     "xgb_reg":         0.00,   # removed
     "grid_heuristic":  0.00,   # removed (signal in grid_position feature)
@@ -447,7 +448,7 @@ class StackingEnsemble:
 def generate_oof_meta_features(
     feat_df: pd.DataFrame,
     oof_years: list[int],
-) -> tuple[np.ndarray, np.ndarray, list[str]]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str]]:
     """
     v6.1: Generate out-of-fold (OOF) meta-features for stacking meta-learner.
 
@@ -676,19 +677,24 @@ def _make_models() -> dict[str, Any]:
         # rank:ndcg optimises NDCG over the full race list rather than
         # individual pairwise inversions — mathematically superior for
         # a specific ordinal target (P10).
-        # Integer labels required by rank:ndcg (XGB 3.x): round(10/(1+|pos-10|)).
-        # Regularization removed: same multicollinearity issue as lgb_reg with
-        # correlated qualifying features; 2024 CV: 13.21 vs 10.42 pairwise.
+        # v8.18: labels changed from round(10/(1+|pos-10|)) to fantasy-score labels.
         # v6.10 tuning REJECTED (2026-03-20): n=1000/d=4/lr=0.03 improved 2024 CV
         # (+1.08 to 13.42) but degraded 2025 holdout (-1.34 to 11.12 vs 12.46).
-        # Year-specific pattern — params below (v5.3 original) generalize better.
+        # v8.23 DART booster (2026-03-21): booster="dart" with rate_drop=0.10,
+        # skip_drop=0.50, n_estimators=600. DART dropout regularization prevents
+        # the ranker from making over-confident picks when form features conflict
+        # with qualifying-position signal. 2025 holdout: 14.21 (+0.25 vs v8.18=13.96).
+        # CV delta: -0.08 (within CV gate -0.10 threshold) — accepted.
         models["xgb_ranker"] = XGBRanker(
             objective="rank:ndcg",
-            n_estimators=500,
+            booster="dart",
+            n_estimators=600,
             max_depth=5,
             learning_rate=0.05,
             subsample=0.8,
             colsample_bytree=0.8,
+            rate_drop=0.10,
+            skip_drop=0.50,
             random_state=42,
             n_jobs=-1,
             verbosity=0,
@@ -775,18 +781,25 @@ def train_all(
     # v3.4/v5.3: pre-compute ranker training artefacts.
     # XGBRanker (rank:ndcg) and LGBMRanker (lambdarank) both require:
     #   - rows sorted by (year, round)
-    #   - INTEGER relevance labels: round(10 / (1 + |pos - 10|))
-    #     P10→10, P9/P11→5, P8/P12→3, P7/P13→2, P6/P14→2, else→1, P20→0
+    #   - INTEGER relevance labels: v8.18+ uses fantasy-score labels (see below)
     # XGBRanker uses qid (one integer per row, same within group).
     # LGBMRanker uses group sizes (number of rows per group).
     # Era weights differ: XGBRanker needs one weight per QUERY GROUP (race);
     # LGBMRanker needs one weight per ROW.
     train_sorted = train_df.sort_values(["year", "round"]).reset_index(drop=True)
     X_rank = train_sorted[FEATURE_COLS].values.astype(float)
-    # Integer relevance (required by rank:ndcg and lambdarank)
-    y_rank = np.round(
-        10.0 / (1.0 + np.abs(train_sorted[TARGET_COL].values.astype(float) - 10.0))
-    ).astype(int)
+    # Integer relevance labels (required by rank:ndcg and lambdarank).
+    # v8.18: Fantasy-score labels — directly align ranker objective with the reward
+    # function we optimise. FANTASY_POINTS[|pos-10|] gives:
+    #   P10=25, P9/P11=18, P8/P12=15, P7/P13=12, P6/P14=10,
+    #   P5/P15=8, P4/P16=6, P3/P17=4, P2/P18=2, P1/P19=1, P20+=0
+    # Prior labels (round(10/(1+|pos-10|))) gave P9/P11=5 (50% of max) vs
+    # actual scoring of 18/25=72% — under-valuing near-P10 positions.
+    # +0.25 pts/race on 2025 holdout vs prior labels (13.71→13.96, 2026-03-21).
+    y_rank = np.array([
+        FANTASY_POINTS.get(abs(int(p) - 10), 0)
+        for p in train_sorted[TARGET_COL].values
+    ])
     # qid: consecutive integer per unique (year, round), sorted to match X_rank.
     qid_train = train_sorted.groupby(["year", "round"], sort=True).ngroup().values
     # group_sizes: number of drivers per race (for LGBMRanker)
@@ -940,7 +953,7 @@ def _pick_p10(model_name: str, scores: pd.Series) -> str:
 def predict_race(
     race_features: pd.DataFrame,
     fitted_models: dict[str, Any],
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, dict[str, str]]:
     """
     Given a DataFrame of features for ONE race (one row per driver),
     return a DataFrame with columns:

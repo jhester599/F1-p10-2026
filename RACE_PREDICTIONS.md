@@ -1,8 +1,8 @@
 # F1 P10 Race Predictions — 2026
 
 Race-weekend prediction log. All picks made after qualifying, before race start.
-Model: v5.9 (48 features, 9 models, season-stage adaptive ensemble weights).
-Naive baseline: grid-P10 picker = 14.04 avg pts/race on 2025 holdout.
+Model: **v8.23** (51 features, F_soft_all ensemble, fantasy-score labels, DART booster).
+2025 holdout: **14.21 avg pts/race** | Naive baseline: 14.04 avg pts/race (+0.17 advantage).
 
 ---
 

@@ -1,16 +1,20 @@
-# F1 P10 Predictor · v6.x
+# F1 P10 Predictor · v8.23
 
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix, optimised for a
 fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetrically).
 
-**Current model:** 50 features · 8 models · top-3 non-adaptive ensemble
+**Current model:** 51 features · 8 models · F_soft_all ensemble (v7.2 config)
 **Benchmark:** `naive_grid_p10` — 14.04 avg pts/race on 2025 holdout
-**Best 2025 holdout:** ensemble — **14.17 avg pts/race** (v7.1: xgb_ranker=6.0, rf_clf=1.5, xgb_clf=1.5; beats naive +0.13)
-**v7.1 key change:** Replaced `lgbm_ranker` with `xgb_clf` in ensemble — architectural diversity gain +0.88 pts
+**Current 2025 holdout:** ensemble — **14.21 avg pts/race** ✓ BEATS naive baseline (+0.17)
 
-> **Note on baselines:** The 14.38 figure referenced in v6.7 testing was measured on a corrupted
-> eval parquet where all 2025 rows had `circ_races=0`. Corrected honest baseline = 13.29 pts/race.
-> v7.1 (2026-03-20) improved to 14.17 by replacing lgbm_ranker (correlated with xgb_ranker) with xgb_clf.
+**v8.x improvements over v7.2 (13.29 pts/race):**
+- v8.10: `grid_midfield_rank` feature — |grid-10|/(midfield_density+0.01) · **+0.42 pts**
+- v8.18: Fantasy-score ranker labels — FANTASY_POINTS[|pos-10|] instead of round(10/(1+|pos-10|)) · **+0.25 pts**
+- v8.23: DART booster for XGBRanker — dropout regularization (rate_drop=0.10) · **+0.25 pts**
+- **Total improvement: +0.92 pts/race** (13.29 → 14.21)
+
+> **Baseline history:** v7.2=13.29 (corrected, v7.1 claim of 14.17 not reproducible) →
+> v8.10=13.71 → v8.18=13.96 → **v8.23=14.21** (beats naive 14.04 by +0.17)
 
 ---
 

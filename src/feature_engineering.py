@@ -64,6 +64,23 @@ def _rolling_dnf_count(statuses: list, n: int) -> int:
     return sum(1 for s in statuses[-n:] if s)
 
 
+def _rolling_mean_excl_dnf(
+    pos_list: list,
+    dnf_list: list,
+    n: int,
+    fill: float = DNF_POSITION,
+) -> float:
+    """Mean of the last *n* finish positions, excluding DNF races.
+
+    v6.4: Separates 'race pace when classified' from 'how often does driver DNF'.
+    If all n races in the window were DNFs (or window is empty), returns *fill*.
+    """
+    window_pos = pos_list[-n:]
+    window_dnf = dnf_list[-n:]
+    clean = [float(p) for p, d in zip(window_pos, window_dnf) if not d]
+    return float(np.mean(clean)) if clean else fill
+
+
 # ── phase 1: flatten raw API data ─────────────────────────────────────────────
 
 def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
@@ -136,10 +153,7 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
             q3_cutoff_time = max(q3_qualifiers_q2) if q3_qualifiers_q2 else None
 
             # --- race results ---
-            race_results = fetcher.results(year, rnd)
-            # Total race laps = winner's lap count (publicly known pre-race from circuit schedule)
-            race_laps = max((int(rr.get("laps", 0)) for rr in race_results), default=0)
-            for rr in race_results:
+            for rr in fetcher.results(year, rnd):
                 did  = rr["Driver"]["driverId"]
                 cid  = rr["Constructor"]["constructorId"]
                 pos  = _safe_float(rr.get("position"), DNF_POSITION)
@@ -184,7 +198,6 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     "q2_time":         q_info.get("q2_time"),
                     "q3_time":         q_info.get("q3_time"),
                     "q3_cutoff_time":  q3_cutoff_time,
-                    "race_laps":       race_laps,
                 })
 
     df = pd.DataFrame(rows)
@@ -326,6 +339,13 @@ def build_feature_matrix(
             dnf_last5 = _rolling_dnf_count(dnf_list, 5)
             pts_last3 = sum(float(p) for p in pts_list[-3:])
 
+            # v6.4: DNF-excluding rolling averages
+            avg_fin3_clean  = _rolling_mean_excl_dnf(pos_list, dnf_list, 3,  float(MISSING_POSITION))
+            avg_fin5_clean  = _rolling_mean_excl_dnf(pos_list, dnf_list, 5,  float(MISSING_POSITION))
+            avg_fin10_clean = _rolling_mean_excl_dnf(pos_list, dnf_list, 10, float(MISSING_POSITION))
+            dnf_rate_last5  = _rolling_dnf_count(dnf_list, 5)  / 5.0
+            dnf_rate_last10 = _rolling_dnf_count(dnf_list, 10) / 10.0
+
             # circuit history
             circ_hist     = [h for h in hist if h["circuit"] == circuit]
             circ_avg_fin  = float(np.mean([h["pos"] for h in circ_hist])) if circ_hist else MISSING_POSITION
@@ -462,7 +482,6 @@ def build_feature_matrix(
                 "grid_displacement_behind":  grid_displacement_behind,
                 "historical_dnf_rate":       historical_dnf_rate,
                 "overtaking_difficulty":     overtaking_difficulty,
-                "race_laps":                 int(row.get("race_laps", 0)),
             })
 
             # ── Category B candidate features (feature_exploration v3.6) ────
@@ -526,6 +545,13 @@ def build_feature_matrix(
 
             # Attach candidate features to the row dict (already appended above)
             feature_rows[-1].update({
+                # v6.4: DNF-excluding rolling averages
+                "avg_fin_last3_clean":  avg_fin3_clean,
+                "avg_fin_last5_clean":  avg_fin5_clean,
+                "avg_fin_last10_clean": avg_fin10_clean,   # v8.3: 10-race DNF-excluding avg
+                "dnf_rate_last5":       dnf_rate_last5,
+                "dnf_rate_last10":      dnf_rate_last10,
+                # existing candidate features
                 "avg_qual_last5":        avg_qual5,
                 "avg_fin_last10":        avg_fin10,
                 "drv_pts_last5":         drv_pts_last5,
@@ -589,6 +615,17 @@ def build_feature_matrix(
     # Value=1 only when last_dnf=1 AND avg_fin_last5 ≤ 12; else 0.
     feat_df["drv_dnf_recovery_rate"] = (
         feat_df["last_dnf"] * (feat_df["avg_fin_last5"] <= 12).astype(float)
+    )
+
+    # v8.10: grid_midfield_rank — normalized P10 proximity within midfield pack
+    # = abs(grid_position - 10) / (midfield_qual_density + 0.01)
+    # Captures how close a driver is to P10 on the grid, normalized by how many
+    # competitors are in the same zone. Low value = near P10 with few competitors.
+    # Max |r| = 0.42 with midfield_qual_density, 0.27 with grid_p10_proximity.
+    # Accepted: +0.38 pts/race on 2025 holdout (script 43_test_v810_midfield_rank.py)
+    feat_df["grid_midfield_rank"] = (
+        (feat_df["grid_position"] - 10.0).abs()
+        / (feat_df["midfield_qual_density"] + 0.01)
     )
 
     # ── v3.96–v4.03: all-model validated features (20 candidates tested, 4 kept) ─
@@ -656,6 +693,19 @@ def build_feature_matrix(
                 })
             feat_df = feat_df.merge(pd.DataFrame(_cf), on=["circuit_id", "year"], how="left")
             feat_df["circ_collision_rate"] = feat_df["circ_collision_rate"].fillna(0.04)
+
+    # ── v5.7: constructor pit-stop reliability features ───────────────────────
+    # Merge pre-computed con_xpt_std from constructor_pit_times.parquet.
+    # NOTE: The parquet covers 2011-2024 only. Rows for 2025+ get global median
+    # fill, which removes discriminative signal. Fix planned in v6.11 once
+    # 2025 pit timing data is fetched from the Jolpica pitstops endpoint.
+    _cpt_path = Path(__file__).parent.parent / "data" / "processed" / "constructor_pit_times.parquet"
+    if _cpt_path.exists() and "con_xpt_std" not in feat_df.columns:
+        _cpt = pd.read_parquet(_cpt_path)[["year", "round", "constructor_id", "con_xpt_std"]]
+        feat_df = feat_df.merge(_cpt, on=["year", "round", "constructor_id"], how="left")
+        # Use cpt median as fallback (not feat_df median — may be all-NaN for 2025+ builds)
+        _cpt_median = _cpt["con_xpt_std"].median()
+        feat_df["con_xpt_std"] = feat_df["con_xpt_std"].fillna(_cpt_median)
 
     # Fill remaining NaNs with column median
     for col in FEATURE_COLS:
@@ -750,119 +800,6 @@ def build_feature_matrix(
             (feat_df.loc[mask_q2elim, "q2_time"] - feat_df.loc[mask_q2elim, "q3_cutoff_time"])
             / feat_df.loc[mask_q2elim, "q3_cutoff_time"] * 100.0
         ).clip(0, None)  # margin must be ≥ 0 (Q2-elim driver was slower than cutoff)
-
-    # ── v5.5: FP2 long-run pace candidate features ────────────────────────────
-    # Extracted from FastF1 by scripts/01b_fetch_fp2_pace.py.
-    # NOT in FEATURE_COLS yet — tested individually in scripts/12_test_v55_fp2.py.
-    # Accepted features will be added to FEATURE_COLS and version incremented.
-    #
-    # fp2_base_pace_delta:   driver's best-stint regression intercept minus session
-    #                        median (seconds).  Negative = faster than median → better pace.
-    # fp2_degradation_rate:  slope of LapTime ~ LapNumber regression for best long-run
-    #                        stint (sec/lap).  Positive = tyre deg; negative = improving.
-    # fp2_long_run_laps:     number of laps in the qualifying stint (≥5 guaranteed).
-    #
-    # NaN fallback: 0.0 for delta/rate, 0 for laps (driver absent from session or
-    # wet session skipped).  0.0 is session-neutral (no information).
-    _fp2_cache_path = Path(__file__).parent.parent / "data" / "processed" / "fp2_pace_cache.parquet"
-    if _fp2_cache_path.exists():
-        _fp2_df = pd.read_parquet(_fp2_cache_path)
-        if len(_fp2_df) > 0:
-            feat_df = feat_df.merge(
-                _fp2_df[["year", "round", "driver_id",
-                          "fp2_base_pace_delta", "fp2_degradation_rate", "fp2_long_run_laps"]],
-                on=["year", "round", "driver_id"],
-                how="left",
-            )
-            feat_df["fp2_base_pace_delta"]  = feat_df["fp2_base_pace_delta"].fillna(0.0)
-            feat_df["fp2_degradation_rate"] = feat_df["fp2_degradation_rate"].fillna(0.0)
-            feat_df["fp2_long_run_laps"]    = feat_df["fp2_long_run_laps"].fillna(0).astype(int)
-            logger.info(
-                "v5.5 FP2 pace features merged: %d non-zero rows",
-                (feat_df["fp2_long_run_laps"] > 0).sum()
-            )
-        else:
-            feat_df["fp2_base_pace_delta"]  = 0.0
-            feat_df["fp2_degradation_rate"] = 0.0
-            feat_df["fp2_long_run_laps"]    = 0
-    else:
-        # Cache not built yet — silently create zero-filled columns so
-        # the dataset builds without FP2 features.  Run 01b_fetch_fp2_pace.py first.
-        feat_df["fp2_base_pace_delta"]  = 0.0
-        feat_df["fp2_degradation_rate"] = 0.0
-        feat_df["fp2_long_run_laps"]    = 0
-
-    # ── v5.6: Constructor pit stop execution candidate features ──────────────
-    # Computed by scripts/01c_fetch_pit_stop_times.py from Jolpica pit stop API.
-    # NOT in FEATURE_COLS yet — tested individually in scripts/13_test_v56_pitstops.py.
-    # Accepted features will be added to FEATURE_COLS and version incremented.
-    #
-    # con_xpt_relative_median: median of (stop_duration - race_median) over last 10 races
-    #   for this constructor.  Negative = faster than field average.
-    # con_xpt_std: mean std dev of stop durations per race over last 10 races.
-    #   Lower = more consistent pit crew.
-    #
-    # Join key: constructor_id (same for both drivers of each team).
-    # NaN fallback: global median for con_xpt_relative_median (neutral),
-    #               global median for con_xpt_std.
-    _xpt_cache_path = Path(__file__).parent.parent / "data" / "processed" / "constructor_pit_times.parquet"
-    if _xpt_cache_path.exists():
-        _xpt_df = pd.read_parquet(_xpt_cache_path)
-        if len(_xpt_df) > 0:
-            feat_df = feat_df.merge(
-                _xpt_df[["year", "round", "constructor_id",
-                          "con_xpt_relative_median", "con_xpt_std"]],
-                on=["year", "round", "constructor_id"],
-                how="left",
-            )
-            # Fallback: fill NaN with global median (neutral — no information)
-            for _col in ["con_xpt_relative_median", "con_xpt_std"]:
-                _med = feat_df[_col].median()
-                feat_df[_col] = feat_df[_col].fillna(_med if not np.isnan(_med) else 0.0)
-            logger.info(
-                "v5.6 constructor xpt features merged: %d non-null rows",
-                feat_df["con_xpt_relative_median"].notna().sum()
-            )
-        else:
-            feat_df["con_xpt_relative_median"] = 0.0
-            feat_df["con_xpt_std"]             = 0.0
-    else:
-        feat_df["con_xpt_relative_median"] = 0.0
-        feat_df["con_xpt_std"]             = 0.0
-
-    # ── v5.7: Blue flag vulnerability candidate feature ───────────────────────
-    # Captures the interaction between a driver's pace gap to pole and the
-    # number of race laps.  A driver who is X% slower than pole per lap will be
-    # approximately (X/100 * race_laps) laps behind the leader at race end.
-    # Values ≥ 1.0 indicate the driver is mathematically likely to be lapped,
-    # causing 1.5–3 second time losses that can drop them out of P10.
-    #
-    # Formula: blue_flag_vulnerability = q_gap_pct / 100 * race_laps
-    #   q_gap_pct: driver's best qualifying time gap to pole (%)
-    #   race_laps: total laps for this circuit (captured from race results)
-    #
-    # This is a pure pre-race calculation (circuit laps are published on the
-    # schedule; q_gap_pct is from qualifying).  No data leakage.
-    # NaN fallback: 0.0 (no vulnerability signal).
-    if "race_laps" in feat_df.columns and "q_gap_pct" in feat_df.columns:
-        mask_bfv = (
-            feat_df["race_laps"].notna() & (feat_df["race_laps"] > 0) &
-            feat_df["q_gap_pct"].notna()
-        )
-        feat_df["blue_flag_vulnerability"] = 0.0
-        feat_df.loc[mask_bfv, "blue_flag_vulnerability"] = (
-            feat_df.loc[mask_bfv, "q_gap_pct"] / 100.0 *
-            feat_df.loc[mask_bfv, "race_laps"]
-        ).clip(0, None)
-        n_nonzero = (feat_df["blue_flag_vulnerability"] > 0).sum()
-        logger.info(
-            "v5.7 blue flag vulnerability: %d non-zero rows, mean=%.3f, max=%.2f",
-            n_nonzero,
-            feat_df.loc[feat_df["blue_flag_vulnerability"] > 0, "blue_flag_vulnerability"].mean(),
-            feat_df["blue_flag_vulnerability"].max(),
-        )
-    else:
-        feat_df["blue_flag_vulnerability"] = 0.0
 
     logger.info("Feature matrix: %d rows × %d cols", len(feat_df), len(feat_df.columns))
     return feat_df

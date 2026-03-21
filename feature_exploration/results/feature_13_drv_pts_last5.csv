@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-drv_pts_last5,Sum of championship points over last 5 races,DISCARD,12.611111111111112,11.569444444444445,-0.6666666666666661,-3.416666666666668,0.9583333333333339,-2.041666666666667

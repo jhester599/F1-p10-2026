@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-drv_teammate_qual_delta,grid_position − teammate_grid — qualifying delta vs teammate,DISCARD,12.611111111111112,11.916666666666666,0.16666666666666607,-2.25,0.0,-1.041666666666667

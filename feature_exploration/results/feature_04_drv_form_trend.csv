@@ -1,2 +1,0 @@
-feature,description,verdict,baseline_avg,extended_avg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
-drv_form_trend,avg_fin_last3 − avg_fin_last5 — short-vs-long form delta (negative=improving),KEEP,11.888888888888888,12.611111111111112,0.125,2.041666666666668,0.0,1.083333333333334
