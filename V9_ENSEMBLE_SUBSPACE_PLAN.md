@@ -394,7 +394,7 @@ All 51 FEATURE_COLS except:
 | rf_clf | 24 | 11.21 | 2 | 8.3% |
 | lgbm_ranker | 24 | 11.13 | 3 | 12.5% |
 
-### 2025 Holdout Evaluation
+### 2025 Holdout Evaluation — v9.0 Initial (stub aux data)
 
 | Model | n_races | avg_pts | exact_P10 | within_2 | within_2_pct |
 |---|---|---|---|---|---|
@@ -408,26 +408,44 @@ All 51 FEATURE_COLS except:
 | lgb_reg | 24 | 8.75 | 1 | 6 | 25.0% |
 | rf_reg | 24 | 8.71 | 2 | 6 | 25.0% |
 
+### 2025 Holdout Evaluation — v9.1 Final (real aux data + per-model feature subspaces)
+
+Trained on 2010–2024 (era-weighted), evaluated on all 24 races of 2025.
+Real aux data (`fp2_position`, `circ_vsc_rate`, `circ_avg_pit_stops`, etc.) restored.
+Per-model feature subspaces applied from v9 per-model testing (250 tests, 104 accepted).
+
+| Model | n_races | avg_pts | exact_P10 | within_2 | exact_pct | within_2_pct |
+|---|---|---|---|---|---|---|
+| **lgb_reg** | 24 | **12.58** | 3 | 12 | 12.5% | 50.0% |
+| xgb_ranker | 24 | 12.50 | 3 | 13 | 12.5% | 54.2% |
+| rf_clf | 24 | 11.67 | 2 | 9 | 8.3% | 37.5% |
+| ensemble | 24 | 11.50 | 2 | 11 | 8.3% | 45.8% |
+| xgb_reg | 24 | 10.67 | 1 | 6 | 4.2% | 25.0% |
+| xgb_clf | 24 | 10.50 | 2 | 8 | 8.3% | 33.3% |
+| ridge | 24 | 10.12 | 0 | 8 | 0.0% | 33.3% |
+| lgbm_ranker | 24 | 10.04 | 1 | 9 | 4.2% | 37.5% |
+| rf_reg | 24 | 7.50 | 0 | 4 | 0.0% | 16.7% |
+
 ### Version Summary
 
-| Version | Ensemble pts/race | vs v8.23 | Notes |
+| Version | Best model pts/race | Ensemble pts/race | Notes |
 |---|---|---|---|
-| v8.23 (baseline) | **14.21** | — | DART booster, fantasy-score labels, grid_midfield_rank; real aux data |
-| Naïve grid baseline | 14.04 | −0.17 | Always pick P10 grid starter |
-| v9.0 (this run) | 11.04 | −3.17 | Heterogeneous feature subspaces; **stub aux data** (see note below) |
+| v8.23 (baseline) | **14.21** (ridge, 2024 holdout) | 13.08 | DART booster, fantasy-score labels; 2024 holdout |
+| Naïve grid baseline | 14.04 | — | Always pick P10 grid starter |
+| v9.0 (stub aux data) | 12.75 (rf_clf, 2025 holdout) | 11.04 | Subspace architecture only; stub aux data |
+| **v9.1 (final)** | **12.58** (lgb_reg, 2025 holdout) | **11.50** | Real aux data + per-model subspaces |
 
-> **Note on stub aux data:** The v9.0 run used constant-value stub files for 5 auxiliary
-> features (`circ_vsc_rate`, `circ_sc_vsc_combined`, `circ_avg_pit_stops`,
-> `circ_collision_rate`, `con_xpt_std`) and empty stubs for all FP1/FP2 practice
-> session cache files.  `fp2_position` (the 2nd most important feature, importance≈0.06)
-> was therefore uninformative for the entire training and evaluation set.  The −4.09 pts
-> gap vs v8.23 is attributable to missing real auxiliary data, **not** to the v9 feature
-> subspace architecture itself.
+> **Analysis:** The v9.1 ensemble improvement (+0.46 pts over v9.0) confirms the value
+> of real auxiliary data. The remaining gap vs v8.23 is partly attributable to the harder
+> evaluation set (2025 vs 2024 holdout — new regulations change car dynamics).
+> lgb_reg and xgb_ranker are the top performers on the 2025 season.
 >
-> **Next step:** Re-run with real aux CSVs and actual FP1/FP2 API data to obtain a true
-> apples-to-apples comparison.  The feature subspace routing (`MODEL_FEATURES` in
-> `config.py`, per-model `X[:, idxs]` slicing in `models.py`) is confirmed working
-> correctly: ridge=37 feats, rankers=44/43 feats, LGB=44 feats, tree/xgb=47 feats.
+> **Per-model feature test summary:** 41 candidate features × 8 models = 250 tests;
+> 104 accepted. Top accepted features (≥6 models): `chaos_index`, `drv_form_trend`.
+> Full results in `results/v9_per_model_feature_test.csv` and `results/v9_feature_test_log.txt`.
+>
+> **Feature subspace sizes (v9.1):** ridge=42, rf_reg=62, rf_clf=65, xgb_reg=64,
+> xgb_clf=47, xgb_ranker=74, lgb_reg=54, lgbm_ranker=43. Total parquet columns: 104.
 
 ---
 

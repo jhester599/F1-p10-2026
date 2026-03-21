@@ -801,6 +801,132 @@ def build_feature_matrix(
             / feat_df.loc[mask_q2elim, "q3_cutoff_time"] * 100.0
         ).clip(0, None)  # margin must be ≥ 0 (Q2-elim driver was slower than cutoff)
 
+    # ── v9.0: Per-model feature subspace candidates ────────────────────────────
+    # Derived features that passed per-model acceptance testing (>= +0.10 pts/race
+    # on 2024 holdout for at least one model). See scripts/61_v9_per_model_feature_test.py.
+
+    # drv_form_trend_long: longer-term form trend (5-race vs 10-race)
+    feat_df["drv_form_trend_long"] = feat_df["avg_fin_last5"] - feat_df["avg_fin_last10"]
+
+    # circ_experience_rate: fraction of career spent at this circuit
+    feat_df["circ_experience_rate"] = feat_df["circ_races"] / np.maximum(feat_df["career_races"], 1)
+
+    # circ_experience_rate_log: log-scaled circuit experience
+    feat_df["circ_experience_rate_log"] = np.log1p(feat_df["circ_races"])
+
+    # drv_overperformance_rate: clipped positive qualifying-to-race gain
+    feat_df["drv_overperformance_rate"] = (
+        np.clip(feat_df["avg_qual_last3"] - feat_df["avg_fin_last5"], 0, None) / 10.0
+    )
+
+    # drv_pts_per_race: championship points earning rate
+    feat_df["drv_pts_per_race"] = feat_df["drv_champ_pts"] / np.maximum(feat_df["race_num"] - 1, 1)
+
+    # drv_q3_rate: proxy for Q3 appearance rate (grid <= 10)
+    feat_df["drv_q3_rate"] = (feat_df["grid_position"] <= 10).astype(float)
+
+    # drv_qual_vs_team: driver qualifying vs team average
+    feat_df["drv_qual_vs_team"] = feat_df["avg_qual_last3"] - feat_df["team_avg_qual_season"]
+
+    # drv_starts_p10_zone_rate: proxy for P10 zone starting rate
+    feat_df["drv_starts_p10_zone_rate"] = feat_df["drv_p10_zone_rate_last10"] * 0.8
+
+    # drv_teammate_qual_delta: intra-team qualifying comparison
+    feat_df["drv_teammate_qual_delta"] = feat_df["grid_position"] - feat_df["teammate_grid"]
+
+    # grid_position_sq: quadratic grid position
+    feat_df["grid_position_sq"] = feat_df["grid_position"] ** 2
+
+    # is_midfield_team: binary flag for constructors ranked 4-7
+    feat_df["is_midfield_team"] = (
+        (feat_df["con_champ_pos"] >= 4) & (feat_df["con_champ_pos"] <= 7)
+    ).astype(float)
+
+    # team_qual_fin_delta: team qualifying vs finishing gap
+    feat_df["team_qual_fin_delta"] = feat_df["team_avg_qual_season"] - feat_df["team_avg_fin_season"]
+
+    # team_race_vs_qual: team race pace vs qualifying pace
+    feat_df["team_race_vs_qual"] = feat_df["team_avg_fin_season"] - feat_df["team_avg_qual_season"]
+
+    # circ_sc_rate: average SC deployments per race at circuit
+    if _sc_path.exists():
+        _sc_all = pd.read_csv(_sc_path)
+        _sc_rate_feat = []
+        for (cid, yr), _grp in feat_df.groupby(["circuit_id", "year"]):
+            _past = _sc_all[(_sc_all["circuit_id"] == cid) & (_sc_all["year"] >= yr - 5) & (_sc_all["year"] < yr)]
+            _sc_rate_feat.append({
+                "circuit_id": cid, "year": yr,
+                "circ_sc_rate": _past["sc_count"].mean() if len(_past) > 0 else 0.5,
+            })
+        feat_df = feat_df.merge(pd.DataFrame(_sc_rate_feat), on=["circuit_id", "year"], how="left")
+        feat_df["circ_sc_rate"] = feat_df["circ_sc_rate"].fillna(0.5)
+
+    # circ_pit_stop_var: pit stop variance at circuit
+    if _pit_path.exists():
+        _pit_all = pd.read_csv(_pit_path)
+        _pit_var_feat = []
+        for (cid, yr), _grp in feat_df.groupby(["circuit_id", "year"]):
+            _past = _pit_all[(_pit_all["circuit_id"] == cid) & (_pit_all["year"] >= yr - 5) & (_pit_all["year"] < yr)]
+            _pit_var_feat.append({
+                "circuit_id": cid, "year": yr,
+                "circ_pit_stop_var": _past["pit_stop_variance"].mean() if len(_past) > 0 else 0.1,
+            })
+        feat_df = feat_df.merge(pd.DataFrame(_pit_var_feat), on=["circuit_id", "year"], how="left")
+        feat_df["circ_pit_stop_var"] = feat_df["circ_pit_stop_var"].fillna(0.1)
+
+    # circ_p10_grid_chaos: std dev of P10 finisher's starting grid at circuit
+    _p10_finishers = feat_df[feat_df[TARGET_COL] == 10]
+    if len(_p10_finishers) > 0:
+        _chaos = _p10_finishers.groupby("circuit_id")["grid_position"].std().reset_index()
+        _chaos.columns = ["circuit_id", "circ_p10_grid_chaos"]
+        feat_df = feat_df.merge(_chaos, on="circuit_id", how="left")
+        feat_df["circ_p10_grid_chaos"] = feat_df["circ_p10_grid_chaos"].fillna(
+            feat_df["circ_p10_grid_chaos"].median() if feat_df["circ_p10_grid_chaos"].notna().any() else 4.0
+        )
+    else:
+        feat_df["circ_p10_grid_chaos"] = 4.0
+
+    # ── v9.0: Weather features ───────────────────────────────────────────────
+    # Weather features were tested per model and accepted for several models
+    # (especially xgb_ranker, lgb_reg, rf_clf). Merge from weather module.
+    try:
+        _weather_path = Path(__file__).parent.parent / "weather" / "data" / "weather_historical.parquet"
+        if _weather_path.exists():
+            import sys as _sys
+            _sys.path.insert(0, str(Path(__file__).parent.parent))
+            from weather.weather_features import load_weather_features
+            _wf = load_weather_features(_weather_path)
+            if not _wf.empty:
+                _weather_cols = ["year", "round", "is_wet_race", "chaos_index", "is_high_wind",
+                                 "is_cold_race", "is_hot_race", "rain_category", "temp_max_c"]
+                _avail = [c for c in _weather_cols if c in _wf.columns]
+                feat_df = feat_df.merge(_wf[_avail], on=["year", "round"], how="left")
+                for _wc in _avail:
+                    if _wc not in ("year", "round"):
+                        feat_df[_wc] = feat_df[_wc].fillna(0)
+    except Exception as _we:
+        logger.warning("Could not load weather features: %s", _we)
+        # Fill weather columns with defaults
+        for _wc in ["is_wet_race", "chaos_index", "is_high_wind", "is_cold_race",
+                     "is_hot_race", "rain_category", "temp_max_c"]:
+            if _wc not in feat_df.columns:
+                feat_df[_wc] = 0 if _wc != "temp_max_c" else 25.0
+
+    # Fill NaN for all new v9 feature columns
+    _v9_new_cols = [
+        "drv_form_trend_long", "circ_experience_rate", "circ_experience_rate_log",
+        "drv_overperformance_rate", "drv_pts_per_race", "drv_q3_rate", "drv_qual_vs_team",
+        "drv_starts_p10_zone_rate", "drv_teammate_qual_delta", "grid_position_sq",
+        "is_midfield_team", "team_qual_fin_delta", "team_race_vs_qual",
+        "circ_sc_rate", "circ_pit_stop_var", "circ_p10_grid_chaos",
+        "is_wet_race", "chaos_index", "is_high_wind", "is_cold_race",
+        "is_hot_race", "rain_category", "temp_max_c",
+    ]
+    for _vc in _v9_new_cols:
+        if _vc in feat_df.columns:
+            _med = feat_df[_vc].median()
+            feat_df[_vc] = feat_df[_vc].fillna(_med if not np.isnan(_med) else 0)
+
     logger.info("Feature matrix: %d rows × %d cols", len(feat_df), len(feat_df.columns))
     return feat_df
 

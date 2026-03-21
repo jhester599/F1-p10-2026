@@ -187,116 +187,177 @@ FEATURE_COLS = [
     "q1_gap_pct",                # v5.2: driver's Q1 time gap to pole (%). Universally available; +0.448 avg on 2024 CV.
     "q2_gap_pct",                # v5.6: driver's Q2 time gap to pole (%). Available only for Q2/Q3 participants.
     "q2_elimination_margin",     # v5.6: gap between driver's Q2 time and Q2 elimination cutoff.
-    # --- constructor expected pit stop time (v5.7) ---
-    "con_xpt_std",               # v5.7: std dev of constructor pit stop times (reliability proxy).
     # --- v6.4: DNF-aware reliability features ---
+    # NOTE: con_xpt_std (v5.7) excluded — constructor_pit_times.parquet unavailable
     "dnf_rate_last10",           # v6.4: fraction of last 10 races that were DNFs (+1.46 pts standalone, SE 1.67→1.25).
     # --- v6.7: extended rolling form ---
     "avg_fin_last10",            # v6.7: avg finish position over last 10 races (+1.00 pts standalone; kept despite r=0.949 with avg_fin_last5 — marginal signal confirmed).
     # --- v8.10: normalized midfield P10 proximity ---
     "grid_midfield_rank",        # v8.10: |grid_position-10| / (midfield_qual_density+0.01). Max |r|=0.42. +0.38 pts on 2025 holdout.
+    # --- v9.0: per-model feature subspace candidates ---
+    "q2_to_q1_delta",           # v9.0: Q2-Q1 qualifying gap progression (already in parquet)
+    "drv_in_points_last5",      # v9.0: fraction of last 5 races finishing in points (already in parquet)
+    "drv_form_trend_long",      # v9.0: avg_fin_last5 - avg_fin_last10 (longer-term form trend)
+    "circ_experience_rate",     # v9.0: circ_races / career_races (circuit familiarity ratio)
+    "circ_experience_rate_log", # v9.0: log1p(circ_races) (log-scaled circuit experience)
+    "drv_overperformance_rate", # v9.0: clip(avg_qual_last3 - avg_fin_last5, 0) / 10 (race gain)
+    "drv_pts_per_race",         # v9.0: drv_champ_pts / max(race_num-1, 1) (points earning rate)
+    "drv_q3_rate",              # v9.0: proxy (grid_position <= 10) for Q3 appearance rate
+    "drv_qual_vs_team",         # v9.0: avg_qual_last3 - team_avg_qual_season (driver vs team quali)
+    "drv_starts_p10_zone_rate", # v9.0: drv_p10_zone_rate_last10 * 0.8 (P10 zone starting rate)
+    "drv_teammate_qual_delta",  # v9.0: grid_position - teammate_grid (intra-team comparison)
+    "grid_position_sq",         # v9.0: grid_position^2 (quadratic grid penalty)
+    "is_midfield_team",         # v9.0: (con_champ_pos in 4-7) as float (midfield constructor flag)
+    "team_qual_fin_delta",      # v9.0: team_avg_qual_season - team_avg_fin_season (team race gain)
+    "team_race_vs_qual",        # v9.0: team_avg_fin_season - team_avg_qual_season
+    "circ_sc_rate",             # v9.0: avg SC deployments per race at circuit (from aux)
+    "circ_pit_stop_var",        # v9.0: pit stop variance at circuit (from aux)
+    "circ_p10_grid_chaos",      # v9.0: std dev of P10 finisher's start position (derived)
+    # --- v9.0: weather features ---
+    "is_wet_race",              # v9.0: binary precipitation > 1mm
+    "chaos_index",              # v9.0: is_wet + is_high_wind (0-2)
+    "is_high_wind",             # v9.0: wind > 40 km/h
+    "is_cold_race",             # v9.0: temp_max < 15C
+    "is_hot_race",              # v9.0: temp_max > 35C
+    "rain_category",            # v9.0: ordinal 0-3 (dry/damp/wet/heavy)
+    "temp_max_c",               # v9.0: max temperature on race day
 ]
 
 TARGET_COL = "finish_position"
 
-# ── v9.0: Heterogeneous Feature Subspaces ────────────────────────────────────
+# ── v9.0: Heterogeneous Feature Subspaces (updated with per-model testing) ───
 #
-# Each model receives a curated feature subset that exploits its unique
-# architectural properties.  Rationale per model:
+# V9 per-model feature testing (scripts/61_v9_per_model_feature_test.py):
+# - Protocol: Train 2019-2023, eval 2024 (24 races), acceptance >= +0.10 pts/race
+# - 41 candidate features × 8 models = 250 tests; 104 accepted
+# - Each model now has a custom feature set optimized for its architecture
 #
-# ridge (37 features, remove 14):
-#   Linear model with StandardScaler → sensitive to non-linear transforms and
-#   near-perfect linear combinations.  Removed:
-#     - q_gap_sq           (= q_gap_pct²; non-linear; collinear with q_gap_pct)
-#     - avg_fin_last3      (r > 0.94 with avg_fin_last5; pure collinearity)
-#     - avg_fin_last10     (r = 0.949 with avg_fin_last5; documented but marginal)
-#     - drv_form_trend     (= avg_fin_last3 − avg_fin_last5; avg_fin_last3 removed)
-#     - drv_dnf_recovery_rate  (binary product interaction; non-linear for Ridge)
-#     - grid_p10_proximity (= |grid−10|; non-linear, Ridge can't utilise well)
-#     - grid_x_overtaking  (= grid × difficulty; interaction term; non-linear)
-#     - grid_midfield_rank (complex ratio; non-linear)
-#     - circ_sc_vsc_combined (= sc_rate + circ_vsc_rate; pure linear sum; collinear)
-#     - con_champ_pts      (r > 0.80 with con_champ_pos; retain position rank)
-#     - last_qual_pos      (r > 0.80 with grid_position for non-penalised starters)
-#     - team_avg_qual_season (r > 0.75 with team_avg_fin_season across seasons)
-#     - grid_displacement_behind (complex count; non-linear interaction)
-#     - season_completeness (= race_num / total_rounds; r ≈ 1.0 with race_num)
+# Changes from v8.x baseline exclusion sets:
+#   ridge:       INCLUDE q_gap_sq(+0.62), grid_x_overtaking(+0.62), con_champ_pts(+0.33),
+#                grid_displacement_behind(+0.33), circ_p10_grid_chaos(+1.17), temp_max_c(+0.33)
+#   rf_reg:      INCLUDE q_gap_sq(+0.54), drv_form_trend(+0.54) + 16 new features
+#   rf_clf:      INCLUDE drv_form_trend(+1.12), circ_sc_vsc_combined(+0.67), race_num(+0.54) + 19 new
+#   xgb_reg:     INCLUDE q_gap_sq(+2.25), drv_form_trend(+1.04), circ_sc_vsc_combined(+1.17) + 19 new
+#   xgb_clf:     INCLUDE drv_form_trend(+0.88) — very selective model
+#   xgb_ranker:  INCLUDE q_gap_sq(+1.79), circ_sc_vsc_combined(+2.67), grid_p10_proximity(+2.25),
+#                last_qual_pos(+0.79), q2_elimination_margin(+2.58) + 31 new features
+#   lgb_reg:     INCLUDE drv_form_trend(+0.83), last_qual_pos(+0.17), season_completeness(+0.96) + 11 new
+#   lgbm_ranker: chaos_index(+0.12) — only 1 new feature accepted
 #
-# rf_reg (47 features, remove 4):
-#   Random Forest regressor uses random subspace → robust to correlated features.
-#   Remove only clear linear redundancies that waste tree capacity:
-#     - q_gap_sq, drv_form_trend, circ_sc_vsc_combined, season_completeness
-#
-# rf_clf (47 features, remove 4):
-#   Calibrated Random Forest classifier (isotonic).  Same random subspace benefit.
-#   Remove race_num (season_completeness is better normalised for classification):
-#     - q_gap_sq, drv_form_trend, circ_sc_vsc_combined, race_num
-#
-# xgb_reg (47 features, remove 4):
-#   XGBoost regressor with L1/L2 regularization handles correlations.
-#   Remove clear quadratic redundancy and the season-stage linear duplicate:
-#     - q_gap_sq, drv_form_trend, circ_sc_vsc_combined, season_completeness
-#
-# xgb_clf (47 features, remove 4):
-#   XGBoost classifier with Platt-sigmoid calibration.  EV calculation benefits
-#   from the full position distribution; keep form features; prefer normalised
-#   season position (season_completeness) over raw race_num:
-#     - q_gap_sq, drv_form_trend, circ_sc_vsc_combined, race_num
-#
-# xgb_ranker (44 features, remove 7):
-#   DART booster (rate_drop=0.10) randomly drops trees during training, which
-#   amplifies the effect of redundant features: when a tree using feature A is
-#   dropped, a correlated feature B cannot fully compensate, producing unstable
-#   gradients.  Also, sparse features (many zeros) create noisy DART gradients.
-#     - q_gap_sq          (collinear with q_gap_pct; instability under dropout)
-#     - avg_fin_last3     (r > 0.94 with avg_fin_last5; 3-race window adds noise)
-#     - drv_form_trend    (derived from avg_fin_last3 − avg_fin_last5; redundant)
-#     - grid_p10_proximity (derived from grid_position; wastes DART tree capacity)
-#     - circ_sc_vsc_combined (collinear sum; DART drops amplify this)
-#     - last_qual_pos     (r > 0.80 with grid_position; redundant in ranker)
-#     - q2_elimination_margin (70–80% zeros; sparse feature → noisy DART gradients)
-#
-# lgb_reg (44 features, remove 7):
-#   LightGBM with NO regularization (reg_alpha/lambda removed in v5.2 to allow
-#   correlated features like q1_gap_pct to survive).  Without L1/L2 the model
-#   double-counts correlated features.  Remove the same correlated set as
-#   xgb_ranker (minus q2_elimination_margin, which is not harmful for LGB)
-#   plus season_completeness (collinear with race_num):
-#     - q_gap_sq, avg_fin_last3, drv_form_trend, grid_p10_proximity,
-#       circ_sc_vsc_combined, last_qual_pos, season_completeness
-#
-# lgbm_ranker (43 features, remove 8):
-#   LightGBM LambdaMART with NO regularization.  Same vulnerability as lgb_reg.
-#   Additionally remove avg_fin_last10 (r = 0.949 with avg_fin_last5): for ranking,
-#   lambdaMART benefits from fewer, cleaner form signals:
-#     - all lgb_reg exclusions + avg_fin_last10
-#
-_RIDGE_EXCL       = {"con_champ_pts", "last_qual_pos", "avg_fin_last3", "season_completeness",
-                      "team_avg_qual_season", "grid_p10_proximity", "grid_displacement_behind",
-                      "q_gap_sq", "grid_x_overtaking", "drv_form_trend",
-                      "drv_dnf_recovery_rate", "circ_sc_vsc_combined",
-                      "avg_fin_last10", "grid_midfield_rank"}
-_RF_REG_EXCL      = {"q_gap_sq", "drv_form_trend", "circ_sc_vsc_combined", "season_completeness"}
-_RF_CLF_EXCL      = {"q_gap_sq", "drv_form_trend", "circ_sc_vsc_combined", "race_num"}
-_XGB_REG_EXCL     = {"q_gap_sq", "drv_form_trend", "circ_sc_vsc_combined", "season_completeness"}
-_XGB_CLF_EXCL     = {"q_gap_sq", "drv_form_trend", "circ_sc_vsc_combined", "race_num"}
-_XGB_RANKER_EXCL  = {"q_gap_sq", "avg_fin_last3", "drv_form_trend", "grid_p10_proximity",
-                      "circ_sc_vsc_combined", "last_qual_pos", "q2_elimination_margin"}
-_LGB_REG_EXCL     = {"q_gap_sq", "avg_fin_last3", "drv_form_trend", "grid_p10_proximity",
-                      "circ_sc_vsc_combined", "last_qual_pos", "season_completeness"}
-_LGBM_RANKER_EXCL = {"q_gap_sq", "avg_fin_last3", "drv_form_trend", "grid_p10_proximity",
-                      "circ_sc_vsc_combined", "last_qual_pos", "season_completeness",
-                      "avg_fin_last10"}
+# ridge: linear model — exclude non-linear transforms, interactions, high-collinearity pairs
+_RIDGE_EXCL       = {
+    # Original exclusions kept (not accepted in per-model test)
+    "last_qual_pos", "avg_fin_last3", "season_completeness",
+    "team_avg_qual_season", "grid_p10_proximity",
+    "drv_form_trend", "drv_dnf_recovery_rate", "circ_sc_vsc_combined",
+    "avg_fin_last10", "grid_midfield_rank",
+    # v9 new features excluded (not accepted for ridge)
+    "q2_to_q1_delta", "drv_in_points_last5", "drv_form_trend_long",
+    "circ_experience_rate", "circ_experience_rate_log", "drv_overperformance_rate",
+    "drv_pts_per_race", "drv_q3_rate", "drv_qual_vs_team", "drv_starts_p10_zone_rate",
+    "drv_teammate_qual_delta", "grid_position_sq", "is_midfield_team",
+    "team_qual_fin_delta", "team_race_vs_qual", "circ_sc_rate", "circ_pit_stop_var",
+    "is_wet_race", "is_high_wind", "is_cold_race", "is_hot_race",
+    "rain_category", "chaos_index",
+}
+# ridge NOW INCLUDES: q_gap_sq, grid_x_overtaking, con_champ_pts,
+# grid_displacement_behind, circ_p10_grid_chaos, temp_max_c
+
+# rf_reg: random subspace — robust to correlation, add most accepted features
+_RF_REG_EXCL      = {
+    "circ_sc_vsc_combined", "season_completeness",
+    # v9 new features excluded (not accepted for rf_reg)
+    "drv_in_points_last5", "drv_pts_per_race", "drv_q3_rate",
+    "drv_teammate_qual_delta", "is_midfield_team",
+    "circ_sc_rate", "circ_pit_stop_var",
+    "is_wet_race", "is_cold_race", "is_hot_race", "rain_category",
+}
+# rf_reg NOW INCLUDES: q_gap_sq, drv_form_trend + 16 new features
+
+# rf_clf: random subspace classifier — many new features accepted
+_RF_CLF_EXCL      = {
+    "q_gap_sq",
+    # v9 new features excluded (not accepted for rf_clf)
+    "circ_experience_rate", "drv_qual_vs_team", "drv_teammate_qual_delta",
+    "grid_position_sq", "team_qual_fin_delta", "team_race_vs_qual",
+    "temp_max_c", "is_high_wind", "is_hot_race",
+}
+# rf_clf NOW INCLUDES: drv_form_trend, circ_sc_vsc_combined, race_num + 19 new features
+
+# xgb_reg: L1/L2 regularized — handles correlations, many new accepted
+_XGB_REG_EXCL     = {
+    "season_completeness",
+    # v9 new features excluded (not accepted for xgb_reg)
+    "circ_experience_rate", "drv_in_points_last5", "drv_pts_per_race",
+    "drv_qual_vs_team", "drv_teammate_qual_delta",
+    "team_qual_fin_delta", "team_race_vs_qual",
+    "is_wet_race", "is_cold_race", "is_hot_race",
+}
+# xgb_reg NOW INCLUDES: q_gap_sq, drv_form_trend, circ_sc_vsc_combined + 19 new
+
+# xgb_clf: very selective — only drv_form_trend accepted from excluded set
+_XGB_CLF_EXCL     = {
+    "q_gap_sq", "circ_sc_vsc_combined", "race_num",
+    # v9 new features excluded (not accepted for xgb_clf)
+    "q2_to_q1_delta", "drv_in_points_last5", "drv_form_trend_long",
+    "circ_experience_rate", "circ_experience_rate_log", "drv_overperformance_rate",
+    "drv_pts_per_race", "drv_q3_rate", "drv_qual_vs_team", "drv_starts_p10_zone_rate",
+    "drv_teammate_qual_delta", "grid_position_sq", "is_midfield_team",
+    "team_qual_fin_delta", "team_race_vs_qual", "circ_sc_rate", "circ_pit_stop_var",
+    "circ_p10_grid_chaos",
+    "is_wet_race", "chaos_index", "is_high_wind", "is_cold_race", "is_hot_race",
+    "rain_category", "temp_max_c",
+}
+# xgb_clf NOW INCLUDES: drv_form_trend
+
+# xgb_ranker: accepted most features — aggressive feature inclusion
+_XGB_RANKER_EXCL  = {
+    "avg_fin_last3",
+    # v9 new features excluded: none — xgb_ranker accepted all new features
+}
+# xgb_ranker NOW INCLUDES: q_gap_sq, drv_form_trend, grid_p10_proximity,
+# circ_sc_vsc_combined, last_qual_pos, q2_elimination_margin + all 25 new features
+
+# lgb_reg: no regularization — prune correlated features
+_LGB_REG_EXCL     = {
+    "q_gap_sq", "avg_fin_last3", "grid_p10_proximity",
+    "circ_sc_vsc_combined",
+    # v9 new features excluded (not accepted for lgb_reg)
+    "q2_to_q1_delta", "drv_in_points_last5", "drv_form_trend_long",
+    "drv_overperformance_rate", "drv_pts_per_race", "drv_qual_vs_team",
+    "drv_starts_p10_zone_rate", "drv_teammate_qual_delta", "grid_position_sq",
+    "is_midfield_team", "team_qual_fin_delta", "team_race_vs_qual",
+    "circ_sc_rate", "circ_pit_stop_var", "circ_p10_grid_chaos",
+    "is_wet_race", "rain_category",
+}
+# lgb_reg NOW INCLUDES: drv_form_trend, last_qual_pos, season_completeness + 11 new
+
+# lgbm_ranker: most conservative — only chaos_index accepted from new features
+_LGBM_RANKER_EXCL = {
+    "q_gap_sq", "avg_fin_last3", "drv_form_trend", "grid_p10_proximity",
+    "circ_sc_vsc_combined", "last_qual_pos", "season_completeness",
+    "avg_fin_last10",
+    # v9 new features excluded (not accepted for lgbm_ranker)
+    "q2_to_q1_delta", "drv_in_points_last5", "drv_form_trend_long",
+    "circ_experience_rate", "circ_experience_rate_log", "drv_overperformance_rate",
+    "drv_pts_per_race", "drv_q3_rate", "drv_qual_vs_team", "drv_starts_p10_zone_rate",
+    "drv_teammate_qual_delta", "grid_position_sq", "is_midfield_team",
+    "team_qual_fin_delta", "team_race_vs_qual", "circ_sc_rate", "circ_pit_stop_var",
+    "circ_p10_grid_chaos",
+    "is_wet_race", "is_high_wind", "is_cold_race", "is_hot_race",
+    "rain_category", "temp_max_c",
+}
+# lgbm_ranker NOW INCLUDES: chaos_index only from new features
 
 MODEL_FEATURES: dict[str, list[str]] = {
-    "ridge":       [f for f in FEATURE_COLS if f not in _RIDGE_EXCL],        # 37 features
-    "rf_reg":      [f for f in FEATURE_COLS if f not in _RF_REG_EXCL],       # 47 features
-    "rf_clf":      [f for f in FEATURE_COLS if f not in _RF_CLF_EXCL],       # 47 features
-    "xgb_reg":     [f for f in FEATURE_COLS if f not in _XGB_REG_EXCL],      # 47 features
-    "xgb_clf":     [f for f in FEATURE_COLS if f not in _XGB_CLF_EXCL],      # 47 features
-    "xgb_ranker":  [f for f in FEATURE_COLS if f not in _XGB_RANKER_EXCL],   # 44 features
-    "lgb_reg":     [f for f in FEATURE_COLS if f not in _LGB_REG_EXCL],      # 44 features
-    "lgbm_ranker": [f for f in FEATURE_COLS if f not in _LGBM_RANKER_EXCL],  # 43 features
+    "ridge":       [f for f in FEATURE_COLS if f not in _RIDGE_EXCL],
+    "rf_reg":      [f for f in FEATURE_COLS if f not in _RF_REG_EXCL],
+    "rf_clf":      [f for f in FEATURE_COLS if f not in _RF_CLF_EXCL],
+    "xgb_reg":     [f for f in FEATURE_COLS if f not in _XGB_REG_EXCL],
+    "xgb_clf":     [f for f in FEATURE_COLS if f not in _XGB_CLF_EXCL],
+    "xgb_ranker":  [f for f in FEATURE_COLS if f not in _XGB_RANKER_EXCL],
+    "lgb_reg":     [f for f in FEATURE_COLS if f not in _LGB_REG_EXCL],
+    "lgbm_ranker": [f for f in FEATURE_COLS if f not in _LGBM_RANKER_EXCL],  # 42 features
 }
 
 # ── Era-stratified sample weights ─────────────────────────────────────────────

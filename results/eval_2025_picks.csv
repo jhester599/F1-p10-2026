@@ -1,217 +1,217 @@
 year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pts,exact
 2025,1,Australian Grand Prix,albert_park,ensemble,bortoleto,hamilton,16,6,0
 2025,1,Australian Grand Prix,albert_park,ridge,tsunoda,hamilton,12,15,0
-2025,1,Australian Grand Prix,albert_park,lgb_reg,bortoleto,hamilton,16,6,0
-2025,1,Australian Grand Prix,albert_park,rf_clf,hadjar,hamilton,20,0,0
-2025,1,Australian Grand Prix,albert_park,xgb_reg,bortoleto,hamilton,16,6,0
+2025,1,Australian Grand Prix,albert_park,lgb_reg,hadjar,hamilton,20,0,0
+2025,1,Australian Grand Prix,albert_park,rf_clf,alonso,hamilton,17,4,0
+2025,1,Australian Grand Prix,albert_park,xgb_reg,hadjar,hamilton,20,0,0
 2025,1,Australian Grand Prix,albert_park,rf_reg,sainz,hamilton,18,2,0
 2025,1,Australian Grand Prix,albert_park,xgb_ranker,bortoleto,hamilton,16,6,0
 2025,1,Australian Grand Prix,albert_park,lgbm_ranker,bortoleto,hamilton,16,6,0
 2025,1,Australian Grand Prix,albert_park,xgb_clf,bortoleto,hamilton,16,6,0
-2025,2,Chinese Grand Prix,shanghai,ensemble,albon,sainz,7,12,0
+2025,2,Chinese Grand Prix,shanghai,ensemble,hadjar,sainz,11,18,0
 2025,2,Chinese Grand Prix,shanghai,ridge,hadjar,sainz,11,18,0
 2025,2,Chinese Grand Prix,shanghai,lgb_reg,sainz,sainz,10,25,1
-2025,2,Chinese Grand Prix,shanghai,rf_clf,albon,sainz,7,12,0
+2025,2,Chinese Grand Prix,shanghai,rf_clf,tsunoda,sainz,16,6,0
 2025,2,Chinese Grand Prix,shanghai,xgb_reg,antonelli,sainz,6,10,0
-2025,2,Chinese Grand Prix,shanghai,rf_reg,antonelli,sainz,6,10,0
-2025,2,Chinese Grand Prix,shanghai,xgb_ranker,lawson,sainz,12,15,0
-2025,2,Chinese Grand Prix,shanghai,lgbm_ranker,lawson,sainz,12,15,0
-2025,2,Chinese Grand Prix,shanghai,xgb_clf,albon,sainz,7,12,0
-2025,3,Japanese Grand Prix,suzuka,ensemble,albon,bearman,9,18,0
-2025,3,Japanese Grand Prix,suzuka,ridge,hamilton,bearman,7,12,0
-2025,3,Japanese Grand Prix,suzuka,lgb_reg,albon,bearman,9,18,0
+2025,2,Chinese Grand Prix,shanghai,rf_reg,albon,sainz,7,12,0
+2025,2,Chinese Grand Prix,shanghai,xgb_ranker,hadjar,sainz,11,18,0
+2025,2,Chinese Grand Prix,shanghai,lgbm_ranker,albon,sainz,7,12,0
+2025,2,Chinese Grand Prix,shanghai,xgb_clf,tsunoda,sainz,16,6,0
+2025,3,Japanese Grand Prix,suzuka,ensemble,bearman,bearman,10,25,1
+2025,3,Japanese Grand Prix,suzuka,ridge,albon,bearman,9,18,0
+2025,3,Japanese Grand Prix,suzuka,lgb_reg,bearman,bearman,10,25,1
 2025,3,Japanese Grand Prix,suzuka,rf_clf,bearman,bearman,10,25,1
-2025,3,Japanese Grand Prix,suzuka,xgb_reg,hadjar,bearman,8,15,0
-2025,3,Japanese Grand Prix,suzuka,rf_reg,hadjar,bearman,8,15,0
-2025,3,Japanese Grand Prix,suzuka,xgb_ranker,albon,bearman,9,18,0
-2025,3,Japanese Grand Prix,suzuka,lgbm_ranker,albon,bearman,9,18,0
-2025,3,Japanese Grand Prix,suzuka,xgb_clf,albon,bearman,9,18,0
+2025,3,Japanese Grand Prix,suzuka,xgb_reg,hamilton,bearman,7,12,0
+2025,3,Japanese Grand Prix,suzuka,rf_reg,hamilton,bearman,7,12,0
+2025,3,Japanese Grand Prix,suzuka,xgb_ranker,bearman,bearman,10,25,1
+2025,3,Japanese Grand Prix,suzuka,lgbm_ranker,tsunoda,bearman,12,15,0
+2025,3,Japanese Grand Prix,suzuka,xgb_clf,bearman,bearman,10,25,1
 2025,4,Bahrain Grand Prix,bahrain,ensemble,tsunoda,bearman,9,18,0
 2025,4,Bahrain Grand Prix,bahrain,ridge,sainz,bearman,19,1,0
 2025,4,Bahrain Grand Prix,bahrain,lgb_reg,tsunoda,bearman,9,18,0
-2025,4,Bahrain Grand Prix,bahrain,rf_clf,tsunoda,bearman,9,18,0
-2025,4,Bahrain Grand Prix,bahrain,xgb_reg,tsunoda,bearman,9,18,0
+2025,4,Bahrain Grand Prix,bahrain,rf_clf,hadjar,bearman,13,12,0
+2025,4,Bahrain Grand Prix,bahrain,xgb_reg,gasly,bearman,7,12,0
 2025,4,Bahrain Grand Prix,bahrain,rf_reg,sainz,bearman,19,1,0
 2025,4,Bahrain Grand Prix,bahrain,xgb_ranker,tsunoda,bearman,9,18,0
-2025,4,Bahrain Grand Prix,bahrain,lgbm_ranker,tsunoda,bearman,9,18,0
-2025,4,Bahrain Grand Prix,bahrain,xgb_clf,tsunoda,bearman,9,18,0
+2025,4,Bahrain Grand Prix,bahrain,lgbm_ranker,alonso,bearman,15,8,0
+2025,4,Bahrain Grand Prix,bahrain,xgb_clf,doohan,bearman,14,10,0
 2025,5,Saudi Arabian Grand Prix,jeddah,ensemble,albon,hadjar,9,18,0
 2025,5,Saudi Arabian Grand Prix,jeddah,ridge,tsunoda,hadjar,19,1,0
-2025,5,Saudi Arabian Grand Prix,jeddah,lgb_reg,tsunoda,hadjar,19,1,0
-2025,5,Saudi Arabian Grand Prix,jeddah,rf_clf,albon,hadjar,9,18,0
-2025,5,Saudi Arabian Grand Prix,jeddah,xgb_reg,albon,hadjar,9,18,0
+2025,5,Saudi Arabian Grand Prix,jeddah,lgb_reg,sainz,hadjar,8,15,0
+2025,5,Saudi Arabian Grand Prix,jeddah,rf_clf,gasly,hadjar,20,0,0
+2025,5,Saudi Arabian Grand Prix,jeddah,xgb_reg,tsunoda,hadjar,19,1,0
 2025,5,Saudi Arabian Grand Prix,jeddah,rf_reg,tsunoda,hadjar,19,1,0
 2025,5,Saudi Arabian Grand Prix,jeddah,xgb_ranker,albon,hadjar,9,18,0
 2025,5,Saudi Arabian Grand Prix,jeddah,lgbm_ranker,albon,hadjar,9,18,0
 2025,5,Saudi Arabian Grand Prix,jeddah,xgb_clf,albon,hadjar,9,18,0
 2025,6,Miami Grand Prix,miami,ensemble,hadjar,tsunoda,11,18,0
-2025,6,Miami Grand Prix,miami,ridge,ocon,tsunoda,12,15,0
-2025,6,Miami Grand Prix,miami,lgb_reg,russell,tsunoda,3,4,0
-2025,6,Miami Grand Prix,miami,rf_clf,hadjar,tsunoda,11,18,0
+2025,6,Miami Grand Prix,miami,ridge,hamilton,tsunoda,8,15,0
+2025,6,Miami Grand Prix,miami,lgb_reg,tsunoda,tsunoda,10,25,1
+2025,6,Miami Grand Prix,miami,rf_clf,ocon,tsunoda,12,15,0
 2025,6,Miami Grand Prix,miami,xgb_reg,tsunoda,tsunoda,10,25,1
-2025,6,Miami Grand Prix,miami,rf_reg,albon,tsunoda,5,8,0
+2025,6,Miami Grand Prix,miami,rf_reg,hamilton,tsunoda,8,15,0
 2025,6,Miami Grand Prix,miami,xgb_ranker,hadjar,tsunoda,11,18,0
-2025,6,Miami Grand Prix,miami,lgbm_ranker,hadjar,tsunoda,11,18,0
+2025,6,Miami Grand Prix,miami,lgbm_ranker,alonso,tsunoda,15,8,0
 2025,6,Miami Grand Prix,miami,xgb_clf,hadjar,tsunoda,11,18,0
-2025,7,Emilia Romagna Grand Prix,imola,ensemble,alonso,tsunoda,11,18,0
+2025,7,Emilia Romagna Grand Prix,imola,ensemble,ocon,tsunoda,20,0,0
 2025,7,Emilia Romagna Grand Prix,imola,ridge,alonso,tsunoda,11,18,0
-2025,7,Emilia Romagna Grand Prix,imola,lgb_reg,leclerc,tsunoda,6,10,0
+2025,7,Emilia Romagna Grand Prix,imola,lgb_reg,alonso,tsunoda,11,18,0
 2025,7,Emilia Romagna Grand Prix,imola,rf_clf,hadjar,tsunoda,9,18,0
-2025,7,Emilia Romagna Grand Prix,imola,xgb_reg,sainz,tsunoda,8,15,0
-2025,7,Emilia Romagna Grand Prix,imola,rf_reg,alonso,tsunoda,11,18,0
-2025,7,Emilia Romagna Grand Prix,imola,xgb_ranker,colapinto,tsunoda,16,6,0
-2025,7,Emilia Romagna Grand Prix,imola,lgbm_ranker,alonso,tsunoda,11,18,0
-2025,7,Emilia Romagna Grand Prix,imola,xgb_clf,colapinto,tsunoda,16,6,0
-2025,8,Monaco Grand Prix,monaco,ensemble,antonelli,sainz,18,2,0
-2025,8,Monaco Grand Prix,monaco,ridge,albon,sainz,9,18,0
-2025,8,Monaco Grand Prix,monaco,lgb_reg,hadjar,sainz,6,10,0
-2025,8,Monaco Grand Prix,monaco,rf_clf,sainz,sainz,10,25,1
-2025,8,Monaco Grand Prix,monaco,xgb_reg,alonso,sainz,19,1,0
-2025,8,Monaco Grand Prix,monaco,rf_reg,antonelli,sainz,18,2,0
-2025,8,Monaco Grand Prix,monaco,xgb_ranker,antonelli,sainz,18,2,0
-2025,8,Monaco Grand Prix,monaco,lgbm_ranker,hamilton,sainz,5,8,0
-2025,8,Monaco Grand Prix,monaco,xgb_clf,sainz,sainz,10,25,1
-2025,9,Spanish Grand Prix,catalunya,ensemble,albon,max_verstappen,19,1,0
-2025,9,Spanish Grand Prix,catalunya,ridge,gasly,max_verstappen,8,15,0
-2025,9,Spanish Grand Prix,catalunya,lgb_reg,leclerc,max_verstappen,3,4,0
-2025,9,Spanish Grand Prix,catalunya,rf_clf,albon,max_verstappen,19,1,0
-2025,9,Spanish Grand Prix,catalunya,xgb_reg,norris,max_verstappen,2,2,0
-2025,9,Spanish Grand Prix,catalunya,rf_reg,albon,max_verstappen,19,1,0
-2025,9,Spanish Grand Prix,catalunya,xgb_ranker,albon,max_verstappen,19,1,0
-2025,9,Spanish Grand Prix,catalunya,lgbm_ranker,albon,max_verstappen,19,1,0
+2025,7,Emilia Romagna Grand Prix,imola,xgb_reg,albon,tsunoda,5,8,0
+2025,7,Emilia Romagna Grand Prix,imola,rf_reg,antonelli,tsunoda,19,1,0
+2025,7,Emilia Romagna Grand Prix,imola,xgb_ranker,ocon,tsunoda,20,0,0
+2025,7,Emilia Romagna Grand Prix,imola,lgbm_ranker,hamilton,tsunoda,4,6,0
+2025,7,Emilia Romagna Grand Prix,imola,xgb_clf,hamilton,tsunoda,4,6,0
+2025,8,Monaco Grand Prix,monaco,ensemble,albon,sainz,9,18,0
+2025,8,Monaco Grand Prix,monaco,ridge,hadjar,sainz,6,10,0
+2025,8,Monaco Grand Prix,monaco,lgb_reg,alonso,sainz,19,1,0
+2025,8,Monaco Grand Prix,monaco,rf_clf,albon,sainz,9,18,0
+2025,8,Monaco Grand Prix,monaco,xgb_reg,hadjar,sainz,6,10,0
+2025,8,Monaco Grand Prix,monaco,rf_reg,russell,sainz,11,18,0
+2025,8,Monaco Grand Prix,monaco,xgb_ranker,albon,sainz,9,18,0
+2025,8,Monaco Grand Prix,monaco,lgbm_ranker,antonelli,sainz,18,2,0
+2025,8,Monaco Grand Prix,monaco,xgb_clf,albon,sainz,9,18,0
+2025,9,Spanish Grand Prix,catalunya,ensemble,lawson,max_verstappen,11,18,0
+2025,9,Spanish Grand Prix,catalunya,ridge,hadjar,max_verstappen,7,12,0
+2025,9,Spanish Grand Prix,catalunya,lgb_reg,hadjar,max_verstappen,7,12,0
+2025,9,Spanish Grand Prix,catalunya,rf_clf,hadjar,max_verstappen,7,12,0
+2025,9,Spanish Grand Prix,catalunya,xgb_reg,hadjar,max_verstappen,7,12,0
+2025,9,Spanish Grand Prix,catalunya,rf_reg,hadjar,max_verstappen,7,12,0
+2025,9,Spanish Grand Prix,catalunya,xgb_ranker,lawson,max_verstappen,11,18,0
+2025,9,Spanish Grand Prix,catalunya,lgbm_ranker,bortoleto,max_verstappen,12,15,0
 2025,9,Spanish Grand Prix,catalunya,xgb_clf,albon,max_verstappen,19,1,0
-2025,10,Canadian Grand Prix,villeneuve,ensemble,bearman,sainz,11,18,0
+2025,10,Canadian Grand Prix,villeneuve,ensemble,hadjar,sainz,16,6,0
 2025,10,Canadian Grand Prix,villeneuve,ridge,alonso,sainz,7,12,0
 2025,10,Canadian Grand Prix,villeneuve,lgb_reg,tsunoda,sainz,12,15,0
 2025,10,Canadian Grand Prix,villeneuve,rf_clf,hadjar,sainz,16,6,0
-2025,10,Canadian Grand Prix,villeneuve,xgb_reg,albon,sainz,20,0,0
-2025,10,Canadian Grand Prix,villeneuve,rf_reg,alonso,sainz,7,12,0
-2025,10,Canadian Grand Prix,villeneuve,xgb_ranker,bearman,sainz,11,18,0
-2025,10,Canadian Grand Prix,villeneuve,lgbm_ranker,albon,sainz,20,0,0
+2025,10,Canadian Grand Prix,villeneuve,xgb_reg,tsunoda,sainz,12,15,0
+2025,10,Canadian Grand Prix,villeneuve,rf_reg,albon,sainz,20,0,0
+2025,10,Canadian Grand Prix,villeneuve,xgb_ranker,ocon,sainz,9,18,0
+2025,10,Canadian Grand Prix,villeneuve,lgbm_ranker,hadjar,sainz,16,6,0
 2025,10,Canadian Grand Prix,villeneuve,xgb_clf,hadjar,sainz,16,6,0
-2025,11,Austrian Grand Prix,red_bull_ring,ensemble,stroll,ocon,14,10,0
+2025,11,Austrian Grand Prix,red_bull_ring,ensemble,colapinto,ocon,15,8,0
 2025,11,Austrian Grand Prix,red_bull_ring,ridge,antonelli,ocon,19,1,0
-2025,11,Austrian Grand Prix,red_bull_ring,lgb_reg,lawson,ocon,6,10,0
-2025,11,Austrian Grand Prix,red_bull_ring,rf_clf,albon,ocon,17,4,0
-2025,11,Austrian Grand Prix,red_bull_ring,xgb_reg,lawson,ocon,6,10,0
-2025,11,Austrian Grand Prix,red_bull_ring,rf_reg,lawson,ocon,6,10,0
-2025,11,Austrian Grand Prix,red_bull_ring,xgb_ranker,tsunoda,ocon,16,6,0
+2025,11,Austrian Grand Prix,red_bull_ring,lgb_reg,antonelli,ocon,19,1,0
+2025,11,Austrian Grand Prix,red_bull_ring,rf_clf,hadjar,ocon,12,15,0
+2025,11,Austrian Grand Prix,red_bull_ring,xgb_reg,antonelli,ocon,19,1,0
+2025,11,Austrian Grand Prix,red_bull_ring,rf_reg,antonelli,ocon,19,1,0
+2025,11,Austrian Grand Prix,red_bull_ring,xgb_ranker,colapinto,ocon,15,8,0
 2025,11,Austrian Grand Prix,red_bull_ring,lgbm_ranker,bortoleto,ocon,8,15,0
-2025,11,Austrian Grand Prix,red_bull_ring,xgb_clf,lawson,ocon,6,10,0
+2025,11,Austrian Grand Prix,red_bull_ring,xgb_clf,tsunoda,ocon,16,6,0
 2025,12,British Grand Prix,silverstone,ensemble,bearman,russell,11,18,0
-2025,12,British Grand Prix,silverstone,ridge,antonelli,russell,16,6,0
-2025,12,British Grand Prix,silverstone,lgb_reg,norris,russell,1,1,0
-2025,12,British Grand Prix,silverstone,rf_clf,sainz,russell,12,15,0
-2025,12,British Grand Prix,silverstone,xgb_reg,tsunoda,russell,15,8,0
-2025,12,British Grand Prix,silverstone,rf_reg,tsunoda,russell,15,8,0
+2025,12,British Grand Prix,silverstone,ridge,alonso,russell,9,18,0
+2025,12,British Grand Prix,silverstone,lgb_reg,sainz,russell,12,15,0
+2025,12,British Grand Prix,silverstone,rf_clf,bearman,russell,11,18,0
+2025,12,British Grand Prix,silverstone,xgb_reg,bearman,russell,11,18,0
+2025,12,British Grand Prix,silverstone,rf_reg,bearman,russell,11,18,0
 2025,12,British Grand Prix,silverstone,xgb_ranker,bearman,russell,11,18,0
-2025,12,British Grand Prix,silverstone,lgbm_ranker,bearman,russell,11,18,0
-2025,12,British Grand Prix,silverstone,xgb_clf,lawson,russell,19,1,0
+2025,12,British Grand Prix,silverstone,lgbm_ranker,hadjar,russell,17,4,0
+2025,12,British Grand Prix,silverstone,xgb_clf,tsunoda,russell,15,8,0
 2025,13,Belgian Grand Prix,spa,ensemble,ocon,gasly,15,8,0
 2025,13,Belgian Grand Prix,spa,ridge,albon,gasly,6,10,0
-2025,13,Belgian Grand Prix,spa,lgb_reg,antonelli,gasly,16,6,0
+2025,13,Belgian Grand Prix,spa,lgb_reg,lawson,gasly,8,15,0
 2025,13,Belgian Grand Prix,spa,rf_clf,ocon,gasly,15,8,0
-2025,13,Belgian Grand Prix,spa,xgb_reg,antonelli,gasly,16,6,0
-2025,13,Belgian Grand Prix,spa,rf_reg,tsunoda,gasly,13,12,0
-2025,13,Belgian Grand Prix,spa,xgb_ranker,ocon,gasly,15,8,0
+2025,13,Belgian Grand Prix,spa,xgb_reg,russell,gasly,5,8,0
+2025,13,Belgian Grand Prix,spa,rf_reg,hamilton,gasly,7,12,0
+2025,13,Belgian Grand Prix,spa,xgb_ranker,gasly,gasly,10,25,1
 2025,13,Belgian Grand Prix,spa,lgbm_ranker,sainz,gasly,18,2,0
-2025,13,Belgian Grand Prix,spa,xgb_clf,ocon,gasly,15,8,0
-2025,14,Hungarian Grand Prix,hungaroring,ensemble,tsunoda,antonelli,17,4,0
+2025,13,Belgian Grand Prix,spa,xgb_clf,bearman,gasly,11,18,0
+2025,14,Hungarian Grand Prix,hungaroring,ensemble,antonelli,antonelli,10,25,1
 2025,14,Hungarian Grand Prix,hungaroring,ridge,stroll,antonelli,7,12,0
-2025,14,Hungarian Grand Prix,hungaroring,lgb_reg,tsunoda,antonelli,17,4,0
-2025,14,Hungarian Grand Prix,hungaroring,rf_clf,sainz,antonelli,14,10,0
-2025,14,Hungarian Grand Prix,hungaroring,xgb_reg,lawson,antonelli,8,15,0
-2025,14,Hungarian Grand Prix,hungaroring,rf_reg,antonelli,antonelli,10,25,1
-2025,14,Hungarian Grand Prix,hungaroring,xgb_ranker,tsunoda,antonelli,17,4,0
-2025,14,Hungarian Grand Prix,hungaroring,lgbm_ranker,tsunoda,antonelli,17,4,0
+2025,14,Hungarian Grand Prix,hungaroring,lgb_reg,alonso,antonelli,5,8,0
+2025,14,Hungarian Grand Prix,hungaroring,rf_clf,lawson,antonelli,8,15,0
+2025,14,Hungarian Grand Prix,hungaroring,xgb_reg,stroll,antonelli,7,12,0
+2025,14,Hungarian Grand Prix,hungaroring,rf_reg,bortoleto,antonelli,6,10,0
+2025,14,Hungarian Grand Prix,hungaroring,xgb_ranker,antonelli,antonelli,10,25,1
+2025,14,Hungarian Grand Prix,hungaroring,lgbm_ranker,antonelli,antonelli,10,25,1
 2025,14,Hungarian Grand Prix,hungaroring,xgb_clf,tsunoda,antonelli,17,4,0
-2025,15,Dutch Grand Prix,zandvoort,ensemble,albon,ocon,5,8,0
+2025,15,Dutch Grand Prix,zandvoort,ensemble,antonelli,ocon,16,6,0
 2025,15,Dutch Grand Prix,zandvoort,ridge,hadjar,ocon,3,4,0
 2025,15,Dutch Grand Prix,zandvoort,lgb_reg,sainz,ocon,13,12,0
-2025,15,Dutch Grand Prix,zandvoort,rf_clf,alonso,ocon,8,15,0
-2025,15,Dutch Grand Prix,zandvoort,xgb_reg,lawson,ocon,12,15,0
-2025,15,Dutch Grand Prix,zandvoort,rf_reg,lawson,ocon,12,15,0
-2025,15,Dutch Grand Prix,zandvoort,xgb_ranker,albon,ocon,5,8,0
-2025,15,Dutch Grand Prix,zandvoort,lgbm_ranker,bortoleto,ocon,15,8,0
-2025,15,Dutch Grand Prix,zandvoort,xgb_clf,albon,ocon,5,8,0
-2025,16,Italian Grand Prix,monza,ensemble,tsunoda,hadjar,13,12,0
+2025,15,Dutch Grand Prix,zandvoort,rf_clf,albon,ocon,5,8,0
+2025,15,Dutch Grand Prix,zandvoort,xgb_reg,sainz,ocon,13,12,0
+2025,15,Dutch Grand Prix,zandvoort,rf_reg,antonelli,ocon,16,6,0
+2025,15,Dutch Grand Prix,zandvoort,xgb_ranker,gasly,ocon,17,4,0
+2025,15,Dutch Grand Prix,zandvoort,lgbm_ranker,antonelli,ocon,16,6,0
+2025,15,Dutch Grand Prix,zandvoort,xgb_clf,sainz,ocon,13,12,0
+2025,16,Italian Grand Prix,monza,ensemble,albon,hadjar,7,12,0
 2025,16,Italian Grand Prix,monza,ridge,antonelli,hadjar,9,18,0
-2025,16,Italian Grand Prix,monza,lgb_reg,albon,hadjar,7,12,0
+2025,16,Italian Grand Prix,monza,lgb_reg,tsunoda,hadjar,13,12,0
 2025,16,Italian Grand Prix,monza,rf_clf,albon,hadjar,7,12,0
-2025,16,Italian Grand Prix,monza,xgb_reg,tsunoda,hadjar,13,12,0
+2025,16,Italian Grand Prix,monza,xgb_reg,bortoleto,hadjar,8,15,0
 2025,16,Italian Grand Prix,monza,rf_reg,alonso,hadjar,19,1,0
-2025,16,Italian Grand Prix,monza,xgb_ranker,tsunoda,hadjar,13,12,0
-2025,16,Italian Grand Prix,monza,lgbm_ranker,tsunoda,hadjar,13,12,0
+2025,16,Italian Grand Prix,monza,xgb_ranker,albon,hadjar,7,12,0
+2025,16,Italian Grand Prix,monza,lgbm_ranker,albon,hadjar,7,12,0
 2025,16,Italian Grand Prix,monza,xgb_clf,albon,hadjar,7,12,0
-2025,17,Azerbaijan Grand Prix,baku,ensemble,tsunoda,hadjar,6,10,0
+2025,17,Azerbaijan Grand Prix,baku,ensemble,stroll,hadjar,17,4,0
 2025,17,Azerbaijan Grand Prix,baku,ridge,tsunoda,hadjar,6,10,0
-2025,17,Azerbaijan Grand Prix,baku,lgb_reg,gasly,hadjar,18,2,0
-2025,17,Azerbaijan Grand Prix,baku,rf_clf,bearman,hadjar,12,15,0
-2025,17,Azerbaijan Grand Prix,baku,xgb_reg,russell,hadjar,2,2,0
-2025,17,Azerbaijan Grand Prix,baku,rf_reg,hadjar,hadjar,10,25,1
-2025,17,Azerbaijan Grand Prix,baku,xgb_ranker,tsunoda,hadjar,6,10,0
-2025,17,Azerbaijan Grand Prix,baku,lgbm_ranker,tsunoda,hadjar,6,10,0
-2025,17,Azerbaijan Grand Prix,baku,xgb_clf,bearman,hadjar,12,15,0
-2025,18,Singapore Grand Prix,marina_bay,ensemble,bortoleto,sainz,17,4,0
+2025,17,Azerbaijan Grand Prix,baku,lgb_reg,lawson,hadjar,5,8,0
+2025,17,Azerbaijan Grand Prix,baku,rf_clf,alonso,hadjar,15,8,0
+2025,17,Azerbaijan Grand Prix,baku,xgb_reg,sainz,hadjar,3,4,0
+2025,17,Azerbaijan Grand Prix,baku,rf_reg,sainz,hadjar,3,4,0
+2025,17,Azerbaijan Grand Prix,baku,xgb_ranker,stroll,hadjar,17,4,0
+2025,17,Azerbaijan Grand Prix,baku,lgbm_ranker,colapinto,hadjar,19,1,0
+2025,17,Azerbaijan Grand Prix,baku,xgb_clf,hulkenberg,hadjar,16,6,0
+2025,18,Singapore Grand Prix,marina_bay,ensemble,hadjar,sainz,11,18,0
 2025,18,Singapore Grand Prix,marina_bay,ridge,hadjar,sainz,11,18,0
-2025,18,Singapore Grand Prix,marina_bay,lgb_reg,tsunoda,sainz,12,15,0
-2025,18,Singapore Grand Prix,marina_bay,rf_clf,alonso,sainz,7,12,0
+2025,18,Singapore Grand Prix,marina_bay,lgb_reg,hadjar,sainz,11,18,0
+2025,18,Singapore Grand Prix,marina_bay,rf_clf,lawson,sainz,15,8,0
 2025,18,Singapore Grand Prix,marina_bay,xgb_reg,lawson,sainz,15,8,0
 2025,18,Singapore Grand Prix,marina_bay,rf_reg,hadjar,sainz,11,18,0
-2025,18,Singapore Grand Prix,marina_bay,xgb_ranker,bortoleto,sainz,17,4,0
-2025,18,Singapore Grand Prix,marina_bay,lgbm_ranker,lawson,sainz,15,8,0
-2025,18,Singapore Grand Prix,marina_bay,xgb_clf,albon,sainz,14,10,0
-2025,19,United States Grand Prix,americas,ensemble,hadjar,alonso,16,6,0
+2025,18,Singapore Grand Prix,marina_bay,xgb_ranker,tsunoda,sainz,12,15,0
+2025,18,Singapore Grand Prix,marina_bay,lgbm_ranker,hadjar,sainz,11,18,0
+2025,18,Singapore Grand Prix,marina_bay,xgb_clf,hulkenberg,sainz,20,0,0
+2025,19,United States Grand Prix,americas,ensemble,tsunoda,alonso,7,12,0
 2025,19,United States Grand Prix,americas,ridge,sainz,alonso,20,0,0
 2025,19,United States Grand Prix,americas,lgb_reg,sainz,alonso,20,0,0
 2025,19,United States Grand Prix,americas,rf_clf,lawson,alonso,11,18,0
-2025,19,United States Grand Prix,americas,xgb_reg,hulkenberg,alonso,8,15,0
-2025,19,United States Grand Prix,americas,rf_reg,max_verstappen,alonso,1,1,0
-2025,19,United States Grand Prix,americas,xgb_ranker,hadjar,alonso,16,6,0
-2025,19,United States Grand Prix,americas,lgbm_ranker,gasly,alonso,19,1,0
-2025,19,United States Grand Prix,americas,xgb_clf,hadjar,alonso,16,6,0
-2025,20,Mexico City Grand Prix,rodriguez,ensemble,tsunoda,bortoleto,11,18,0
+2025,19,United States Grand Prix,americas,xgb_reg,tsunoda,alonso,7,12,0
+2025,19,United States Grand Prix,americas,rf_reg,sainz,alonso,20,0,0
+2025,19,United States Grand Prix,americas,xgb_ranker,tsunoda,alonso,7,12,0
+2025,19,United States Grand Prix,americas,lgbm_ranker,bortoleto,alonso,18,2,0
+2025,19,United States Grand Prix,americas,xgb_clf,hulkenberg,alonso,8,15,0
+2025,20,Mexico City Grand Prix,rodriguez,ensemble,lawson,bortoleto,20,0,0
 2025,20,Mexico City Grand Prix,rodriguez,ridge,sainz,bortoleto,17,4,0
-2025,20,Mexico City Grand Prix,rodriguez,lgb_reg,sainz,bortoleto,17,4,0
-2025,20,Mexico City Grand Prix,rodriguez,rf_clf,ocon,bortoleto,9,18,0
-2025,20,Mexico City Grand Prix,rodriguez,xgb_reg,sainz,bortoleto,17,4,0
+2025,20,Mexico City Grand Prix,rodriguez,lgb_reg,tsunoda,bortoleto,11,18,0
+2025,20,Mexico City Grand Prix,rodriguez,rf_clf,bearman,bortoleto,4,6,0
+2025,20,Mexico City Grand Prix,rodriguez,xgb_reg,bearman,bortoleto,4,6,0
 2025,20,Mexico City Grand Prix,rodriguez,rf_reg,sainz,bortoleto,17,4,0
-2025,20,Mexico City Grand Prix,rodriguez,xgb_ranker,tsunoda,bortoleto,11,18,0
-2025,20,Mexico City Grand Prix,rodriguez,lgbm_ranker,tsunoda,bortoleto,11,18,0
+2025,20,Mexico City Grand Prix,rodriguez,xgb_ranker,lawson,bortoleto,20,0,0
+2025,20,Mexico City Grand Prix,rodriguez,lgbm_ranker,ocon,bortoleto,9,18,0
 2025,20,Mexico City Grand Prix,rodriguez,xgb_clf,tsunoda,bortoleto,11,18,0
-2025,21,São Paulo Grand Prix,interlagos,ensemble,albon,gasly,11,18,0
+2025,21,São Paulo Grand Prix,interlagos,ensemble,hamilton,gasly,18,2,0
 2025,21,São Paulo Grand Prix,interlagos,ridge,max_verstappen,gasly,3,4,0
-2025,21,São Paulo Grand Prix,interlagos,lgb_reg,ocon,gasly,12,15,0
+2025,21,São Paulo Grand Prix,interlagos,lgb_reg,hamilton,gasly,18,2,0
 2025,21,São Paulo Grand Prix,interlagos,rf_clf,alonso,gasly,14,10,0
 2025,21,São Paulo Grand Prix,interlagos,xgb_reg,bearman,gasly,6,10,0
-2025,21,São Paulo Grand Prix,interlagos,rf_reg,max_verstappen,gasly,3,4,0
-2025,21,São Paulo Grand Prix,interlagos,xgb_ranker,albon,gasly,11,18,0
+2025,21,São Paulo Grand Prix,interlagos,rf_reg,hamilton,gasly,18,2,0
+2025,21,São Paulo Grand Prix,interlagos,xgb_ranker,hamilton,gasly,18,2,0
 2025,21,São Paulo Grand Prix,interlagos,lgbm_ranker,tsunoda,gasly,17,4,0
-2025,21,São Paulo Grand Prix,interlagos,xgb_clf,albon,gasly,11,18,0
-2025,22,Las Vegas Grand Prix,vegas,ensemble,hadjar,bearman,6,10,0
+2025,21,São Paulo Grand Prix,interlagos,xgb_clf,alonso,gasly,14,10,0
+2025,22,Las Vegas Grand Prix,vegas,ensemble,hamilton,bearman,8,15,0
 2025,22,Las Vegas Grand Prix,vegas,ridge,lawson,bearman,14,10,0
-2025,22,Las Vegas Grand Prix,vegas,lgb_reg,antonelli,bearman,3,4,0
-2025,22,Las Vegas Grand Prix,vegas,rf_clf,hulkenberg,bearman,7,12,0
-2025,22,Las Vegas Grand Prix,vegas,xgb_reg,stroll,bearman,18,2,0
+2025,22,Las Vegas Grand Prix,vegas,lgb_reg,hamilton,bearman,8,15,0
+2025,22,Las Vegas Grand Prix,vegas,rf_clf,bearman,bearman,10,25,1
+2025,22,Las Vegas Grand Prix,vegas,xgb_reg,hamilton,bearman,8,15,0
 2025,22,Las Vegas Grand Prix,vegas,rf_reg,hadjar,bearman,6,10,0
-2025,22,Las Vegas Grand Prix,vegas,xgb_ranker,hadjar,bearman,6,10,0
-2025,22,Las Vegas Grand Prix,vegas,lgbm_ranker,hulkenberg,bearman,7,12,0
-2025,22,Las Vegas Grand Prix,vegas,xgb_clf,gasly,bearman,13,12,0
-2025,23,Qatar Grand Prix,losail,ensemble,ocon,tsunoda,15,8,0
+2025,22,Las Vegas Grand Prix,vegas,xgb_ranker,hamilton,bearman,8,15,0
+2025,22,Las Vegas Grand Prix,vegas,lgbm_ranker,hamilton,bearman,8,15,0
+2025,22,Las Vegas Grand Prix,vegas,xgb_clf,bearman,bearman,10,25,1
+2025,23,Qatar Grand Prix,losail,ensemble,bearman,tsunoda,19,1,0
 2025,23,Qatar Grand Prix,losail,ridge,sainz,tsunoda,3,4,0
-2025,23,Qatar Grand Prix,losail,lgb_reg,hadjar,tsunoda,18,2,0
+2025,23,Qatar Grand Prix,losail,lgb_reg,alonso,tsunoda,7,12,0
 2025,23,Qatar Grand Prix,losail,rf_clf,bearman,tsunoda,19,1,0
-2025,23,Qatar Grand Prix,losail,xgb_reg,leclerc,tsunoda,8,15,0
-2025,23,Qatar Grand Prix,losail,rf_reg,hadjar,tsunoda,18,2,0
-2025,23,Qatar Grand Prix,losail,xgb_ranker,tsunoda,tsunoda,10,25,1
+2025,23,Qatar Grand Prix,losail,xgb_reg,alonso,tsunoda,7,12,0
+2025,23,Qatar Grand Prix,losail,rf_reg,alonso,tsunoda,7,12,0
+2025,23,Qatar Grand Prix,losail,xgb_ranker,bearman,tsunoda,19,1,0
 2025,23,Qatar Grand Prix,losail,lgbm_ranker,ocon,tsunoda,15,8,0
-2025,23,Qatar Grand Prix,losail,xgb_clf,ocon,tsunoda,15,8,0
+2025,23,Qatar Grand Prix,losail,xgb_clf,hulkenberg,tsunoda,20,0,0
 2025,24,Abu Dhabi Grand Prix,yas_marina,ensemble,lawson,stroll,18,2,0
 2025,24,Abu Dhabi Grand Prix,yas_marina,ridge,alonso,stroll,6,10,0
 2025,24,Abu Dhabi Grand Prix,yas_marina,lgb_reg,sainz,stroll,13,12,0
-2025,24,Abu Dhabi Grand Prix,yas_marina,rf_clf,bearman,stroll,12,15,0
-2025,24,Abu Dhabi Grand Prix,yas_marina,xgb_reg,tsunoda,stroll,14,10,0
-2025,24,Abu Dhabi Grand Prix,yas_marina,rf_reg,hadjar,stroll,17,4,0
+2025,24,Abu Dhabi Grand Prix,yas_marina,rf_clf,sainz,stroll,13,12,0
+2025,24,Abu Dhabi Grand Prix,yas_marina,xgb_reg,bortoleto,stroll,11,18,0
+2025,24,Abu Dhabi Grand Prix,yas_marina,rf_reg,antonelli,stroll,15,8,0
 2025,24,Abu Dhabi Grand Prix,yas_marina,xgb_ranker,lawson,stroll,18,2,0
-2025,24,Abu Dhabi Grand Prix,yas_marina,lgbm_ranker,lawson,stroll,18,2,0
-2025,24,Abu Dhabi Grand Prix,yas_marina,xgb_clf,lawson,stroll,18,2,0
+2025,24,Abu Dhabi Grand Prix,yas_marina,lgbm_ranker,bearman,stroll,12,15,0
+2025,24,Abu Dhabi Grand Prix,yas_marina,xgb_clf,hadjar,stroll,17,4,0
