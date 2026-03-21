@@ -1,0 +1,150 @@
+year,round,circuit_id,location,sc_count,vsc_count
+2018,1,albert_park,Melbourne,1,1
+2018,2,bahrain,Sakhir,0,1
+2018,3,shanghai,Shanghai,1,0
+2018,4,baku,Baku,2,0
+2018,5,catalunya,Barcelona,1,1
+2018,6,monaco,Monte Carlo,0,1
+2018,7,villeneuve,Montréal,1,0
+2018,8,ricard,Le Castellet,1,1
+2018,9,red_bull_ring,Spielberg,0,1
+2018,10,silverstone,Silverstone,3,0
+2018,11,hockenheimring,Hockenheim,1,0
+2018,12,hungaroring,Budapest,0,2
+2018,13,spa,Spa-Francorchamps,1,0
+2018,14,monza,Monza,1,0
+2018,15,marina_bay,Singapore,1,0
+2018,16,sochi,Sochi,0,0
+2018,17,suzuka,Suzuka,1,1
+2018,18,americas,Austin,0,1
+2018,19,rodriguez,Mexico City,0,3
+2018,20,interlagos,São Paulo,0,0
+2018,21,yas_marina,Yas Marina,1,1
+2019,1,albert_park,Melbourne,0,0
+2019,2,bahrain,Sakhir,1,0
+2019,3,shanghai,Shanghai,0,1
+2019,4,baku,Baku,0,1
+2019,5,catalunya,Barcelona,1,0
+2019,6,monaco,Monte Carlo,1,0
+2019,7,villeneuve,Montréal,0,0
+2019,8,ricard,Le Castellet,0,1
+2019,9,red_bull_ring,Spielberg,0,0
+2019,10,silverstone,Silverstone,1,0
+2019,11,hockenheimring,Hockenheim,4,2
+2019,12,hungaroring,Budapest,0,0
+2019,13,spa,Spa-Francorchamps,2,0
+2019,14,monza,Monza,0,2
+2019,15,marina_bay,Singapore,3,0
+2019,16,sochi,Sochi,2,1
+2019,17,suzuka,Suzuka,0,0
+2019,18,rodriguez,Mexico City,0,1
+2019,19,americas,Austin,0,0
+2019,20,interlagos,São Paulo,2,0
+2019,21,yas_marina,Yas Island,0,0
+2020,1,red_bull_ring,Spielberg,3,0
+2020,2,red_bull_ring,Spielberg,1,0
+2020,3,hungaroring,Budapest,0,0
+2020,4,silverstone,Silverstone,2,0
+2020,5,silverstone,Silverstone,0,0
+2020,6,catalunya,Barcelona,0,0
+2020,7,spa,Spa-Francorchamps,1,0
+2020,8,monza,Monza,2,0
+2020,9,mugello,Mugello,3,0
+2020,10,sochi,Sochi,1,1
+2020,11,nurburgring,Nürburgring,1,1
+2020,12,portimao,Portimão,0,0
+2020,13,imola,Imola,1,1
+2020,14,istanbul,Istanbul,0,1
+2020,15,bahrain,Sakhir,2,0
+2020,16,bahrain,Sakhir,2,2
+2020,17,yas_marina,Yas Island,1,1
+2021,1,bahrain,Sakhir,1,1
+2021,2,imola,Imola,2,0
+2021,3,portimao,Portimão,1,0
+2021,4,catalunya,Barcelona,1,0
+2021,5,monaco,Monte Carlo,0,0
+2021,6,baku,Baku,2,0
+2021,7,ricard,Le Castellet,0,0
+2021,8,red_bull_ring,Spielberg,0,0
+2021,9,red_bull_ring,Spielberg,1,0
+2021,10,silverstone,Silverstone,1,0
+2021,11,hungaroring,Budapest,1,0
+2021,12,spa,Spa-Francorchamps,0,0
+2021,13,zandvoort,Zandvoort,0,0
+2021,14,monza,Monza,1,2
+2021,15,sochi,Sochi,0,0
+2021,16,istanbul,Istanbul,0,0
+2021,17,americas,Austin,0,1
+2021,18,rodriguez,Mexico City,1,0
+2021,19,interlagos,São Paulo,1,2
+2021,20,losail,Lusail,0,1
+2021,21,jeddah,Jeddah,1,4
+2021,22,yas_marina,Yas Island,1,1
+2022,1,bahrain,Sakhir,1,1
+2022,2,jeddah,Jeddah,1,2
+2022,3,albert_park,Melbourne,2,2
+2022,4,imola,Imola,1,0
+2022,5,miami,Miami,1,1
+2022,6,catalunya,Barcelona,0,0
+2022,7,monaco,Monaco,1,1
+2022,8,baku,Baku,0,2
+2022,9,villeneuve,Montréal,1,2
+2022,10,silverstone,Silverstone,1,0
+2022,11,red_bull_ring,Spielberg,0,1
+2022,12,ricard,Le Castellet,1,2
+2022,13,hungaroring,Budapest,0,2
+2022,14,spa,Spa-Francorchamps,1,0
+2022,15,zandvoort,Zandvoort,1,1
+2022,16,monza,Monza,1,1
+2022,17,marina_bay,Marina Bay,2,3
+2022,18,suzuka,Suzuka,1,0
+2022,19,americas,Austin,2,0
+2022,20,rodriguez,Mexico City,0,1
+2022,21,interlagos,São Paulo,2,1
+2022,22,yas_marina,Yas Island,0,0
+2023,1,bahrain,Sakhir,0,1
+2023,2,jeddah,Jeddah,1,0
+2023,3,albert_park,Melbourne,3,1
+2023,4,baku,Baku,1,0
+2023,5,miami,Miami,0,0
+2023,6,monaco,Monaco,0,0
+2023,7,catalunya,Barcelona,0,0
+2023,8,villeneuve,Montréal,1,1
+2023,9,red_bull_ring,Spielberg,1,1
+2023,10,silverstone,Silverstone,1,1
+2023,11,hungaroring,Budapest,0,0
+2023,12,spa,Spa-Francorchamps,0,0
+2023,13,zandvoort,Zandvoort,1,1
+2023,14,monza,Monza,0,0
+2023,15,marina_bay,Marina Bay,1,1
+2023,16,suzuka,Suzuka,1,1
+2023,17,losail,Lusail,1,0
+2023,18,americas,Austin,0,0
+2023,19,rodriguez,Mexico City,1,1
+2023,20,interlagos,São Paulo,1,0
+2023,21,vegas,Las Vegas,2,1
+2023,22,yas_marina,Yas Island,0,0
+2024,1,bahrain,Sakhir,0,0
+2024,2,jeddah,Jeddah,1,0
+2024,3,albert_park,Melbourne,0,2
+2024,4,suzuka,Suzuka,0,0
+2024,5,shanghai,Shanghai,2,1
+2024,6,miami,Miami,1,1
+2024,7,imola,Imola,0,0
+2024,8,monaco,Monaco,0,0
+2024,9,villeneuve,Montréal,2,0
+2024,10,catalunya,Barcelona,0,0
+2024,11,red_bull_ring,Spielberg,0,1
+2024,12,silverstone,Silverstone,0,0
+2024,13,hungaroring,Budapest,0,0
+2024,14,spa,Spa-Francorchamps,0,0
+2024,15,zandvoort,Zandvoort,0,0
+2024,16,monza,Monza,0,0
+2024,17,baku,Baku,0,1
+2024,18,marina_bay,Marina Bay,0,0
+2024,19,americas,Austin,1,0
+2024,20,rodriguez,Mexico City,1,0
+2024,21,interlagos,São Paulo,2,1
+2024,22,vegas,Las Vegas,0,0
+2024,23,losail,Lusail,3,1
+2024,24,yas_marina,Yas Island,0,1
