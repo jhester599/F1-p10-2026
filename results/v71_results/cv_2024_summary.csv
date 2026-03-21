@@ -1,0 +1,9 @@
+eval_label,avg_pts,n,std,delta_vs_baseline,delta_vs_naive,eval_label
+cv_A_rf_lgb,13.79,24,6.47,0.5,-0.25,cv_A_rf_lgb
+cv_D_four_way,13.08,24,6.45,-0.21,-0.96,cv_D_four_way
+cv_G_rf_lgb_xgbclf,12.96,24,7.21,-0.33,-1.08,cv_G_rf_lgb_xgbclf
+cv_C_rf_ridge,12.79,24,7.96,-0.5,-1.25,cv_C_rf_ridge
+cv_baseline_v62,12.17,24,6.27,-1.12,-1.87,cv_baseline_v62
+cv_F_soft_all,12.08,24,6.65,-1.21,-1.96,cv_F_soft_all
+cv_B_rf_xgbclf,11.79,24,7.79,-1.5,-2.25,cv_B_rf_xgbclf
+cv_E_top2_only,11.54,24,7.22,-1.75,-2.5,cv_E_top2_only

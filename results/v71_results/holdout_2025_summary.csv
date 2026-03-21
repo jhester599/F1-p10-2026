@@ -1,0 +1,9 @@
+candidate,avg_pts,n,std,delta_vs_baseline,delta_vs_naive
+F_soft_all,13.29,24,6.36,0.0,-0.75
+baseline_v62,12.46,24,7.14,-0.83,-1.58
+B_rf_xgbclf,12.42,24,7.74,-0.87,-1.62
+G_rf_lgb_xgbclf,12.42,24,6.47,-0.87,-1.62
+E_top2_only,12.25,24,7.84,-1.04,-1.79
+D_four_way,12.17,24,6.66,-1.12,-1.87
+A_rf_lgb,12.04,24,6.13,-1.25,-2.0
+C_rf_ridge,12.0,24,6.61,-1.29,-2.04
