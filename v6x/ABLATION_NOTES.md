@@ -252,6 +252,74 @@ should not be changed.
 
 ---
 
+## v9.3 Phase 5: Discrete Seasonal Weighting Gate
+
+**Date**: 2026-03-22
+**Script**: `v6x/scripts/62_test_v93_seasonal_gate.py`
+**Verdict**: REJECTED — zero delta on both thresholds
+
+### Hypothesis
+
+Race 1–5 performance is 30–40% below mid-season average because form-dependent
+rankers (xgb_ranker, lgbm_ranker) lack within-season rolling history in early rounds.
+rf_clf relies on career/circuit history which is available from race 1.
+
+Fix: a discrete 2-stage gate applying different weights for early vs. normal races.
+
+| Stage | Race range | xgb_ranker | rf_clf | others |
+|-------|------------|-----------|--------|--------|
+| Early gate | R1–R5 | 4.0 (was 6.0) | 3.5 (was 1.5) | unchanged |
+| Normal | R6+ | 6.0 | 1.5 | unchanged |
+
+### Results
+
+| Config | Overall avg | R1-5 avg | R6+ avg | Delta overall | Delta R1-5 |
+|--------|------------|---------|--------|--------------|-----------|
+| v8.23 (no gate) | 14.21 | 17.00 | 13.47 | — | — |
+| v9.3 seasonal gate | 14.21 | 17.00 | 13.47 | **0.00** | **0.00** |
+
+Per-race R1-5 pick comparison:
+
+| Round | Race | Base pick | Gate pick | Pts | Diff |
+|-------|------|-----------|-----------|-----|------|
+| 1 | Australian GP | gasly | gasly | 18 | 0 |
+| 2 | Chinese GP | albon | albon | 12 | 0 |
+| 3 | Japanese GP | bearman | bearman | 25 | 0 |
+| 4 | Bahrain GP | hadjar | hadjar | 12 | 0 |
+| 5 | Saudi Arabian GP | albon | albon | 18 | 0 |
+
+Acceptance gates:
+- Overall delta >= +0.10: **0.00 → FAIL**
+- R1-5 delta >= +0.50: **0.00 → FAIL**
+
+### Why the gate made no difference
+
+Two mechanisms explain the zero delta:
+
+1. **xgb_ranker still dominant in early gate** — even at weight 4.0, xgb_ranker's
+   weight exceeds rf_clf's 3.5. The argmax pick is determined by the top-scoring
+   driver across all models; when the dominant model and the up-weighted model agree
+   on the same driver, changing their relative weights cannot change the pick.
+
+2. **2025 R1-5 was not an early-season weakness** — the 2025 holdout shows R1-5
+   averaging 17.00 pts/race, *above* the R6+ average of 13.47 pts/race. The
+   original hypothesis ("R1–5 is 30–40% below mid-season") does not hold in the
+   2025 season; the current ensemble is already picking early-season races well.
+
+3. **Both models converge on the same candidate** — in all 5 early races, xgb_ranker
+   and rf_clf's top candidate was identical. Reweighting does not affect the pick
+   when models agree.
+
+### Interpretation
+
+The 3-stage adaptive system (v5.9) was already tried and abandoned due to instability.
+The 2-stage discrete gate finds a similar result: no improvement. The ensemble's
+flat F_soft_all weights are already near-optimal for the available models.
+
+**Production code: no change. F_soft_all weights unchanged.**
+
+---
+
 ## How to Run
 
 ```bash

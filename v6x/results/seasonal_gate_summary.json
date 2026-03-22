@@ -1,0 +1,68 @@
+{
+  "metadata": {
+    "naive_baseline_pts": 14.04,
+    "v823_pts": 14.21,
+    "gate_threshold": 5,
+    "early_weights": {
+      "xgb_ranker": 4.0,
+      "lgbm_ranker": 1.5,
+      "rf_clf": 3.5,
+      "xgb_clf": 0.5,
+      "lgb_reg": 0.25,
+      "ridge": 0.25,
+      "rf_reg": 0.0,
+      "xgb_reg": 0.0,
+      "grid_heuristic": 0.0,
+      "champ_heuristic": 0.0
+    },
+    "normal_weights": {
+      "xgb_ranker": 6.0,
+      "lgbm_ranker": 1.5,
+      "rf_clf": 1.5,
+      "xgb_clf": 0.5,
+      "lgb_reg": 0.25,
+      "ridge": 0.25,
+      "rf_reg": 0.0,
+      "xgb_reg": 0.0,
+      "grid_heuristic": 0.0,
+      "champ_heuristic": 0.0
+    },
+    "threshold_overall": 0.1,
+    "threshold_early": 0.5
+  },
+  "results": {
+    "baseline_v823": {
+      "label": "v8.23 (no gate)",
+      "n_races": 24,
+      "avg_pts": 14.208333333333334,
+      "total_pts": 341,
+      "exact_p10": 3,
+      "within_2_pos": 14,
+      "n_early": 5,
+      "avg_pts_early": 17.0,
+      "n_normal": 19,
+      "avg_pts_normal": 13.473684210526315
+    },
+    "gated": {
+      "label": "v9.3 seasonal gate",
+      "n_races": 24,
+      "avg_pts": 14.208333333333334,
+      "total_pts": 341,
+      "exact_p10": 3,
+      "within_2_pos": 14,
+      "n_early": 5,
+      "avg_pts_early": 17.0,
+      "n_normal": 19,
+      "avg_pts_normal": 13.473684210526315
+    }
+  },
+  "deltas": {
+    "overall": 0.0,
+    "early_r1_5": 0.0
+  },
+  "decision": {
+    "passed_overall": false,
+    "passed_early": false,
+    "integrate": false
+  }
+}
