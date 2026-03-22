@@ -1,0 +1,439 @@
+================================================================================
+V9 Per-Model Feature Test
+================================================================================
+
+Loading data...
+  Full dataset: 6652 rows, years 2010-2025
+  Adding derived features...
+  Train: 2080 rows (2019-2023)
+  Eval:  479 rows (2024, 24 races)
+
+  41 candidate features, 250 total model-feature tests
+
+================================================================================
+Computing baselines for each model...
+================================================================================
+  ridge          : 13.67 pts/race (baseline, 36 features)
+  rf_reg         : 12.33 pts/race (baseline, 46 features)
+  rf_clf         : 12.33 pts/race (baseline, 46 features)
+  xgb_reg        : 11.92 pts/race (baseline, 46 features)
+  xgb_clf        : 11.96 pts/race (baseline, 46 features)
+  xgb_ranker     : 10.67 pts/race (baseline, 43 features)
+  lgb_reg        : 12.88 pts/race (baseline, 43 features)
+  lgbm_ranker    : 12.92 pts/race (baseline, 42 features)
+
+================================================================================
+Testing candidate features per model...
+================================================================================
+
+  Testing: avg_fin_last10
+    ridge          : 12.08 (delta=-1.58) [reject]  [1/250]
+    lgbm_ranker    : 11.33 (delta=-1.58) [reject]  [2/250]
+
+  Testing: avg_fin_last3
+    xgb_ranker     : 9.88 (delta=-0.79) [reject]  [3/250]
+    lgbm_ranker    : 10.17 (delta=-2.75) [reject]  [4/250]
+    lgb_reg        : 12.58 (delta=-0.29) [reject]  [5/250]
+
+  Testing: chaos_index
+    ridge          : 13.67 (delta=+0.00) [reject]  [6/250]
+    rf_reg         : 12.88 (delta=+0.54) [ACCEPT]  [7/250]
+    rf_clf         : 13.67 (delta=+1.33) [ACCEPT]  [8/250]
+    xgb_reg        : 14.12 (delta=+2.21) [ACCEPT]  [9/250]
+    xgb_clf        : 10.54 (delta=-1.42) [reject]  [10/250]
+    xgb_ranker     : 10.79 (delta=+0.12) [ACCEPT]  [11/250]
+    lgb_reg        : 14.08 (delta=+1.21) [ACCEPT]  [12/250]
+    lgbm_ranker    : 13.04 (delta=+0.12) [ACCEPT]  [13/250]
+
+  Testing: circ_experience_rate
+    ridge          : 13.58 (delta=-0.08) [reject]  [14/250]
+    rf_reg         : 13.00 (delta=+0.67) [ACCEPT]  [15/250]
+    rf_clf         : 11.88 (delta=-0.46) [reject]  [16/250]
+    xgb_reg        : 11.88 (delta=-0.04) [reject]  [17/250]
+    xgb_clf        : 10.62 (delta=-1.33) [reject]  [18/250]
+    xgb_ranker     : 11.75 (delta=+1.08) [ACCEPT]  [19/250]
+    lgb_reg        : 13.79 (delta=+0.92) [ACCEPT]  [20/250]
+    lgbm_ranker    : 12.50 (delta=-0.42) [reject]  [21/250]
+
+  Testing: circ_experience_rate_log
+    ridge          : 13.58 (delta=-0.08) [reject]  [22/250]
+    rf_reg         : 13.42 (delta=+1.08) [ACCEPT]  [23/250]
+    rf_clf         : 13.42 (delta=+1.08) [ACCEPT]  [24/250]
+    xgb_reg        : 12.46 (delta=+0.54) [ACCEPT]  [25/250]
+    xgb_clf        : 10.54 (delta=-1.42) [reject]  [26/250]
+    xgb_ranker     : 13.00 (delta=+2.33) [ACCEPT]  [27/250]
+    lgb_reg        : 13.33 (delta=+0.46) [ACCEPT]  [28/250]
+    lgbm_ranker    : 12.67 (delta=-0.25) [reject]  [29/250]
+
+  Testing: circ_p10_grid_chaos
+    ridge          : 14.83 (delta=+1.17) [ACCEPT]  [30/250]
+    rf_reg         : 12.62 (delta=+0.29) [ACCEPT]  [31/250]
+    rf_clf         : 12.62 (delta=+0.29) [ACCEPT]  [32/250]
+    xgb_reg        : 12.83 (delta=+0.92) [ACCEPT]  [33/250]
+    xgb_clf        : 10.50 (delta=-1.46) [reject]  [34/250]
+    xgb_ranker     : 12.17 (delta=+1.50) [ACCEPT]  [35/250]
+    lgb_reg        : 11.25 (delta=-1.62) [reject]  [36/250]
+    lgbm_ranker    : 9.62 (delta=-3.29) [reject]  [37/250]
+
+  Testing: circ_pit_stop_var
+    ridge          : 13.67 (delta=+0.00) [reject]  [38/250]
+    rf_reg         : 12.25 (delta=-0.08) [reject]  [39/250]
+    rf_clf         : 13.00 (delta=+0.67) [ACCEPT]  [40/250]
+    xgb_reg        : 13.08 (delta=+1.17) [ACCEPT]  [41/250]
+    xgb_clf        : 9.71 (delta=-2.25) [reject]  [42/250]
+    xgb_ranker     : 13.33 (delta=+2.67) [ACCEPT]  [43/250]
+    lgb_reg        : 12.88 (delta=+0.00) [reject]  [44/250]
+    lgbm_ranker    : 12.92 (delta=+0.00) [reject]  [45/250]
+
+  Testing: circ_sc_rate
+    ridge          : 13.67 (delta=+0.00) [reject]  [46/250]
+    rf_reg         : 12.25 (delta=-0.08) [reject]  [47/250]
+    rf_clf         : 13.00 (delta=+0.67) [ACCEPT]  [48/250]
+    xgb_reg        : 13.08 (delta=+1.17) [ACCEPT]  [49/250]
+    xgb_clf        : 9.71 (delta=-2.25) [reject]  [50/250]
+    xgb_ranker     : 13.33 (delta=+2.67) [ACCEPT]  [51/250]
+    lgb_reg        : 12.88 (delta=+0.00) [reject]  [52/250]
+    lgbm_ranker    : 12.92 (delta=+0.00) [reject]  [53/250]
+
+  Testing: circ_sc_vsc_combined
+    lgbm_ranker    : 12.92 (delta=+0.00) [reject]  [54/250]
+    rf_reg         : 12.25 (delta=-0.08) [reject]  [55/250]
+    xgb_clf        : 9.71 (delta=-2.25) [reject]  [56/250]
+    ridge          : 13.67 (delta=+0.00) [reject]  [57/250]
+    xgb_ranker     : 13.33 (delta=+2.67) [ACCEPT]  [58/250]
+    xgb_reg        : 13.08 (delta=+1.17) [ACCEPT]  [59/250]
+    lgb_reg        : 12.88 (delta=+0.00) [reject]  [60/250]
+    rf_clf         : 13.00 (delta=+0.67) [ACCEPT]  [61/250]
+
+  Testing: con_champ_pts
+    ridge          : 14.00 (delta=+0.33) [ACCEPT]  [62/250]
+
+  Testing: drv_dnf_recovery_rate
+    ridge          : 13.50 (delta=-0.17) [reject]  [63/250]
+
+  Testing: drv_form_trend
+    lgbm_ranker    : 10.75 (delta=-2.17) [reject]  [64/250]
+    rf_reg         : 12.88 (delta=+0.54) [ACCEPT]  [65/250]
+    xgb_clf        : 12.83 (delta=+0.88) [ACCEPT]  [66/250]
+    ridge          : 13.08 (delta=-0.58) [reject]  [67/250]
+    xgb_ranker     : 11.08 (delta=+0.42) [ACCEPT]  [68/250]
+    xgb_reg        : 12.96 (delta=+1.04) [ACCEPT]  [69/250]
+    lgb_reg        : 13.71 (delta=+0.83) [ACCEPT]  [70/250]
+    rf_clf         : 13.46 (delta=+1.12) [ACCEPT]  [71/250]
+
+  Testing: drv_form_trend_long
+    ridge          : 11.88 (delta=-1.79) [reject]  [72/250]
+    rf_reg         : 12.62 (delta=+0.29) [ACCEPT]  [73/250]
+    rf_clf         : 12.75 (delta=+0.42) [ACCEPT]  [74/250]
+    xgb_reg        : 12.29 (delta=+0.38) [ACCEPT]  [75/250]
+    xgb_clf        : 10.58 (delta=-1.38) [reject]  [76/250]
+    xgb_ranker     : 12.92 (delta=+2.25) [ACCEPT]  [77/250]
+    lgb_reg        : 12.96 (delta=+0.08) [reject]  [78/250]
+    lgbm_ranker    : 11.71 (delta=-1.21) [reject]  [79/250]
+
+  Testing: drv_in_points_last5
+    ridge          : 13.67 (delta=+0.00) [reject]  [80/250]
+    rf_reg         : 12.33 (delta=+0.00) [reject]  [81/250]
+    rf_clf         : 12.83 (delta=+0.50) [ACCEPT]  [82/250]
+    xgb_reg        : 12.12 (delta=+0.21) [ACCEPT]  [83/250]
+    xgb_clf        : 10.75 (delta=-1.21) [reject]  [84/250]
+    xgb_ranker     : 11.50 (delta=+0.83) [ACCEPT]  [85/250]
+    lgb_reg        : 11.54 (delta=-1.33) [reject]  [86/250]
+    lgbm_ranker    : 11.75 (delta=-1.17) [reject]  [87/250]
+
+  Testing: drv_overperformance_rate
+    ridge          : 13.54 (delta=-0.12) [reject]  [88/250]
+    rf_reg         : 12.75 (delta=+0.42) [ACCEPT]  [89/250]
+    rf_clf         : 12.50 (delta=+0.17) [ACCEPT]  [90/250]
+    xgb_reg        : 12.38 (delta=+0.46) [ACCEPT]  [91/250]
+    xgb_clf        : 10.33 (delta=-1.62) [reject]  [92/250]
+    xgb_ranker     : 12.42 (delta=+1.75) [ACCEPT]  [93/250]
+    lgb_reg        : 12.71 (delta=-0.17) [reject]  [94/250]
+    lgbm_ranker    : 11.04 (delta=-1.88) [reject]  [95/250]
+
+  Testing: drv_pts_per_race
+    ridge          : 13.67 (delta=+0.00) [reject]  [96/250]
+    rf_reg         : 12.08 (delta=-0.25) [reject]  [97/250]
+    rf_clf         : 13.33 (delta=+1.00) [ACCEPT]  [98/250]
+    xgb_reg        : 10.54 (delta=-1.38) [reject]  [99/250]
+    xgb_clf        : 9.67 (delta=-2.29) [reject]  [100/250]
+    xgb_ranker     : 11.83 (delta=+1.17) [ACCEPT]  [101/250]
+    lgb_reg        : 12.21 (delta=-0.67) [reject]  [102/250]
+    lgbm_ranker    : 10.79 (delta=-2.12) [reject]  [103/250]
+
+  Testing: drv_q3_rate
+    ridge          : 12.67 (delta=-1.00) [reject]  [104/250]
+    rf_reg         : 12.25 (delta=-0.08) [reject]  [105/250]
+    rf_clf         : 12.88 (delta=+0.54) [ACCEPT]  [106/250]
+    xgb_reg        : 13.08 (delta=+1.17) [ACCEPT]  [107/250]
+    xgb_clf        : 10.79 (delta=-1.17) [reject]  [108/250]
+    xgb_ranker     : 13.33 (delta=+2.67) [ACCEPT]  [109/250]
+    lgb_reg        : 13.67 (delta=+0.79) [ACCEPT]  [110/250]
+    lgbm_ranker    : 12.67 (delta=-0.25) [reject]  [111/250]
+
+  Testing: drv_qual_vs_team
+    ridge          : 13.33 (delta=-0.33) [reject]  [112/250]
+    rf_reg         : 12.88 (delta=+0.54) [ACCEPT]  [113/250]
+    rf_clf         : 12.29 (delta=-0.04) [reject]  [114/250]
+    xgb_reg        : 11.04 (delta=-0.88) [reject]  [115/250]
+    xgb_clf        : 10.92 (delta=-1.04) [reject]  [116/250]
+    xgb_ranker     : 11.08 (delta=+0.42) [ACCEPT]  [117/250]
+    lgb_reg        : 11.29 (delta=-1.58) [reject]  [118/250]
+    lgbm_ranker    : 10.38 (delta=-2.54) [reject]  [119/250]
+
+  Testing: drv_starts_p10_zone_rate
+    ridge          : 13.67 (delta=+0.00) [reject]  [120/250]
+    rf_reg         : 12.88 (delta=+0.54) [ACCEPT]  [121/250]
+    rf_clf         : 13.50 (delta=+1.17) [ACCEPT]  [122/250]
+    xgb_reg        : 12.88 (delta=+0.96) [ACCEPT]  [123/250]
+    xgb_clf        : 11.58 (delta=-0.38) [reject]  [124/250]
+    xgb_ranker     : 12.67 (delta=+2.00) [ACCEPT]  [125/250]
+    lgb_reg        : 12.50 (delta=-0.38) [reject]  [126/250]
+    lgbm_ranker    : 10.75 (delta=-2.17) [reject]  [127/250]
+
+  Testing: drv_teammate_qual_delta
+    ridge          : 13.67 (delta=+0.00) [reject]  [128/250]
+    rf_reg         : 12.25 (delta=-0.08) [reject]  [129/250]
+    rf_clf         : 12.04 (delta=-0.29) [reject]  [130/250]
+    xgb_reg        : 11.50 (delta=-0.42) [reject]  [131/250]
+    xgb_clf        : 10.25 (delta=-1.71) [reject]  [132/250]
+    xgb_ranker     : 13.08 (delta=+2.42) [ACCEPT]  [133/250]
+    lgb_reg        : 11.92 (delta=-0.96) [reject]  [134/250]
+    lgbm_ranker    : 11.88 (delta=-1.04) [reject]  [135/250]
+
+  Testing: grid_displacement_behind
+    ridge          : 14.00 (delta=+0.33) [ACCEPT]  [136/250]
+
+  Testing: grid_midfield_rank
+    ridge          : 11.75 (delta=-1.92) [reject]  [137/250]
+
+  Testing: grid_p10_proximity
+    ridge          : 13.08 (delta=-0.58) [reject]  [138/250]
+    xgb_ranker     : 12.92 (delta=+2.25) [ACCEPT]  [139/250]
+    lgbm_ranker    : 11.29 (delta=-1.62) [reject]  [140/250]
+    lgb_reg        : 11.67 (delta=-1.21) [reject]  [141/250]
+
+  Testing: grid_position_sq
+    ridge          : 12.83 (delta=-0.83) [reject]  [142/250]
+    rf_reg         : 12.88 (delta=+0.54) [ACCEPT]  [143/250]
+    rf_clf         : 12.42 (delta=+0.08) [reject]  [144/250]
+    xgb_reg        : 12.46 (delta=+0.54) [ACCEPT]  [145/250]
+    xgb_clf        : 10.42 (delta=-1.54) [reject]  [146/250]
+    xgb_ranker     : 13.46 (delta=+2.79) [ACCEPT]  [147/250]
+    lgb_reg        : 11.71 (delta=-1.17) [reject]  [148/250]
+    lgbm_ranker    : 12.58 (delta=-0.33) [reject]  [149/250]
+
+  Testing: grid_x_overtaking
+    ridge          : 14.29 (delta=+0.62) [ACCEPT]  [150/250]
+
+  Testing: is_cold_race
+    ridge          : 13.67 (delta=+0.00) [reject]  [151/250]
+    rf_reg         : 12.33 (delta=+0.00) [reject]  [152/250]
+    rf_clf         : 14.67 (delta=+2.33) [ACCEPT]  [153/250]
+    xgb_reg        : 11.58 (delta=-0.33) [reject]  [154/250]
+    xgb_clf        : 10.46 (delta=-1.50) [reject]  [155/250]
+    xgb_ranker     : 12.08 (delta=+1.42) [ACCEPT]  [156/250]
+    lgb_reg        : 13.67 (delta=+0.79) [ACCEPT]  [157/250]
+    lgbm_ranker    : 12.67 (delta=-0.25) [reject]  [158/250]
+
+  Testing: is_high_wind
+    ridge          : 13.67 (delta=+0.00) [reject]  [159/250]
+    rf_reg         : 12.88 (delta=+0.54) [ACCEPT]  [160/250]
+    rf_clf         : 10.83 (delta=-1.50) [reject]  [161/250]
+    xgb_reg        : 12.79 (delta=+0.88) [ACCEPT]  [162/250]
+    xgb_clf        : 11.25 (delta=-0.71) [reject]  [163/250]
+    xgb_ranker     : 13.50 (delta=+2.83) [ACCEPT]  [164/250]
+    lgb_reg        : 13.67 (delta=+0.79) [ACCEPT]  [165/250]
+    lgbm_ranker    : 11.33 (delta=-1.58) [reject]  [166/250]
+
+  Testing: is_hot_race
+    ridge          : 13.67 (delta=+0.00) [reject]  [167/250]
+    rf_reg         : 12.33 (delta=+0.00) [reject]  [168/250]
+    rf_clf         : 11.50 (delta=-0.83) [reject]  [169/250]
+    xgb_reg        : 11.88 (delta=-0.04) [reject]  [170/250]
+    xgb_clf        : 10.88 (delta=-1.08) [reject]  [171/250]
+    xgb_ranker     : 13.58 (delta=+2.92) [ACCEPT]  [172/250]
+    lgb_reg        : 13.67 (delta=+0.79) [ACCEPT]  [173/250]
+    lgbm_ranker    : 12.67 (delta=-0.25) [reject]  [174/250]
+
+  Testing: is_midfield_team
+    ridge          : 13.67 (delta=+0.00) [reject]  [175/250]
+    rf_reg         : 12.25 (delta=-0.08) [reject]  [176/250]
+    rf_clf         : 14.50 (delta=+2.17) [ACCEPT]  [177/250]
+    xgb_reg        : 12.08 (delta=+0.17) [ACCEPT]  [178/250]
+    xgb_clf        : 10.50 (delta=-1.46) [reject]  [179/250]
+    xgb_ranker     : 13.29 (delta=+2.62) [ACCEPT]  [180/250]
+    lgb_reg        : 11.38 (delta=-1.50) [reject]  [181/250]
+    lgbm_ranker    : 11.79 (delta=-1.12) [reject]  [182/250]
+
+  Testing: is_wet_race
+    ridge          : 13.67 (delta=+0.00) [reject]  [183/250]
+    rf_reg         : 12.33 (delta=+0.00) [reject]  [184/250]
+    rf_clf         : 13.17 (delta=+0.83) [ACCEPT]  [185/250]
+    xgb_reg        : 11.88 (delta=-0.04) [reject]  [186/250]
+    xgb_clf        : 11.71 (delta=-0.25) [reject]  [187/250]
+    xgb_ranker     : 12.38 (delta=+1.71) [ACCEPT]  [188/250]
+    lgb_reg        : 11.71 (delta=-1.17) [reject]  [189/250]
+    lgbm_ranker    : 11.46 (delta=-1.46) [reject]  [190/250]
+
+  Testing: last_qual_pos
+    xgb_ranker     : 11.46 (delta=+0.79) [ACCEPT]  [191/250]
+    lgbm_ranker    : 9.96 (delta=-2.96) [reject]  [192/250]
+    lgb_reg        : 13.04 (delta=+0.17) [ACCEPT]  [193/250]
+
+  Testing: q2_elimination_margin
+    xgb_ranker     : 13.25 (delta=+2.58) [ACCEPT]  [194/250]
+
+  Testing: q2_to_q1_delta
+    ridge          : 13.67 (delta=+0.00) [reject]  [195/250]
+    rf_reg         : 12.96 (delta=+0.62) [ACCEPT]  [196/250]
+    rf_clf         : 13.58 (delta=+1.25) [ACCEPT]  [197/250]
+    xgb_reg        : 12.04 (delta=+0.12) [ACCEPT]  [198/250]
+    xgb_clf        : 11.08 (delta=-0.88) [reject]  [199/250]
+    xgb_ranker     : 11.67 (delta=+1.00) [ACCEPT]  [200/250]
+    lgb_reg        : 11.92 (delta=-0.96) [reject]  [201/250]
+    lgbm_ranker    : 11.62 (delta=-1.29) [reject]  [202/250]
+
+  Testing: q_gap_sq
+    lgbm_ranker    : 10.42 (delta=-2.50) [reject]  [203/250]
+    rf_reg         : 12.88 (delta=+0.54) [ACCEPT]  [204/250]
+    xgb_clf        : 10.54 (delta=-1.42) [reject]  [205/250]
+    ridge          : 14.29 (delta=+0.62) [ACCEPT]  [206/250]
+    xgb_ranker     : 12.46 (delta=+1.79) [ACCEPT]  [207/250]
+    xgb_reg        : 14.17 (delta=+2.25) [ACCEPT]  [208/250]
+    lgb_reg        : 12.79 (delta=-0.08) [reject]  [209/250]
+    rf_clf         : 12.42 (delta=+0.08) [reject]  [210/250]
+
+  Testing: race_num
+    rf_clf         : 12.88 (delta=+0.54) [ACCEPT]  [211/250]
+    xgb_clf        : 10.33 (delta=-1.62) [reject]  [212/250]
+
+  Testing: rain_category
+    ridge          : 13.67 (delta=+0.00) [reject]  [213/250]
+    rf_reg         : 12.33 (delta=+0.00) [reject]  [214/250]
+    rf_clf         : 13.67 (delta=+1.33) [ACCEPT]  [215/250]
+    xgb_reg        : 13.33 (delta=+1.42) [ACCEPT]  [216/250]
+    xgb_clf        : 10.67 (delta=-1.29) [reject]  [217/250]
+    xgb_ranker     : 12.12 (delta=+1.46) [ACCEPT]  [218/250]
+    lgb_reg        : 12.50 (delta=-0.38) [reject]  [219/250]
+    lgbm_ranker    : 11.96 (delta=-0.96) [reject]  [220/250]
+
+  Testing: season_completeness
+    lgbm_ranker    : 11.62 (delta=-1.29) [reject]  [221/250]
+    rf_reg         : 11.71 (delta=-0.62) [reject]  [222/250]
+    lgb_reg        : 13.83 (delta=+0.96) [ACCEPT]  [223/250]
+    ridge          : 13.67 (delta=+0.00) [reject]  [224/250]
+    xgb_reg        : 11.12 (delta=-0.79) [reject]  [225/250]
+
+  Testing: team_avg_qual_season
+    ridge          : 13.33 (delta=-0.33) [reject]  [226/250]
+
+  Testing: team_qual_fin_delta
+    ridge          : 13.33 (delta=-0.33) [reject]  [227/250]
+    rf_reg         : 12.62 (delta=+0.29) [ACCEPT]  [228/250]
+    rf_clf         : 10.67 (delta=-1.67) [reject]  [229/250]
+    xgb_reg        : 11.17 (delta=-0.75) [reject]  [230/250]
+    xgb_clf        : 9.67 (delta=-2.29) [reject]  [231/250]
+    xgb_ranker     : 12.29 (delta=+1.62) [ACCEPT]  [232/250]
+    lgb_reg        : 9.79 (delta=-3.08) [reject]  [233/250]
+    lgbm_ranker    : 10.96 (delta=-1.96) [reject]  [234/250]
+
+  Testing: team_race_vs_qual
+    ridge          : 13.33 (delta=-0.33) [reject]  [235/250]
+    rf_reg         : 12.88 (delta=+0.54) [ACCEPT]  [236/250]
+    rf_clf         : 11.21 (delta=-1.12) [reject]  [237/250]
+    xgb_reg        : 11.92 (delta=+0.00) [reject]  [238/250]
+    xgb_clf        : 11.17 (delta=-0.79) [reject]  [239/250]
+    xgb_ranker     : 11.54 (delta=+0.88) [ACCEPT]  [240/250]
+    lgb_reg        : 12.50 (delta=-0.38) [reject]  [241/250]
+    lgbm_ranker    : 11.67 (delta=-1.25) [reject]  [242/250]
+
+  Testing: temp_max_c
+    ridge          : 14.00 (delta=+0.33) [ACCEPT]  [243/250]
+    rf_reg         : 12.88 (delta=+0.54) [ACCEPT]  [244/250]
+    rf_clf         : 12.08 (delta=-0.25) [reject]  [245/250]
+    xgb_reg        : 13.00 (delta=+1.08) [ACCEPT]  [246/250]
+    xgb_clf        : 10.08 (delta=-1.88) [reject]  [247/250]
+    xgb_ranker     : 12.46 (delta=+1.79) [ACCEPT]  [248/250]
+    lgb_reg        : 14.21 (delta=+1.33) [ACCEPT]  [249/250]
+    lgbm_ranker    : 11.71 (delta=-1.21) [reject]  [250/250]
+
+
+Results saved to /home/user/F1-p10-2026/results/v9_per_model_feature_test.csv
+
+================================================================================
+ACCEPTANCE MATRIX (delta >= +0.10)
+================================================================================
+
+  104 accepted feature-model combinations:
+
+model                     ridge  rf_reg  rf_clf  xgb_reg  xgb_clf  xgb_ranker  lgb_reg  lgbm_ranker
+feature                                                                                            
+chaos_index                 .     +0.54   +1.33    +2.21      .         +0.12    +1.21        +0.12
+circ_experience_rate        .     +0.67     .        .        .         +1.08    +0.92          .  
+circ_experience_rate_log    .     +1.08   +1.08    +0.54      .         +2.33    +0.46          .  
+circ_p10_grid_chaos       +1.17   +0.29   +0.29    +0.92      .         +1.50      .            .  
+circ_pit_stop_var           .       .     +0.67    +1.17      .         +2.67      .            .  
+circ_sc_rate                .       .     +0.67    +1.17      .         +2.67      .            .  
+circ_sc_vsc_combined        .       .     +0.67    +1.17      .         +2.67      .            .  
+con_champ_pts             +0.33     .       .        .        .           .        .            .  
+drv_form_trend              .     +0.54   +1.12    +1.04    +0.88       +0.42    +0.83          .  
+drv_form_trend_long         .     +0.29   +0.42    +0.38      .         +2.25      .            .  
+drv_in_points_last5         .       .     +0.50    +0.21      .         +0.83      .            .  
+drv_overperformance_rate    .     +0.42   +0.17    +0.46      .         +1.75      .            .  
+drv_pts_per_race            .       .     +1.00      .        .         +1.17      .            .  
+drv_q3_rate                 .       .     +0.54    +1.17      .         +2.67    +0.79          .  
+drv_qual_vs_team            .     +0.54     .        .        .         +0.42      .            .  
+drv_starts_p10_zone_rate    .     +0.54   +1.17    +0.96      .         +2.00      .            .  
+drv_teammate_qual_delta     .       .       .        .        .         +2.42      .            .  
+grid_displacement_behind  +0.33     .       .        .        .           .        .            .  
+grid_p10_proximity          .       .       .        .        .         +2.25      .            .  
+grid_position_sq            .     +0.54     .      +0.54      .         +2.79      .            .  
+grid_x_overtaking         +0.62     .       .        .        .           .        .            .  
+is_cold_race                .       .     +2.33      .        .         +1.42    +0.79          .  
+is_high_wind                .     +0.54     .      +0.88      .         +2.83    +0.79          .  
+is_hot_race                 .       .       .        .        .         +2.92    +0.79          .  
+is_midfield_team            .       .     +2.17    +0.17      .         +2.62      .            .  
+is_wet_race                 .       .     +0.83      .        .         +1.71      .            .  
+last_qual_pos               .       .       .        .        .         +0.79    +0.17          .  
+q2_elimination_margin       .       .       .        .        .         +2.58      .            .  
+q2_to_q1_delta              .     +0.62   +1.25    +0.12      .         +1.00      .            .  
+q_gap_sq                  +0.62   +0.54     .      +2.25      .         +1.79      .            .  
+race_num                    .       .     +0.54      .        .           .        .            .  
+rain_category               .       .     +1.33    +1.42      .         +1.46      .            .  
+season_completeness         .       .       .        .        .           .      +0.96          .  
+team_qual_fin_delta         .     +0.29     .        .        .         +1.62      .            .  
+team_race_vs_qual           .     +0.54     .        .        .         +0.88      .            .  
+temp_max_c                +0.33   +0.54     .      +1.08      .         +1.79    +1.33          .  
+
+
+Total tests: 250
+Accepted:    104
+Rejected:    146
+
+Per-model accepted features:
+  ridge          : circ_p10_grid_chaos(+1.17), con_champ_pts(+0.33), grid_displacement_behind(+0.33), grid_x_overtaking(+0.62), q_gap_sq(+0.62), temp_max_c(+0.33)
+  rf_reg         : chaos_index(+0.54), circ_experience_rate(+0.67), circ_experience_rate_log(+1.08), circ_p10_grid_chaos(+0.29), drv_form_trend(+0.54), drv_form_trend_long(+0.29), drv_overperformance_rate(+0.42), drv_qual_vs_team(+0.54), drv_starts_p10_zone_rate(+0.54), grid_position_sq(+0.54), is_high_wind(+0.54), q2_to_q1_delta(+0.62), q_gap_sq(+0.54), team_qual_fin_delta(+0.29), team_race_vs_qual(+0.54), temp_max_c(+0.54)
+  rf_clf         : chaos_index(+1.33), circ_experience_rate_log(+1.08), circ_p10_grid_chaos(+0.29), circ_pit_stop_var(+0.67), circ_sc_rate(+0.67), circ_sc_vsc_combined(+0.67), drv_form_trend(+1.12), drv_form_trend_long(+0.42), drv_in_points_last5(+0.50), drv_overperformance_rate(+0.17), drv_pts_per_race(+1.00), drv_q3_rate(+0.54), drv_starts_p10_zone_rate(+1.17), is_cold_race(+2.33), is_midfield_team(+2.17), is_wet_race(+0.83), q2_to_q1_delta(+1.25), race_num(+0.54), rain_category(+1.33)
+  xgb_reg        : chaos_index(+2.21), circ_experience_rate_log(+0.54), circ_p10_grid_chaos(+0.92), circ_pit_stop_var(+1.17), circ_sc_rate(+1.17), circ_sc_vsc_combined(+1.17), drv_form_trend(+1.04), drv_form_trend_long(+0.38), drv_in_points_last5(+0.21), drv_overperformance_rate(+0.46), drv_q3_rate(+1.17), drv_starts_p10_zone_rate(+0.96), grid_position_sq(+0.54), is_high_wind(+0.88), is_midfield_team(+0.17), q2_to_q1_delta(+0.12), q_gap_sq(+2.25), rain_category(+1.42), temp_max_c(+1.08)
+  xgb_clf        : drv_form_trend(+0.88)
+  xgb_ranker     : chaos_index(+0.12), circ_experience_rate(+1.08), circ_experience_rate_log(+2.33), circ_p10_grid_chaos(+1.50), circ_pit_stop_var(+2.67), circ_sc_rate(+2.67), circ_sc_vsc_combined(+2.67), drv_form_trend(+0.42), drv_form_trend_long(+2.25), drv_in_points_last5(+0.83), drv_overperformance_rate(+1.75), drv_pts_per_race(+1.17), drv_q3_rate(+2.67), drv_qual_vs_team(+0.42), drv_starts_p10_zone_rate(+2.00), drv_teammate_qual_delta(+2.42), grid_p10_proximity(+2.25), grid_position_sq(+2.79), is_cold_race(+1.42), is_high_wind(+2.83), is_hot_race(+2.92), is_midfield_team(+2.62), is_wet_race(+1.71), last_qual_pos(+0.79), q2_elimination_margin(+2.58), q2_to_q1_delta(+1.00), q_gap_sq(+1.79), rain_category(+1.46), team_qual_fin_delta(+1.62), team_race_vs_qual(+0.88), temp_max_c(+1.79)
+  lgb_reg        : chaos_index(+1.21), circ_experience_rate(+0.92), circ_experience_rate_log(+0.46), drv_form_trend(+0.83), drv_q3_rate(+0.79), is_cold_race(+0.79), is_high_wind(+0.79), is_hot_race(+0.79), last_qual_pos(+0.17), season_completeness(+0.96), temp_max_c(+1.33)
+  lgbm_ranker    : chaos_index(+0.12)
+
+Top features by average delta (across tested models):
+  q2_elimination_margin         : avg=+2.583  accepted=1/1
+  grid_x_overtaking             : avg=+0.625  accepted=1/1
+  chaos_index                   : avg=+0.516  accepted=6/8
+  circ_experience_rate_log      : avg=+0.469  accepted=5/8
+  grid_displacement_behind      : avg=+0.333  accepted=1/1
+  con_champ_pts                 : avg=+0.333  accepted=1/1
+  drv_q3_rate                   : avg=+0.333  accepted=4/8
+  is_cold_race                  : avg=+0.307  accepted=3/8
+  circ_sc_vsc_combined          : avg=+0.271  accepted=3/8
+  circ_pit_stop_var             : avg=+0.271  accepted=3/8
+  circ_sc_rate                  : avg=+0.271  accepted=3/8
+  drv_form_trend                : avg=+0.260  accepted=6/8
+  temp_max_c                    : avg=+0.219  accepted=5/8
+  drv_starts_p10_zone_rate      : avg=+0.219  accepted=4/8
+  rain_category                 : avg=+0.198  accepted=3/8

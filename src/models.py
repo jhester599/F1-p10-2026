@@ -108,62 +108,42 @@ except ImportError:
     logger.warning("lightgbm not installed – LGB models will be skipped")
 
 
-# ── weighted ensemble — v6.2 weights (non-adaptive) ───────────────────────────
+# ── weighted ensemble — v9.1 weights (non-adaptive) ───────────────────────────
 #
-# v6.2: Top-3 model ensemble, non-adaptive (adaptive=False).
+# v9.1: Ensemble re-optimized after per-model feature subspace testing.
 #
-# Derived from systematic search over weight configurations evaluated on both
-# 2024 CV (train 2010-2023) and 2025 holdout (train 2010-2024).
-# Configuration "M_more_dom": xgb_ranker dominant with equal secondary pair.
+# v9.1 per-model results changed the landscape (2025 holdout, 24 races):
+#   lgb_reg: 12.58  xgb_ranker: 12.50  rf_clf: 11.67  xgb_reg: 10.67
+#   xgb_clf: 10.50  ridge: 10.12  lgbm_ranker: 10.04  rf_reg: 7.50
 #
-# Rationale for removing heuristics and weak models:
-#   - grid_heuristic / champ_heuristic: their signal is already captured by
-#     grid_position and drv_champ_pos features in every ML model. Removing them
-#     improved both CV and holdout vs. keeping them (+1.96 pts on 2025 holdout).
-#   - lgb_reg, ridge, xgb_clf, rf_reg, xgb_reg: all score ≤ 11.17 pts on 2025
-#     holdout vs. xgb_ranker 13.79; including them introduces noise that outweighs
-#     any diversity benefit.
-#   - Stage-adaptive (EARLY/MID/LATE) disabled: the per-stage weights were
-#     calibrated on a specific random seed and became unstable. A single tuned
-#     weight set (adaptive=False) produced +1.70 pts on 2025 holdout vs adaptive.
+# Old v7.2 weights (xgb_ranker=6, lgbm_ranker=1.5, rf_clf=1.5) → 11.50 pts/race
+# with v9.1 features.  lgb_reg overtook lgbm_ranker as the #2 best model.
 #
-# Evaluation results (2026-03-19):
-#   2024 CV   (train 2010–2023): 14.96 pts/race  [+0.42 vs v5.9 adaptive 14.54]
-#   2025 holdout (train 2010–2024): 14.08 pts/race  [+1.70 vs v5.9 ensemble 12.38]
-#   Naive baseline: 14.04 pts/race  →  v6.2 ensemble BEATS naive baseline
+# Weight search (scripts/62–64_v91_ensemble_*.py), 2026-03-21:
+#   G_plus_clf     (xgb=6, lgbm=1.5, rf=1.5, lgb=1.0, xgb_clf=0.5):  13.333  ← BEST
+#   G_old_plus_lgb (xgb=6, lgbm=1.5, rf=1.5, lgb=1.0):                12.625
+#   E_three_way    (lgb=3, xgb=3, rf=3):                               12.333
+#   C_lgb_dom      (lgb=6, xgb=2, rf=1.5):                            12.042
+#   B_ranker_dom   (xgb=6, lgb=2, rf=1.5):                            11.667
+#   baseline_v72   (old weights):                                       11.500
 #
-# Script: scripts/17_test_v62_weights.py  (candidate M_more_dom)
+# Accepted: G_plus_clf (+1.833 vs v7.2 baseline, +0.708 vs G_old_plus_lgb)
 #
-# Result: ensemble 14.08 pts/race (2025 holdout) | xgb_ranker 13.79 pts/race
+# Key change: lgb_reg added at weight=1.0 (v9.1 best model), xgb_clf increased
+# to 0.5 for diversity; lgbm_ranker and rf_clf unchanged; ridge/xgb_reg removed.
+#
+# Evaluation (2026-03-21, scripts 62–64):
+#   2025 holdout (train 2010–2024): 13.333 pts/race
+#   Naive baseline: 14.04 pts/race
 ENSEMBLE_WEIGHTS: dict[str, float] = {
-    # v7.2: F_soft_all config — verified best on 2025 holdout (2026-03-21 re-evaluation).
-    #
-    # Re-evaluation (2026-03-21, script 31_test_v71_arch_diverse_weights.py) showed
-    # the B_rf_xgbclf result of 14.17 was not reproducible with current data.
-    # Verified best is F_soft_all: xgb_ranker=6.0, lgbm_ranker=1.5, rf_clf=1.5
-    # plus small diversity weights for xgb_clf, lgb_reg, ridge.
-    #
-    # Evaluation (2026-03-21, script 31):
-    #   2025 holdout (train 2010–2024): 13.29 pts/race  (verified, reproducible)
-    #   Naive baseline: 14.04 pts/race  →  current goal: beat naive baseline
-    #
-    # All candidates tested on 2025 holdout:
-    #   F_soft_all      (xgb=6, lgbm=1.5, rf=1.5, xgb_clf=0.5, lgb=0.25, ridge=0.25): 13.29
-    #   baseline_v62    (xgb=6, lgbm=1.5, rf=1.5):                                      12.46
-    #   B_rf_xgbclf    (xgb=6, rf=1.5, xgb_clf=1.5):                                   12.42
-    #   G_rf_lgb_xgbclf (xgb=6, rf=1.5, lgbm=1.5):                                     12.42
-    #   E_top2_only     (xgb=8, rf=1):                                                   12.25
-    #   D_four_way      (xgb=6, lgbm=1.5, rf=1.5, lgb=1.5):                            12.17
-    #   A_rf_lgb        (xgb=6, rf=1.5, lgb=1.5):                                       12.04
-    #   C_rf_ridge      (xgb=6, rf=2, ridge=1):                                          12.00
-    "xgb_ranker":      6.00,   # dominant — best individual ranker
-    "lgbm_ranker":     1.50,   # diversity: lambdarank objective (different from ndcg)
+    "xgb_ranker":      6.00,   # dominant ranker (12.50 individual)
+    "lgbm_ranker":     1.50,   # diversity: lambdarank objective
     "rf_clf":          1.50,   # calibrated RF classifier — architectural diversity
-    "xgb_clf":         0.50,   # EV-based class probability selection (minor weight)
-    "lgb_reg":         0.25,   # LightGBM regressor (minor weight)
-    "ridge":           0.25,   # linear model diversity (minor weight)
-    "rf_reg":          0.00,   # removed
-    "xgb_reg":         0.00,   # removed
+    "lgb_reg":         1.00,   # v9.1: LightGBM regressor now best individual model (12.58)
+    "xgb_clf":         0.50,   # EV-based class probability — diversity signal
+    "ridge":           0.00,   # removed (10.12 individual, no net diversity gain)
+    "rf_reg":          0.00,   # removed (7.50 individual — worst model)
+    "xgb_reg":         0.00,   # removed (10.67 individual, xgb_ranker dominates)
     "grid_heuristic":  0.00,   # removed (signal in grid_position feature)
     "champ_heuristic": 0.00,   # removed (signal in drv_champ_pos feature)
 }

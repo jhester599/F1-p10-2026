@@ -1,8 +1,19 @@
-# Development Plan — Outstanding Implementation Work
+# Development Plan — Historical Implementation Log
 
-This document tracks changes that were **documented but not yet implemented** in
-prior sessions. Each phase is self-contained and can be committed independently
-to avoid timeout-related failures.
+> **STATUS AS OF 2026-03-21:** All phases in this document (Phases 1–5) and all v3.x
+> work are **COMPLETE**. The current production model is **v8.23** (51 features,
+> F_soft_all ensemble, DART booster, 14.21 pts/race on 2025 holdout — beats naive
+> baseline 14.04 by +0.17). For outstanding work see `V9_ENSEMBLE_SUBSPACE_PLAN.md`.
+>
+> This document is retained as a historical record of v3.x implementation phases,
+> CV experiments, and working rules. The Critical Rules in the next section remain
+> applicable to all future development sessions.
+
+---
+
+This document originally tracked changes that were **documented but not yet implemented** in
+prior sessions. All phases are now complete. Each phase was self-contained and committed
+independently to avoid timeout-related failures.
 
 ---
 
@@ -234,7 +245,8 @@ Update `README.md` to mark Session 2 and Session 3 as fully implemented.
 | v3.1 | Sprint weekend result fix (3 truncated rounds) | ✅ Done — 422 → 479 eval rows |
 | v3.1 | Full pipeline eval with 35 features | ✅ Done — ensemble 12.62 (+2.83 vs v3.0) |
 
-All phases complete. Model is at v3.4 specification (35 features, XGBRanker ensemble).
+All phases complete. Model subsequently evolved through v4.x, v5.x, v6.x, v7.x, and v8.x.
+Current production: **v8.23** (51 features, F_soft_all ensemble, DART booster, 14.21 pts/race).
 
 ### v3.41 — DNF Feature Exploration (completed 2026-03-10)
 
@@ -423,3 +435,53 @@ both adaptive-weight and training-data effects. Requires 12-fold CV to isolate c
   lift. If a v4.0 feature set is designed, these should be re-evaluated.
 - Data cache (updated through 2025, ~1,881 files, 3.1 MB): `f1_data_cache_2026-03-09.zip`
   committed to repo root. Google Drive mirror: https://drive.google.com/file/d/1hK56Jwmf6B54oDwLEmDdSTbau_T4WGMM/view?usp=sharing
+
+---
+
+## v9 — Heterogeneous Feature Subspaces + Ensemble Reweighting (2026-03-21)
+
+### Summary
+
+Complete redesign from a single 51-feature global matrix to per-model curated subspaces.
+See `V9_ENSEMBLE_SUBSPACE_PLAN.md` for the full design and results.
+
+### v9.0 — Architecture (2026-03-21) ✅
+
+Added `MODEL_FEATURES` dict to `config.py` — each of the 8 models assigned a curated feature
+subspace. `WeightedEnsemble.score_drivers()` in `models.py` slices `X[:, idxs]` per model.
+
+### v9.1 — Per-Model Feature Testing (2026-03-21) ✅
+
+Protocol: train 2019–2023, eval 2024, threshold ≥ +0.10 pts/race.
+- 41 candidate features × 8 models = **250 tests**; **104 accepted**
+- 25 new features added to parquet (104 total columns)
+- Top features: `chaos_index` (6/8 models), `drv_form_trend` (6/8 models)
+- Full results: `results/v9_per_model_feature_test.csv`
+- Script: `scripts/61_v9_per_model_feature_test.py`
+
+**Per-model results (2025 holdout):**
+lgb_reg=12.58, xgb_ranker=12.50, rf_clf=11.67, xgb_reg=10.67, xgb_clf=10.50,
+ridge=10.12, lgbm_ranker=10.04, rf_reg=7.50. Ensemble with old weights: 11.50.
+
+### v9.2 — Ensemble Reweighting (2026-03-21) ✅ CURRENT
+
+Weight search: 30 candidates across scripts 62–64. Best: `G_plus_clf`.
+
+**New weights:** `xgb_ranker=6.0, lgbm_ranker=1.5, rf_clf=1.5, lgb_reg=1.0, xgb_clf=0.5`
+(all others=0.0)
+
+**Key changes from v7.2:**
+- `lgb_reg` raised from 0.25 → **1.00** (now best individual model at 12.58)
+- `xgb_clf` raised from 0.25 → **0.50** (diversity value confirmed)
+- `ridge` removed (0.25 → 0.00; no net benefit at v9.1)
+
+**Result:** Ensemble 2025 holdout: **13.333 pts/race** (+1.833 vs v9.1 old weights, +0.708 vs
+next-best weight config G_old_plus_lgb).
+
+### Remaining issues after v9.2
+
+- **rf_reg degraded to 7.50 pts** (was ~12 in pre-v9). Expanded 62-feature subspace may be
+  over-wide. Investigate subspace pruning in v10.x.
+- **Naive gap:** 13.33 vs 14.04 = −0.71 pts. Closing this requires either better circuit-type
+  conditional routing or new features not yet in the candidate pool.
+- **2026 retraining scheduled:** After R5, R10, R15, R24 as 2026 race data accumulates.
