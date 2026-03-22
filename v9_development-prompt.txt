@@ -1,0 +1,52 @@
+
+Context & Objective: You are acting as the lead machine learning engineer for the F1-p10-2026 project: https://github.com/jhester599/F1-p10-2026
+
+Our repository has recently advanced to version 8.23 and you are responsible for the v9x development plan and execution. The v7.2 ensemble established a strong baseline of 14.21 points per race on the 2025 holdout (beating the 14.04 naive grid baseline). Since then, v8.x updates—including the addition of the grid_midfield_rank feature, fantasy-score ranker labels, and the implementation of a DART booster with dropout regularization (rate_drop=0.10) for the xgb_ranker—have added a cumulative +0.92 points per race.
+
+The ensemble continues to utilize a top-3 non-adaptive weighting scheme (xgb_ranker: 6.0, rf_clf: 1.5, xgb_clf: 1.5). However, all three models are currently trained on the exact same global list of 50 features.
+
+Our objective is to implement Heterogeneous Feature Selection (Feature Subspace Ensembling). We want to evaluate all current and previously rejected features individually for each predictive model, curate a specific feature subset that optimizes each algorithm's unique architecture (especially considering the new DART booster dynamics), and refactor the training pipeline so the ensemble averages the predictions of these independently optimized models.
+
+Please execute the following iterative steps, documenting your findings and modifications at each stage:
+
+Step 1: Feature Audit and Extraction
+
+Review scripts/02_build_dataset.py and the README.md to compile a complete list of the current 50 features, ensuring recent additions like grid_midfield_rank are properly categorized.
+
+Categorize them logically (Positional & Qualifying, Driver Form & History, P10-Zone Targeting, Championship Standing, Team Context, Circuit History, Circuit Character, and Season Context).
+
+Extract any previously rejected features from internal tests for re-evaluation.
+
+Step 2: Model-Specific Feature Evaluation
+
+Modify or create an evaluation script based on scripts/03_train_models.py.
+
+For each model (ridge, rf_reg, rf_clf, xgb_reg, xgb_clf, xgb_ranker, lgb_reg, lgbm_ranker), perform recursive feature elimination (RFE) or permutation importance.
+
+Strict CV Rule: Always use the --cv-years 2024 single-fold CV gate. Ensure the isolated models do not regress more than 0.10 pts compared to their individual baselines.
+
+Mandatory Correlation Check: If any new or re-introduced feature yields a delta of >= +0.20 for a specific model, you must check its Pearson correlation. If |r| > 0.75 against another feature in that specific model's subset, perform a replacement test to ensure it adds unique information rather than just variance.
+
+Step 3: Curate Feature Subspaces
+
+Compile distinct feature arrays for each model.
+
+Explicitly document the rationale for feature exclusion/inclusion per model. Pay special attention to the fact that the xgb_ranker now utilizes a DART booster (rate_drop=0.10); features that introduce noise may interact differently with DART's dropped trees compared to the standard xgb_clf or rf_clf.
+
+Step 4: Refactor the Training and Inference Pipelines
+
+Modify scripts/03_train_models.py so that when it fits each model, it slices the X_train matrix to include only the curated subset for that specific algorithm.
+
+Update predict_race.py and scripts/18_live_2026.py to correctly route these specific feature subsets to the corresponding serialized models during live weekend predictions.
+
+Step 5: Ensemble Validation
+
+Execute the full pipeline using the run_pipeline.py convenience script.
+
+Execute scripts/04_evaluate_2025.py to verify the final ensemble on the 2025 holdout data.
+
+Compare the new ensemble score against the new v8.23 benchmark (approx. 15.13 pts/race) and the 14.04 naive grid baseline.
+
+Step 6: Final Documentation
+
+Create a new markdown file (e.g., V9_ENSEMBLE_SUBSPACE_PLAN.md) detailing the exact feature subsets assigned to each model, the rationale behind the splits, and the final performance deltas achieved on the 2025 holdout.

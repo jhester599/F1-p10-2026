@@ -271,3 +271,71 @@ Run **Option A** as the next single-feature test:
 | Directional bias (below vs above P10) | **None** — +1.08 positions not statistically significant in 24 races | ✓ Noise only |
 
 **Bottom line:** The scoring function is correctly implemented with no algorithmic bugs. The meaningful miscalibration is in how the ranker *objective* interprets the labels — the exponential gain function in rank:ndcg amplifies the P10 exact-match premium ~128× beyond what the fantasy game actually warrants. This has not caused a regression (v8.18 improved by +0.25 pts), but may be leaving near-P10 signal on the table by over-focusing on exact P10. The `ndcg_exp_gain=False` fix is the minimal targeted experiment to test alignment of the training objective with the actual reward function.
+
+---
+
+## 8. Cross-Model Label Consistency Audit — v9.3 (2026-03-22)
+
+**Question:** Are classifiers and regressors training on raw finish position (1–20) while rankers use fantasy scores (0–25)? If so, is the meta-learner blending incompatible signal scales?
+
+### 8.1 Label Flow Per Model Type
+
+Traced from `src/models.py:train_all()` and `StackingEnsemble._extract_base_scores()`:
+
+| Model | Training Label | Label Source | Range |
+|---|---|---|---|
+| `ridge` | `y_reg = finish_position` | `TARGET_COL` | 1–20 |
+| `rf_reg` | `y_reg = finish_position` | `TARGET_COL` | 1–20 |
+| `xgb_reg` | `y_reg = finish_position` | `TARGET_COL` | 1–20 |
+| `lgb_reg` | `y_reg = finish_position` | `TARGET_COL` | 1–20 |
+| `rf_clf` | `y_clf = finish_position` (classes 1–20) | `TARGET_COL` | 1–20 |
+| `xgb_clf` | `y_clf = finish_position − 1` (classes 0–19) | `TARGET_COL` | 0–19 |
+| `xgb_ranker` | `y_rank = FANTASY_POINTS[abs(pos−10)]` | v8.18 fantasy labels | 0–25 |
+| `lgbm_ranker` | `y_rank = FANTASY_POINTS[abs(pos−10)]` | v8.18 fantasy labels | 0–25 |
+| RidgeCV meta | `y_meta = fantasy_pts / 25.0` | normalised reward | 0–1 |
+
+**Confirmed:** Regressors and classifiers train on raw position (1–20). Rankers train on fantasy scores (0–25). The label inconsistency exists.
+
+### 8.2 Score Extraction Before Meta-Learner
+
+All raw model outputs are converted in `StackingEnsemble._extract_base_scores()` (models.py:383–432) **before** entering the RidgeCV meta-learner:
+
+| Model type | Raw output | Conversion | Final input to RidgeCV |
+|---|---|---|---|
+| Regressors | Predicted position (1–20) | `1/(1+|pred−10|)` → proximity ∈ (0,1] | per-race min-max → [0,1] |
+| Classifiers | Class probabilities | EV = Σ P(class)×SCORING_VECTOR → [0,25] | per-race min-max → [0,1] |
+| Rankers | Raw relevance score (unbounded float) | (none) | per-race min-max → [0,1] |
+
+**All components are normalized to [0,1] per race before entering the meta-learner.** The "incompatible signal scales at the meta-learner" concern is fully addressed by the existing architecture. The RidgeCV always receives comparably-scaled [0,1] meta-features.
+
+### 8.3 Training Objective Alignment Assessment
+
+Although the scale issue at the meta-learner is handled, there is a **training objective misalignment** for non-ranker models:
+
+**Regressors** — trained to minimize MSE on raw positions. The regressor treats a P3 prediction on a P3 finisher as equally bad as a P10 prediction on a P10 finisher (same absolute MSE). It has no knowledge that P10 proximity is valuable. The post-hoc `1/(1+|pred−10|)` conversion maps the regressor's output to a proximity score at inference time, partially compensating, but the underlying gradients don't optimize for P10 proximity.
+
+**Classifiers** — trained to minimize cross-entropy of a 20-class position distribution. The training objective treats all 20 position classes equally. A misclassification of P10 vs P11 receives the same gradient as a misclassification of P1 vs P2. However, the EV computation at prediction time (`Σ P(class) × SCORING_VECTOR`) correctly converts to a fantasy-reward-weighted score before the meta-learner. The CalibratedClassifierCV isotonic/sigmoid wrappers correct probability distortion. Net effect: classifiers have partially reward-aligned outputs despite misaligned training.
+
+**Rankers** — training directly on fantasy-score labels optimizes for the correct reward ordering. This is the only model family with end-to-end training objective alignment.
+
+### 8.4 Is a Code Fix Needed?
+
+**No, for the scale concern.** The per-race min-max normalization in `_extract_base_scores` already handles scale incompatibility. The meta-learner receives [0,1]-normalised inputs from all components; this is the correct fix and it's already implemented.
+
+**Possibly, for training objective alignment.** To make regressors reward-aligned, one would:
+1. Change their training target to `y_fs = FANTASY_POINTS[|pos−10|]` (0–25), matching the ranker label
+2. Update `_extract_base_scores` to use `raw = model.predict(X)` for regressors (no proximity transform)
+3. Update `_pick_p10` to use `scores.idxmax()` for fantasy-score regressors (not `(scores−10).abs().idxmin()`)
+
+**Expected impact: low.** Ensemble weights: `rf_reg=0.0, xgb_reg=0.0, ridge=0.25, lgb_reg=0.25`. The misaligned models collectively carry 0.5 weight out of ~10.0 total (5%). The meta-learner already down-weights them relative to the reward-aligned rankers (xgb_ranker=6.0, lgbm_ranker=1.5). This suggests the RidgeCV meta-learner has already implicitly identified and compensated for their lower signal quality.
+
+**Verdict:** No implementation required. The label inconsistency across model families is a real structural observation, but it does not cause the meta-learner to blend incompatible scales (normalization handles that), and its practical impact is bounded by the near-zero ensemble weights of regressors.
+
+### 8.5 Updated Finding Table
+
+| Finding | Severity | Status |
+|---|---|---|
+| Regressors training on raw position (1–20) | **Low** — output normalized before meta-learner; low ensemble weight (0.5/10.0 total) | ✓ No action needed |
+| Classifiers training on position classes (1–20) | **Low** — EV at prediction time compensates; CalibratedClassifierCV corrects probs | ✓ No action needed |
+| Scale incompatibility at meta-learner | **None** — per-race min-max normalization in `_extract_base_scores` handles this | ✓ Already fixed |
+| Training objective alignment (regressors) | **Low** — gradients don't optimize for P10 proximity, but meta-learner down-weights these | ✓ Noted, not blocking |

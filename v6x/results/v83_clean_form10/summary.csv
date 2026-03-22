@@ -1,0 +1,2 @@
+version,feature,status,cv_2024_delta,holdout_2025,holdout_delta_vs_v71,v71_baseline
+v8.3,avg_fin_last10_clean,REJECTED,0.5416666666666679,12.125,-2.045,14.17

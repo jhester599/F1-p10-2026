@@ -1,0 +1,9 @@
+feature,action,replaces,r,swap_delta,reason
+avg_fin_last10,KEEP_ORIGINAL,avg_fin_last5,0.9490977086542741,-0.875,"|r|=0.949 > 0.75, swap_delta=-0.88"
+avg_fin_last10,KEEP_ORIGINAL,avg_fin_last3,0.8913453155387361,-0.9166666666666661,"|r|=0.891 > 0.75, swap_delta=-0.92"
+avg_fin_last10,KEEP_ORIGINAL,team_avg_fin_season,0.8581591043276163,-0.125,"|r|=0.858 > 0.75, swap_delta=-0.12"
+avg_fin_last10,KEEP_ORIGINAL,avg_qual_last3,0.8570268344626049,-0.875,"|r|=0.857 > 0.75, swap_delta=-0.88"
+avg_fin_last10,KEEP_ORIGINAL,career_avg_fin,0.853802544500655,-1.916666666666666,"|r|=0.854 > 0.75, swap_delta=-1.92"
+avg_fin_last10,KEEP_ORIGINAL,pts_last3,-0.83871625842503,0.041666666666666075,"|r|=0.839 > 0.75, swap_delta=+0.04"
+avg_fin_last10,KEEP_ORIGINAL,team_avg_qual_season,0.8272760831386897,0.08333333333333393,"|r|=0.827 > 0.75, swap_delta=+0.08"
+avg_fin_last10,KEEP_ORIGINAL,last_qual_pos,0.7657969335750671,-1.666666666666666,"|r|=0.766 > 0.75, swap_delta=-1.67"

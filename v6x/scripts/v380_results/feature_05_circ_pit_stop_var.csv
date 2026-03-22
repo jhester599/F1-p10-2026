@@ -1,0 +1,2 @@
+feature,version,description,verdict,base_rf_reg,base_lgb_reg,ext_rf_reg,ext_lgb_reg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+circ_pit_stop_var,v3.85,Variance in pit stop counts at circuit (last 5 years),DISCARD,12.545454545454545,11.818181818181818,12.909090909090908,9.272727272727273,0.3636363636363633,-2.545454545454545,0.0,-1.0909090909090908
