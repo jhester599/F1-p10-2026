@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "naive_baseline_pts": 14.04,
+    "v823_pts": 14.21,
+    "weather_features": [
+      "circ_vsc_rate",
+      "circ_sc_vsc_combined",
+      "circ_avg_pit_stops",
+      "circ_collision_rate"
+    ],
+    "small_n_rolling": [
+      "last_race_pos",
+      "last_dnf",
+      "last_qual_pos",
+      "avg_fin_last3",
+      "avg_qual_last3",
+      "pts_last3",
+      "drv_form_trend"
+    ],
+    "full_feature_count": 51
+  },
+  "results": {
+    "Baseline A: Naive grid P10": {
+      "n_races": 24,
+      "total_pts": 337,
+      "avg_pts": 14.041666666666666,
+      "exact_p10": 3,
+      "within_2_pos": 12
+    },
+    "Baseline B: v8.23 ensemble": {
+      "n_races": 24,
+      "total_pts": 341,
+      "avg_pts": 14.208333333333334,
+      "exact_p10": 3,
+      "within_2_pos": 14
+    },
+    "Ablation 1: No weather features": {
+      "n_races": 24,
+      "total_pts": 299,
+      "avg_pts": 12.458333333333334,
+      "exact_p10": 3,
+      "within_2_pos": 11
+    },
+    "Ablation 2: No small-N rolling form": {
+      "n_races": 24,
+      "total_pts": 325,
+      "avg_pts": 13.541666666666666,
+      "exact_p10": 2,
+      "within_2_pos": 13
+    },
+    "Ablation 3: Top-20 features (xgb_ranker)": {
+      "n_races": 24,
+      "total_pts": 297,
+      "avg_pts": 12.375,
+      "exact_p10": 1,
+      "within_2_pos": 12
+    }
+  }
+}
