@@ -202,6 +202,56 @@ Based on `results/feature_importance.csv` (xgb_ranker column):
 
 ---
 
+---
+
+## v9.3 Hyperparameter Test: ndcg_exp_gain=False on XGBRanker
+
+**Date**: 2026-03-22
+**Script**: `v6x/test_ndcg_exp_gain.py`
+**Verdict**: FAIL — do not apply to production
+
+### Hypothesis
+
+`rank:ndcg` with `ndcg_exp_gain=True` (XGBoost default) uses exponential gain:
+`gain = 2^label - 1`. With fantasy-score labels (P10=25, P9/P11=18), the ratio
+of exact-P10 to ±1-miss gain is `(2^25 - 1) / (2^18 - 1) ≈ 128×`.
+
+The actual fantasy game rewards them 25:18 = 1.39×. Setting `ndcg_exp_gain=False`
+switches to linear gain (proportional to label value), matching the true reward ratio.
+
+### Results
+
+| Config                   | Holdout (2025) | CV mean (2022/23/24) |
+|--------------------------|---------------:|--------------------:|
+| Control (exp_gain=True)  | 14.21 pts/race | 12.62 pts/race       |
+| Test (exp_gain=False)    | 12.17 pts/race | 11.14 pts/race       |
+| Delta                    |        **-2.04** |          **-1.48** |
+
+CV fold detail (test config): 12.18 (2022), 9.36 (2023), 11.88 (2024)
+
+Acceptance gate:
+- Holdout gate ≥ +0.20: **-2.04 → FAIL**
+- CV gate ≥ -0.10: **-1.48 → FAIL**
+
+### Interpretation
+
+`ndcg_exp_gain=False` is a decisive regression on both holdout and CV. The
+hypothesis that "linear gain matches the reward function better" is incorrect in
+practice. The exponential gain appears to provide a beneficial inductive bias:
+by heavily penalising the training gradient for non-P10 picks, it forces the
+ranker to concentrate on the P10-zone candidates rather than distributing
+probability mass over the midfield. The linear gain gradient is too diffuse and
+the DART ranker loses discriminative focus.
+
+The label calibration via fantasy-score labels (v8.18, +0.25 pts/race) already
+aligns the label magnitudes with the reward function. The gain transformation
+on top of those labels serves a different purpose (gradient concentration) and
+should not be changed.
+
+**Production code: no change.**
+
+---
+
 ## How to Run
 
 ```bash
