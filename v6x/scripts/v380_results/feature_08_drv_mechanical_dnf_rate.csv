@@ -1,0 +1,2 @@
+feature,version,description,verdict,base_rf_reg,base_lgb_reg,ext_rf_reg,ext_lgb_reg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+drv_mechanical_dnf_rate,v3.88,Driver's mechanical DNF rate over last 20 races,DISCARD,12.545454545454545,11.818181818181818,12.090909090909092,10.136363636363637,-0.45454545454545325,-1.6818181818181817,-0.8636363636363633,-1.0681818181818175

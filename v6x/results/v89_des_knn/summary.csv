@@ -1,0 +1,2 @@
+version,approach,status,cv_2024_delta,holdout_2025,holdout_delta_vs_v72,v72_baseline
+v8.9,des_knn,REJECTED at CV gate,-1.125,,,13.29

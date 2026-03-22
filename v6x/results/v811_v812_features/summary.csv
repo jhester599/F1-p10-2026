@@ -1,0 +1,3 @@
+test,status,cv_delta,holdout,h_delta
+v8.11_midfield_gap_ratio,REJECTED_CV,-0.5,,
+v8.12_circ_experience_rate,REJECTED,0.4583333333333339,13.833333333333334,0.12333333333333307

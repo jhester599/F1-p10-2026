@@ -1,0 +1,2 @@
+variant,score,delta_vs_v823,beats_naive,beats_v823
+A — v8.23 baseline (loaded models),14.21,0.0,True,True

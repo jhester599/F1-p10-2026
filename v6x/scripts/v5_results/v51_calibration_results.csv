@@ -1,0 +1,5 @@
+version,model,method,log_loss,brier_p10,avg_pts_2024
+v4.03_uncalibrated,rf_clf,none,2.5394,0.04629,12.25
+v4.03_uncalibrated,xgb_clf,none,3.0488,0.05061,10.833
+v5.1_calibrated,rf_clf,isotonic,2.8051,0.04626,12.0
+v5.1_calibrated,xgb_clf,sigmoid (Platt),2.863,0.04731,11.042

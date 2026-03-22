@@ -1,0 +1,3 @@
+test,status,cv_delta,holdout,h_delta
+v8.13_teammate_qual_delta,REJECTED,0.125,12.75,-0.9600000000000009
+v8.14_qual_form_trend,REJECTED,0.20833333333333393,13.041666666666666,-0.6683333333333348

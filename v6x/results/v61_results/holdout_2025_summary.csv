@@ -1,0 +1,11 @@
+model,n_races,avg_pts,exact_p10,within_2,exact_pct,within_2_pct
+xgb_ranker,24,13.79,3,14,12.5,58.3
+ensemble,24,12.38,2,11,8.3,45.8
+stacking_ensemble,24,12.12,2,13,8.3,54.2
+lgbm_ranker,24,11.96,0,13,0.0,54.2
+rf_clf,24,11.46,2,11,8.3,45.8
+lgb_reg,24,11.17,1,9,4.2,37.5
+xgb_clf,24,10.88,3,11,12.5,45.8
+ridge,24,10.79,0,9,0.0,37.5
+rf_reg,24,9.46,0,8,0.0,33.3
+xgb_reg,24,7.92,1,4,4.2,16.7

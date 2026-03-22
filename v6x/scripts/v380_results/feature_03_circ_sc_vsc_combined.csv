@@ -1,0 +1,2 @@
+feature,version,description,verdict,base_rf_reg,base_lgb_reg,ext_rf_reg,ext_lgb_reg,delta_rf_reg,delta_lgb_reg,delta_ridge,delta_avg
+circ_sc_vsc_combined,v3.83,circ_sc_rate + circ_vsc_rate — total disruption score,DISCARD,12.545454545454545,11.818181818181818,12.181818181818182,12.136363636363637,-0.3636363636363633,0.31818181818181834,0.0,-0.022727272727272485

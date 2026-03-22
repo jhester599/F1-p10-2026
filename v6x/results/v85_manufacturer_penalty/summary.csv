@@ -1,0 +1,2 @@
+version,feature,status,cv_2024_delta,holdout_2025,holdout_delta_vs_working_base,working_baseline,naive_baseline
+v8.5,new_manufacturer_penalty,REJECTED,1.625,12.333333333333334,-0.086666666666666,12.42,14.04

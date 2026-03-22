@@ -1,0 +1,2 @@
+version,feature,status,cv_2024_delta,holdout_2025,holdout_delta_vs_v72,v72_baseline
+v8.10,grid_midfield_rank,ACCEPTED,0.5416666666666661,13.666666666666666,0.3766666666666669,13.29

@@ -1,0 +1,2 @@
+config,rate_drop,skip_drop,cv_delta,holdout,h_delta,status
+A_rd01_sd05,0.1,0.5,-0.08333333333333393,14.208333333333334,0.24833333333333307,ACCEPTED

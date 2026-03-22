@@ -1,0 +1,4 @@
+candidate,avg_pts,n,delta_vs_v59,delta_vs_naive
+A_pts2_2024cv,12.38,24,-0.01,-1.66
+B_dominant_ranker,12.38,24,-0.01,-1.66
+C_v59_baseline,12.38,24,-0.01,-1.66

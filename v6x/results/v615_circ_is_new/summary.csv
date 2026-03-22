@@ -1,0 +1,2 @@
+candidate,base_mean,base_se,cand_mean,cand_se,delta,decision
+circ_is_new,13.291666666666666,1.409696193329585,12.75,1.3570134513874124,-0.5416666666666661,REJECT
