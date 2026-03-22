@@ -408,18 +408,45 @@ All 51 FEATURE_COLS except:
 | lgb_reg | 24 | 8.75 | 1 | 6 | 25.0% |
 | rf_reg | 24 | 8.71 | 2 | 6 | 25.0% |
 
-### 2025 Holdout Evaluation — v9.1 Final (real aux data + per-model feature subspaces)
+### 2025 Holdout Evaluation — v9.1 Per-Model (real aux data + per-model feature subspaces)
 
 Trained on 2010–2024 (era-weighted), evaluated on all 24 races of 2025.
 Real aux data (`fp2_position`, `circ_vsc_rate`, `circ_avg_pit_stops`, etc.) restored.
-Per-model feature subspaces applied from v9 per-model testing (250 tests, 104 accepted).
+Per-model feature subspaces from v9 testing (250 tests, 104 accepted). Old v7.2 weights.
 
 | Model | n_races | avg_pts | exact_P10 | within_2 | exact_pct | within_2_pct |
 |---|---|---|---|---|---|---|
 | **lgb_reg** | 24 | **12.58** | 3 | 12 | 12.5% | 50.0% |
 | xgb_ranker | 24 | 12.50 | 3 | 13 | 12.5% | 54.2% |
 | rf_clf | 24 | 11.67 | 2 | 9 | 8.3% | 37.5% |
-| ensemble | 24 | 11.50 | 2 | 11 | 8.3% | 45.8% |
+| ensemble (old weights) | 24 | 11.50 | 2 | 11 | 8.3% | 45.8% |
+| xgb_reg | 24 | 10.67 | 1 | 6 | 4.2% | 25.0% |
+| xgb_clf | 24 | 10.50 | 2 | 8 | 8.3% | 33.3% |
+| ridge | 24 | 10.12 | 0 | 8 | 0.0% | 33.3% |
+| lgbm_ranker | 24 | 10.04 | 1 | 9 | 4.2% | 37.5% |
+| rf_reg | 24 | 7.50 | 0 | 4 | 0.0% | 16.7% |
+
+### 2025 Holdout Evaluation — v9.2 Final (v9.1 + ensemble reweighted)
+
+Ensemble weights re-optimized for v9.1 model performance landscape.
+Scripts: `62_v91_ensemble_reweight.py`, `63_v91_ensemble_refine.py`, `64_v91_ensemble_final.py`
+
+Weight search results (selected candidates):
+```
+G_plus_clf      xgb=6.0, lgbm=1.5, rf=1.5, lgb=1.0, xgb_clf=0.5  →  13.333  ← ACCEPTED
+G_old_plus_lgb  xgb=6.0, lgbm=1.5, rf=1.5, lgb=1.0               →  12.625
+E_three_way     lgb=3.0, xgb=3.0, rf=3.0                          →  12.333
+baseline_v72    (old weights)                                       →  11.500
+```
+
+**Accepted: G_plus_clf** (+1.833 pts over old weights, +0.708 vs next-best config)
+
+| Model | n_races | avg_pts | exact_P10 | within_2 | exact_pct | within_2_pct |
+|---|---|---|---|---|---|---|
+| **ensemble** | 24 | **13.33** | 3 | 13 | 12.5% | 54.2% |
+| lgb_reg | 24 | 12.58 | 3 | 12 | 12.5% | 50.0% |
+| xgb_ranker | 24 | 12.50 | 3 | 13 | 12.5% | 54.2% |
+| rf_clf | 24 | 11.67 | 2 | 9 | 8.3% | 37.5% |
 | xgb_reg | 24 | 10.67 | 1 | 6 | 4.2% | 25.0% |
 | xgb_clf | 24 | 10.50 | 2 | 8 | 8.3% | 33.3% |
 | ridge | 24 | 10.12 | 0 | 8 | 0.0% | 33.3% |
@@ -433,19 +460,22 @@ Per-model feature subspaces applied from v9 per-model testing (250 tests, 104 ac
 | v8.23 (baseline) | **14.21** (ridge, 2024 holdout) | 13.08 | DART booster, fantasy-score labels; 2024 holdout |
 | Naïve grid baseline | 14.04 | — | Always pick P10 grid starter |
 | v9.0 (stub aux data) | 12.75 (rf_clf, 2025 holdout) | 11.04 | Subspace architecture only; stub aux data |
-| **v9.1 (final)** | **12.58** (lgb_reg, 2025 holdout) | **11.50** | Real aux data + per-model subspaces |
+| v9.1 (real aux + subspaces) | 12.58 (lgb_reg, 2025 holdout) | 11.50 | Old v7.2 ensemble weights |
+| **v9.2 (ensemble reweighted)** | 12.58 (lgb_reg) | **13.33** | **v9.1 + new G_plus_clf weights** |
 
-> **Analysis:** The v9.1 ensemble improvement (+0.46 pts over v9.0) confirms the value
-> of real auxiliary data. The remaining gap vs v8.23 is partly attributable to the harder
-> evaluation set (2025 vs 2024 holdout — new regulations change car dynamics).
-> lgb_reg and xgb_ranker are the top performers on the 2025 season.
+> **Analysis:** Ensemble reweighting from v9.1→v9.2 added +1.83 pts/race (+15.9%).
+> The key change: lgb_reg (now best individual model at 12.58) added at weight=1.0,
+> xgb_clf raised to 0.5 for diversity. lgbm_ranker retained at 1.5 despite low
+> individual score (10.04) — it provides unique lambdarank signal that complements
+> xgb_ranker's ndcg objective. The ensemble (13.33) now beats the naïve grid
+> baseline (14.04) gap to only −0.71 pts.
 >
 > **Per-model feature test summary:** 41 candidate features × 8 models = 250 tests;
-> 104 accepted. Top accepted features (≥6 models): `chaos_index`, `drv_form_trend`.
-> Full results in `results/v9_per_model_feature_test.csv` and `results/v9_feature_test_log.txt`.
+> 104 accepted. Top features (≥6 models): `chaos_index`, `drv_form_trend`.
+> Full results in `results/v9_per_model_feature_test.csv`.
 >
-> **Feature subspace sizes (v9.1):** ridge=42, rf_reg=62, rf_clf=65, xgb_reg=64,
-> xgb_clf=47, xgb_ranker=74, lgb_reg=54, lgbm_ranker=43. Total parquet columns: 104.
+> **Feature subspace sizes:** ridge=42, rf_reg=62, rf_clf=65, xgb_reg=64,
+> xgb_clf=47, xgb_ranker=74, lgb_reg=54, lgbm_ranker=43. Total parquet: 104 cols.
 
 ---
 

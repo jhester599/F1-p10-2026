@@ -35,7 +35,7 @@ baku,ridge,10.0,1
 baku,xgb_clf,6.0,1
 baku,xgb_ranker,4.0,1
 baku,xgb_reg,4.0,1
-catalunya,ensemble,18.0,1
+catalunya,ensemble,12.0,1
 catalunya,lgb_reg,12.0,1
 catalunya,lgbm_ranker,15.0,1
 catalunya,rf_clf,12.0,1
@@ -53,7 +53,7 @@ hungaroring,ridge,12.0,1
 hungaroring,xgb_clf,4.0,1
 hungaroring,xgb_ranker,25.0,1
 hungaroring,xgb_reg,12.0,1
-imola,ensemble,0.0,1
+imola,ensemble,18.0,1
 imola,lgb_reg,18.0,1
 imola,lgbm_ranker,6.0,1
 imola,rf_clf,18.0,1
@@ -98,7 +98,7 @@ marina_bay,ridge,18.0,1
 marina_bay,xgb_clf,0.0,1
 marina_bay,xgb_ranker,15.0,1
 marina_bay,xgb_reg,8.0,1
-miami,ensemble,18.0,1
+miami,ensemble,25.0,1
 miami,lgb_reg,25.0,1
 miami,lgbm_ranker,8.0,1
 miami,rf_clf,15.0,1
@@ -125,7 +125,7 @@ monza,ridge,18.0,1
 monza,xgb_clf,12.0,1
 monza,xgb_ranker,12.0,1
 monza,xgb_reg,15.0,1
-red_bull_ring,ensemble,8.0,1
+red_bull_ring,ensemble,15.0,1
 red_bull_ring,lgb_reg,1.0,1
 red_bull_ring,lgbm_ranker,15.0,1
 red_bull_ring,rf_clf,15.0,1
@@ -134,7 +134,7 @@ red_bull_ring,ridge,1.0,1
 red_bull_ring,xgb_clf,6.0,1
 red_bull_ring,xgb_ranker,8.0,1
 red_bull_ring,xgb_reg,1.0,1
-rodriguez,ensemble,0.0,1
+rodriguez,ensemble,18.0,1
 rodriguez,lgb_reg,18.0,1
 rodriguez,lgbm_ranker,18.0,1
 rodriguez,rf_clf,6.0,1
