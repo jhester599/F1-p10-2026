@@ -991,6 +991,19 @@ def predict_race(
     fitted_models : dict
         Output of train_all() or load_all().
     """
+    # Keep prediction robust when race feature generation lags behind
+    # the training schema: backfill any missing model features with 0.0.
+    missing_feature_cols = [c for c in FEATURE_COLS if c not in race_features.columns]
+    if missing_feature_cols:
+        logger.warning(
+            "Race features missing %d model columns; filling with 0.0 defaults: %s",
+            len(missing_feature_cols),
+            ", ".join(missing_feature_cols),
+        )
+        race_features = race_features.copy()
+        for col in missing_feature_cols:
+            race_features[col] = 0.0
+
     # v9.0: build the full feature matrix (all FEATURE_COLS) once.
     # WeightedEnsemble / StackingEnsemble receive X_full and slice internally.
     # Base models receive model-specific slices via MODEL_FEATURES.
