@@ -2,6 +2,16 @@ name: 2026 Qualifying Predictions
 
 on:
   workflow_dispatch:
+    inputs:
+      round_override:
+        description: "Optional round number override for manual test runs (e.g., 2 for China)"
+        required: false
+        type: string
+      force_rerun:
+        description: "Force rerun even if prediction output for that round already exists"
+        required: false
+        default: false
+        type: boolean
   schedule:
     - cron: "*/15 * * * *"
 
@@ -55,7 +65,15 @@ jobs:
               --offset-minutes 60 \
               --window-minutes 30
           else
-            python scripts/65_run_qualifying_automation.py --year 2026
+            CMD="python scripts/65_run_qualifying_automation.py --year 2026"
+            if [ -n "${{ inputs.round_override }}" ]; then
+              CMD="$CMD --round ${{ inputs.round_override }}"
+            fi
+            if [ "${{ inputs.force_rerun }}" = "true" ]; then
+              CMD="$CMD --force-rerun"
+            fi
+            echo "Running: $CMD"
+            eval "$CMD"
           fi
 
       - name: Upload prediction artifacts

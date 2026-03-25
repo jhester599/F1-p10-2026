@@ -256,6 +256,11 @@ def main() -> None:
     parser.add_argument("--year", type=int, default=PREDICT_YEAR, help="Season year (default: 2026)")
     parser.add_argument("--round", type=int, default=None, help="Optional explicit round override")
     parser.add_argument(
+        "--force-rerun",
+        action="store_true",
+        help="Recompute and overwrite outputs even if round prediction file already exists.",
+    )
+    parser.add_argument(
         "--schedule-url",
         type=str,
         default="https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json",
@@ -317,7 +322,7 @@ def main() -> None:
     race_name = race_info.get("raceName", f"Round {target_round}")
     race_date = race_info.get("date", "unknown-date")
     out_csv = RESULTS_DIR / f"prediction_{year}_R{target_round:02d}.csv"
-    if out_csv.exists():
+    if out_csv.exists() and not args.force_rerun:
         msg = f"Prediction already exists for {year} R{target_round:02d} ({race_name})."
         logger.info(msg)
         set_output("new_prediction", "false")
@@ -325,6 +330,8 @@ def main() -> None:
         set_output("round", str(target_round))
         set_output("race_name", race_name)
         return
+    if out_csv.exists() and args.force_rerun:
+        logger.info("Force rerun enabled: overwriting existing output for R%02d.", target_round)
 
     ensure_processed_data()
     ensure_models()
