@@ -153,17 +153,22 @@ def ensure_processed_data() -> None:
         return
     raw_dir = ROOT / "data" / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
+    min_cache_files = 500
     json_count_before = len(list(raw_dir.glob("*.json")))
-    if json_count_before == 0:
-        cache_zip = ROOT / "f1_data_cache_2026-03-09.zip"
-        if cache_zip.exists():
-            logger.info("Restoring raw cache from %s", cache_zip.name)
-            with zipfile.ZipFile(cache_zip, "r") as zf:
-                zf.extractall(raw_dir)
+    cache_zip = ROOT / "f1_data_cache_2026-03-09.zip"
+    if json_count_before < min_cache_files and cache_zip.exists():
+        logger.info(
+            "Raw cache appears incomplete (%d JSON files). Restoring from %s",
+            json_count_before,
+            cache_zip.name,
+        )
+        with zipfile.ZipFile(cache_zip, "r") as zf:
+            zf.extractall(raw_dir)
     json_count_after = len(list(raw_dir.glob("*.json")))
-    if json_count_after == 0:
+    if json_count_after < min_cache_files:
         raise RuntimeError(
-            "No raw JSON cache available in data/raw and cache zip missing/empty. "
+            f"Raw cache incomplete ({json_count_after} JSON files). "
+            "Need bundled cache zip to proceed in cache-only mode. "
             "Refusing live API rebuild to avoid rate-limit timeouts."
         )
     logger.info("Raw cache entries available: %d JSON files", json_count_after)
