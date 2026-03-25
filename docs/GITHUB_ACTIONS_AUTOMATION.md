@@ -45,6 +45,20 @@ When a new round is detected, the workflow writes:
 - `results/prediction_reports/2026_RXX_<race>.md`
 - `results/automated_predictions_2026.md`
 
+## Email Summary Contents
+
+When email secrets are configured, the notification email includes:
+
+- Round metadata (season, round, race, date)
+- Consensus recommended pick and vote breakdown
+- Per-model picks with grid positions and model scores
+- Top ensemble candidates (driver, constructor, grid, score)
+- Direct GitHub links to:
+  - Round CSV result file
+  - Round markdown report
+  - Season log markdown
+  - The exact GitHub Actions run URL
+
 ## Notes
 
 - The workflow is idempotent: if a round has already been predicted, it exits without creating duplicates.

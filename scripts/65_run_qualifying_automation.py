@@ -74,6 +74,20 @@ def sanitize_slug(text: str) -> str:
     return slug or "race"
 
 
+def to_repo_rel(path: Path) -> str:
+    return path.resolve().relative_to(ROOT.resolve()).as_posix()
+
+
+def to_github_blob_url(path: Path) -> str:
+    repo = os.getenv("GITHUB_REPOSITORY")
+    server = os.getenv("GITHUB_SERVER_URL", "https://github.com")
+    ref_name = os.getenv("GITHUB_REF_NAME")
+    if not repo or not ref_name:
+        return str(path)
+    rel = to_repo_rel(path)
+    return f"{server}/{repo}/blob/{ref_name}/{rel}"
+
+
 def load_historical_data() -> pd.DataFrame:
     candidates = [
         PROCESSED_DIR / "features_2010_2025.parquet",
@@ -392,7 +406,49 @@ def main() -> None:
     append_season_log(season_log, section_title, report_md, year)
     logger.info("Updated season log: %s", season_log)
 
-    recommended = pd.Series(list(picks.values())).value_counts().index[0]
+    votes = pd.Series(list(picks.values())).value_counts()
+    recommended = votes.index[0]
+    scored_by_driver = scored_df.set_index("driver_id")
+
+    model_lines = []
+    for model_name, driver in picks.items():
+        grid = int(scored_by_driver.loc[driver, "grid_position"])
+        score_col = f"{model_name}_score"
+        score_val = (
+            f"{float(scored_by_driver.loc[driver, score_col]):.4f}"
+            if score_col in scored_by_driver.columns
+            else "n/a"
+        )
+        model_lines.append(f"- {model_name}: {driver} (grid P{grid}, score={score_val})")
+    model_summary = "\n".join(model_lines)
+
+    vote_summary = "\n".join([f"- {driver}: {count} vote(s)" for driver, count in votes.items()])
+
+    if "ensemble_score" in scored_df.columns:
+        top_candidates_df = (
+            scored_df[["driver_id", "constructor_id", "grid_position", "ensemble_score"]]
+            .sort_values("ensemble_score", ascending=False)
+            .head(5)
+        )
+        top_candidate_lines = [
+            (
+                f"- {r.driver_id} ({r.constructor_id}), grid P{int(r.grid_position)}, "
+                f"ensemble={float(r.ensemble_score):.4f}"
+            )
+            for r in top_candidates_df.itertuples()
+        ]
+        top_candidates = "\n".join(top_candidate_lines)
+    else:
+        top_candidates = "- n/a"
+
+    report_url = to_github_blob_url(report_path)
+    csv_url = to_github_blob_url(out_csv)
+    season_log_url = to_github_blob_url(season_log)
+    run_id = os.getenv("GITHUB_RUN_ID")
+    repo = os.getenv("GITHUB_REPOSITORY")
+    server = os.getenv("GITHUB_SERVER_URL", "https://github.com")
+    run_url = f"{server}/{repo}/actions/runs/{run_id}" if run_id and repo else "n/a"
+
     email_subject = f"F1 P10 Prediction {year} R{target_round:02d} - {resolved_race_name or race_name}"
     email_body = textwrap.dedent(
         f"""\
@@ -402,11 +458,23 @@ def main() -> None:
         Round: {target_round:02d}
         Race: {resolved_race_name or race_name}
         Date: {race_date}
-        Recommended pick: {recommended}
+        Recommended pick (consensus): {recommended}
 
-        Report: {report_path}
-        CSV: {out_csv}
-        Season log: {season_log}
+        Vote breakdown:
+        {vote_summary}
+
+        Per-model picks:
+        {model_summary}
+
+        Top ensemble candidates:
+        {top_candidates}
+
+        Results links:
+        - Report (Markdown): {report_url}
+        - Prediction CSV: {csv_url}
+        - Season log: {season_log_url}
+        - Workflow run: {run_url}
+
         """
     ).strip()
 

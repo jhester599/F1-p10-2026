@@ -114,6 +114,17 @@ Add these in `Settings -> Secrets and variables -> Actions`:
 
 If secrets are missing, prediction files still generate and commit; email is skipped.
 
+Email contents include:
+
+- Consensus recommendation and vote breakdown by driver
+- Per-model picks with grid position and model score
+- Top ensemble-ranked candidates
+- Direct GitHub links to:
+  - `results/prediction_2026_RXX.csv`
+  - `results/prediction_reports/2026_RXX_<race>.md`
+  - `results/automated_predictions_2026.md`
+  - The specific Actions run
+
 ---
 
 ## Project Structure
