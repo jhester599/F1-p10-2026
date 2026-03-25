@@ -73,7 +73,7 @@ Automated post-qualifying predictions are implemented in:
 
 ### Scheduled behavior
 
-- Workflow polls every 15 minutes.
+- Workflow polls every 15 minutes on Fri/Sat/Sun (UTC).
 - It only executes prediction during the published qualifying window:
   - `qualifying_time + 60 minutes` to `+90 minutes`
 - Published schedule source (f1calendar data backend):

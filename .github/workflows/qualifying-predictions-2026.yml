@@ -13,7 +13,9 @@ on:
         default: false
         type: boolean
   schedule:
-    - cron: "*/15 * * * *"
+    # Poll only on likely qualifying days in UTC (Fri/Sat/Sun).
+    # Script still enforces exact qualifying+1h timing window.
+    - cron: "*/15 * * * 5,6,0"
 
 permissions:
   contents: write

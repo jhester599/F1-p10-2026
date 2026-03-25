@@ -10,7 +10,7 @@ The workflow runs on a schedule, aligns execution to published qualifying times,
 ## Timing Logic
 
 - Source schedule template: `https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json` (f1calendar data source)
-- Scheduled workflow checks every 15 minutes.
+- Scheduled workflow checks every 15 minutes on Fri/Sat/Sun (UTC).
 - On scheduled runs, predictions execute only when current UTC time is inside:
   - `qualifying_time + 60 minutes` to `qualifying_time + 90 minutes`
 - This gives an intended "1 hour after qualifying" run with jitter tolerance.
