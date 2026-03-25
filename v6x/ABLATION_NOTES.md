@@ -132,7 +132,7 @@ Drops 4 features added in v3.96–v4.03:
 
 **What we're testing**: Do these 4 features genuinely help? They were each validated
 individually (+0.18 to +0.26 avg pts on 2024 CV folds), but their collective contribution
-to the ensemble may differ. They come from auxiliary CSV files (data/aux/) rather than the
+to the ensemble may differ. They come from auxiliary CSV files (data/aux_data/) rather than the
 Ergast API, which adds a data dependency risk for 2026.
 
 **Interpretation**:
@@ -198,7 +198,7 @@ Based on `results/feature_importance.csv` (xgb_ranker column):
 | Training data | `data/processed/features_2010_2024.parquet` | Ablations 1–3 |
 | Trained models | `models/*.joblib` | Baseline B |
 | Feature importance | `results/feature_importance.csv` | Ablation 3 (fallback: loaded xgb_ranker) |
-| Aux circuit data | `data/aux/*.csv` | Needed by feature engineering to generate weather features |
+| Aux circuit data | `data/aux_data/*.csv` | Needed by feature engineering to generate weather features |
 
 ---
 
@@ -365,3 +365,4 @@ learns the correct weights for the remaining features.
 
 Ablation model training uses `random_state=42` in all estimators (matches production).
 Results should be deterministic given the same training data and library versions.
+

@@ -93,7 +93,7 @@ F1-p10-2026/
 ├── data/
 │   ├── raw/                    # cached JSON from Jolpica API + FastF1
 │   ├── processed/              # feature parquet files (gitignored)
-│   └── aux/                    # circuit/driver lookup tables (SC, pit stops, etc.)
+│   └── aux_data/               # circuit/driver lookup tables (Windows-safe name)
 │
 ├── models/                     # saved .joblib files (gitignored)
 ├── results/                    # evaluation CSVs and CV checkpoints
@@ -339,7 +339,7 @@ python scripts/01_fetch_data.py --fp-only            # top up FP1/FP2 only
 **Constructor pit times** (`data/processed/constructor_pit_times.parquet`) — covers 2011–2025.
 Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`
 
-**Auxiliary lookup tables** (`data/aux/`) — rebuild with `python scripts/07_build_aux_features.py`.
+**Auxiliary lookup tables** (`data/aux_data/`) — rebuild with `python scripts/07_build_aux_features.py`.
 
 ---
 
@@ -486,3 +486,5 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
    - Use `_safe_pos()` not `int(s["position"])` — Jolpica `positionText` is inconsistent
    - Singapore circuit key is `marina_bay`, not `singapore`
    - Madrid circuit key is likely `madrid` (IFEMA circuit, new 2026)
+
+

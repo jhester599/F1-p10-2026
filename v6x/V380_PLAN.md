@@ -119,10 +119,11 @@ python scripts/04_evaluate_2025.py
 | `scripts/07_build_aux_features.py` | Builds all aux lookup tables |
 | `scripts/08_test_new_features.py` | Phase 1 feature testing (2-model) |
 | `scripts/09_test_features_all_models.py` | Phase 2 feature testing (5-model) |
-| `data/aux/sc_vsc_by_circuit.csv` | SC/VSC rates (FastF1) |
-| `data/aux/pit_stops_by_circuit.csv` | Pit stop counts (Kaggle) |
-| `data/aux/qualifying_history.csv` | Q3/Q2 rates (Kaggle) |
-| `data/aux/dnf_circuit_history.csv` | Collision DNF rates (Kaggle) |
-| `data/aux/dnf_driver_history.csv` | Mechanical DNF rates (Kaggle) |
+| `data/aux_data/sc_vsc_by_circuit.csv` | SC/VSC rates (FastF1) |
+| `data/aux_data/pit_stops_by_circuit.csv` | Pit stop counts (Kaggle) |
+| `data/aux_data/qualifying_history.csv` | Q3/Q2 rates (Kaggle) |
+| `data/aux_data/dnf_circuit_history.csv` | Collision DNF rates (Kaggle) |
+| `data/aux_data/dnf_driver_history.csv` | Mechanical DNF rates (Kaggle) |
 | `scripts/v380_results/feature_test_summary.csv` | Phase 1 results |
 | `scripts/v395_results/feature_test_summary.csv` | Phase 2 results |
+

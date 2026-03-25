@@ -2,7 +2,7 @@
 """
 07_build_aux_features.py — Build auxiliary lookup tables from new data sources.
 
-Creates four CSV files in data/aux/:
+Creates four CSV files in data/aux_data/:
   1. sc_vsc_by_circuit.csv      — SC/VSC deployment rates per circuit per year (FastF1)
   2. pit_stops_by_circuit.csv   — avg pit stop counts per circuit (Kaggle)
   3. qualifying_history.csv     — Q3/Q2 rates per driver per year (Kaggle)
@@ -30,7 +30,7 @@ warnings.filterwarnings("ignore")
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
-AUX_DIR = ROOT / "data" / "aux"
+AUX_DIR = ROOT / "data" / "aux_data"
 AUX_DIR.mkdir(parents=True, exist_ok=True)
 FF1_CACHE = Path("/home/claude/ff1_cache")
 FF1_CACHE.mkdir(parents=True, exist_ok=True)
@@ -483,3 +483,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
