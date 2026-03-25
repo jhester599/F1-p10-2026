@@ -632,12 +632,12 @@ def build_feature_matrix(
     # Tested via scripts/09_test_features_all_models.py (all 5 models: rf_reg,
     # lgb_reg, ridge, rf_clf, xgb_clf; train 2020-2022, test 2023).
     # Accept: avg delta all 5 models > 0 pts/race.
-    # Joined from data/aux/ lookup tables, computed once per circuit/year.
+    # Joined from data/aux_data/ lookup tables, computed once per circuit/year.
 
     # v3.96 + v3.97: circ_vsc_rate (+0.18) and circ_sc_vsc_combined (+0.21).
     # circ_sc_rate alone was DISCARDED (-0.73). VSC rate and combined SC+VSC
     # total disruption index both provide marginal signal via classifiers.
-    _sc_path = Path(__file__).parent.parent / "data" / "aux" / "sc_vsc_by_circuit.csv"
+    _sc_path = Path(__file__).parent.parent / "data" / "aux_data" / "sc_vsc_by_circuit.csv"
     if _sc_path.exists() and "circ_vsc_rate" not in feat_df.columns:
         _sc_df = pd.read_csv(_sc_path)
         _sc_feat = []
@@ -660,7 +660,7 @@ def build_feature_matrix(
 
     # v3.98: circ_avg_pit_stops (+0.19) — avg pit stops per race at this circuit
     # (last 5 years, Kaggle). circ_pit_stop_var was DISCARDED (-1.26 avg).
-    _pit_path = Path(__file__).parent.parent / "data" / "aux" / "pit_stops_by_circuit.csv"
+    _pit_path = Path(__file__).parent.parent / "data" / "aux_data" / "pit_stops_by_circuit.csv"
     if _pit_path.exists() and "circ_avg_pit_stops" not in feat_df.columns:
         _pit_df = pd.read_csv(_pit_path)
         _pit_feat = []
@@ -679,7 +679,7 @@ def build_feature_matrix(
 
     # v4.03: circ_collision_rate (+0.26) — collision/accident DNF rate per
     # driver-start at this circuit (Kaggle status codes).
-    _dnf_circ_path = Path(__file__).parent.parent / "data" / "aux" / "dnf_circuit_history.csv"
+    _dnf_circ_path = Path(__file__).parent.parent / "data" / "aux_data" / "dnf_circuit_history.csv"
     if _dnf_circ_path.exists() and "circ_collision_rate" not in feat_df.columns:
         _cdf = pd.read_csv(_dnf_circ_path)
         if "collision_dnf_rate" in _cdf.columns:
@@ -951,3 +951,5 @@ def build_and_save(years: list[int], fetcher: F1Fetcher, force: bool = False) ->
     feat.to_parquet(out_path, index=False)
     logger.info("Saved feature matrix → %s", out_path)
     return feat
+
+

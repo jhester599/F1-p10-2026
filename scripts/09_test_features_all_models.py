@@ -44,7 +44,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-AUX_DIR   = ROOT / "data" / "aux"
+AUX_DIR   = ROOT / "data" / "aux_data"
 CKPT_DIR  = ROOT / "scripts" / "v395_results"
 CKPT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -541,3 +541,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

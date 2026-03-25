@@ -378,7 +378,7 @@ baseline regression seen in the March 20 rebuild (11.92 vs 14.08).
 
 **Status:** REJECTED (2026-03-20)
 
-**Tested:** `drv_mechanical_dnf_rate` from `data/aux/dnf_driver_history.csv`
+**Tested:** `drv_mechanical_dnf_rate` from `data/aux_data/dnf_driver_history.csv`
 - Baseline: 14.38 (50 features) | With feature: 13.00 | **Delta: -1.38** → REJECTED
 - Root cause: `dnf_rate_last10` already captures the overall reliability signal.
   Splitting by mechanical vs. collision type adds noise rather than discriminating signal.
@@ -806,3 +806,4 @@ Rain forecast for all three days. If wet: Sainz (Williams), Alonso (Aston Martin
     it ignores `self.weights` and uses hardcoded ENSEMBLE_WEIGHTS_EARLY/MID/LATE (v7.1 lesson)
 16. Do not assume architecturally similar models (xgb_ranker + lgbm_ranker) provide ensemble diversity
     — both use learning-to-rank objectives and fail together in chaotic races (v7.1 lesson)
+

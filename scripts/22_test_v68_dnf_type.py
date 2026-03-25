@@ -2,7 +2,7 @@
 """
 v6.8 — Driver Mechanical DNF Rate Feature Test
 
-Tests `drv_mechanical_dnf_rate` from data/aux/dnf_driver_history.csv
+Tests `drv_mechanical_dnf_rate` from data/aux_data/dnf_driver_history.csv
 against the current 50-feature baseline on the 2025 holdout.
 
 This feature distinguishes mechanical DNFs (team/car fault) from racing
@@ -53,7 +53,7 @@ PROMISING_THRESHOLD = 0.20
 CORR_THRESHOLD = 0.75
 REPLACEMENT_MIN_GAIN = 0.10
 
-AUX_PATH = Path(__file__).parent.parent / "data" / "aux" / "dnf_driver_history.csv"
+AUX_PATH = Path(__file__).parent.parent / "data" / "aux_data" / "dnf_driver_history.csv"
 
 
 def set_feature_cols(cols):
@@ -229,3 +229,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

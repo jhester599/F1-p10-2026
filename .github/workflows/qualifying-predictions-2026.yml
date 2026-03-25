@@ -1,0 +1,128 @@
+name: 2026 Qualifying Predictions
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: qualifying-predictions-2026
+  cancel-in-progress: false
+
+jobs:
+  run-automation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Restore processed-data cache
+        id: cache_processed_restore
+        uses: actions/cache/restore@v4
+        with:
+          path: data/processed
+          key: processed-2026-${{ hashFiles('config.py', 'src/feature_engineering.py', 'scripts/02_build_dataset.py', 'requirements-ci.txt') }}
+
+      - name: Restore model-artifact cache
+        id: cache_models_restore
+        uses: actions/cache/restore@v4
+        with:
+          path: models
+          key: models-2026-${{ hashFiles('config.py', 'src/models.py', 'scripts/03_train_models.py', 'requirements-ci.txt') }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-ci.txt
+
+      - name: Run post-qualifying automation
+        id: run_prediction
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            python scripts/65_run_qualifying_automation.py \
+              --year 2026 \
+              --require-schedule-window \
+              --offset-minutes 60 \
+              --window-minutes 30
+          else
+            python scripts/65_run_qualifying_automation.py --year 2026
+          fi
+
+      - name: Upload prediction artifacts
+        if: steps.run_prediction.outputs.new_prediction == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: prediction-2026-r${{ steps.run_prediction.outputs.round }}
+          path: |
+            ${{ steps.run_prediction.outputs.prediction_csv }}
+            ${{ steps.run_prediction.outputs.report_path }}
+            ${{ steps.run_prediction.outputs.season_log }}
+
+      - name: Save processed-data cache
+        if: steps.run_prediction.outputs.new_prediction == 'true' && steps.cache_processed_restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: data/processed
+          key: ${{ steps.cache_processed_restore.outputs.cache-primary-key }}
+
+      - name: Save model-artifact cache
+        if: steps.run_prediction.outputs.new_prediction == 'true' && steps.cache_models_restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: models
+          key: ${{ steps.cache_models_restore.outputs.cache-primary-key }}
+
+      - name: Commit documentation updates
+        if: steps.run_prediction.outputs.new_prediction == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: add 2026 R${{ steps.run_prediction.outputs.round }} qualifying prediction"
+          file_pattern: |
+            results/prediction_2026_R*.csv
+            results/prediction_reports/*.md
+            results/automated_predictions_2026.md
+
+      - name: Send prediction email
+        if: |
+          steps.run_prediction.outputs.new_prediction == 'true' &&
+          secrets.SMTP_SERVER != '' &&
+          secrets.SMTP_PORT != '' &&
+          secrets.SMTP_USERNAME != '' &&
+          secrets.SMTP_PASSWORD != '' &&
+          secrets.PREDICTION_EMAIL_TO != '' &&
+          secrets.PREDICTION_EMAIL_FROM != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: ${{ steps.run_prediction.outputs.email_subject }}
+          to: ${{ secrets.PREDICTION_EMAIL_TO }}
+          from: ${{ secrets.PREDICTION_EMAIL_FROM }}
+          body: ${{ steps.run_prediction.outputs.email_body }}
+
+      - name: Missing email secrets notice
+        if: |
+          steps.run_prediction.outputs.new_prediction == 'true' &&
+          (
+            secrets.SMTP_SERVER == '' ||
+            secrets.SMTP_PORT == '' ||
+            secrets.SMTP_USERNAME == '' ||
+            secrets.SMTP_PASSWORD == '' ||
+            secrets.PREDICTION_EMAIL_TO == '' ||
+            secrets.PREDICTION_EMAIL_FROM == ''
+          )
+        run: |
+          echo "Prediction generated, but email secrets are missing."
+          echo "See docs/GITHUB_ACTIONS_AUTOMATION.md for required secrets."

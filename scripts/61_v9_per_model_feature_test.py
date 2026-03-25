@@ -254,7 +254,7 @@ def add_derived_features(df):
 
 def add_aux_features(df):
     """Add auxiliary data features (SC rate, pit stop variance, P10 grid chaos)."""
-    aux_dir = Path(__file__).parent.parent / "data" / "aux"
+    aux_dir = Path(__file__).parent.parent / "data" / "aux_data"
 
     # circ_sc_rate from sc_vsc_by_circuit.csv
     if "circ_sc_rate" not in df.columns:
@@ -528,3 +528,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

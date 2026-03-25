@@ -655,7 +655,7 @@ invisible to the current model.
 
 ### Change
 Add two features computed from historical pit stop data (already partly sourced
-from Kaggle in `data/aux/pit_stops_by_circuit.csv`):
+from Kaggle in `data/aux_data/pit_stops_by_circuit.csv`):
 
 ```python
 # Per constructor, rolling 10-race window:
@@ -835,3 +835,4 @@ The naive `grid_p10` strategy scores 14.04 avg pts/race because:
 Features in v5.2–v5.6 directly target all four of these scenarios.
 The qualifying session analysis in v5.2 specifically targets the grid-penalty scenario,
 which is both the most frequent and the most egregious failure mode of the current models.
+

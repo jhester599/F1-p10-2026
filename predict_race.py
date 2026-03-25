@@ -410,7 +410,7 @@ def build_live_features(
                 feat_df.loc[feat_df["driver_id"] == did, "q2_elimination_margin"] = max(0.0, margin)
 
     # ── v3.95–v4.03: circuit-level features from aux tables ──────────────────
-    _aux_dir = Path(__file__).parent / "data" / "aux"
+    _aux_dir = Path(__file__).parent / "data" / "aux_data"
     _sc_path = _aux_dir / "sc_vsc_by_circuit.csv"
     if _sc_path.exists():
         _sc_df = pd.read_csv(_sc_path)
@@ -636,3 +636,4 @@ Examples:
 
 if __name__ == "__main__":
     main()
+
