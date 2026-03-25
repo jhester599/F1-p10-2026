@@ -64,6 +64,58 @@ and dependency pinning) are documented in
 
 ---
 
+## GitHub Actions Automation
+
+Automated post-qualifying predictions are implemented in:
+
+- Workflow: `.github/workflows/qualifying-predictions-2026.yml`
+- Runner script: `scripts/65_run_qualifying_automation.py`
+
+### Scheduled behavior
+
+- Workflow polls every 15 minutes.
+- It only executes prediction during the published qualifying window:
+  - `qualifying_time + 60 minutes` to `+90 minutes`
+- Published schedule source (f1calendar data backend):
+  - `https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json`
+
+### Manual test mode
+
+The workflow supports manual dispatch inputs for testing specific rounds:
+
+- `round_override` (example: `2` for China)
+- `force_rerun` (reruns even if output for that round already exists)
+
+Example manual run request:
+
+- `round_override=2`
+- `force_rerun=true`
+
+### Outputs
+
+When a prediction run executes, it generates:
+
+- `results/prediction_2026_RXX.csv`
+- `results/prediction_reports/2026_RXX_<race>.md`
+- `results/automated_predictions_2026.md`
+
+The workflow uploads artifacts and commits these files back to the repo.
+
+### Required secrets for email delivery
+
+Add these in `Settings -> Secrets and variables -> Actions`:
+
+- `SMTP_SERVER`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `PREDICTION_EMAIL_FROM`
+- `PREDICTION_EMAIL_TO`
+
+If secrets are missing, prediction files still generate and commit; email is skipped.
+
+---
+
 ## Project Structure
 
 ```
