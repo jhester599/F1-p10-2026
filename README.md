@@ -477,8 +477,8 @@ Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`
 
 **Auxiliary lookup tables** (`data/aux_data/`) — rebuild with `python scripts/07_build_aux_features.py`.
 
-**CI dependency lock** (`requirements-ci.txt`) — pinned package versions for reproducible
-GitHub Actions runs. Local development can still use `requirements.txt`.
+**Optional CI dependency lock snapshot** (`requirements-ci.txt`) is kept for reference,
+but workflow installs currently use `requirements.txt` + `pyarrow` for training compatibility.
 
 ---
 

@@ -4,7 +4,6 @@ This repository now includes:
 
 - Workflow: `.github/workflows/qualifying-predictions-2026.yml`
 - Runner script: `scripts/65_run_qualifying_automation.py`
-- CI dependency lock: `requirements-ci.txt`
 
 The workflow runs on a schedule, aligns execution to published qualifying times, generates model predictions, documents them, commits the generated files, and emails the summary.
 
@@ -21,6 +20,11 @@ The workflow runs on a schedule, aligns execution to published qualifying times,
 - `data/processed/` is restored/saved via `actions/cache` to avoid rebuilding feature parquets every run.
 - `models/` is restored/saved via `actions/cache` to avoid retraining when model code and dependencies are unchanged.
 - Cache keys include relevant script/config hashes to invalidate safely when feature/model logic changes.
+
+## Dependency Install Strategy
+
+- Workflow currently installs from `requirements.txt` + `pyarrow` for compatibility with training/calibration paths.
+- `requirements-ci.txt` is kept in-repo as an optional lock snapshot, but is not the default installer in workflow.
 
 ## Required GitHub Secrets
 
