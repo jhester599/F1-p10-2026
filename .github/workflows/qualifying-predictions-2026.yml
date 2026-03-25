@@ -110,15 +110,25 @@ jobs:
             results/prediction_reports/*.md
             results/automated_predictions_2026.md
 
+      - name: Check email secret configuration
+        id: email_cfg
+        if: steps.run_prediction.outputs.new_prediction == 'true'
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          PREDICTION_EMAIL_TO: ${{ secrets.PREDICTION_EMAIL_TO }}
+          PREDICTION_EMAIL_FROM: ${{ secrets.PREDICTION_EMAIL_FROM }}
+        run: |
+          if [ -n "$SMTP_SERVER" ] && [ -n "$SMTP_PORT" ] && [ -n "$SMTP_USERNAME" ] && [ -n "$SMTP_PASSWORD" ] && [ -n "$PREDICTION_EMAIL_TO" ] && [ -n "$PREDICTION_EMAIL_FROM" ]; then
+            echo "email_ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "email_ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Send prediction email
-        if: |
-          steps.run_prediction.outputs.new_prediction == 'true' &&
-          secrets.SMTP_SERVER != '' &&
-          secrets.SMTP_PORT != '' &&
-          secrets.SMTP_USERNAME != '' &&
-          secrets.SMTP_PASSWORD != '' &&
-          secrets.PREDICTION_EMAIL_TO != '' &&
-          secrets.PREDICTION_EMAIL_FROM != ''
+        if: steps.run_prediction.outputs.new_prediction == 'true' && steps.email_cfg.outputs.email_ready == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
@@ -131,16 +141,7 @@ jobs:
           body: ${{ steps.run_prediction.outputs.email_body }}
 
       - name: Missing email secrets notice
-        if: |
-          steps.run_prediction.outputs.new_prediction == 'true' &&
-          (
-            secrets.SMTP_SERVER == '' ||
-            secrets.SMTP_PORT == '' ||
-            secrets.SMTP_USERNAME == '' ||
-            secrets.SMTP_PASSWORD == '' ||
-            secrets.PREDICTION_EMAIL_TO == '' ||
-            secrets.PREDICTION_EMAIL_FROM == ''
-          )
+        if: steps.run_prediction.outputs.new_prediction == 'true' && steps.email_cfg.outputs.email_ready == 'false'
         run: |
           echo "Prediction generated, but email secrets are missing."
           echo "See docs/GITHUB_ACTIONS_AUTOMATION.md for required secrets."
