@@ -45,6 +45,13 @@ jobs:
           path: data/processed
           key: processed-2026-${{ hashFiles('config.py', 'src/feature_engineering.py', 'scripts/02_build_dataset.py', 'requirements.txt') }}
 
+      - name: Restore raw-cache extraction
+        id: cache_raw_restore
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw
+          key: rawcache-2026-${{ hashFiles('f1_data_cache_2026-03-09.zip') }}
+
       - name: Restore model-artifact cache
         id: cache_models_restore
         uses: actions/cache/restore@v4
@@ -94,6 +101,13 @@ jobs:
         with:
           path: data/processed
           key: ${{ steps.cache_processed_restore.outputs.cache-primary-key }}
+
+      - name: Save raw-cache extraction
+        if: steps.run_prediction.outputs.new_prediction == 'true' && steps.cache_raw_restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw
+          key: ${{ steps.cache_raw_restore.outputs.cache-primary-key }}
 
       - name: Save model-artifact cache
         if: steps.run_prediction.outputs.new_prediction == 'true' && steps.cache_models_restore.outputs.cache-hit != 'true'

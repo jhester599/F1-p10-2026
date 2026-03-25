@@ -78,6 +78,11 @@ class F1Fetcher:
             except json.JSONDecodeError:
                 cp.unlink(missing_ok=True)
 
+        # CI/offline mode: do not hit live API if cache entry is missing.
+        if os.getenv("F1_FETCH_CACHE_ONLY", "0") == "1":
+            logger.debug("Cache-only mode: missing %s, skipping live request", cp.name)
+            return None
+
         url = f"{JOLPICA_BASE}/{path}.json?limit=1000"
         backoff = 2
         for attempt in range(MAX_RETRIES):

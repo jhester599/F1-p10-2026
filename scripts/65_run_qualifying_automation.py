@@ -61,9 +61,12 @@ def set_output(name: str, value: str) -> None:
             f.write(f"{name}={value}\n")
 
 
-def run_cmd(args: list[str]) -> None:
+def run_cmd(args: list[str], extra_env: dict[str, str] | None = None) -> None:
     logger.info("Running: %s", " ".join(args))
-    subprocess.run(args, check=True, cwd=ROOT)
+    env = os.environ.copy()
+    if extra_env:
+        env.update(extra_env)
+    subprocess.run(args, check=True, cwd=ROOT, env=env)
 
 
 def sanitize_slug(text: str) -> str:
@@ -150,13 +153,24 @@ def ensure_processed_data() -> None:
         return
     raw_dir = ROOT / "data" / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
-    if not any(raw_dir.glob("*.json")):
+    json_count_before = len(list(raw_dir.glob("*.json")))
+    if json_count_before == 0:
         cache_zip = ROOT / "f1_data_cache_2026-03-09.zip"
         if cache_zip.exists():
             logger.info("Restoring raw cache from %s", cache_zip.name)
             with zipfile.ZipFile(cache_zip, "r") as zf:
                 zf.extractall(raw_dir)
-    run_cmd([sys.executable, "scripts/02_build_dataset.py", "--years", "2010", "2025"])
+    json_count_after = len(list(raw_dir.glob("*.json")))
+    if json_count_after == 0:
+        raise RuntimeError(
+            "No raw JSON cache available in data/raw and cache zip missing/empty. "
+            "Refusing live API rebuild to avoid rate-limit timeouts."
+        )
+    logger.info("Raw cache entries available: %d JSON files", json_count_after)
+    run_cmd(
+        [sys.executable, "scripts/02_build_dataset.py", "--years", "2010", "2025"],
+        extra_env={"F1_FETCH_CACHE_ONLY": "1"},
+    )
 
 
 def ensure_models() -> None:
