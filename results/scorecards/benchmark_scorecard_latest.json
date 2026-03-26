@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-26 14:57 UTC",
+  "generated_at_utc": "2026-03-26 15:39 UTC",
   "locked_baselines": {
     "v8_23_2025_holdout_avg_pts": 14.21,
     "v9_x_current_target": "balanced: optimize holdout + live without regressions"
@@ -8,37 +8,37 @@
     "holdout_2025": {
       "status": "ok",
       "source": "results/eval_2025_summary.csv",
-      "ensemble_avg_pts": 13.33,
+      "ensemble_avg_pts": 13.58,
       "top_models": [
         {
           "model": "ensemble",
-          "avg_pts": 13.33,
-          "exact_pct": 12.5,
+          "avg_pts": 13.58,
+          "exact_pct": 8.3,
+          "within_2_pct": 58.3
+        },
+        {
+          "model": "rf_clf",
+          "avg_pts": 13.5,
+          "exact_pct": 8.3,
           "within_2_pct": 54.2
         },
         {
-          "model": "lgb_reg",
-          "avg_pts": 12.58,
+          "model": "xgb_clf",
+          "avg_pts": 12.88,
           "exact_pct": 12.5,
+          "within_2_pct": 41.7
+        },
+        {
+          "model": "lgbm_ranker",
+          "avg_pts": 12.21,
+          "exact_pct": 8.3,
           "within_2_pct": 50.0
         },
         {
           "model": "xgb_ranker",
-          "avg_pts": 12.5,
+          "avg_pts": 12.17,
           "exact_pct": 12.5,
-          "within_2_pct": 54.2
-        },
-        {
-          "model": "rf_clf",
-          "avg_pts": 11.67,
-          "exact_pct": 8.3,
-          "within_2_pct": 37.5
-        },
-        {
-          "model": "xgb_reg",
-          "avg_pts": 10.67,
-          "exact_pct": 4.2,
-          "within_2_pct": 25.0
+          "within_2_pct": 50.0
         }
       ]
     },
