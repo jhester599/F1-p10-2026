@@ -1,0 +1,98 @@
+{
+  "generated_at_utc": "2026-03-26 15:52 UTC",
+  "year": 2025,
+  "write_baseline": false,
+  "baseline_path": "results/scorecards/candidate_a_baseline.json",
+  "files": {
+    "prob_driver_level": "results/candidate_a/candidate_a_prob_driver_level.csv",
+    "calibration_summary": "results/candidate_a/candidate_a_calibration_summary.csv",
+    "reliability_bins": "results/candidate_a/candidate_a_reliability_bins.csv",
+    "ranking_summary": "results/candidate_a/candidate_a_ranking_summary.csv"
+  },
+  "gates": {
+    "status": "evaluated",
+    "pass": true,
+    "checks": [
+      {
+        "model": "rf_clf",
+        "category": "calibration",
+        "metric": "brier",
+        "delta": 0.0,
+        "threshold": 0.002,
+        "pass": true
+      },
+      {
+        "model": "rf_clf",
+        "category": "calibration",
+        "metric": "top_pick_hit_rate",
+        "delta": 0.0,
+        "threshold": -0.02,
+        "pass": true
+      },
+      {
+        "model": "xgb_clf",
+        "category": "calibration",
+        "metric": "brier",
+        "delta": 0.0,
+        "threshold": 0.002,
+        "pass": true
+      },
+      {
+        "model": "xgb_clf",
+        "category": "calibration",
+        "metric": "top_pick_hit_rate",
+        "delta": 0.0,
+        "threshold": -0.02,
+        "pass": true
+      },
+      {
+        "model": "ensemble",
+        "category": "ranking",
+        "metric": "mean_actual_p10_rank",
+        "delta": 0.0,
+        "threshold": 0.5,
+        "pass": true
+      },
+      {
+        "model": "ensemble",
+        "category": "ranking",
+        "metric": "mean_ndcg_at_5",
+        "delta": 0.0,
+        "threshold": -0.01,
+        "pass": true
+      },
+      {
+        "model": "lgbm_ranker",
+        "category": "ranking",
+        "metric": "mean_actual_p10_rank",
+        "delta": 0.0,
+        "threshold": 0.5,
+        "pass": true
+      },
+      {
+        "model": "lgbm_ranker",
+        "category": "ranking",
+        "metric": "mean_ndcg_at_5",
+        "delta": 0.0,
+        "threshold": -0.01,
+        "pass": true
+      },
+      {
+        "model": "xgb_ranker",
+        "category": "ranking",
+        "metric": "mean_actual_p10_rank",
+        "delta": 0.0,
+        "threshold": 0.5,
+        "pass": true
+      },
+      {
+        "model": "xgb_ranker",
+        "category": "ranking",
+        "metric": "mean_ndcg_at_5",
+        "delta": 0.0,
+        "threshold": -0.01,
+        "pass": true
+      }
+    ]
+  }
+}

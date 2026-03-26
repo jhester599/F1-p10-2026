@@ -60,6 +60,23 @@ Exit criteria:
 - Scorecards are generated in one command.
 - Missing local artifacts are reported clearly without blocking repo checks.
 
+### Phase 3A - Candidate A Diagnostic Harness (Implemented)
+Owner: Repo maintainer
+
+1. Use `scripts/91_candidate_a_calibration_robustness.py` to compute:
+   - classifier probability quality (Brier/log-loss/ECE, top-pick hit rate)
+   - ranking robustness (`actual_p10` rank, top-1 hit rate, NDCG@5)
+2. Persist the baseline gate reference in:
+   - `results/scorecards/candidate_a_baseline.json`
+3. Persist latest diagnostics in:
+   - `results/candidate_a/`
+4. Enforce Candidate A gates in repo sanity workflow.
+
+Exit criteria:
+- Candidate A diagnostics run from cached artifacts without retraining.
+- Gate report is reproducible and available as JSON/Markdown outputs.
+- CI can fail on material regressions when `--enforce-gates` is enabled.
+
 ### Phase 4 — Model Enhancement Program (No External Research Refresh Yet)
 Owner: Repo maintainer
 

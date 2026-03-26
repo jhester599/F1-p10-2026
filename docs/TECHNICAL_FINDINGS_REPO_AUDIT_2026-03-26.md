@@ -18,6 +18,7 @@
 | F-004 | P2 | No repeatable benchmark scorecard harness existed for current artifact state. | Re-running full dataset/eval depends on heavy local data presence and can timeout. | **Fixed**: added artifact-first `scripts/90_benchmark_scorecards.py` and scorecard outputs. |
 | F-005 | P3 | Broad `sys.path.insert` usage increased import coupling/noise. | Present across many scripts and some core modules. | **Partially fixed**: hardened active core modules to avoid unconditional duplicate path insertion; full packaging cleanup deferred. |
 | F-006 | P3 | Placeholder and duplicate marker docs add low signal in active navigation. | Multiple one-line placeholders and archive mirrors. | **Accepted**: retained placeholders for directory intent, classified explicitly in matrix below. |
+| F-007 | P2 | LightGBM inference produced repeated feature-name warnings in prediction/evaluation paths. | `LGBMRegressor`/`LGBMRanker` persisted `feature_names_in_`; ndarray prediction emitted warning noise. | **Fixed**: added inference input normalization in `src/models.py` to provide named DataFrame inputs when required. |
 
 ## Documentation Classification Matrix
 
@@ -45,6 +46,8 @@ Classification legend:
 | `v6x/scripts/v395_results/v395_results.md` | placeholder | Archive mirror marker. |
 | `v6x/data/data/delete.md` | placeholder | Archive-only placeholder. |
 | `RACE_PREDICTIONS.md` | generated | Ongoing race prediction log. |
+| `results/scorecards/benchmark_scorecard_latest.md` | generated | Latest benchmark scorecard snapshot output. |
+| `results/candidate_a/candidate_a_gate_report.md` | generated | Candidate A gate summary output. |
 | `results/seasonal_performance_analysis.md` | generated | Generated analysis output. |
 | `scripts/v5_results/V5_RESULTS.md` | generated | Versioned results log. |
 | `v6x/scripts/v5_results/V5_RESULTS.md` | generated | Archive mirror of results log. |
@@ -79,6 +82,9 @@ Classification legend:
   - `pytest -q`
   - `python -m py_compile ...` via CI sanity workflow.
 - Active runtime imports in core modules now avoid unconditional duplicate path insertion.
+- Candidate A diagnostics now have a reproducible script + baseline gate artifact:
+  - `scripts/91_candidate_a_calibration_robustness.py`
+  - `results/scorecards/candidate_a_baseline.json`
 
 ## Remaining Follow-Ups (Planned)
 - Continue reducing `sys.path` coupling in non-core experimentation scripts as a separate cleanup batch.
