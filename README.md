@@ -91,11 +91,18 @@ python scripts/91_candidate_a_calibration_robustness.py --year 2025 --write-base
 python scripts/91_candidate_a_calibration_robustness.py --year 2025 --enforce-gates
 ```
 
+Cycle 1 sweep (nearby ensemble weights, cache-first):
+
+```bash
+python scripts/92_candidate_a_weight_sweep.py --year 2025 --multipliers 0.7,1.0,1.3
+```
+
 Outputs:
 
 - `results/candidate_a/candidate_a_calibration_summary.csv`
 - `results/candidate_a/candidate_a_ranking_summary.csv`
 - `results/candidate_a/candidate_a_gate_report.{json,md}`
+- `results/candidate_a/candidate_a_weight_sweep_recommendation.{json,md}`
 - `results/scorecards/candidate_a_baseline.json`
 
 PR sanity validation is defined in `.github/workflows/repo-sanity.yml`.

@@ -1,6 +1,6 @@
 # Candidate A Gate Report
 
-- Generated: 2026-03-26 15:52 UTC
+- Generated: 2026-03-26 16:13 UTC
 - Eval year: 2025
 - Baseline path: `results/scorecards/candidate_a_baseline.json`
 - Gate status: `evaluated`

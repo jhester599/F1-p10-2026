@@ -83,6 +83,9 @@ Owner: Repo maintainer
 Candidate A — Ranking/calibration robustness:
 - Validate ranking consistency and classifier probability behavior.
 - Prioritize changes that improve model reliability near the P10 boundary.
+- Cycle 1 status: implemented `scripts/92_candidate_a_weight_sweep.py` and generated
+  `results/candidate_a/candidate_a_weight_sweep_recommendation.{json,md}` as a
+  promotion candidate input.
 
 Candidate B — Season-stage weighting recalibration:
 - Re-test stage weight logic using current baselines and anti-overfit gates.

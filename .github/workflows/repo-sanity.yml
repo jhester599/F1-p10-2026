@@ -28,7 +28,7 @@ jobs:
         run: |
           python -m py_compile config.py predict_race.py run_pipeline.py
           python -m py_compile src/data_fetch.py src/feature_engineering.py src/models.py src/scoring.py
-          python -m py_compile scripts/65_run_qualifying_automation.py scripts/90_benchmark_scorecards.py scripts/91_candidate_a_calibration_robustness.py
+          python -m py_compile scripts/65_run_qualifying_automation.py scripts/90_benchmark_scorecards.py scripts/91_candidate_a_calibration_robustness.py scripts/92_candidate_a_weight_sweep.py
 
       - name: Validate pytest collection
         run: pytest --collect-only -q

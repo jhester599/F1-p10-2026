@@ -85,6 +85,9 @@ Classification legend:
 - Candidate A diagnostics now have a reproducible script + baseline gate artifact:
   - `scripts/91_candidate_a_calibration_robustness.py`
   - `results/scorecards/candidate_a_baseline.json`
+- Candidate A cycle-1 weight sweep artifacts now exist:
+  - `scripts/92_candidate_a_weight_sweep.py`
+  - `results/candidate_a/candidate_a_weight_sweep_recommendation.md`
 
 ## Remaining Follow-Ups (Planned)
 - Continue reducing `sys.path` coupling in non-core experimentation scripts as a separate cleanup batch.
