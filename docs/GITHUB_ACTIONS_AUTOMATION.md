@@ -14,6 +14,8 @@ The workflow runs on a schedule, aligns execution to published qualifying times,
 - On scheduled runs, predictions execute only when current UTC time is inside:
   - `qualifying_time + 60 minutes` to `qualifying_time + 90 minutes`
 - This keeps an intended "1 hour after qualifying" run with jitter tolerance while reducing non-race polling.
+- A preflight gate runs before Python dependency setup:
+  - If the round CSV already exists (for example, `+60` run already completed), the `+75` and `+90` jobs skip gracefully.
 - Note: GitHub cron has no year field. The workflow is effectively 2026-specific because the runner script gates execution against the 2026 published schedule window.
 - Reference schedule export: `docs/2026_qualifying_workflow_windows.csv`
 

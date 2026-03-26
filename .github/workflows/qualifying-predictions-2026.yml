@@ -164,13 +164,81 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Preflight run gate
+        id: preflight
+        run: |
+          python3 - <<'PY'
+          import json
+          from datetime import datetime, timezone, timedelta
+          from pathlib import Path
+          from urllib.request import urlopen
+          import os
+
+          event_name = os.getenv("GITHUB_EVENT_NAME", "")
+          out_path = os.getenv("GITHUB_OUTPUT")
+
+          def set_output(name: str, value: str) -> None:
+              if not out_path:
+                  return
+              with open(out_path, "a", encoding="utf-8") as f:
+                  f.write(f"{name}={value}\n")
+
+          # Manual dispatch should always proceed; override logic lives in runner script.
+          if event_name != "schedule":
+              set_output("run_full", "true")
+              set_output("skip_reason", "")
+              raise SystemExit(0)
+
+          year = 2026
+          schedule_url = f"https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json"
+          now = datetime.now(timezone.utc)
+          offset_minutes = 60
+          window_minutes = 30
+
+          with urlopen(schedule_url, timeout=30) as resp:
+              payload = json.loads(resp.read().decode("utf-8"))
+
+          in_window_round = None
+          for race in payload.get("races", []):
+              if race.get("canceled"):
+                  continue
+              q = race.get("sessions", {}).get("qualifying")
+              if not q:
+                  continue
+              qdt = datetime.fromisoformat(q.replace("Z", "+00:00"))
+              run_start = qdt + timedelta(minutes=offset_minutes)
+              run_end = run_start + timedelta(minutes=window_minutes)
+              if run_start <= now <= run_end:
+                  in_window_round = int(race["round"])
+                  break
+
+          if in_window_round is None:
+              set_output("run_full", "false")
+              set_output("skip_reason", "Not in qualifying+60..+90 window.")
+              raise SystemExit(0)
+
+          out_csv = Path(f"results/prediction_{year}_R{in_window_round:02d}.csv")
+          if out_csv.exists():
+              set_output("run_full", "false")
+              set_output(
+                  "skip_reason",
+                  f"Prediction already exists for {year} R{in_window_round:02d}; likely completed on earlier cron slot.",
+              )
+              raise SystemExit(0)
+
+          set_output("run_full", "true")
+          set_output("skip_reason", "")
+          PY
+
       - name: Setup Python
+        if: steps.preflight.outputs.run_full == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
       - name: Restore processed-data cache
+        if: steps.preflight.outputs.run_full == 'true'
         id: cache_processed_restore
         uses: actions/cache/restore@v4
         with:
@@ -178,6 +246,7 @@ jobs:
           key: processed-2026-${{ hashFiles('config.py', 'src/feature_engineering.py', 'scripts/02_build_dataset.py', 'requirements.txt') }}
 
       - name: Restore raw-cache extraction
+        if: steps.preflight.outputs.run_full == 'true'
         id: cache_raw_restore
         uses: actions/cache/restore@v4
         with:
@@ -185,6 +254,7 @@ jobs:
           key: rawcache-2026-${{ hashFiles('f1_data_cache_2026-03-09.zip') }}
 
       - name: Restore model-artifact cache
+        if: steps.preflight.outputs.run_full == 'true'
         id: cache_models_restore
         uses: actions/cache/restore@v4
         with:
@@ -192,11 +262,13 @@ jobs:
           key: models-2026-${{ hashFiles('config.py', 'src/models.py', 'scripts/03_train_models.py', 'requirements.txt') }}
 
       - name: Install dependencies
+        if: steps.preflight.outputs.run_full == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt pyarrow
 
       - name: Run post-qualifying automation
+        if: steps.preflight.outputs.run_full == 'true'
         id: run_prediction
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
@@ -216,6 +288,12 @@ jobs:
             echo "Running: $CMD"
             eval "$CMD"
           fi
+
+      - name: Preflight skip notice
+        if: steps.preflight.outputs.run_full != 'true'
+        run: |
+          echo "Skipping full automation run."
+          echo "Reason: ${{ steps.preflight.outputs.skip_reason }}"
 
       - name: Upload prediction artifacts
         if: steps.run_prediction.outputs.new_prediction == 'true'

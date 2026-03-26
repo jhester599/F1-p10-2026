@@ -79,6 +79,8 @@ Automated post-qualifying predictions are implemented in:
   - `qualifying_time + 90 minutes`
 - The runner still executes prediction only inside the published qualifying window:
   - `qualifying_time + 60 minutes` to `+90 minutes`
+- A workflow preflight gate checks whether the round output CSV already exists.
+  - If `+60` run already succeeded, `+75`/`+90` runs skip before dependency install/training.
 - Published schedule source (f1calendar data backend):
   - `https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json`
 - Reference schedule export:
