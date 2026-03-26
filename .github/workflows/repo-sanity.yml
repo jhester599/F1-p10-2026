@@ -6,6 +6,9 @@ on:
     branches:
       - claude/f1-tenth-place-predictor
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   sanity:
     runs-on: ubuntu-latest
