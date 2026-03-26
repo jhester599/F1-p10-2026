@@ -127,3 +127,17 @@ This document records structural decisions made for CI reliability, Windows comp
 - Added `scripts/94_candidate_b_stage_weight_sweep.py`.
 - Added results artifacts under `results/candidate_b/`.
 - Promotion status is documented in `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md`.
+
+## 10) Candidate A cycle-1 sweep tooling (no auto-promotion)
+
+### Decision
+- Add Candidate A cycle-1 sweep tooling and keep weight promotion manual/deferred.
+
+### Why
+- Candidate A requires reproducible local search artifacts before any production ensemble weight change.
+- Retrain-time drift risk means promotion cannot be automatic.
+
+### Impact
+- Added `scripts/92_candidate_a_weight_sweep.py`.
+- Added results artifacts under `results/candidate_a/`.
+- Promotion status is documented in `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md`.

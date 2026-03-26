@@ -63,6 +63,7 @@ Canonical planning and audit documents:
 - `docs/DEVELOPMENT_PLAN_REPO_REVIEW_2026-03-26.md` (current forward plan)
 - `docs/TECHNICAL_FINDINGS_REPO_AUDIT_2026-03-26.md` (latest audit and doc classification matrix)
 - `docs/REPO_DECISIONS_2026-03-25.md` (structural repo decisions)
+- `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md` (Candidate A cycle-1 status and promotion decision)
 - `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md` (Candidate B cycle-1 status and promotion decision)
 
 Historical plans/reports are preserved for context. The `v6x/` tree is treated as
@@ -92,11 +93,18 @@ python scripts/91_candidate_a_calibration_robustness.py --year 2025 --write-base
 python scripts/91_candidate_a_calibration_robustness.py --year 2025 --enforce-gates
 ```
 
+Cycle-1 weight sweep:
+
+```bash
+python scripts/92_candidate_a_weight_sweep.py --year 2025 --multipliers 0.7,1.0,1.3
+```
+
 Outputs:
 
 - `results/candidate_a/candidate_a_calibration_summary.csv`
 - `results/candidate_a/candidate_a_ranking_summary.csv`
 - `results/candidate_a/candidate_a_gate_report.{json,md}`
+- `results/candidate_a/candidate_a_weight_sweep_recommendation.{json,md}`
 - `results/scorecards/candidate_a_baseline.json`
 
 Candidate B stage recalibration sweep:
