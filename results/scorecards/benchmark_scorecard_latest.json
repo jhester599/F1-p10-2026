@@ -1,0 +1,132 @@
+{
+  "generated_at_utc": "2026-03-26 14:57 UTC",
+  "locked_baselines": {
+    "v8_23_2025_holdout_avg_pts": 14.21,
+    "v9_x_current_target": "balanced: optimize holdout + live without regressions"
+  },
+  "scorecards": {
+    "holdout_2025": {
+      "status": "ok",
+      "source": "results/eval_2025_summary.csv",
+      "ensemble_avg_pts": 13.33,
+      "top_models": [
+        {
+          "model": "ensemble",
+          "avg_pts": 13.33,
+          "exact_pct": 12.5,
+          "within_2_pct": 54.2
+        },
+        {
+          "model": "lgb_reg",
+          "avg_pts": 12.58,
+          "exact_pct": 12.5,
+          "within_2_pct": 50.0
+        },
+        {
+          "model": "xgb_ranker",
+          "avg_pts": 12.5,
+          "exact_pct": 12.5,
+          "within_2_pct": 54.2
+        },
+        {
+          "model": "rf_clf",
+          "avg_pts": 11.67,
+          "exact_pct": 8.3,
+          "within_2_pct": 37.5
+        },
+        {
+          "model": "xgb_reg",
+          "avg_pts": 10.67,
+          "exact_pct": 4.2,
+          "within_2_pct": 25.0
+        }
+      ]
+    },
+    "rolling_cv": {
+      "status": "ok",
+      "source": "results/cv_results.csv",
+      "top_models": [
+        {
+          "model": "ridge",
+          "avg_fantasy_pts": 14.208333333333334
+        },
+        {
+          "model": "ensemble",
+          "avg_fantasy_pts": 13.083333333333334
+        },
+        {
+          "model": "xgb_ranker",
+          "avg_fantasy_pts": 12.916666666666666
+        },
+        {
+          "model": "xgb_reg",
+          "avg_fantasy_pts": 12.416666666666666
+        },
+        {
+          "model": "rf_reg",
+          "avg_fantasy_pts": 12.25
+        }
+      ]
+    },
+    "live_2026": {
+      "status": "ok",
+      "source": "results/2026_live_log.csv",
+      "rounds_present": [
+        1,
+        2
+      ],
+      "model_averages": [
+        {
+          "model": "xgb_clf",
+          "avg_fantasy_pts": 18.333333333333332
+        },
+        {
+          "model": "ensemble",
+          "avg_fantasy_pts": 13.75
+        },
+        {
+          "model": "xgb_ranker",
+          "avg_fantasy_pts": 13.75
+        },
+        {
+          "model": "lgbm_ranker",
+          "avg_fantasy_pts": 13.5
+        },
+        {
+          "model": "xgb_reg",
+          "avg_fantasy_pts": 13.333333333333334
+        },
+        {
+          "model": "naive_grid_p10",
+          "avg_fantasy_pts": 13.0
+        },
+        {
+          "model": "rf_reg",
+          "avg_fantasy_pts": 11.0
+        },
+        {
+          "model": "rf_clf",
+          "avg_fantasy_pts": 10.0
+        },
+        {
+          "model": "lgb_reg",
+          "avg_fantasy_pts": 9.333333333333334
+        },
+        {
+          "model": "ridge",
+          "avg_fantasy_pts": 5.0
+        }
+      ]
+    },
+    "latest_automation_output": {
+      "status": "ok",
+      "source": "results/prediction_2026_R02.csv",
+      "recommended": {
+        "driver_id": "hadjar",
+        "constructor_id": "red_bull",
+        "grid_position": 9.0,
+        "vote_count": 4
+      }
+    }
+  }
+}
