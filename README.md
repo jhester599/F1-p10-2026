@@ -73,11 +73,16 @@ Automated post-qualifying predictions are implemented in:
 
 ### Scheduled behavior
 
-- Workflow polls every 15 minutes on Fri/Sat/Sun (UTC).
-- It only executes prediction during the published qualifying window:
+- Workflow now uses explicit 2026 race-date cron entries (UTC), scheduled at:
+  - `qualifying_time + 60 minutes`
+  - `qualifying_time + 75 minutes`
+  - `qualifying_time + 90 minutes`
+- The runner still executes prediction only inside the published qualifying window:
   - `qualifying_time + 60 minutes` to `+90 minutes`
 - Published schedule source (f1calendar data backend):
   - `https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json`
+- Reference schedule export:
+  - `docs/2026_qualifying_workflow_windows.csv`
 
 ### Manual test mode
 

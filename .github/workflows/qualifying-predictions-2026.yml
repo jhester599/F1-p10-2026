@@ -13,9 +13,141 @@ on:
         default: false
         type: boolean
   schedule:
-    # Poll only on likely qualifying days in UTC (Fri/Sat/Sun).
-    # Script still enforces exact qualifying+1h timing window.
-    - cron: "*/15 * * * 5,6,0"
+    # 2026-specific explicit schedule windows (qualifying +60/+75/+90 minutes, UTC).
+    # Note: GitHub cron has no year field; these entries will still trigger in future years,
+    # but the runner script gates execution against the 2026 published schedule window.
+    # R01 Australian +60m
+    - cron: "0 6 7 3 *"
+    # R01 Australian +75m
+    - cron: "15 6 7 3 *"
+    # R01 Australian +90m
+    - cron: "30 6 7 3 *"
+    # R02 Chinese +60m
+    - cron: "0 8 14 3 *"
+    # R02 Chinese +75m
+    - cron: "15 8 14 3 *"
+    # R02 Chinese +90m
+    - cron: "30 8 14 3 *"
+    # R03 Japanese +60m
+    - cron: "0 7 28 3 *"
+    # R03 Japanese +75m
+    - cron: "15 7 28 3 *"
+    # R03 Japanese +90m
+    - cron: "30 7 28 3 *"
+    # R04 Miami +60m
+    - cron: "0 21 2 5 *"
+    # R04 Miami +75m
+    - cron: "15 21 2 5 *"
+    # R04 Miami +90m
+    - cron: "30 21 2 5 *"
+    # R05 Canadian +60m
+    - cron: "0 21 23 5 *"
+    # R05 Canadian +75m
+    - cron: "15 21 23 5 *"
+    # R05 Canadian +90m
+    - cron: "30 21 23 5 *"
+    # R06 Monaco +60m
+    - cron: "0 15 6 6 *"
+    # R06 Monaco +75m
+    - cron: "15 15 6 6 *"
+    # R06 Monaco +90m
+    - cron: "30 15 6 6 *"
+    # R07 Barcelona-Catalunya +60m
+    - cron: "0 15 13 6 *"
+    # R07 Barcelona-Catalunya +75m
+    - cron: "15 15 13 6 *"
+    # R07 Barcelona-Catalunya +90m
+    - cron: "30 15 13 6 *"
+    # R08 Austrian +60m
+    - cron: "0 15 27 6 *"
+    # R08 Austrian +75m
+    - cron: "15 15 27 6 *"
+    # R08 Austrian +90m
+    - cron: "30 15 27 6 *"
+    # R09 British +60m
+    - cron: "0 16 4 7 *"
+    # R09 British +75m
+    - cron: "15 16 4 7 *"
+    # R09 British +90m
+    - cron: "30 16 4 7 *"
+    # R10 Belgian +60m
+    - cron: "0 15 18 7 *"
+    # R10 Belgian +75m
+    - cron: "15 15 18 7 *"
+    # R10 Belgian +90m
+    - cron: "30 15 18 7 *"
+    # R11 Hungarian +60m
+    - cron: "0 15 25 7 *"
+    # R11 Hungarian +75m
+    - cron: "15 15 25 7 *"
+    # R11 Hungarian +90m
+    - cron: "30 15 25 7 *"
+    # R12 Dutch +60m
+    - cron: "0 15 22 8 *"
+    # R12 Dutch +75m
+    - cron: "15 15 22 8 *"
+    # R12 Dutch +90m
+    - cron: "30 15 22 8 *"
+    # R13 Italian +60m
+    - cron: "0 15 5 9 *"
+    # R13 Italian +75m
+    - cron: "15 15 5 9 *"
+    # R13 Italian +90m
+    - cron: "30 15 5 9 *"
+    # R14 Spanish +60m
+    - cron: "0 15 12 9 *"
+    # R14 Spanish +75m
+    - cron: "15 15 12 9 *"
+    # R14 Spanish +90m
+    - cron: "30 15 12 9 *"
+    # R15 Azerbaijan +60m
+    - cron: "0 13 25 9 *"
+    # R15 Azerbaijan +75m
+    - cron: "15 13 25 9 *"
+    # R15 Azerbaijan +90m
+    - cron: "30 13 25 9 *"
+    # R16 Singapore +60m
+    - cron: "0 14 10 10 *"
+    # R16 Singapore +75m
+    - cron: "15 14 10 10 *"
+    # R16 Singapore +90m
+    - cron: "30 14 10 10 *"
+    # R17 United States +60m
+    - cron: "0 22 24 10 *"
+    # R17 United States +75m
+    - cron: "15 22 24 10 *"
+    # R17 United States +90m
+    - cron: "30 22 24 10 *"
+    # R18 Mexican +60m
+    - cron: "0 22 31 10 *"
+    # R18 Mexican +75m
+    - cron: "15 22 31 10 *"
+    # R18 Mexican +90m
+    - cron: "30 22 31 10 *"
+    # R19 Brazilian +60m
+    - cron: "0 19 7 11 *"
+    # R19 Brazilian +75m
+    - cron: "15 19 7 11 *"
+    # R19 Brazilian +90m
+    - cron: "30 19 7 11 *"
+    # R20 Las Vegas +60m
+    - cron: "0 5 21 11 *"
+    # R20 Las Vegas +75m
+    - cron: "15 5 21 11 *"
+    # R20 Las Vegas +90m
+    - cron: "30 5 21 11 *"
+    # R21 Qatar +60m
+    - cron: "0 19 28 11 *"
+    # R21 Qatar +75m
+    - cron: "15 19 28 11 *"
+    # R21 Qatar +90m
+    - cron: "30 19 28 11 *"
+    # R22 Abu Dhabi +60m
+    - cron: "0 15 5 12 *"
+    # R22 Abu Dhabi +75m
+    - cron: "15 15 5 12 *"
+    # R22 Abu Dhabi +90m
+    - cron: "30 15 5 12 *"
 
 permissions:
   contents: write

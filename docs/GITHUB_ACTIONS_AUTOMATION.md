@@ -10,10 +10,12 @@ The workflow runs on a schedule, aligns execution to published qualifying times,
 ## Timing Logic
 
 - Source schedule template: `https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json` (f1calendar data source)
-- Scheduled workflow checks every 15 minutes on Fri/Sat/Sun (UTC).
+- Scheduled workflow uses explicit 2026 cron entries at qualifying `+60`, `+75`, and `+90` minutes (UTC) for each race.
 - On scheduled runs, predictions execute only when current UTC time is inside:
   - `qualifying_time + 60 minutes` to `qualifying_time + 90 minutes`
-- This gives an intended "1 hour after qualifying" run with jitter tolerance.
+- This keeps an intended "1 hour after qualifying" run with jitter tolerance while reducing non-race polling.
+- Note: GitHub cron has no year field. The workflow is effectively 2026-specific because the runner script gates execution against the 2026 published schedule window.
+- Reference schedule export: `docs/2026_qualifying_workflow_windows.csv`
 
 ## CI Caching
 
