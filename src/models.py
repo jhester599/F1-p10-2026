@@ -75,7 +75,10 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_error
 
 import sys
-sys.path.insert(0, str(Path(__file__).parent.parent))
+
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 from config import FEATURE_COLS, MODEL_FEATURES, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS, era_sample_weight
 
 

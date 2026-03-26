@@ -20,7 +20,10 @@ import numpy as np
 import pandas as pd
 
 import sys
-sys.path.insert(0, str(Path(__file__).parent.parent))
+
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 from config import (
     DNF_POSITION,
     FEATURE_COLS,
@@ -892,8 +895,6 @@ def build_feature_matrix(
     try:
         _weather_path = Path(__file__).parent.parent / "weather" / "data" / "weather_historical.parquet"
         if _weather_path.exists():
-            import sys as _sys
-            _sys.path.insert(0, str(Path(__file__).parent.parent))
             from weather.weather_features import load_weather_features
             _wf = load_weather_features(_weather_path)
             if not _wf.empty:

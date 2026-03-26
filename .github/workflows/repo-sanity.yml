@@ -1,0 +1,40 @@
+name: Repo Sanity
+
+on:
+  pull_request:
+  push:
+    branches:
+      - claude/f1-tenth-place-predictor
+
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyarrow pytest
+
+      - name: Compile active Python modules
+        run: |
+          python -m py_compile config.py predict_race.py run_pipeline.py
+          python -m py_compile src/data_fetch.py src/feature_engineering.py src/models.py src/scoring.py
+          python -m py_compile scripts/65_run_qualifying_automation.py scripts/90_benchmark_scorecards.py
+
+      - name: Validate pytest collection
+        run: pytest --collect-only -q
+
+      - name: Run smoke tests
+        run: pytest -q
+
+      - name: Build benchmark scorecard artifact snapshot
+        run: python scripts/90_benchmark_scorecards.py

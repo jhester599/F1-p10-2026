@@ -58,9 +58,27 @@ python scripts/18_live_2026.py            # evaluate all completed 2026 races
 python scripts/18_live_2026.py --predict --race 6   # pre-race prediction for R6
 ```
 
-Repository engineering decisions (Windows-safe folder naming, CI caching strategy,
-and dependency pinning) are documented in
-`docs/REPO_DECISIONS_2026-03-25.md`.
+Canonical planning and audit documents:
+
+- `docs/DEVELOPMENT_PLAN_REPO_REVIEW_2026-03-26.md` (current forward plan)
+- `docs/TECHNICAL_FINDINGS_REPO_AUDIT_2026-03-26.md` (latest audit and doc classification matrix)
+- `docs/REPO_DECISIONS_2026-03-25.md` (structural repo decisions)
+
+Historical plans/reports are preserved for context. The `v6x/` tree is treated as
+archive-only in active validation and development.
+
+Scorecard harness:
+
+```bash
+python scripts/90_benchmark_scorecards.py
+```
+
+Outputs:
+
+- `results/scorecards/benchmark_scorecard_latest.json`
+- `results/scorecards/benchmark_scorecard_latest.md`
+
+PR sanity validation is defined in `.github/workflows/repo-sanity.yml`.
 
 ---
 

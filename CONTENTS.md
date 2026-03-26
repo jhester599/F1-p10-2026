@@ -8,6 +8,22 @@ model `.joblib` files (~78 MB uncompressed).
 
 ---
 
+## Current Canonical Docs (Active Development)
+
+For current repository development status and implementation planning, use:
+
+- `docs/DEVELOPMENT_PLAN_REPO_REVIEW_2026-03-26.md`
+- `docs/TECHNICAL_FINDINGS_REPO_AUDIT_2026-03-26.md`
+- `docs/GITHUB_ACTIONS_AUTOMATION.md`
+- `docs/REPO_DECISIONS_2026-03-25.md`
+- `README.md`
+
+Notes:
+- This `CONTENTS.md` file is primarily a source-bundle inventory guide.
+- `v6x/` is an archive snapshot and is not part of active validation scope.
+
+---
+
 ## ⚠️ Before you do anything with data — read this
 
 **Always check the repo zip cache before running any fetch script.**

@@ -14,8 +14,12 @@ from typing import Any, Optional
 
 import requests
 
-import sys, os
-sys.path.insert(0, str(Path(__file__).parent.parent))
+import os
+import sys
+
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 from config import JOLPICA_BASE, MAX_RETRIES, RAW_DIR, REQUEST_DELAY
 
 logger = logging.getLogger(__name__)

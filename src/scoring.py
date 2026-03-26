@@ -24,7 +24,10 @@ import numpy as np
 import pandas as pd
 
 import sys
-sys.path.insert(0, str(Path(__file__).parent.parent))
+
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 from config import FANTASY_POINTS
 
 
