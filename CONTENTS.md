@@ -16,6 +16,7 @@ For current repository development status and implementation planning, use:
 - `docs/TECHNICAL_FINDINGS_REPO_AUDIT_2026-03-26.md`
 - `docs/GITHUB_ACTIONS_AUTOMATION.md`
 - `docs/REPO_DECISIONS_2026-03-25.md`
+- `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md`
 - `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md`
 - `README.md`
 
