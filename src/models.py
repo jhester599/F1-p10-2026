@@ -87,6 +87,28 @@ def _model_feature_indices(model_name: str) -> list[int]:
     feats = MODEL_FEATURES.get(model_name, FEATURE_COLS)
     return [FEATURE_COLS.index(f) for f in feats]
 
+
+def _prepare_inference_input(estimator: Any, X_m: np.ndarray) -> Any:
+    """Return X in the format expected by fitted estimators with feature names.
+
+    LightGBM sklearn wrappers often persist ``feature_names_in_`` (e.g. Column_0..N)
+    even when trained from ndarray input. Predicting with a bare ndarray then emits
+    noisy warnings. When names are available and width matches, provide a DataFrame
+    with those exact column names.
+    """
+    feature_names = getattr(estimator, "feature_names_in_", None)
+    if feature_names is None:
+        return X_m
+
+    try:
+        names = [str(n) for n in feature_names]
+    except Exception:
+        return X_m
+
+    if len(names) != X_m.shape[1]:
+        return X_m
+    return pd.DataFrame(X_m, columns=names)
+
 logger = logging.getLogger(__name__)
 
 # Fantasy points for finishing in positions 1–20 (index = position - 1).
@@ -297,8 +319,9 @@ class WeightedEnsemble:
 
                 is_clf    = name.endswith("_clf")
                 is_ranker = name.endswith("_ranker")
+                X_pred = _prepare_inference_input(model, X_m)
                 if is_clf and hasattr(model, "predict_proba"):
-                    proba   = model.predict_proba(X_m)
+                    proba   = model.predict_proba(X_pred)
                     classes = list(model.classes_)
                     # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
                     offset  = 1 if min(classes) == 0 else 0
@@ -309,9 +332,9 @@ class WeightedEnsemble:
                 elif is_ranker:
                     # Ranker already outputs P10-centred relevance scores;
                     # use directly (they are already on a [0, 1]-ish scale).
-                    raw = model.predict(X_m).astype(float)
+                    raw = model.predict(X_pred).astype(float)
                 else:
-                    preds = model.predict(X_m)
+                    preds = model.predict(X_pred)
                     raw   = 1.0 / (1.0 + np.abs(preds - 10))
 
             # min-max normalise within this race
@@ -414,9 +437,10 @@ class StackingEnsemble:
 
                 is_clf    = name.endswith("_clf")
                 is_ranker = name.endswith("_ranker")
+                X_pred = _prepare_inference_input(model, X_m)
 
                 if is_clf and hasattr(model, "predict_proba"):
-                    proba   = model.predict_proba(X_m)
+                    proba   = model.predict_proba(X_pred)
                     classes = list(model.classes_)
                     offset  = 1 if min(classes) == 0 else 0
                     sv      = np.array([SCORING_VECTOR[c + offset - 1]
@@ -424,9 +448,9 @@ class StackingEnsemble:
                     cls_idx = [i for i, c in enumerate(classes) if 1 <= c + offset <= 20]
                     raw     = proba[:, cls_idx] @ sv
                 elif is_ranker:
-                    raw = model.predict(X_m).astype(float)
+                    raw = model.predict(X_pred).astype(float)
                 else:
-                    preds = model.predict(X_m)
+                    preds = model.predict(X_pred)
                     raw   = 1.0 / (1.0 + np.abs(preds - 10))
 
             # per-race min-max normalisation
@@ -1028,8 +1052,9 @@ def predict_race(
             # v9.0: slice to model-specific features
             feats = MODEL_FEATURES.get(name, FEATURE_COLS)
             X_m   = race_features[feats].values.astype(float)
+            X_pred = _prepare_inference_input(est, X_m)
             if hasattr(est, "predict_proba"):
-                proba   = est.predict_proba(X_m)
+                proba   = est.predict_proba(X_pred)
                 classes = list(est.classes_)
                 # Expected fantasy pts: EV = Σ P(finish=p) × SCORING_VECTOR[p-1]
                 # offset: xgb_clf classes are 0-indexed (0–19); rf_clf are 1-indexed (1–20)
@@ -1040,13 +1065,14 @@ def predict_race(
                 ev      = proba[:, cls_idx] @ sv
                 scores  = pd.Series(ev, index=race_features["driver_id"].values)
             else:
-                scores = pd.Series(est.predict(X_m), index=race_features["driver_id"].values)
+                scores = pd.Series(est.predict(X_pred), index=race_features["driver_id"].values)
             pick_driver = scores.idxmax()
         else:
             # v9.0: slice to model-specific features
             feats  = MODEL_FEATURES.get(name, FEATURE_COLS)
             X_m    = race_features[feats].values.astype(float)
-            scores = pd.Series(est.predict(X_m), index=race_features["driver_id"].values)
+            X_pred = _prepare_inference_input(est, X_m)
+            scores = pd.Series(est.predict(X_pred), index=race_features["driver_id"].values)
             pick_driver = _pick_p10(name, scores)
 
         picks[name] = pick_driver

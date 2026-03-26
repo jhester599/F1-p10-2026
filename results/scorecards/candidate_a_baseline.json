@@ -1,0 +1,38 @@
+{
+  "calibration": {
+    "rf_clf": {
+      "brier": 0.04674358598625324,
+      "log_loss": 0.19314337256473332,
+      "ece_10bin": 0.006320029964555494,
+      "top_pick_hit_rate": 0.125,
+      "avg_top_pick_prob": 0.12259179374928093
+    },
+    "xgb_clf": {
+      "brier": 0.047294157206238405,
+      "log_loss": 0.19547260323964838,
+      "ece_10bin": 0.001815672885899964,
+      "top_pick_hit_rate": 0.125,
+      "avg_top_pick_prob": 0.1037864321999701
+    }
+  },
+  "ranking": {
+    "ensemble": {
+      "mean_actual_p10_rank": 9.166666666666666,
+      "median_actual_p10_rank": 10.0,
+      "top1_hit_rate": 0.08333333333333333,
+      "mean_ndcg_at_5": 0.18358336420739882
+    },
+    "lgbm_ranker": {
+      "mean_actual_p10_rank": 9.291666666666666,
+      "median_actual_p10_rank": 9.0,
+      "top1_hit_rate": 0.08333333333333333,
+      "mean_ndcg_at_5": 0.1802757110809826
+    },
+    "xgb_ranker": {
+      "mean_actual_p10_rank": 9.291666666666666,
+      "median_actual_p10_rank": 10.0,
+      "top1_hit_rate": 0.125,
+      "mean_ndcg_at_5": 0.18858259592050194
+    }
+  }
+}

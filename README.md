@@ -78,6 +78,26 @@ Outputs:
 - `results/scorecards/benchmark_scorecard_latest.json`
 - `results/scorecards/benchmark_scorecard_latest.md`
 
+Candidate A diagnostics (ranking/calibration robustness with scorecard gates):
+
+```bash
+python scripts/91_candidate_a_calibration_robustness.py --year 2025
+```
+
+Baseline/gate setup:
+
+```bash
+python scripts/91_candidate_a_calibration_robustness.py --year 2025 --write-baseline
+python scripts/91_candidate_a_calibration_robustness.py --year 2025 --enforce-gates
+```
+
+Outputs:
+
+- `results/candidate_a/candidate_a_calibration_summary.csv`
+- `results/candidate_a/candidate_a_ranking_summary.csv`
+- `results/candidate_a/candidate_a_gate_report.{json,md}`
+- `results/scorecards/candidate_a_baseline.json`
+
 PR sanity validation is defined in `.github/workflows/repo-sanity.yml`.
 
 ---

@@ -85,3 +85,31 @@ This document records structural decisions made for CI reliability, Windows comp
 - Added `.github/workflows/repo-sanity.yml`.
 - Added `scripts/90_benchmark_scorecards.py`.
 - Scorecard outputs are written to `results/scorecards/`.
+
+## 7) Normalize named inference inputs for LightGBM models
+
+### Decision
+- In active prediction paths, detect estimators with `feature_names_in_` and pass named DataFrame inputs for inference.
+
+### Why
+- LightGBM sklearn wrappers can persist feature-name expectations even when trained from ndarray inputs.
+- Without named inputs, runtime warnings add noise and make automation logs harder to audit.
+
+### Impact
+- `src/models.py` now normalizes inference inputs before `predict`/`predict_proba` calls.
+- Prediction behavior is unchanged; warning noise is reduced.
+
+## 8) Add Candidate A diagnostics and baseline gates
+
+### Decision
+- Add a cache-first Candidate A diagnostics script and baseline gate artifact, then enforce checks in repo sanity CI.
+
+### Why
+- Candidate A (ranking/calibration robustness) should be measurable and repeatable before deeper feature/model changes.
+- A lightweight gate catches regressions early without requiring full retraining.
+
+### Impact
+- Added `scripts/91_candidate_a_calibration_robustness.py`.
+- Added baseline artifact: `results/scorecards/candidate_a_baseline.json`.
+- Added diagnostics outputs under `results/candidate_a/`.
+- `.github/workflows/repo-sanity.yml` now runs Candidate A diagnostics with `--enforce-gates`.
