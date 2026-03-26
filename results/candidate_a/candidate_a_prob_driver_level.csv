@@ -1,959 +1,959 @@
 model,year,round,race_name,driver_id,p10_prob,is_actual_p10
 rf_clf,2025,1,Australian Grand Prix,norris,0.0,0
-rf_clf,2025,1,Australian Grand Prix,max_verstappen,0.001954987754865597,0
-rf_clf,2025,1,Australian Grand Prix,russell,0.013284310389650533,0
-rf_clf,2025,1,Australian Grand Prix,antonelli,0.08391194307910285,0
-rf_clf,2025,1,Australian Grand Prix,albon,0.07602999662373207,0
-rf_clf,2025,1,Australian Grand Prix,stroll,0.07872362319504869,0
-rf_clf,2025,1,Australian Grand Prix,hulkenberg,0.07937174337897421,0
-rf_clf,2025,1,Australian Grand Prix,leclerc,0.01384663049434788,0
-rf_clf,2025,1,Australian Grand Prix,piastri,0.003939380771346658,0
-rf_clf,2025,1,Australian Grand Prix,hamilton,0.04647975534111065,1
-rf_clf,2025,1,Australian Grand Prix,gasly,0.07697812921911745,0
-rf_clf,2025,1,Australian Grand Prix,tsunoda,0.06138485675812849,0
-rf_clf,2025,1,Australian Grand Prix,ocon,0.058008508555642616,0
-rf_clf,2025,1,Australian Grand Prix,bearman,0.05794564396098967,0
-rf_clf,2025,1,Australian Grand Prix,lawson,0.061651009071225026,0
-rf_clf,2025,1,Australian Grand Prix,bortoleto,0.09471126482887877,0
-rf_clf,2025,1,Australian Grand Prix,alonso,0.08700681645309774,0
-rf_clf,2025,1,Australian Grand Prix,sainz,0.0421033205526468,0
-rf_clf,2025,1,Australian Grand Prix,doohan,0.08363638380630278,0
-rf_clf,2025,1,Australian Grand Prix,hadjar,0.08324781577362741,0
-xgb_clf,2025,1,Australian Grand Prix,norris,0.02856280503927542,0
-xgb_clf,2025,1,Australian Grand Prix,max_verstappen,0.028917439390955167,0
-xgb_clf,2025,1,Australian Grand Prix,russell,0.03379412026075005,0
-xgb_clf,2025,1,Australian Grand Prix,antonelli,0.06745145171491376,0
-xgb_clf,2025,1,Australian Grand Prix,albon,0.05027590470777572,0
-xgb_clf,2025,1,Australian Grand Prix,stroll,0.06065041878835879,0
-xgb_clf,2025,1,Australian Grand Prix,hulkenberg,0.04797156283341629,0
-xgb_clf,2025,1,Australian Grand Prix,leclerc,0.03502495588955834,0
-xgb_clf,2025,1,Australian Grand Prix,piastri,0.037589957547526295,0
-xgb_clf,2025,1,Australian Grand Prix,hamilton,0.03853901179647327,1
-xgb_clf,2025,1,Australian Grand Prix,gasly,0.0674076313209118,0
-xgb_clf,2025,1,Australian Grand Prix,tsunoda,0.05598974691460763,0
-xgb_clf,2025,1,Australian Grand Prix,ocon,0.04314212534037705,0
-xgb_clf,2025,1,Australian Grand Prix,bearman,0.04141329196001512,0
-xgb_clf,2025,1,Australian Grand Prix,lawson,0.052950915667097434,0
-xgb_clf,2025,1,Australian Grand Prix,bortoleto,0.10535949350139547,0
-xgb_clf,2025,1,Australian Grand Prix,alonso,0.06032790148809584,0
-xgb_clf,2025,1,Australian Grand Prix,sainz,0.037814185822859406,0
-xgb_clf,2025,1,Australian Grand Prix,doohan,0.0968937801437547,0
-xgb_clf,2025,1,Australian Grand Prix,hadjar,0.05605689260350875,0
-rf_clf,2025,2,Chinese Grand Prix,piastri,0.0040451060169060015,0
-rf_clf,2025,2,Chinese Grand Prix,norris,0.0021654743533522044,0
-rf_clf,2025,2,Chinese Grand Prix,russell,0.008397771861018501,0
-rf_clf,2025,2,Chinese Grand Prix,max_verstappen,0.007215921779003041,0
-rf_clf,2025,2,Chinese Grand Prix,ocon,0.07882502100440728,0
-rf_clf,2025,2,Chinese Grand Prix,antonelli,0.037613415883730225,0
-rf_clf,2025,2,Chinese Grand Prix,albon,0.08770926292520606,0
-rf_clf,2025,2,Chinese Grand Prix,bearman,0.046596635682756016,0
-rf_clf,2025,2,Chinese Grand Prix,stroll,0.08269045200204833,0
-rf_clf,2025,2,Chinese Grand Prix,sainz,0.08618231034722468,1
-rf_clf,2025,2,Chinese Grand Prix,hadjar,0.058758993439617546,0
-rf_clf,2025,2,Chinese Grand Prix,lawson,0.05704660484510617,0
-rf_clf,2025,2,Chinese Grand Prix,doohan,0.029297784759603783,0
-rf_clf,2025,2,Chinese Grand Prix,bortoleto,0.03512537113704246,0
-rf_clf,2025,2,Chinese Grand Prix,hulkenberg,0.0885232537274377,0
-rf_clf,2025,2,Chinese Grand Prix,tsunoda,0.09008685609088622,0
-rf_clf,2025,2,Chinese Grand Prix,alonso,0.08563778877031884,0
-rf_clf,2025,2,Chinese Grand Prix,leclerc,0.03890101821896638,0
-rf_clf,2025,2,Chinese Grand Prix,hamilton,0.056225341403099295,0
-rf_clf,2025,2,Chinese Grand Prix,gasly,0.08188312986137841,0
-xgb_clf,2025,2,Chinese Grand Prix,piastri,0.03245730678813149,0
-xgb_clf,2025,2,Chinese Grand Prix,norris,0.024771652950718613,0
-xgb_clf,2025,2,Chinese Grand Prix,russell,0.028613903767481415,0
-xgb_clf,2025,2,Chinese Grand Prix,max_verstappen,0.031723356140868325,0
-xgb_clf,2025,2,Chinese Grand Prix,ocon,0.052295500894853394,0
-xgb_clf,2025,2,Chinese Grand Prix,antonelli,0.04073892500036007,0
-xgb_clf,2025,2,Chinese Grand Prix,albon,0.08785811414742146,0
-xgb_clf,2025,2,Chinese Grand Prix,bearman,0.045781635500448094,0
-xgb_clf,2025,2,Chinese Grand Prix,stroll,0.07013631005332314,0
-xgb_clf,2025,2,Chinese Grand Prix,sainz,0.05183894471235597,1
-xgb_clf,2025,2,Chinese Grand Prix,hadjar,0.047524664906742134,0
-xgb_clf,2025,2,Chinese Grand Prix,lawson,0.0438924006418993,0
-xgb_clf,2025,2,Chinese Grand Prix,doohan,0.04439610306735066,0
-xgb_clf,2025,2,Chinese Grand Prix,bortoleto,0.043852387356277646,0
-xgb_clf,2025,2,Chinese Grand Prix,hulkenberg,0.0649096367653159,0
-xgb_clf,2025,2,Chinese Grand Prix,tsunoda,0.07025140277434565,0
-xgb_clf,2025,2,Chinese Grand Prix,alonso,0.06189126046851654,0
-xgb_clf,2025,2,Chinese Grand Prix,leclerc,0.03802012259565757,0
-xgb_clf,2025,2,Chinese Grand Prix,hamilton,0.06590351315273166,0
-xgb_clf,2025,2,Chinese Grand Prix,gasly,0.053108226223194166,0
+rf_clf,2025,1,Australian Grand Prix,max_verstappen,0.002106546266119083,0
+rf_clf,2025,1,Australian Grand Prix,russell,0.00798831017710456,0
+rf_clf,2025,1,Australian Grand Prix,antonelli,0.08602341093208658,0
+rf_clf,2025,1,Australian Grand Prix,albon,0.06502974667346928,0
+rf_clf,2025,1,Australian Grand Prix,stroll,0.0846119916364772,0
+rf_clf,2025,1,Australian Grand Prix,hulkenberg,0.06865902632782306,0
+rf_clf,2025,1,Australian Grand Prix,leclerc,0.01474750799139247,0
+rf_clf,2025,1,Australian Grand Prix,piastri,0.0054939596839252685,0
+rf_clf,2025,1,Australian Grand Prix,hamilton,0.03953684168414935,1
+rf_clf,2025,1,Australian Grand Prix,gasly,0.06035382368136294,0
+rf_clf,2025,1,Australian Grand Prix,tsunoda,0.05212563585280059,0
+rf_clf,2025,1,Australian Grand Prix,ocon,0.057091826735485074,0
+rf_clf,2025,1,Australian Grand Prix,bearman,0.053635282584237144,0
+rf_clf,2025,1,Australian Grand Prix,lawson,0.06315915523342178,0
+rf_clf,2025,1,Australian Grand Prix,bortoleto,0.08790639608077523,0
+rf_clf,2025,1,Australian Grand Prix,alonso,0.07886302139241098,0
+rf_clf,2025,1,Australian Grand Prix,sainz,0.030419022394808877,0
+rf_clf,2025,1,Australian Grand Prix,doohan,0.101466579716329,0
+rf_clf,2025,1,Australian Grand Prix,hadjar,0.0843408190628939,0
+xgb_clf,2025,1,Australian Grand Prix,norris,0.02865237927013109,0
+xgb_clf,2025,1,Australian Grand Prix,max_verstappen,0.0287264156930351,0
+xgb_clf,2025,1,Australian Grand Prix,russell,0.03412814775041402,0
+xgb_clf,2025,1,Australian Grand Prix,antonelli,0.06917989588820488,0
+xgb_clf,2025,1,Australian Grand Prix,albon,0.05172494847891318,0
+xgb_clf,2025,1,Australian Grand Prix,stroll,0.051334832695067355,0
+xgb_clf,2025,1,Australian Grand Prix,hulkenberg,0.0526914275637609,0
+xgb_clf,2025,1,Australian Grand Prix,leclerc,0.03645591556177714,0
+xgb_clf,2025,1,Australian Grand Prix,piastri,0.03884531206124683,0
+xgb_clf,2025,1,Australian Grand Prix,hamilton,0.038351330086966694,1
+xgb_clf,2025,1,Australian Grand Prix,gasly,0.047551766989433,0
+xgb_clf,2025,1,Australian Grand Prix,tsunoda,0.054869024774735285,0
+xgb_clf,2025,1,Australian Grand Prix,ocon,0.042563157456166456,0
+xgb_clf,2025,1,Australian Grand Prix,bearman,0.04172001606814251,0
+xgb_clf,2025,1,Australian Grand Prix,lawson,0.04687021423102047,0
+xgb_clf,2025,1,Australian Grand Prix,bortoleto,0.1061667154207558,0
+xgb_clf,2025,1,Australian Grand Prix,alonso,0.05751206697044251,0
+xgb_clf,2025,1,Australian Grand Prix,sainz,0.03581021143335234,0
+xgb_clf,2025,1,Australian Grand Prix,doohan,0.10789296506934536,0
+xgb_clf,2025,1,Australian Grand Prix,hadjar,0.05249492866947545,0
+rf_clf,2025,2,Chinese Grand Prix,piastri,0.00785717245978918,0
+rf_clf,2025,2,Chinese Grand Prix,norris,0.0044636900092182635,0
+rf_clf,2025,2,Chinese Grand Prix,russell,0.009525825934974507,0
+rf_clf,2025,2,Chinese Grand Prix,max_verstappen,0.002865679443639544,0
+rf_clf,2025,2,Chinese Grand Prix,ocon,0.06591281432956268,0
+rf_clf,2025,2,Chinese Grand Prix,antonelli,0.026452254430598576,0
+rf_clf,2025,2,Chinese Grand Prix,albon,0.07960695496922834,0
+rf_clf,2025,2,Chinese Grand Prix,bearman,0.054426403741683185,0
+rf_clf,2025,2,Chinese Grand Prix,stroll,0.08896218134004102,0
+rf_clf,2025,2,Chinese Grand Prix,sainz,0.07714500977038052,1
+rf_clf,2025,2,Chinese Grand Prix,hadjar,0.06453041786863216,0
+rf_clf,2025,2,Chinese Grand Prix,lawson,0.05537689651401503,0
+rf_clf,2025,2,Chinese Grand Prix,doohan,0.022191867396238858,0
+rf_clf,2025,2,Chinese Grand Prix,bortoleto,0.04091798552285712,0
+rf_clf,2025,2,Chinese Grand Prix,hulkenberg,0.09950315477623127,0
+rf_clf,2025,2,Chinese Grand Prix,tsunoda,0.08110836204562398,0
+rf_clf,2025,2,Chinese Grand Prix,alonso,0.0940416392562257,0
+rf_clf,2025,2,Chinese Grand Prix,leclerc,0.029773084086477646,0
+rf_clf,2025,2,Chinese Grand Prix,hamilton,0.04068626211542733,0
+rf_clf,2025,2,Chinese Grand Prix,gasly,0.0835129228907085,0
+xgb_clf,2025,2,Chinese Grand Prix,piastri,0.033262003326741243,0
+xgb_clf,2025,2,Chinese Grand Prix,norris,0.025608147218540163,0
+xgb_clf,2025,2,Chinese Grand Prix,russell,0.030008990912680916,0
+xgb_clf,2025,2,Chinese Grand Prix,max_verstappen,0.029127419917509795,0
+xgb_clf,2025,2,Chinese Grand Prix,ocon,0.04494649212331002,0
+xgb_clf,2025,2,Chinese Grand Prix,antonelli,0.03718643700153747,0
+xgb_clf,2025,2,Chinese Grand Prix,albon,0.11525165199942103,0
+xgb_clf,2025,2,Chinese Grand Prix,bearman,0.043166247847786256,0
+xgb_clf,2025,2,Chinese Grand Prix,stroll,0.07361150984104119,0
+xgb_clf,2025,2,Chinese Grand Prix,sainz,0.0633570902014757,1
+xgb_clf,2025,2,Chinese Grand Prix,hadjar,0.0477566666617823,0
+xgb_clf,2025,2,Chinese Grand Prix,lawson,0.04100757518316985,0
+xgb_clf,2025,2,Chinese Grand Prix,doohan,0.04483791704097605,0
+xgb_clf,2025,2,Chinese Grand Prix,bortoleto,0.04328830925350195,0
+xgb_clf,2025,2,Chinese Grand Prix,hulkenberg,0.05904429936781974,0
+xgb_clf,2025,2,Chinese Grand Prix,tsunoda,0.05368659337155616,0
+xgb_clf,2025,2,Chinese Grand Prix,alonso,0.09017046372793684,0
+xgb_clf,2025,2,Chinese Grand Prix,leclerc,0.03474092729956555,0
+xgb_clf,2025,2,Chinese Grand Prix,hamilton,0.0545069401338867,0
+xgb_clf,2025,2,Chinese Grand Prix,gasly,0.048029284054897425,0
 rf_clf,2025,3,Japanese Grand Prix,max_verstappen,0.0,0
 rf_clf,2025,3,Japanese Grand Prix,norris,0.0,0
-rf_clf,2025,3,Japanese Grand Prix,piastri,0.010768528775593988,0
-rf_clf,2025,3,Japanese Grand Prix,leclerc,0.03152419254565488,0
-rf_clf,2025,3,Japanese Grand Prix,russell,0.005487697581397234,0
-rf_clf,2025,3,Japanese Grand Prix,antonelli,0.017759640967824886,0
-rf_clf,2025,3,Japanese Grand Prix,hamilton,0.062143643893316794,0
-rf_clf,2025,3,Japanese Grand Prix,hadjar,0.06463934317854776,0
-rf_clf,2025,3,Japanese Grand Prix,albon,0.07916780382283464,0
-rf_clf,2025,3,Japanese Grand Prix,bearman,0.142467093335813,1
-rf_clf,2025,3,Japanese Grand Prix,alonso,0.07348778683450866,0
-rf_clf,2025,3,Japanese Grand Prix,tsunoda,0.08918704412499925,0
-rf_clf,2025,3,Japanese Grand Prix,gasly,0.07965759166386907,0
-rf_clf,2025,3,Japanese Grand Prix,sainz,0.08354949906176451,0
-rf_clf,2025,3,Japanese Grand Prix,doohan,0.011506546398520145,0
-rf_clf,2025,3,Japanese Grand Prix,hulkenberg,0.06827348787316952,0
-rf_clf,2025,3,Japanese Grand Prix,lawson,0.08479984948930779,0
-rf_clf,2025,3,Japanese Grand Prix,ocon,0.06182380058957685,0
-rf_clf,2025,3,Japanese Grand Prix,bortoleto,0.03986469506827478,0
-rf_clf,2025,3,Japanese Grand Prix,stroll,0.05557988094022017,0
-xgb_clf,2025,3,Japanese Grand Prix,max_verstappen,0.024347397742726557,0
-xgb_clf,2025,3,Japanese Grand Prix,norris,0.024429900171750864,0
-xgb_clf,2025,3,Japanese Grand Prix,piastri,0.03370102975269054,0
-xgb_clf,2025,3,Japanese Grand Prix,leclerc,0.04070728815275328,0
-xgb_clf,2025,3,Japanese Grand Prix,russell,0.03562422602130719,0
-xgb_clf,2025,3,Japanese Grand Prix,antonelli,0.042036426591862915,0
-xgb_clf,2025,3,Japanese Grand Prix,hamilton,0.06897883873077701,0
-xgb_clf,2025,3,Japanese Grand Prix,hadjar,0.04511738296859065,0
-xgb_clf,2025,3,Japanese Grand Prix,albon,0.07500743555441688,0
-xgb_clf,2025,3,Japanese Grand Prix,bearman,0.10284096804224452,1
-xgb_clf,2025,3,Japanese Grand Prix,alonso,0.04323814773788152,0
-xgb_clf,2025,3,Japanese Grand Prix,tsunoda,0.07913416918553014,0
-xgb_clf,2025,3,Japanese Grand Prix,gasly,0.0537207128578868,0
-xgb_clf,2025,3,Japanese Grand Prix,sainz,0.04896165091788009,0
-xgb_clf,2025,3,Japanese Grand Prix,doohan,0.03874458205403673,0
-xgb_clf,2025,3,Japanese Grand Prix,hulkenberg,0.04990218973455084,0
-xgb_clf,2025,3,Japanese Grand Prix,lawson,0.056594496567079114,0
-xgb_clf,2025,3,Japanese Grand Prix,ocon,0.04898567771400601,0
-xgb_clf,2025,3,Japanese Grand Prix,bortoleto,0.041412493084425774,0
-xgb_clf,2025,3,Japanese Grand Prix,stroll,0.047225068537760165,0
+rf_clf,2025,3,Japanese Grand Prix,piastri,0.008656689064512132,0
+rf_clf,2025,3,Japanese Grand Prix,leclerc,0.02996534812456434,0
+rf_clf,2025,3,Japanese Grand Prix,russell,0.0028093496659117,0
+rf_clf,2025,3,Japanese Grand Prix,antonelli,0.01737979497308704,0
+rf_clf,2025,3,Japanese Grand Prix,hamilton,0.05992133751399202,0
+rf_clf,2025,3,Japanese Grand Prix,hadjar,0.06844383120347032,0
+rf_clf,2025,3,Japanese Grand Prix,albon,0.07443985442211308,0
+rf_clf,2025,3,Japanese Grand Prix,bearman,0.13237485673702423,1
+rf_clf,2025,3,Japanese Grand Prix,alonso,0.0829236138908421,0
+rf_clf,2025,3,Japanese Grand Prix,tsunoda,0.09888189509089593,0
+rf_clf,2025,3,Japanese Grand Prix,gasly,0.08318282387604851,0
+rf_clf,2025,3,Japanese Grand Prix,sainz,0.07762026854172129,0
+rf_clf,2025,3,Japanese Grand Prix,doohan,0.009860168268563294,0
+rf_clf,2025,3,Japanese Grand Prix,hulkenberg,0.06908483429753828,0
+rf_clf,2025,3,Japanese Grand Prix,lawson,0.08262149755398504,0
+rf_clf,2025,3,Japanese Grand Prix,ocon,0.06390788416958082,0
+rf_clf,2025,3,Japanese Grand Prix,bortoleto,0.04433805566767807,0
+rf_clf,2025,3,Japanese Grand Prix,stroll,0.055111354828747,0
+xgb_clf,2025,3,Japanese Grand Prix,max_verstappen,0.02542663025575642,0
+xgb_clf,2025,3,Japanese Grand Prix,norris,0.02373748458095936,0
+xgb_clf,2025,3,Japanese Grand Prix,piastri,0.03336092837059133,0
+xgb_clf,2025,3,Japanese Grand Prix,leclerc,0.03811219869761549,0
+xgb_clf,2025,3,Japanese Grand Prix,russell,0.036050873255809524,0
+xgb_clf,2025,3,Japanese Grand Prix,antonelli,0.0432336615830607,0
+xgb_clf,2025,3,Japanese Grand Prix,hamilton,0.04822233832534532,0
+xgb_clf,2025,3,Japanese Grand Prix,hadjar,0.04880159598896988,0
+xgb_clf,2025,3,Japanese Grand Prix,albon,0.07192130485778844,0
+xgb_clf,2025,3,Japanese Grand Prix,bearman,0.07252327129117032,1
+xgb_clf,2025,3,Japanese Grand Prix,alonso,0.04648670609733132,0
+xgb_clf,2025,3,Japanese Grand Prix,tsunoda,0.07735814762152107,0
+xgb_clf,2025,3,Japanese Grand Prix,gasly,0.049160007071521974,0
+xgb_clf,2025,3,Japanese Grand Prix,sainz,0.04799793649134258,0
+xgb_clf,2025,3,Japanese Grand Prix,doohan,0.03773236757713325,0
+xgb_clf,2025,3,Japanese Grand Prix,hulkenberg,0.045774113934315915,0
+xgb_clf,2025,3,Japanese Grand Prix,lawson,0.06599369257293171,0
+xgb_clf,2025,3,Japanese Grand Prix,ocon,0.04528287079089831,0
+xgb_clf,2025,3,Japanese Grand Prix,bortoleto,0.03928267310301212,0
+xgb_clf,2025,3,Japanese Grand Prix,stroll,0.048725551662943886,0
 rf_clf,2025,4,Bahrain Grand Prix,piastri,0.0,0
-rf_clf,2025,4,Bahrain Grand Prix,russell,0.0,0
-rf_clf,2025,4,Bahrain Grand Prix,norris,0.001756267587982329,0
-rf_clf,2025,4,Bahrain Grand Prix,leclerc,0.008158039289654476,0
-rf_clf,2025,4,Bahrain Grand Prix,hamilton,0.06816196480756173,0
-rf_clf,2025,4,Bahrain Grand Prix,max_verstappen,0.011281581015844819,0
-rf_clf,2025,4,Bahrain Grand Prix,gasly,0.05378266999261505,0
-rf_clf,2025,4,Bahrain Grand Prix,ocon,0.08554911194654655,0
-rf_clf,2025,4,Bahrain Grand Prix,tsunoda,0.0854052831930809,0
-rf_clf,2025,4,Bahrain Grand Prix,bearman,0.06111290144621936,1
-rf_clf,2025,4,Bahrain Grand Prix,antonelli,0.004403226302177365,0
-rf_clf,2025,4,Bahrain Grand Prix,albon,0.09519909746074244,0
-rf_clf,2025,4,Bahrain Grand Prix,hadjar,0.07922829182033128,0
-rf_clf,2025,4,Bahrain Grand Prix,doohan,0.06848087420905556,0
-rf_clf,2025,4,Bahrain Grand Prix,alonso,0.07558072278564479,0
-rf_clf,2025,4,Bahrain Grand Prix,lawson,0.06480630389320198,0
-rf_clf,2025,4,Bahrain Grand Prix,stroll,0.05456247084316771,0
-rf_clf,2025,4,Bahrain Grand Prix,bortoleto,0.023477466392876057,0
-rf_clf,2025,4,Bahrain Grand Prix,sainz,0.07245618460617835,0
-rf_clf,2025,4,Bahrain Grand Prix,hulkenberg,0.06878250084271123,0
-xgb_clf,2025,4,Bahrain Grand Prix,piastri,0.03103571476024373,0
-xgb_clf,2025,4,Bahrain Grand Prix,russell,0.03089735770285697,0
-xgb_clf,2025,4,Bahrain Grand Prix,norris,0.032850467949269706,0
-xgb_clf,2025,4,Bahrain Grand Prix,leclerc,0.03242944898128956,0
-xgb_clf,2025,4,Bahrain Grand Prix,hamilton,0.051720936274975905,0
-xgb_clf,2025,4,Bahrain Grand Prix,max_verstappen,0.033891327908950296,0
-xgb_clf,2025,4,Bahrain Grand Prix,gasly,0.04104293385433383,0
-xgb_clf,2025,4,Bahrain Grand Prix,ocon,0.05156438975746597,0
-xgb_clf,2025,4,Bahrain Grand Prix,tsunoda,0.04857106615238156,0
-xgb_clf,2025,4,Bahrain Grand Prix,bearman,0.04445129100479743,1
-xgb_clf,2025,4,Bahrain Grand Prix,antonelli,0.032437720232900015,0
-xgb_clf,2025,4,Bahrain Grand Prix,albon,0.07870960416906293,0
-xgb_clf,2025,4,Bahrain Grand Prix,hadjar,0.0491013404208563,0
-xgb_clf,2025,4,Bahrain Grand Prix,doohan,0.035609101810637894,0
-xgb_clf,2025,4,Bahrain Grand Prix,alonso,0.06816864426212868,0
-xgb_clf,2025,4,Bahrain Grand Prix,lawson,0.04839435928461834,0
-xgb_clf,2025,4,Bahrain Grand Prix,stroll,0.04099056736889568,0
-xgb_clf,2025,4,Bahrain Grand Prix,bortoleto,0.04036740960445872,0
-xgb_clf,2025,4,Bahrain Grand Prix,sainz,0.03511594750381928,0
-xgb_clf,2025,4,Bahrain Grand Prix,hulkenberg,0.0395265136409445,0
+rf_clf,2025,4,Bahrain Grand Prix,russell,0.0020479525819360536,0
+rf_clf,2025,4,Bahrain Grand Prix,norris,0.0027721405445168953,0
+rf_clf,2025,4,Bahrain Grand Prix,leclerc,0.011540214566425927,0
+rf_clf,2025,4,Bahrain Grand Prix,hamilton,0.06240995623177783,0
+rf_clf,2025,4,Bahrain Grand Prix,max_verstappen,0.013452490549081018,0
+rf_clf,2025,4,Bahrain Grand Prix,gasly,0.05915781339442322,0
+rf_clf,2025,4,Bahrain Grand Prix,ocon,0.0856540486066042,0
+rf_clf,2025,4,Bahrain Grand Prix,tsunoda,0.09446118909045514,0
+rf_clf,2025,4,Bahrain Grand Prix,bearman,0.05498740784812374,1
+rf_clf,2025,4,Bahrain Grand Prix,antonelli,0.0053301274246849,0
+rf_clf,2025,4,Bahrain Grand Prix,albon,0.09872324759463723,0
+rf_clf,2025,4,Bahrain Grand Prix,hadjar,0.08682038767871457,0
+rf_clf,2025,4,Bahrain Grand Prix,doohan,0.07383805886183645,0
+rf_clf,2025,4,Bahrain Grand Prix,alonso,0.09714085390794036,0
+rf_clf,2025,4,Bahrain Grand Prix,lawson,0.062231393198876786,0
+rf_clf,2025,4,Bahrain Grand Prix,stroll,0.05550751037939352,0
+rf_clf,2025,4,Bahrain Grand Prix,bortoleto,0.025935499010717667,0
+rf_clf,2025,4,Bahrain Grand Prix,sainz,0.06118346847821911,0
+rf_clf,2025,4,Bahrain Grand Prix,hulkenberg,0.06852896438472253,0
+xgb_clf,2025,4,Bahrain Grand Prix,piastri,0.030999950519007287,0
+xgb_clf,2025,4,Bahrain Grand Prix,russell,0.03176777269295829,0
+xgb_clf,2025,4,Bahrain Grand Prix,norris,0.0328767071349465,0
+xgb_clf,2025,4,Bahrain Grand Prix,leclerc,0.03404375923660735,0
+xgb_clf,2025,4,Bahrain Grand Prix,hamilton,0.0528549983608795,0
+xgb_clf,2025,4,Bahrain Grand Prix,max_verstappen,0.033849769429171575,0
+xgb_clf,2025,4,Bahrain Grand Prix,gasly,0.043164541773982705,0
+xgb_clf,2025,4,Bahrain Grand Prix,ocon,0.05675998435054478,0
+xgb_clf,2025,4,Bahrain Grand Prix,tsunoda,0.047837873238293874,0
+xgb_clf,2025,4,Bahrain Grand Prix,bearman,0.041890024597261,1
+xgb_clf,2025,4,Bahrain Grand Prix,antonelli,0.0319349676491314,0
+xgb_clf,2025,4,Bahrain Grand Prix,albon,0.08570913674879035,0
+xgb_clf,2025,4,Bahrain Grand Prix,hadjar,0.045259531636557014,0
+xgb_clf,2025,4,Bahrain Grand Prix,doohan,0.041927604928656895,0
+xgb_clf,2025,4,Bahrain Grand Prix,alonso,0.059207701305424056,0
+xgb_clf,2025,4,Bahrain Grand Prix,lawson,0.04706470442615489,0
+xgb_clf,2025,4,Bahrain Grand Prix,stroll,0.03987451810112327,0
+xgb_clf,2025,4,Bahrain Grand Prix,bortoleto,0.038690549724209426,0
+xgb_clf,2025,4,Bahrain Grand Prix,sainz,0.03750623723343474,0
+xgb_clf,2025,4,Bahrain Grand Prix,hulkenberg,0.03898797490414563,0
 rf_clf,2025,5,Saudi Arabian Grand Prix,piastri,0.0,0
 rf_clf,2025,5,Saudi Arabian Grand Prix,max_verstappen,0.0,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,leclerc,0.008049324863989635,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,norris,0.011177881299599726,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,russell,0.002128257702336369,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,antonelli,0.01264195290510993,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,hamilton,0.04520602608192877,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,sainz,0.04647018980201478,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,albon,0.10633487642618919,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,hadjar,0.07981093879890669,1
-rf_clf,2025,5,Saudi Arabian Grand Prix,alonso,0.08824003061235322,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,lawson,0.07989990623368395,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,bearman,0.08749285988095579,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,ocon,0.06254679318517689,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,hulkenberg,0.04614759310926998,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,stroll,0.07468234258613016,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,doohan,0.05061484877756646,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,bortoleto,0.007804339749657255,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,tsunoda,0.08250946132317025,0
-rf_clf,2025,5,Saudi Arabian Grand Prix,gasly,0.08091635095775343,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,piastri,0.03354389966904199,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,max_verstappen,0.024215155068752534,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,leclerc,0.03192465320365242,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,norris,0.039823401774648756,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,russell,0.029855318024994148,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,antonelli,0.04276984890819275,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,hamilton,0.04323718181274826,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,sainz,0.042022881904978035,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,albon,0.11056858039729407,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,hadjar,0.07093344403586452,1
-xgb_clf,2025,5,Saudi Arabian Grand Prix,alonso,0.053554163053309886,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,lawson,0.052633547682749825,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,bearman,0.05758257541851821,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,ocon,0.05307748345009531,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,hulkenberg,0.039595596859104756,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,stroll,0.04309586669982889,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,doohan,0.0424936018895308,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,bortoleto,0.036975986973529315,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,tsunoda,0.06502752238946523,0
-xgb_clf,2025,5,Saudi Arabian Grand Prix,gasly,0.0675253934826859,0
-rf_clf,2025,6,Miami Grand Prix,piastri,0.001925858303575534,0
-rf_clf,2025,6,Miami Grand Prix,norris,0.0016841608514568424,0
-rf_clf,2025,6,Miami Grand Prix,russell,0.008056386981477516,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,leclerc,0.00754848309326289,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,norris,0.006459759705199697,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,russell,0.0031363242603808295,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,antonelli,0.01725442864055274,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,hamilton,0.04801402030110056,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,sainz,0.04849719692642323,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,albon,0.09723638801771879,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,hadjar,0.0890282639141845,1
+rf_clf,2025,5,Saudi Arabian Grand Prix,alonso,0.0856114675842239,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,lawson,0.08133313479411759,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,bearman,0.08689651447979382,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,ocon,0.06075231509172927,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,hulkenberg,0.05145525272011777,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,stroll,0.08082674668696124,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,doohan,0.05822618282804284,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,bortoleto,0.009451489362563764,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,tsunoda,0.08014127255699885,0
+rf_clf,2025,5,Saudi Arabian Grand Prix,gasly,0.07913158674197271,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,piastri,0.03482751533527755,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,max_verstappen,0.025253431393345783,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,leclerc,0.032283301941900704,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,norris,0.03984215031883824,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,russell,0.03083281363330088,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,antonelli,0.042676179096063624,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,hamilton,0.04208180367968319,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,sainz,0.04168014000766123,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,albon,0.11658091298737225,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,hadjar,0.08972394627446653,1
+xgb_clf,2025,5,Saudi Arabian Grand Prix,alonso,0.0611063946334688,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,lawson,0.05231631857887621,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,bearman,0.04723594839542279,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,ocon,0.050035585611378816,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,hulkenberg,0.03958453648501066,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,stroll,0.04413352508550784,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,doohan,0.04063127534472537,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,bortoleto,0.035494807551659825,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,tsunoda,0.05603590956546972,0
+xgb_clf,2025,5,Saudi Arabian Grand Prix,gasly,0.06854763399037603,0
+rf_clf,2025,6,Miami Grand Prix,piastri,0.0019402276693524084,0
+rf_clf,2025,6,Miami Grand Prix,norris,0.0045568863374176125,0
+rf_clf,2025,6,Miami Grand Prix,russell,0.00511010190217196,0
 rf_clf,2025,6,Miami Grand Prix,max_verstappen,0.0,0
-rf_clf,2025,6,Miami Grand Prix,albon,0.06812505223732578,0
-rf_clf,2025,6,Miami Grand Prix,antonelli,0.008507570569807398,0
-rf_clf,2025,6,Miami Grand Prix,leclerc,0.032673711761506574,0
-rf_clf,2025,6,Miami Grand Prix,hamilton,0.08088839025872885,0
-rf_clf,2025,6,Miami Grand Prix,sainz,0.048043624388599236,0
-rf_clf,2025,6,Miami Grand Prix,tsunoda,0.08224217841582829,1
-rf_clf,2025,6,Miami Grand Prix,hadjar,0.0964073006723046,0
-rf_clf,2025,6,Miami Grand Prix,ocon,0.11874658409548208,0
-rf_clf,2025,6,Miami Grand Prix,gasly,0.05664214095070095,0
-rf_clf,2025,6,Miami Grand Prix,hulkenberg,0.05921672548763118,0
-rf_clf,2025,6,Miami Grand Prix,alonso,0.06871214980213308,0
-rf_clf,2025,6,Miami Grand Prix,stroll,0.04396423117140423,0
-rf_clf,2025,6,Miami Grand Prix,lawson,0.07447932348228706,0
-rf_clf,2025,6,Miami Grand Prix,bortoleto,0.057754357292652755,0
-rf_clf,2025,6,Miami Grand Prix,bearman,0.06859099750810574,0
-rf_clf,2025,6,Miami Grand Prix,doohan,0.062741471714051,0
-xgb_clf,2025,6,Miami Grand Prix,piastri,0.028494345534708688,0
-xgb_clf,2025,6,Miami Grand Prix,norris,0.026812880433593624,0
-xgb_clf,2025,6,Miami Grand Prix,russell,0.03494957632246927,0
-xgb_clf,2025,6,Miami Grand Prix,max_verstappen,0.024096501560504913,0
-xgb_clf,2025,6,Miami Grand Prix,albon,0.04976329347823462,0
-xgb_clf,2025,6,Miami Grand Prix,antonelli,0.03815791654625046,0
-xgb_clf,2025,6,Miami Grand Prix,leclerc,0.03041838551216978,0
-xgb_clf,2025,6,Miami Grand Prix,hamilton,0.06503643324898166,0
-xgb_clf,2025,6,Miami Grand Prix,sainz,0.03618516011426912,0
-xgb_clf,2025,6,Miami Grand Prix,tsunoda,0.053467862139555955,1
-xgb_clf,2025,6,Miami Grand Prix,hadjar,0.1403049018504558,0
-xgb_clf,2025,6,Miami Grand Prix,ocon,0.05202081597119133,0
-xgb_clf,2025,6,Miami Grand Prix,gasly,0.04826885980090893,0
-xgb_clf,2025,6,Miami Grand Prix,hulkenberg,0.037293479988769626,0
-xgb_clf,2025,6,Miami Grand Prix,alonso,0.06267242311056062,0
-xgb_clf,2025,6,Miami Grand Prix,stroll,0.037013843165064474,0
-xgb_clf,2025,6,Miami Grand Prix,lawson,0.04455106682525816,0
-xgb_clf,2025,6,Miami Grand Prix,bortoleto,0.04456317874817358,0
-xgb_clf,2025,6,Miami Grand Prix,bearman,0.05548133976681422,0
-xgb_clf,2025,6,Miami Grand Prix,doohan,0.03981820419063672,0
+rf_clf,2025,6,Miami Grand Prix,albon,0.0639017724211558,0
+rf_clf,2025,6,Miami Grand Prix,antonelli,0.009579131076301725,0
+rf_clf,2025,6,Miami Grand Prix,leclerc,0.02788735302392869,0
+rf_clf,2025,6,Miami Grand Prix,hamilton,0.06901109901690841,0
+rf_clf,2025,6,Miami Grand Prix,sainz,0.04119590147778527,0
+rf_clf,2025,6,Miami Grand Prix,tsunoda,0.08030834196169845,1
+rf_clf,2025,6,Miami Grand Prix,hadjar,0.09715675209946795,0
+rf_clf,2025,6,Miami Grand Prix,ocon,0.11611350098762496,0
+rf_clf,2025,6,Miami Grand Prix,gasly,0.05581843761317752,0
+rf_clf,2025,6,Miami Grand Prix,hulkenberg,0.059383561716292686,0
+rf_clf,2025,6,Miami Grand Prix,alonso,0.06444348558547748,0
+rf_clf,2025,6,Miami Grand Prix,stroll,0.04574036660602101,0
+rf_clf,2025,6,Miami Grand Prix,lawson,0.0788167737149423,0
+rf_clf,2025,6,Miami Grand Prix,bortoleto,0.062126599991241795,0
+rf_clf,2025,6,Miami Grand Prix,bearman,0.0547016342128168,0
+rf_clf,2025,6,Miami Grand Prix,doohan,0.06246712766258618,0
+xgb_clf,2025,6,Miami Grand Prix,piastri,0.029900047149569724,0
+xgb_clf,2025,6,Miami Grand Prix,norris,0.026000515740319134,0
+xgb_clf,2025,6,Miami Grand Prix,russell,0.033145195693857946,0
+xgb_clf,2025,6,Miami Grand Prix,max_verstappen,0.024826031050254146,0
+xgb_clf,2025,6,Miami Grand Prix,albon,0.057968442788736065,0
+xgb_clf,2025,6,Miami Grand Prix,antonelli,0.03660237608578376,0
+xgb_clf,2025,6,Miami Grand Prix,leclerc,0.030596983450251053,0
+xgb_clf,2025,6,Miami Grand Prix,hamilton,0.04518543232583927,0
+xgb_clf,2025,6,Miami Grand Prix,sainz,0.03653649291201809,0
+xgb_clf,2025,6,Miami Grand Prix,tsunoda,0.049713203930645454,1
+xgb_clf,2025,6,Miami Grand Prix,hadjar,0.13329944836033966,0
+xgb_clf,2025,6,Miami Grand Prix,ocon,0.04766691581211849,0
+xgb_clf,2025,6,Miami Grand Prix,gasly,0.04787191037955638,0
+xgb_clf,2025,6,Miami Grand Prix,hulkenberg,0.03839789675893006,0
+xgb_clf,2025,6,Miami Grand Prix,alonso,0.0767524624477466,0
+xgb_clf,2025,6,Miami Grand Prix,stroll,0.03289576851284297,0
+xgb_clf,2025,6,Miami Grand Prix,lawson,0.04305102279055452,0
+xgb_clf,2025,6,Miami Grand Prix,bortoleto,0.045088461638901824,0
+xgb_clf,2025,6,Miami Grand Prix,bearman,0.04877502494997911,0
+xgb_clf,2025,6,Miami Grand Prix,doohan,0.039107502412516454,0
 rf_clf,2025,7,Emilia Romagna Grand Prix,max_verstappen,0.0,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,norris,0.0,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,norris,0.0020119376894991133,0
 rf_clf,2025,7,Emilia Romagna Grand Prix,piastri,0.0,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,hamilton,0.08025609782769709,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,albon,0.0571345682950995,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,leclerc,0.0456889472123767,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,russell,0.002170100808999431,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,sainz,0.04629167418915192,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,hadjar,0.10117162491997364,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,tsunoda,0.07909810004072412,1
-rf_clf,2025,7,Emilia Romagna Grand Prix,alonso,0.08350934372445251,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,hulkenberg,0.0449990597271339,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,gasly,0.08181748497803487,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,lawson,0.07903666891677837,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,stroll,0.08246577626256037,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,colapinto,0.0640354336347384,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,bearman,0.06253950465401587,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,bortoleto,0.05744063437078809,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,antonelli,0.06645060386565442,0
-rf_clf,2025,7,Emilia Romagna Grand Prix,ocon,0.07745291153813393,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,max_verstappen,0.028940258099992604,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,norris,0.03403005012746143,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,piastri,0.027727977543701175,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,hamilton,0.05627939295699867,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,albon,0.048268280369831565,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,leclerc,0.04124157859709932,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,russell,0.03398223799469965,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,sainz,0.03578776127264548,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,hadjar,0.10661587275485043,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,tsunoda,0.0634389207471654,1
-xgb_clf,2025,7,Emilia Romagna Grand Prix,alonso,0.07903873799026567,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,hulkenberg,0.035252130148075767,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,gasly,0.04907166084601994,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,lawson,0.049605889150466265,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,stroll,0.05281447718056168,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,colapinto,0.05093456582589201,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,bearman,0.05901704065885316,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,bortoleto,0.04321836639502338,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,antonelli,0.04858335848493213,0
-xgb_clf,2025,7,Emilia Romagna Grand Prix,ocon,0.06467811067980485,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,hamilton,0.07257725080857816,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,albon,0.06055571736852515,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,leclerc,0.04967858294296995,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,russell,0.0022601440121355542,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,sainz,0.04365488144129683,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,hadjar,0.08068996279996235,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,tsunoda,0.08351836129890877,1
+rf_clf,2025,7,Emilia Romagna Grand Prix,alonso,0.07567828969379506,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,hulkenberg,0.04257182838998809,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,gasly,0.08013232731180023,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,lawson,0.06570271195991197,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,stroll,0.08274579092200536,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,colapinto,0.06165286256848862,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,bearman,0.05661012947693659,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,bortoleto,0.05640466840612316,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,antonelli,0.06298815788388862,0
+rf_clf,2025,7,Emilia Romagna Grand Prix,ocon,0.06124342418801534,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,max_verstappen,0.029928684794314892,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,norris,0.035623190539588484,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,piastri,0.027894492455247683,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,hamilton,0.04464120407969122,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,albon,0.052559575052810115,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,leclerc,0.04085528364305725,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,russell,0.034963116129816806,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,sainz,0.037307228634896265,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,hadjar,0.09903934410068217,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,tsunoda,0.06290092764200714,1
+xgb_clf,2025,7,Emilia Romagna Grand Prix,alonso,0.10355095502537229,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,hulkenberg,0.033974052194255255,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,gasly,0.05233319458596349,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,lawson,0.04997168168642805,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,stroll,0.05435674762175269,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,colapinto,0.0480583290004578,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,bearman,0.04980841150251068,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,bortoleto,0.043164281373059284,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,antonelli,0.045189752721895945,0
+xgb_clf,2025,7,Emilia Romagna Grand Prix,ocon,0.0855039247537103,0
 rf_clf,2025,8,Monaco Grand Prix,norris,0.0,0
-rf_clf,2025,8,Monaco Grand Prix,leclerc,0.002251808103549079,0
-rf_clf,2025,8,Monaco Grand Prix,piastri,0.002145371778024591,0
-rf_clf,2025,8,Monaco Grand Prix,max_verstappen,0.008352323328524262,0
-rf_clf,2025,8,Monaco Grand Prix,hamilton,0.01526333719702504,0
-rf_clf,2025,8,Monaco Grand Prix,hadjar,0.06445969629285207,0
-rf_clf,2025,8,Monaco Grand Prix,ocon,0.10322139533460084,0
-rf_clf,2025,8,Monaco Grand Prix,lawson,0.09243353533584624,0
-rf_clf,2025,8,Monaco Grand Prix,albon,0.09126958423140645,0
-rf_clf,2025,8,Monaco Grand Prix,sainz,0.08107781106721192,1
-rf_clf,2025,8,Monaco Grand Prix,russell,0.04831640040936343,0
-rf_clf,2025,8,Monaco Grand Prix,bearman,0.06486760757099773,0
-rf_clf,2025,8,Monaco Grand Prix,colapinto,0.019843957982610856,0
-rf_clf,2025,8,Monaco Grand Prix,bortoleto,0.033173376584937374,0
-rf_clf,2025,8,Monaco Grand Prix,stroll,0.05539599326867099,0
-rf_clf,2025,8,Monaco Grand Prix,hulkenberg,0.06926602422665148,0
-rf_clf,2025,8,Monaco Grand Prix,tsunoda,0.08941297623985238,0
-rf_clf,2025,8,Monaco Grand Prix,antonelli,0.08765842108773095,0
-rf_clf,2025,8,Monaco Grand Prix,alonso,0.07478304170319709,0
-rf_clf,2025,8,Monaco Grand Prix,gasly,0.04924909370818037,0
-xgb_clf,2025,8,Monaco Grand Prix,norris,0.026613791610367143,0
-xgb_clf,2025,8,Monaco Grand Prix,leclerc,0.03590184731306359,0
-xgb_clf,2025,8,Monaco Grand Prix,piastri,0.03620766229032595,0
-xgb_clf,2025,8,Monaco Grand Prix,max_verstappen,0.03782896641234522,0
-xgb_clf,2025,8,Monaco Grand Prix,hamilton,0.03303849857134297,0
-xgb_clf,2025,8,Monaco Grand Prix,hadjar,0.06735629059035639,0
-xgb_clf,2025,8,Monaco Grand Prix,ocon,0.05352826823374822,0
-xgb_clf,2025,8,Monaco Grand Prix,lawson,0.052656521911307576,0
-xgb_clf,2025,8,Monaco Grand Prix,albon,0.08362864926981192,0
-xgb_clf,2025,8,Monaco Grand Prix,sainz,0.04515371827988817,1
-xgb_clf,2025,8,Monaco Grand Prix,russell,0.05940030786031011,0
-xgb_clf,2025,8,Monaco Grand Prix,bearman,0.04666224954448138,0
-xgb_clf,2025,8,Monaco Grand Prix,colapinto,0.041534392940628856,0
-xgb_clf,2025,8,Monaco Grand Prix,bortoleto,0.039175329426584214,0
-xgb_clf,2025,8,Monaco Grand Prix,stroll,0.04709950253523986,0
-xgb_clf,2025,8,Monaco Grand Prix,hulkenberg,0.03781023542359249,0
-xgb_clf,2025,8,Monaco Grand Prix,tsunoda,0.0749675895852782,0
-xgb_clf,2025,8,Monaco Grand Prix,antonelli,0.06057485383464754,0
-xgb_clf,2025,8,Monaco Grand Prix,alonso,0.0523100967411011,0
-xgb_clf,2025,8,Monaco Grand Prix,gasly,0.040333168985887714,0
+rf_clf,2025,8,Monaco Grand Prix,leclerc,0.0031998906031548827,0
+rf_clf,2025,8,Monaco Grand Prix,piastri,0.0,0
+rf_clf,2025,8,Monaco Grand Prix,max_verstappen,0.0067949616185851896,0
+rf_clf,2025,8,Monaco Grand Prix,hamilton,0.009702431724148494,0
+rf_clf,2025,8,Monaco Grand Prix,hadjar,0.07620021790753242,0
+rf_clf,2025,8,Monaco Grand Prix,ocon,0.12778130428524986,0
+rf_clf,2025,8,Monaco Grand Prix,lawson,0.09431230686944661,0
+rf_clf,2025,8,Monaco Grand Prix,albon,0.09114891314011611,0
+rf_clf,2025,8,Monaco Grand Prix,sainz,0.09365375837713849,1
+rf_clf,2025,8,Monaco Grand Prix,russell,0.04901493776450398,0
+rf_clf,2025,8,Monaco Grand Prix,bearman,0.0641393632747796,0
+rf_clf,2025,8,Monaco Grand Prix,colapinto,0.0257387222613867,0
+rf_clf,2025,8,Monaco Grand Prix,bortoleto,0.02975903913242025,0
+rf_clf,2025,8,Monaco Grand Prix,stroll,0.05192318717830894,0
+rf_clf,2025,8,Monaco Grand Prix,hulkenberg,0.0730352375616776,0
+rf_clf,2025,8,Monaco Grand Prix,tsunoda,0.09294239214500259,0
+rf_clf,2025,8,Monaco Grand Prix,antonelli,0.08994582880459631,0
+rf_clf,2025,8,Monaco Grand Prix,alonso,0.07564944126651744,0
+rf_clf,2025,8,Monaco Grand Prix,gasly,0.05397786339655196,0
+xgb_clf,2025,8,Monaco Grand Prix,norris,0.027289727300452666,0
+xgb_clf,2025,8,Monaco Grand Prix,leclerc,0.03430440619209243,0
+xgb_clf,2025,8,Monaco Grand Prix,piastri,0.03561845371865867,0
+xgb_clf,2025,8,Monaco Grand Prix,max_verstappen,0.03707435776862194,0
+xgb_clf,2025,8,Monaco Grand Prix,hamilton,0.030281858265006078,0
+xgb_clf,2025,8,Monaco Grand Prix,hadjar,0.07345448502493031,0
+xgb_clf,2025,8,Monaco Grand Prix,ocon,0.05532507822484913,0
+xgb_clf,2025,8,Monaco Grand Prix,lawson,0.051965688560909176,0
+xgb_clf,2025,8,Monaco Grand Prix,albon,0.07005663434089135,0
+xgb_clf,2025,8,Monaco Grand Prix,sainz,0.047926226160555085,1
+xgb_clf,2025,8,Monaco Grand Prix,russell,0.04557699929217017,0
+xgb_clf,2025,8,Monaco Grand Prix,bearman,0.043383108161664595,0
+xgb_clf,2025,8,Monaco Grand Prix,colapinto,0.04030984872554207,0
+xgb_clf,2025,8,Monaco Grand Prix,bortoleto,0.03919940371053539,0
+xgb_clf,2025,8,Monaco Grand Prix,stroll,0.04840597827256701,0
+xgb_clf,2025,8,Monaco Grand Prix,hulkenberg,0.038689943476722714,0
+xgb_clf,2025,8,Monaco Grand Prix,tsunoda,0.063886168360429,0
+xgb_clf,2025,8,Monaco Grand Prix,antonelli,0.05345285907142451,0
+xgb_clf,2025,8,Monaco Grand Prix,alonso,0.060215303024853305,0
+xgb_clf,2025,8,Monaco Grand Prix,gasly,0.03842551758983757,0
 rf_clf,2025,9,Spanish Grand Prix,piastri,0.0,0
 rf_clf,2025,9,Spanish Grand Prix,norris,0.0,0
-rf_clf,2025,9,Spanish Grand Prix,leclerc,0.02503065717095403,0
-rf_clf,2025,9,Spanish Grand Prix,russell,0.005305066947388056,0
-rf_clf,2025,9,Spanish Grand Prix,hulkenberg,0.05568210188050059,0
-rf_clf,2025,9,Spanish Grand Prix,hamilton,0.02128980147107396,0
-rf_clf,2025,9,Spanish Grand Prix,hadjar,0.1071338594469868,0
-rf_clf,2025,9,Spanish Grand Prix,gasly,0.08321191868458476,0
-rf_clf,2025,9,Spanish Grand Prix,alonso,0.0907775291927991,0
-rf_clf,2025,9,Spanish Grand Prix,max_verstappen,0.001993504659014072,1
-rf_clf,2025,9,Spanish Grand Prix,lawson,0.087044323559951,0
-rf_clf,2025,9,Spanish Grand Prix,bortoleto,0.06805668665479081,0
-rf_clf,2025,9,Spanish Grand Prix,tsunoda,0.07190671142603902,0
-rf_clf,2025,9,Spanish Grand Prix,sainz,0.07128971627756024,0
-rf_clf,2025,9,Spanish Grand Prix,colapinto,0.03296027848371276,0
-rf_clf,2025,9,Spanish Grand Prix,ocon,0.07625285631486525,0
-rf_clf,2025,9,Spanish Grand Prix,bearman,0.0814183820021543,0
-rf_clf,2025,9,Spanish Grand Prix,antonelli,0.033133354799696445,0
-rf_clf,2025,9,Spanish Grand Prix,albon,0.09316415085815333,0
-xgb_clf,2025,9,Spanish Grand Prix,piastri,0.026081921382848282,0
-xgb_clf,2025,9,Spanish Grand Prix,norris,0.033909190332127255,0
-xgb_clf,2025,9,Spanish Grand Prix,leclerc,0.03846295630005902,0
-xgb_clf,2025,9,Spanish Grand Prix,russell,0.029588096127843456,0
-xgb_clf,2025,9,Spanish Grand Prix,hulkenberg,0.04013367963795984,0
-xgb_clf,2025,9,Spanish Grand Prix,hamilton,0.03929970527564327,0
-xgb_clf,2025,9,Spanish Grand Prix,hadjar,0.07606428156896686,0
-xgb_clf,2025,9,Spanish Grand Prix,gasly,0.044110605016729,0
-xgb_clf,2025,9,Spanish Grand Prix,alonso,0.05229087213954083,0
-xgb_clf,2025,9,Spanish Grand Prix,max_verstappen,0.03186542211402879,1
-xgb_clf,2025,9,Spanish Grand Prix,lawson,0.07449723317868054,0
-xgb_clf,2025,9,Spanish Grand Prix,bortoleto,0.07955865051872305,0
-xgb_clf,2025,9,Spanish Grand Prix,tsunoda,0.06759957858798138,0
-xgb_clf,2025,9,Spanish Grand Prix,sainz,0.042958191022089455,0
-xgb_clf,2025,9,Spanish Grand Prix,colapinto,0.038472635253226924,0
-xgb_clf,2025,9,Spanish Grand Prix,ocon,0.042613726756459594,0
-xgb_clf,2025,9,Spanish Grand Prix,bearman,0.054918542480205015,0
-xgb_clf,2025,9,Spanish Grand Prix,antonelli,0.03130639361661621,0
-xgb_clf,2025,9,Spanish Grand Prix,albon,0.06566470121139104,0
+rf_clf,2025,9,Spanish Grand Prix,leclerc,0.02834323417979624,0
+rf_clf,2025,9,Spanish Grand Prix,russell,0.0021635720151936557,0
+rf_clf,2025,9,Spanish Grand Prix,hulkenberg,0.055349594012020886,0
+rf_clf,2025,9,Spanish Grand Prix,hamilton,0.01652993012237066,0
+rf_clf,2025,9,Spanish Grand Prix,hadjar,0.1078441102008254,0
+rf_clf,2025,9,Spanish Grand Prix,gasly,0.08079437987242143,0
+rf_clf,2025,9,Spanish Grand Prix,alonso,0.0938925763249167,0
+rf_clf,2025,9,Spanish Grand Prix,max_verstappen,0.0022090879376089056,1
+rf_clf,2025,9,Spanish Grand Prix,lawson,0.09201384398513635,0
+rf_clf,2025,9,Spanish Grand Prix,bortoleto,0.07384292197837361,0
+rf_clf,2025,9,Spanish Grand Prix,tsunoda,0.07678518814307884,0
+rf_clf,2025,9,Spanish Grand Prix,sainz,0.0701484658317562,0
+rf_clf,2025,9,Spanish Grand Prix,colapinto,0.028007467975527382,0
+rf_clf,2025,9,Spanish Grand Prix,ocon,0.06366019235959125,0
+rf_clf,2025,9,Spanish Grand Prix,bearman,0.07385863890308059,0
+rf_clf,2025,9,Spanish Grand Prix,antonelli,0.04011423583393755,0
+rf_clf,2025,9,Spanish Grand Prix,albon,0.0936409707801524,0
+xgb_clf,2025,9,Spanish Grand Prix,piastri,0.026183669625639512,0
+xgb_clf,2025,9,Spanish Grand Prix,norris,0.032019223068548694,0
+xgb_clf,2025,9,Spanish Grand Prix,leclerc,0.039688698838972344,0
+xgb_clf,2025,9,Spanish Grand Prix,russell,0.030827929120050595,0
+xgb_clf,2025,9,Spanish Grand Prix,hulkenberg,0.03798865772393285,0
+xgb_clf,2025,9,Spanish Grand Prix,hamilton,0.03840100899561227,0
+xgb_clf,2025,9,Spanish Grand Prix,hadjar,0.06195118010658497,0
+xgb_clf,2025,9,Spanish Grand Prix,gasly,0.04545432651012179,0
+xgb_clf,2025,9,Spanish Grand Prix,alonso,0.05200038129005069,0
+xgb_clf,2025,9,Spanish Grand Prix,max_verstappen,0.03205097761393329,1
+xgb_clf,2025,9,Spanish Grand Prix,lawson,0.056011324445142084,0
+xgb_clf,2025,9,Spanish Grand Prix,bortoleto,0.06690368243988049,0
+xgb_clf,2025,9,Spanish Grand Prix,tsunoda,0.054215338166180294,0
+xgb_clf,2025,9,Spanish Grand Prix,sainz,0.041964506645534125,0
+xgb_clf,2025,9,Spanish Grand Prix,colapinto,0.03716496613416243,0
+xgb_clf,2025,9,Spanish Grand Prix,ocon,0.044759056106476444,0
+xgb_clf,2025,9,Spanish Grand Prix,bearman,0.05162990255921618,0
+xgb_clf,2025,9,Spanish Grand Prix,antonelli,0.03430899178921255,0
+xgb_clf,2025,9,Spanish Grand Prix,albon,0.0701055079009609,0
 rf_clf,2025,10,Canadian Grand Prix,russell,0.0,0
-rf_clf,2025,10,Canadian Grand Prix,max_verstappen,0.0019467635458468382,0
-rf_clf,2025,10,Canadian Grand Prix,antonelli,0.019318421621857634,0
+rf_clf,2025,10,Canadian Grand Prix,max_verstappen,0.0021565371720689863,0
+rf_clf,2025,10,Canadian Grand Prix,antonelli,0.016783376752040106,0
 rf_clf,2025,10,Canadian Grand Prix,piastri,0.0,0
-rf_clf,2025,10,Canadian Grand Prix,leclerc,0.031183508378572755,0
-rf_clf,2025,10,Canadian Grand Prix,hamilton,0.010309286164441416,0
-rf_clf,2025,10,Canadian Grand Prix,alonso,0.0767825380536771,0
-rf_clf,2025,10,Canadian Grand Prix,hulkenberg,0.08101739501120718,0
-rf_clf,2025,10,Canadian Grand Prix,ocon,0.08790408736626745,0
-rf_clf,2025,10,Canadian Grand Prix,sainz,0.08025412411976907,1
-rf_clf,2025,10,Canadian Grand Prix,bearman,0.0800399169831927,0
-rf_clf,2025,10,Canadian Grand Prix,tsunoda,0.08073184085628257,0
-rf_clf,2025,10,Canadian Grand Prix,colapinto,0.06442555744517953,0
-rf_clf,2025,10,Canadian Grand Prix,bortoleto,0.05095343712359757,0
-rf_clf,2025,10,Canadian Grand Prix,gasly,0.050392225623723294,0
-rf_clf,2025,10,Canadian Grand Prix,hadjar,0.10336295392578712,0
-rf_clf,2025,10,Canadian Grand Prix,stroll,0.0556869856841936,0
-rf_clf,2025,10,Canadian Grand Prix,norris,0.006732254608231444,0
-rf_clf,2025,10,Canadian Grand Prix,lawson,0.06155736157351016,0
-rf_clf,2025,10,Canadian Grand Prix,albon,0.08145078545115195,0
-xgb_clf,2025,10,Canadian Grand Prix,russell,0.028763115073839086,0
-xgb_clf,2025,10,Canadian Grand Prix,max_verstappen,0.028621751993578748,0
-xgb_clf,2025,10,Canadian Grand Prix,antonelli,0.034986807596351234,0
-xgb_clf,2025,10,Canadian Grand Prix,piastri,0.03588478775713176,0
-xgb_clf,2025,10,Canadian Grand Prix,leclerc,0.03897817963328383,0
-xgb_clf,2025,10,Canadian Grand Prix,hamilton,0.03558944186667475,0
-xgb_clf,2025,10,Canadian Grand Prix,alonso,0.04432019408561404,0
-xgb_clf,2025,10,Canadian Grand Prix,hulkenberg,0.05055365236259861,0
-xgb_clf,2025,10,Canadian Grand Prix,ocon,0.07057866514545787,0
-xgb_clf,2025,10,Canadian Grand Prix,sainz,0.0495101788977501,1
-xgb_clf,2025,10,Canadian Grand Prix,bearman,0.06411970127192772,0
-xgb_clf,2025,10,Canadian Grand Prix,tsunoda,0.046689919329501076,0
-xgb_clf,2025,10,Canadian Grand Prix,colapinto,0.04753821703531082,0
-xgb_clf,2025,10,Canadian Grand Prix,bortoleto,0.055622889384210394,0
-xgb_clf,2025,10,Canadian Grand Prix,gasly,0.038259590394154774,0
-xgb_clf,2025,10,Canadian Grand Prix,hadjar,0.05280542585871382,0
-xgb_clf,2025,10,Canadian Grand Prix,stroll,0.05050393950191963,0
-xgb_clf,2025,10,Canadian Grand Prix,norris,0.030992736533761202,0
-xgb_clf,2025,10,Canadian Grand Prix,lawson,0.04966052260299188,0
-xgb_clf,2025,10,Canadian Grand Prix,albon,0.05655595703704478,0
+rf_clf,2025,10,Canadian Grand Prix,leclerc,0.023508898356495552,0
+rf_clf,2025,10,Canadian Grand Prix,hamilton,0.01737441379145221,0
+rf_clf,2025,10,Canadian Grand Prix,alonso,0.057600791133472676,0
+rf_clf,2025,10,Canadian Grand Prix,hulkenberg,0.08100160067618473,0
+rf_clf,2025,10,Canadian Grand Prix,ocon,0.0863323223171966,0
+rf_clf,2025,10,Canadian Grand Prix,sainz,0.07670921861627586,1
+rf_clf,2025,10,Canadian Grand Prix,bearman,0.08287765923968235,0
+rf_clf,2025,10,Canadian Grand Prix,tsunoda,0.08442917446569212,0
+rf_clf,2025,10,Canadian Grand Prix,colapinto,0.06111370042820158,0
+rf_clf,2025,10,Canadian Grand Prix,bortoleto,0.057017355196037435,0
+rf_clf,2025,10,Canadian Grand Prix,gasly,0.047477251699770615,0
+rf_clf,2025,10,Canadian Grand Prix,hadjar,0.09896383294349961,0
+rf_clf,2025,10,Canadian Grand Prix,stroll,0.05856037543932711,0
+rf_clf,2025,10,Canadian Grand Prix,norris,0.004934555597696541,0
+rf_clf,2025,10,Canadian Grand Prix,lawson,0.05353100526470496,0
+rf_clf,2025,10,Canadian Grand Prix,albon,0.09147825020332484,0
+xgb_clf,2025,10,Canadian Grand Prix,russell,0.03164579683303327,0
+xgb_clf,2025,10,Canadian Grand Prix,max_verstappen,0.026909832919467046,0
+xgb_clf,2025,10,Canadian Grand Prix,antonelli,0.032723205884026246,0
+xgb_clf,2025,10,Canadian Grand Prix,piastri,0.03606668444412421,0
+xgb_clf,2025,10,Canadian Grand Prix,leclerc,0.038357751382923036,0
+xgb_clf,2025,10,Canadian Grand Prix,hamilton,0.0350567575960533,0
+xgb_clf,2025,10,Canadian Grand Prix,alonso,0.04571317061242917,0
+xgb_clf,2025,10,Canadian Grand Prix,hulkenberg,0.04503239453072662,0
+xgb_clf,2025,10,Canadian Grand Prix,ocon,0.07267362168319269,0
+xgb_clf,2025,10,Canadian Grand Prix,sainz,0.0467777033160686,1
+xgb_clf,2025,10,Canadian Grand Prix,bearman,0.06928994233819068,0
+xgb_clf,2025,10,Canadian Grand Prix,tsunoda,0.04609011652780843,0
+xgb_clf,2025,10,Canadian Grand Prix,colapinto,0.0464106783442134,0
+xgb_clf,2025,10,Canadian Grand Prix,bortoleto,0.054025589712447045,0
+xgb_clf,2025,10,Canadian Grand Prix,gasly,0.03830365463332714,0
+xgb_clf,2025,10,Canadian Grand Prix,hadjar,0.05781333410896339,0
+xgb_clf,2025,10,Canadian Grand Prix,stroll,0.05542230762939978,0
+xgb_clf,2025,10,Canadian Grand Prix,norris,0.0326923947387776,0
+xgb_clf,2025,10,Canadian Grand Prix,lawson,0.04558473363945599,0
+xgb_clf,2025,10,Canadian Grand Prix,albon,0.05170195300708351,0
 rf_clf,2025,11,Austrian Grand Prix,norris,0.0,0
-rf_clf,2025,11,Austrian Grand Prix,piastri,0.002153956463037559,0
-rf_clf,2025,11,Austrian Grand Prix,leclerc,0.004102961367476851,0
-rf_clf,2025,11,Austrian Grand Prix,hamilton,0.00378845209761617,0
-rf_clf,2025,11,Austrian Grand Prix,russell,0.007835297426448609,0
-rf_clf,2025,11,Austrian Grand Prix,lawson,0.07431557366872092,0
-rf_clf,2025,11,Austrian Grand Prix,alonso,0.0802971791576331,0
-rf_clf,2025,11,Austrian Grand Prix,bortoleto,0.09037090312974927,0
-rf_clf,2025,11,Austrian Grand Prix,hulkenberg,0.054944121392354175,0
-rf_clf,2025,11,Austrian Grand Prix,ocon,0.07881348319618929,1
-rf_clf,2025,11,Austrian Grand Prix,bearman,0.08079979796109879,0
-rf_clf,2025,11,Austrian Grand Prix,hadjar,0.15742435451134135,0
-rf_clf,2025,11,Austrian Grand Prix,gasly,0.079429832871017,0
-rf_clf,2025,11,Austrian Grand Prix,stroll,0.0745062232966264,0
-rf_clf,2025,11,Austrian Grand Prix,colapinto,0.07638249947502854,0
-rf_clf,2025,11,Austrian Grand Prix,tsunoda,0.07847544363279066,0
-rf_clf,2025,11,Austrian Grand Prix,albon,0.09563308781736798,0
-rf_clf,2025,11,Austrian Grand Prix,max_verstappen,0.017299090435977854,0
-rf_clf,2025,11,Austrian Grand Prix,antonelli,0.06388086406757809,0
-rf_clf,2025,11,Austrian Grand Prix,sainz,0.06464800029861739,0
-xgb_clf,2025,11,Austrian Grand Prix,norris,0.025027526750773844,0
-xgb_clf,2025,11,Austrian Grand Prix,piastri,0.035974049277540124,0
-xgb_clf,2025,11,Austrian Grand Prix,leclerc,0.030938682930722973,0
-xgb_clf,2025,11,Austrian Grand Prix,hamilton,0.03264885445865025,0
-xgb_clf,2025,11,Austrian Grand Prix,russell,0.034648677300114915,0
-xgb_clf,2025,11,Austrian Grand Prix,lawson,0.05074376996026743,0
-xgb_clf,2025,11,Austrian Grand Prix,alonso,0.04556142622471309,0
-xgb_clf,2025,11,Austrian Grand Prix,bortoleto,0.0682590676832053,0
-xgb_clf,2025,11,Austrian Grand Prix,hulkenberg,0.04275113917697728,0
-xgb_clf,2025,11,Austrian Grand Prix,ocon,0.04402448952766891,1
-xgb_clf,2025,11,Austrian Grand Prix,bearman,0.08014216118249032,0
-xgb_clf,2025,11,Austrian Grand Prix,hadjar,0.07179329010739029,0
-xgb_clf,2025,11,Austrian Grand Prix,gasly,0.04182582409117154,0
-xgb_clf,2025,11,Austrian Grand Prix,stroll,0.04796919983990144,0
-xgb_clf,2025,11,Austrian Grand Prix,colapinto,0.07278683102425317,0
-xgb_clf,2025,11,Austrian Grand Prix,tsunoda,0.11699843667195502,0
-xgb_clf,2025,11,Austrian Grand Prix,albon,0.05157634708987169,0
-xgb_clf,2025,11,Austrian Grand Prix,max_verstappen,0.03154796844477435,0
-xgb_clf,2025,11,Austrian Grand Prix,antonelli,0.04242130722052268,0
-xgb_clf,2025,11,Austrian Grand Prix,sainz,0.046384801934101855,0
-rf_clf,2025,12,British Grand Prix,norris,0.00207568051907779,0
+rf_clf,2025,11,Austrian Grand Prix,piastri,0.0,0
+rf_clf,2025,11,Austrian Grand Prix,leclerc,0.0046210933224191345,0
+rf_clf,2025,11,Austrian Grand Prix,hamilton,0.0049686610757657505,0
+rf_clf,2025,11,Austrian Grand Prix,russell,0.0028091132450819662,0
+rf_clf,2025,11,Austrian Grand Prix,lawson,0.07708209114894826,0
+rf_clf,2025,11,Austrian Grand Prix,alonso,0.08597885336974907,0
+rf_clf,2025,11,Austrian Grand Prix,bortoleto,0.11358454651598301,0
+rf_clf,2025,11,Austrian Grand Prix,hulkenberg,0.05291524908292482,0
+rf_clf,2025,11,Austrian Grand Prix,ocon,0.08332579511520617,1
+rf_clf,2025,11,Austrian Grand Prix,bearman,0.09107667117995964,0
+rf_clf,2025,11,Austrian Grand Prix,hadjar,0.13310007372966998,0
+rf_clf,2025,11,Austrian Grand Prix,gasly,0.0792717213243549,0
+rf_clf,2025,11,Austrian Grand Prix,stroll,0.07370159745403386,0
+rf_clf,2025,11,Austrian Grand Prix,colapinto,0.06593939769370855,0
+rf_clf,2025,11,Austrian Grand Prix,tsunoda,0.07784557416881445,0
+rf_clf,2025,11,Austrian Grand Prix,albon,0.09635840683037451,0
+rf_clf,2025,11,Austrian Grand Prix,max_verstappen,0.018067279661172376,0
+rf_clf,2025,11,Austrian Grand Prix,antonelli,0.06138068084959475,0
+rf_clf,2025,11,Austrian Grand Prix,sainz,0.06420616652226004,0
+xgb_clf,2025,11,Austrian Grand Prix,norris,0.024304438044090042,0
+xgb_clf,2025,11,Austrian Grand Prix,piastri,0.03676424855684414,0
+xgb_clf,2025,11,Austrian Grand Prix,leclerc,0.03185906707607724,0
+xgb_clf,2025,11,Austrian Grand Prix,hamilton,0.03181528252956835,0
+xgb_clf,2025,11,Austrian Grand Prix,russell,0.03462705993536537,0
+xgb_clf,2025,11,Austrian Grand Prix,lawson,0.04843691519196322,0
+xgb_clf,2025,11,Austrian Grand Prix,alonso,0.04427039540712431,0
+xgb_clf,2025,11,Austrian Grand Prix,bortoleto,0.0901749394429695,0
+xgb_clf,2025,11,Austrian Grand Prix,hulkenberg,0.04244125629582537,0
+xgb_clf,2025,11,Austrian Grand Prix,ocon,0.055002487476363826,1
+xgb_clf,2025,11,Austrian Grand Prix,bearman,0.09580605315671462,0
+xgb_clf,2025,11,Austrian Grand Prix,hadjar,0.06488817833974453,0
+xgb_clf,2025,11,Austrian Grand Prix,gasly,0.0415200565733261,0
+xgb_clf,2025,11,Austrian Grand Prix,stroll,0.04896953092998578,0
+xgb_clf,2025,11,Austrian Grand Prix,colapinto,0.055782760092792136,0
+xgb_clf,2025,11,Austrian Grand Prix,tsunoda,0.07743210023721486,0
+xgb_clf,2025,11,Austrian Grand Prix,albon,0.048952654254995696,0
+xgb_clf,2025,11,Austrian Grand Prix,max_verstappen,0.031043493233172903,0
+xgb_clf,2025,11,Austrian Grand Prix,antonelli,0.040661059727521064,0
+xgb_clf,2025,11,Austrian Grand Prix,sainz,0.042302804693964996,0
+rf_clf,2025,12,British Grand Prix,norris,0.005185619127136129,0
 rf_clf,2025,12,British Grand Prix,piastri,0.0,0
-rf_clf,2025,12,British Grand Prix,hulkenberg,0.0643890868508866,0
-rf_clf,2025,12,British Grand Prix,hamilton,0.007660469895885725,0
-rf_clf,2025,12,British Grand Prix,max_verstappen,0.0016530610797749006,0
-rf_clf,2025,12,British Grand Prix,gasly,0.08871752919394035,0
-rf_clf,2025,12,British Grand Prix,stroll,0.055817470325446615,0
-rf_clf,2025,12,British Grand Prix,albon,0.08935247781766317,0
-rf_clf,2025,12,British Grand Prix,alonso,0.08903679960155166,0
-rf_clf,2025,12,British Grand Prix,russell,0.004779671851693022,1
-rf_clf,2025,12,British Grand Prix,bearman,0.12618011577597038,0
-rf_clf,2025,12,British Grand Prix,sainz,0.08081666513320578,0
-rf_clf,2025,12,British Grand Prix,ocon,0.08219690898512473,0
-rf_clf,2025,12,British Grand Prix,leclerc,0.0072660808172370864,0
-rf_clf,2025,12,British Grand Prix,tsunoda,0.08712175746670399,0
-rf_clf,2025,12,British Grand Prix,antonelli,0.044375654661858284,0
-rf_clf,2025,12,British Grand Prix,hadjar,0.10188799806684139,0
-rf_clf,2025,12,British Grand Prix,bortoleto,0.04715490515529831,0
-rf_clf,2025,12,British Grand Prix,lawson,0.0808225532739967,0
-rf_clf,2025,12,British Grand Prix,colapinto,0.01957370369306141,0
-xgb_clf,2025,12,British Grand Prix,norris,0.03473337371885773,0
-xgb_clf,2025,12,British Grand Prix,piastri,0.030225048805488746,0
-xgb_clf,2025,12,British Grand Prix,hulkenberg,0.03844218797596012,0
-xgb_clf,2025,12,British Grand Prix,hamilton,0.03293116313214689,0
-xgb_clf,2025,12,British Grand Prix,max_verstappen,0.029877747027201668,0
-xgb_clf,2025,12,British Grand Prix,gasly,0.055328109149316594,0
-xgb_clf,2025,12,British Grand Prix,stroll,0.043860980043846365,0
-xgb_clf,2025,12,British Grand Prix,albon,0.09735363521368479,0
-xgb_clf,2025,12,British Grand Prix,alonso,0.06369856442135462,0
-xgb_clf,2025,12,British Grand Prix,russell,0.034487781380564825,1
-xgb_clf,2025,12,British Grand Prix,bearman,0.09189535757677762,0
-xgb_clf,2025,12,British Grand Prix,sainz,0.04349054135551149,0
-xgb_clf,2025,12,British Grand Prix,ocon,0.05290365634681489,0
-xgb_clf,2025,12,British Grand Prix,leclerc,0.03446580204465093,0
-xgb_clf,2025,12,British Grand Prix,tsunoda,0.09148108871185469,0
-xgb_clf,2025,12,British Grand Prix,antonelli,0.0407699094044716,0
-xgb_clf,2025,12,British Grand Prix,hadjar,0.08989414654929599,0
-xgb_clf,2025,12,British Grand Prix,bortoleto,0.04091365266569675,0
-xgb_clf,2025,12,British Grand Prix,lawson,0.05873074641333882,0
-xgb_clf,2025,12,British Grand Prix,colapinto,0.03976741201575871,0
+rf_clf,2025,12,British Grand Prix,hulkenberg,0.05443657351632632,0
+rf_clf,2025,12,British Grand Prix,hamilton,0.012220057551744259,0
+rf_clf,2025,12,British Grand Prix,max_verstappen,0.0019626720875681345,0
+rf_clf,2025,12,British Grand Prix,gasly,0.08548644678927234,0
+rf_clf,2025,12,British Grand Prix,stroll,0.05642931578510566,0
+rf_clf,2025,12,British Grand Prix,albon,0.09715620181398811,0
+rf_clf,2025,12,British Grand Prix,alonso,0.08594260578202813,0
+rf_clf,2025,12,British Grand Prix,russell,0.002907737640671271,1
+rf_clf,2025,12,British Grand Prix,bearman,0.12232248792702367,0
+rf_clf,2025,12,British Grand Prix,sainz,0.08589894286664979,0
+rf_clf,2025,12,British Grand Prix,ocon,0.09933085185874137,0
+rf_clf,2025,12,British Grand Prix,leclerc,0.010041865891220785,0
+rf_clf,2025,12,British Grand Prix,tsunoda,0.0883328263061918,0
+rf_clf,2025,12,British Grand Prix,antonelli,0.03366993560054836,0
+rf_clf,2025,12,British Grand Prix,hadjar,0.128649763030429,0
+rf_clf,2025,12,British Grand Prix,bortoleto,0.05854541503121966,0
+rf_clf,2025,12,British Grand Prix,lawson,0.0828419605233685,0
+rf_clf,2025,12,British Grand Prix,colapinto,0.019175957566620775,0
+xgb_clf,2025,12,British Grand Prix,norris,0.03409547029720906,0
+xgb_clf,2025,12,British Grand Prix,piastri,0.03127779464162724,0
+xgb_clf,2025,12,British Grand Prix,hulkenberg,0.03649400014554714,0
+xgb_clf,2025,12,British Grand Prix,hamilton,0.03335742999929407,0
+xgb_clf,2025,12,British Grand Prix,max_verstappen,0.028060422621488522,0
+xgb_clf,2025,12,British Grand Prix,gasly,0.04369462019242435,0
+xgb_clf,2025,12,British Grand Prix,stroll,0.04920292904561557,0
+xgb_clf,2025,12,British Grand Prix,albon,0.11219519692192552,0
+xgb_clf,2025,12,British Grand Prix,alonso,0.04527959903435795,0
+xgb_clf,2025,12,British Grand Prix,russell,0.034630489822332584,1
+xgb_clf,2025,12,British Grand Prix,bearman,0.128313945627845,0
+xgb_clf,2025,12,British Grand Prix,sainz,0.03820052416937741,0
+xgb_clf,2025,12,British Grand Prix,ocon,0.06093052358355609,0
+xgb_clf,2025,12,British Grand Prix,leclerc,0.03416782441493272,0
+xgb_clf,2025,12,British Grand Prix,tsunoda,0.07319317810084741,0
+xgb_clf,2025,12,British Grand Prix,antonelli,0.041831592911199325,0
+xgb_clf,2025,12,British Grand Prix,hadjar,0.09090330199177792,0
+xgb_clf,2025,12,British Grand Prix,bortoleto,0.043126764340318945,0
+xgb_clf,2025,12,British Grand Prix,lawson,0.056752816877930115,0
+xgb_clf,2025,12,British Grand Prix,colapinto,0.03870755796776508,0
 rf_clf,2025,13,Belgian Grand Prix,piastri,0.0,0
 rf_clf,2025,13,Belgian Grand Prix,norris,0.0,0
-rf_clf,2025,13,Belgian Grand Prix,leclerc,0.007060744386368387,0
-rf_clf,2025,13,Belgian Grand Prix,max_verstappen,0.005489169133010512,0
-rf_clf,2025,13,Belgian Grand Prix,russell,0.010502230960035998,0
-rf_clf,2025,13,Belgian Grand Prix,albon,0.04917303161324994,0
-rf_clf,2025,13,Belgian Grand Prix,hamilton,0.049600696241935985,0
-rf_clf,2025,13,Belgian Grand Prix,lawson,0.08640017650587614,0
-rf_clf,2025,13,Belgian Grand Prix,bortoleto,0.12024818863710036,0
-rf_clf,2025,13,Belgian Grand Prix,gasly,0.08575657029065437,1
-rf_clf,2025,13,Belgian Grand Prix,bearman,0.11341022051206406,0
-rf_clf,2025,13,Belgian Grand Prix,hulkenberg,0.1055953474233013,0
-rf_clf,2025,13,Belgian Grand Prix,tsunoda,0.05702385344184886,0
-rf_clf,2025,13,Belgian Grand Prix,stroll,0.049836006172775164,0
-rf_clf,2025,13,Belgian Grand Prix,ocon,0.09855997365775371,0
-rf_clf,2025,13,Belgian Grand Prix,antonelli,0.08555213239082335,0
-rf_clf,2025,13,Belgian Grand Prix,alonso,0.0650585614175396,0
-rf_clf,2025,13,Belgian Grand Prix,sainz,0.09574976591242798,0
-rf_clf,2025,13,Belgian Grand Prix,colapinto,0.03858885500233424,0
-rf_clf,2025,13,Belgian Grand Prix,hadjar,0.08350033312553803,0
-xgb_clf,2025,13,Belgian Grand Prix,piastri,0.03024359175718031,0
-xgb_clf,2025,13,Belgian Grand Prix,norris,0.02385290673246688,0
-xgb_clf,2025,13,Belgian Grand Prix,leclerc,0.03564128546279095,0
-xgb_clf,2025,13,Belgian Grand Prix,max_verstappen,0.03752016765052356,0
-xgb_clf,2025,13,Belgian Grand Prix,russell,0.03445234949090918,0
-xgb_clf,2025,13,Belgian Grand Prix,albon,0.045092421396655924,0
-xgb_clf,2025,13,Belgian Grand Prix,hamilton,0.047185932201212366,0
-xgb_clf,2025,13,Belgian Grand Prix,lawson,0.0476582505232809,0
-xgb_clf,2025,13,Belgian Grand Prix,bortoleto,0.0765092514188687,0
-xgb_clf,2025,13,Belgian Grand Prix,gasly,0.08245591807201075,1
-xgb_clf,2025,13,Belgian Grand Prix,bearman,0.10861602636041419,0
-xgb_clf,2025,13,Belgian Grand Prix,hulkenberg,0.07967527432063044,0
-xgb_clf,2025,13,Belgian Grand Prix,tsunoda,0.05501743615766983,0
-xgb_clf,2025,13,Belgian Grand Prix,stroll,0.035351996117890847,0
-xgb_clf,2025,13,Belgian Grand Prix,ocon,0.0950810085043276,0
-xgb_clf,2025,13,Belgian Grand Prix,antonelli,0.07041087232685356,0
-xgb_clf,2025,13,Belgian Grand Prix,alonso,0.03810958078816682,0
-xgb_clf,2025,13,Belgian Grand Prix,sainz,0.06893168526387436,0
-xgb_clf,2025,13,Belgian Grand Prix,colapinto,0.04215233806606676,0
-xgb_clf,2025,13,Belgian Grand Prix,hadjar,0.05399534944044228,0
+rf_clf,2025,13,Belgian Grand Prix,leclerc,0.008293534728280164,0
+rf_clf,2025,13,Belgian Grand Prix,max_verstappen,0.007918494657277616,0
+rf_clf,2025,13,Belgian Grand Prix,russell,0.013613845407361469,0
+rf_clf,2025,13,Belgian Grand Prix,albon,0.04469209282991256,0
+rf_clf,2025,13,Belgian Grand Prix,hamilton,0.05304133570038474,0
+rf_clf,2025,13,Belgian Grand Prix,lawson,0.08303871033257323,0
+rf_clf,2025,13,Belgian Grand Prix,bortoleto,0.10866898510284684,0
+rf_clf,2025,13,Belgian Grand Prix,gasly,0.09228421156803504,1
+rf_clf,2025,13,Belgian Grand Prix,bearman,0.0876542687616933,0
+rf_clf,2025,13,Belgian Grand Prix,hulkenberg,0.2044319740872577,0
+rf_clf,2025,13,Belgian Grand Prix,tsunoda,0.06290560821982995,0
+rf_clf,2025,13,Belgian Grand Prix,stroll,0.054652357832503974,0
+rf_clf,2025,13,Belgian Grand Prix,ocon,0.10124394541661805,0
+rf_clf,2025,13,Belgian Grand Prix,antonelli,0.08864436775319604,0
+rf_clf,2025,13,Belgian Grand Prix,alonso,0.05943994092700257,0
+rf_clf,2025,13,Belgian Grand Prix,sainz,0.10153507471008212,0
+rf_clf,2025,13,Belgian Grand Prix,colapinto,0.05460210256361313,0
+rf_clf,2025,13,Belgian Grand Prix,hadjar,0.07448258229212834,0
+xgb_clf,2025,13,Belgian Grand Prix,piastri,0.032722423062328865,0
+xgb_clf,2025,13,Belgian Grand Prix,norris,0.024677089729182485,0
+xgb_clf,2025,13,Belgian Grand Prix,leclerc,0.03734441284276802,0
+xgb_clf,2025,13,Belgian Grand Prix,max_verstappen,0.03684467447612093,0
+xgb_clf,2025,13,Belgian Grand Prix,russell,0.03328099607253021,0
+xgb_clf,2025,13,Belgian Grand Prix,albon,0.043231458116211596,0
+xgb_clf,2025,13,Belgian Grand Prix,hamilton,0.044478669343427056,0
+xgb_clf,2025,13,Belgian Grand Prix,lawson,0.0450473813365037,0
+xgb_clf,2025,13,Belgian Grand Prix,bortoleto,0.08198848058288344,0
+xgb_clf,2025,13,Belgian Grand Prix,gasly,0.07569604158726626,1
+xgb_clf,2025,13,Belgian Grand Prix,bearman,0.15581683801960403,0
+xgb_clf,2025,13,Belgian Grand Prix,hulkenberg,0.07682037757765615,0
+xgb_clf,2025,13,Belgian Grand Prix,tsunoda,0.0718989663058175,0
+xgb_clf,2025,13,Belgian Grand Prix,stroll,0.03786533348376494,0
+xgb_clf,2025,13,Belgian Grand Prix,ocon,0.09783553721789824,0
+xgb_clf,2025,13,Belgian Grand Prix,antonelli,0.07414829269726511,0
+xgb_clf,2025,13,Belgian Grand Prix,alonso,0.036727268424033524,0
+xgb_clf,2025,13,Belgian Grand Prix,sainz,0.10768289408185978,0
+xgb_clf,2025,13,Belgian Grand Prix,colapinto,0.0419891305912158,0
+xgb_clf,2025,13,Belgian Grand Prix,hadjar,0.05786917482203617,0
 rf_clf,2025,14,Hungarian Grand Prix,norris,0.0,0
 rf_clf,2025,14,Hungarian Grand Prix,piastri,0.0,0
-rf_clf,2025,14,Hungarian Grand Prix,russell,0.007844235789277194,0
+rf_clf,2025,14,Hungarian Grand Prix,russell,0.009431156727322148,0
 rf_clf,2025,14,Hungarian Grand Prix,leclerc,0.0,0
-rf_clf,2025,14,Hungarian Grand Prix,alonso,0.06154200713905191,0
-rf_clf,2025,14,Hungarian Grand Prix,bortoleto,0.0766319342047693,0
-rf_clf,2025,14,Hungarian Grand Prix,stroll,0.07377330310821506,0
-rf_clf,2025,14,Hungarian Grand Prix,lawson,0.08993562311850042,0
-rf_clf,2025,14,Hungarian Grand Prix,max_verstappen,0.03743675057336247,0
-rf_clf,2025,14,Hungarian Grand Prix,antonelli,0.12241686633597675,1
-rf_clf,2025,14,Hungarian Grand Prix,hadjar,0.0814112851503743,0
-rf_clf,2025,14,Hungarian Grand Prix,hamilton,0.04900500194354533,0
-rf_clf,2025,14,Hungarian Grand Prix,hulkenberg,0.07071491483164763,0
-rf_clf,2025,14,Hungarian Grand Prix,sainz,0.08276366464050308,0
-rf_clf,2025,14,Hungarian Grand Prix,albon,0.08486805573003536,0
-rf_clf,2025,14,Hungarian Grand Prix,ocon,0.07924027120930664,0
-rf_clf,2025,14,Hungarian Grand Prix,tsunoda,0.09033599484841724,0
-rf_clf,2025,14,Hungarian Grand Prix,colapinto,0.05690270796457132,0
-rf_clf,2025,14,Hungarian Grand Prix,gasly,0.08181372186752586,0
-rf_clf,2025,14,Hungarian Grand Prix,bearman,0.11143058747823782,0
-xgb_clf,2025,14,Hungarian Grand Prix,norris,0.025998744160001398,0
-xgb_clf,2025,14,Hungarian Grand Prix,piastri,0.02497687612610191,0
-xgb_clf,2025,14,Hungarian Grand Prix,russell,0.03972547597123827,0
-xgb_clf,2025,14,Hungarian Grand Prix,leclerc,0.026744184993336983,0
-xgb_clf,2025,14,Hungarian Grand Prix,alonso,0.052270370833502,0
-xgb_clf,2025,14,Hungarian Grand Prix,bortoleto,0.09754523126225138,0
-xgb_clf,2025,14,Hungarian Grand Prix,stroll,0.04512814277390621,0
-xgb_clf,2025,14,Hungarian Grand Prix,lawson,0.04893888515666552,0
-xgb_clf,2025,14,Hungarian Grand Prix,max_verstappen,0.0392667592956602,0
-xgb_clf,2025,14,Hungarian Grand Prix,antonelli,0.13779378102416331,1
-xgb_clf,2025,14,Hungarian Grand Prix,hadjar,0.050707973873157855,0
-xgb_clf,2025,14,Hungarian Grand Prix,hamilton,0.04161839252592922,0
-xgb_clf,2025,14,Hungarian Grand Prix,hulkenberg,0.05131768365428494,0
-xgb_clf,2025,14,Hungarian Grand Prix,sainz,0.056438099257242226,0
-xgb_clf,2025,14,Hungarian Grand Prix,albon,0.05260360318493497,0
-xgb_clf,2025,14,Hungarian Grand Prix,ocon,0.05747302455983111,0
-xgb_clf,2025,14,Hungarian Grand Prix,tsunoda,0.13772526724512607,0
-xgb_clf,2025,14,Hungarian Grand Prix,colapinto,0.04382902757640186,0
-xgb_clf,2025,14,Hungarian Grand Prix,gasly,0.04680861107658634,0
-xgb_clf,2025,14,Hungarian Grand Prix,bearman,0.07052991131912635,0
+rf_clf,2025,14,Hungarian Grand Prix,alonso,0.049417134705598886,0
+rf_clf,2025,14,Hungarian Grand Prix,bortoleto,0.0815636380165045,0
+rf_clf,2025,14,Hungarian Grand Prix,stroll,0.05288305924052143,0
+rf_clf,2025,14,Hungarian Grand Prix,lawson,0.090282285621202,0
+rf_clf,2025,14,Hungarian Grand Prix,max_verstappen,0.040279663560508765,0
+rf_clf,2025,14,Hungarian Grand Prix,antonelli,0.1204606142062048,1
+rf_clf,2025,14,Hungarian Grand Prix,hadjar,0.0880287242497468,0
+rf_clf,2025,14,Hungarian Grand Prix,hamilton,0.04509446295009749,0
+rf_clf,2025,14,Hungarian Grand Prix,hulkenberg,0.06955905358913053,0
+rf_clf,2025,14,Hungarian Grand Prix,sainz,0.0923074747231564,0
+rf_clf,2025,14,Hungarian Grand Prix,albon,0.07561135623791682,0
+rf_clf,2025,14,Hungarian Grand Prix,ocon,0.06769919658687293,0
+rf_clf,2025,14,Hungarian Grand Prix,tsunoda,0.09024427534559169,0
+rf_clf,2025,14,Hungarian Grand Prix,colapinto,0.06432672410763882,0
+rf_clf,2025,14,Hungarian Grand Prix,gasly,0.08903340459171813,0
+rf_clf,2025,14,Hungarian Grand Prix,bearman,0.08790941014061353,0
+xgb_clf,2025,14,Hungarian Grand Prix,norris,0.02882794020385742,0
+xgb_clf,2025,14,Hungarian Grand Prix,piastri,0.023815581873351165,0
+xgb_clf,2025,14,Hungarian Grand Prix,russell,0.033822158495388596,0
+xgb_clf,2025,14,Hungarian Grand Prix,leclerc,0.024633950641121297,0
+xgb_clf,2025,14,Hungarian Grand Prix,alonso,0.050865173225370854,0
+xgb_clf,2025,14,Hungarian Grand Prix,bortoleto,0.1093936063950299,0
+xgb_clf,2025,14,Hungarian Grand Prix,stroll,0.0465070319716912,0
+xgb_clf,2025,14,Hungarian Grand Prix,lawson,0.055586921924361155,0
+xgb_clf,2025,14,Hungarian Grand Prix,max_verstappen,0.0374306356218694,0
+xgb_clf,2025,14,Hungarian Grand Prix,antonelli,0.17547539285365893,1
+xgb_clf,2025,14,Hungarian Grand Prix,hadjar,0.05570841125039595,0
+xgb_clf,2025,14,Hungarian Grand Prix,hamilton,0.03988549788662746,0
+xgb_clf,2025,14,Hungarian Grand Prix,hulkenberg,0.053219516659514965,0
+xgb_clf,2025,14,Hungarian Grand Prix,sainz,0.056203799043796486,0
+xgb_clf,2025,14,Hungarian Grand Prix,albon,0.0686285341646454,0
+xgb_clf,2025,14,Hungarian Grand Prix,ocon,0.05871319766151813,0
+xgb_clf,2025,14,Hungarian Grand Prix,tsunoda,0.11945059973192776,0
+xgb_clf,2025,14,Hungarian Grand Prix,colapinto,0.043075512656865975,0
+xgb_clf,2025,14,Hungarian Grand Prix,gasly,0.04998803765779635,0
+xgb_clf,2025,14,Hungarian Grand Prix,bearman,0.085712195454197,0
 rf_clf,2025,15,Dutch Grand Prix,piastri,0.0,0
-rf_clf,2025,15,Dutch Grand Prix,max_verstappen,0.010392015871624248,0
-rf_clf,2025,15,Dutch Grand Prix,hadjar,0.05923581544091681,0
-rf_clf,2025,15,Dutch Grand Prix,russell,0.010270861659859304,0
-rf_clf,2025,15,Dutch Grand Prix,albon,0.15685077114194193,0
-rf_clf,2025,15,Dutch Grand Prix,bearman,0.044106162869117456,0
-rf_clf,2025,15,Dutch Grand Prix,stroll,0.06247432732237816,0
-rf_clf,2025,15,Dutch Grand Prix,alonso,0.09367808463447899,0
-rf_clf,2025,15,Dutch Grand Prix,tsunoda,0.08942172840127685,0
-rf_clf,2025,15,Dutch Grand Prix,ocon,0.06306674897458936,1
-rf_clf,2025,15,Dutch Grand Prix,colapinto,0.03796247598961612,0
-rf_clf,2025,15,Dutch Grand Prix,lawson,0.08514657922103457,0
-rf_clf,2025,15,Dutch Grand Prix,sainz,0.08706213022401603,0
-rf_clf,2025,15,Dutch Grand Prix,hulkenberg,0.07118369241303743,0
-rf_clf,2025,15,Dutch Grand Prix,bortoleto,0.08999330938906591,0
-rf_clf,2025,15,Dutch Grand Prix,antonelli,0.08131882322881193,0
-rf_clf,2025,15,Dutch Grand Prix,gasly,0.07963667537084053,0
+rf_clf,2025,15,Dutch Grand Prix,max_verstappen,0.00964995160639592,0
+rf_clf,2025,15,Dutch Grand Prix,hadjar,0.05944543875453452,0
+rf_clf,2025,15,Dutch Grand Prix,russell,0.013357604825518066,0
+rf_clf,2025,15,Dutch Grand Prix,albon,0.17912575362502242,0
+rf_clf,2025,15,Dutch Grand Prix,bearman,0.053715203494325583,0
+rf_clf,2025,15,Dutch Grand Prix,stroll,0.06201354783551808,0
+rf_clf,2025,15,Dutch Grand Prix,alonso,0.09803384971872356,0
+rf_clf,2025,15,Dutch Grand Prix,tsunoda,0.0870020564100104,0
+rf_clf,2025,15,Dutch Grand Prix,ocon,0.056919080275525766,1
+rf_clf,2025,15,Dutch Grand Prix,colapinto,0.04218503293546811,0
+rf_clf,2025,15,Dutch Grand Prix,lawson,0.08531657881398706,0
+rf_clf,2025,15,Dutch Grand Prix,sainz,0.08735849794326886,0
+rf_clf,2025,15,Dutch Grand Prix,hulkenberg,0.06461291237819602,0
+rf_clf,2025,15,Dutch Grand Prix,bortoleto,0.09956349119079758,0
+rf_clf,2025,15,Dutch Grand Prix,antonelli,0.08163262399411911,0
+rf_clf,2025,15,Dutch Grand Prix,gasly,0.08550562236444079,0
 rf_clf,2025,15,Dutch Grand Prix,norris,0.0,0
-rf_clf,2025,15,Dutch Grand Prix,leclerc,0.010559809079158997,0
-rf_clf,2025,15,Dutch Grand Prix,hamilton,0.03086107814265255,0
-xgb_clf,2025,15,Dutch Grand Prix,piastri,0.026030032266818805,0
-xgb_clf,2025,15,Dutch Grand Prix,max_verstappen,0.03615980155055191,0
-xgb_clf,2025,15,Dutch Grand Prix,hadjar,0.05354267756230526,0
-xgb_clf,2025,15,Dutch Grand Prix,russell,0.05814607792133136,0
-xgb_clf,2025,15,Dutch Grand Prix,albon,0.0610682968488306,0
-xgb_clf,2025,15,Dutch Grand Prix,bearman,0.042806413720435726,0
-xgb_clf,2025,15,Dutch Grand Prix,stroll,0.04111247822679443,0
-xgb_clf,2025,15,Dutch Grand Prix,alonso,0.06360851125152972,0
-xgb_clf,2025,15,Dutch Grand Prix,tsunoda,0.05597668359862938,0
-xgb_clf,2025,15,Dutch Grand Prix,ocon,0.045494983839451504,1
-xgb_clf,2025,15,Dutch Grand Prix,colapinto,0.041887542659329015,0
-xgb_clf,2025,15,Dutch Grand Prix,lawson,0.05230219921507305,0
-xgb_clf,2025,15,Dutch Grand Prix,sainz,0.044837328151384914,0
-xgb_clf,2025,15,Dutch Grand Prix,hulkenberg,0.04075230406174972,0
-xgb_clf,2025,15,Dutch Grand Prix,bortoleto,0.05719296192120767,0
-xgb_clf,2025,15,Dutch Grand Prix,antonelli,0.08617502043923568,0
-xgb_clf,2025,15,Dutch Grand Prix,gasly,0.055967096882838616,0
-xgb_clf,2025,15,Dutch Grand Prix,norris,0.027867136211543842,0
-xgb_clf,2025,15,Dutch Grand Prix,leclerc,0.03303657919334801,0
-xgb_clf,2025,15,Dutch Grand Prix,hamilton,0.03814731323773572,0
-rf_clf,2025,16,Italian Grand Prix,max_verstappen,0.001950596970988961,0
-rf_clf,2025,16,Italian Grand Prix,norris,0.00798921785462111,0
+rf_clf,2025,15,Dutch Grand Prix,leclerc,0.012167826911681955,0
+rf_clf,2025,15,Dutch Grand Prix,hamilton,0.026886460653268808,0
+xgb_clf,2025,15,Dutch Grand Prix,piastri,0.025590161472371652,0
+xgb_clf,2025,15,Dutch Grand Prix,max_verstappen,0.033888846765413816,0
+xgb_clf,2025,15,Dutch Grand Prix,hadjar,0.04179072617889918,0
+xgb_clf,2025,15,Dutch Grand Prix,russell,0.03984538847840708,0
+xgb_clf,2025,15,Dutch Grand Prix,albon,0.08833070544845883,0
+xgb_clf,2025,15,Dutch Grand Prix,bearman,0.04268557550924407,0
+xgb_clf,2025,15,Dutch Grand Prix,stroll,0.042288573049554815,0
+xgb_clf,2025,15,Dutch Grand Prix,alonso,0.04853845026974701,0
+xgb_clf,2025,15,Dutch Grand Prix,tsunoda,0.06533645386666594,0
+xgb_clf,2025,15,Dutch Grand Prix,ocon,0.04474632030008295,1
+xgb_clf,2025,15,Dutch Grand Prix,colapinto,0.036778164712633676,0
+xgb_clf,2025,15,Dutch Grand Prix,lawson,0.050106054131988285,0
+xgb_clf,2025,15,Dutch Grand Prix,sainz,0.04660034629830821,0
+xgb_clf,2025,15,Dutch Grand Prix,hulkenberg,0.04012254702525447,0
+xgb_clf,2025,15,Dutch Grand Prix,bortoleto,0.05664737625214226,0
+xgb_clf,2025,15,Dutch Grand Prix,antonelli,0.09338138149198537,0
+xgb_clf,2025,15,Dutch Grand Prix,gasly,0.05734406174882446,0
+xgb_clf,2025,15,Dutch Grand Prix,norris,0.029343991704571293,0
+xgb_clf,2025,15,Dutch Grand Prix,leclerc,0.03184922153871765,0
+xgb_clf,2025,15,Dutch Grand Prix,hamilton,0.038994516412126604,0
+rf_clf,2025,16,Italian Grand Prix,max_verstappen,0.001969637460770664,0
+rf_clf,2025,16,Italian Grand Prix,norris,0.010613506822374694,0
 rf_clf,2025,16,Italian Grand Prix,piastri,0.0,0
-rf_clf,2025,16,Italian Grand Prix,leclerc,0.00493293024234584,0
-rf_clf,2025,16,Italian Grand Prix,russell,0.01056111325333401,0
-rf_clf,2025,16,Italian Grand Prix,hamilton,0.014699158906221796,0
-rf_clf,2025,16,Italian Grand Prix,albon,0.16053911643964286,0
-rf_clf,2025,16,Italian Grand Prix,bortoleto,0.08069673405236948,0
-rf_clf,2025,16,Italian Grand Prix,antonelli,0.05913918847991514,0
-rf_clf,2025,16,Italian Grand Prix,hadjar,0.08831469496826058,1
-rf_clf,2025,16,Italian Grand Prix,sainz,0.08964462537485564,0
-rf_clf,2025,16,Italian Grand Prix,bearman,0.09151615290985532,0
-rf_clf,2025,16,Italian Grand Prix,tsunoda,0.08664374569974405,0
-rf_clf,2025,16,Italian Grand Prix,lawson,0.07094598929556385,0
-rf_clf,2025,16,Italian Grand Prix,ocon,0.0885345655711565,0
-rf_clf,2025,16,Italian Grand Prix,gasly,0.04578510527198183,0
-rf_clf,2025,16,Italian Grand Prix,colapinto,0.037287909588354824,0
-rf_clf,2025,16,Italian Grand Prix,stroll,0.08010270457998286,0
-rf_clf,2025,16,Italian Grand Prix,alonso,0.09557261637719024,0
-rf_clf,2025,16,Italian Grand Prix,hulkenberg,0.08052843977598706,0
-xgb_clf,2025,16,Italian Grand Prix,max_verstappen,0.030289116118639957,0
-xgb_clf,2025,16,Italian Grand Prix,norris,0.029972593119284525,0
-xgb_clf,2025,16,Italian Grand Prix,piastri,0.034573363127550744,0
-xgb_clf,2025,16,Italian Grand Prix,leclerc,0.033086919220400794,0
-xgb_clf,2025,16,Italian Grand Prix,russell,0.037488670659972786,0
-xgb_clf,2025,16,Italian Grand Prix,hamilton,0.036309412281321486,0
-xgb_clf,2025,16,Italian Grand Prix,albon,0.20576048446228387,0
-xgb_clf,2025,16,Italian Grand Prix,bortoleto,0.0588577732078727,0
-xgb_clf,2025,16,Italian Grand Prix,antonelli,0.06562442731329249,0
-xgb_clf,2025,16,Italian Grand Prix,hadjar,0.04839787796903632,1
-xgb_clf,2025,16,Italian Grand Prix,sainz,0.05137740064057021,0
-xgb_clf,2025,16,Italian Grand Prix,bearman,0.05867979880542751,0
-xgb_clf,2025,16,Italian Grand Prix,tsunoda,0.06206907847137144,0
-xgb_clf,2025,16,Italian Grand Prix,lawson,0.05194031280927497,0
-xgb_clf,2025,16,Italian Grand Prix,ocon,0.05027879148892035,0
-xgb_clf,2025,16,Italian Grand Prix,gasly,0.03971694719654094,0
-xgb_clf,2025,16,Italian Grand Prix,colapinto,0.03894610008299879,0
-xgb_clf,2025,16,Italian Grand Prix,stroll,0.04300975898435034,0
-xgb_clf,2025,16,Italian Grand Prix,alonso,0.05427332852798683,0
-xgb_clf,2025,16,Italian Grand Prix,hulkenberg,0.05068606051810217,0
-rf_clf,2025,17,Azerbaijan Grand Prix,max_verstappen,0.0018652507941201997,0
-rf_clf,2025,17,Azerbaijan Grand Prix,russell,0.009912907792029357,0
-rf_clf,2025,17,Azerbaijan Grand Prix,sainz,0.0392685680050886,0
-rf_clf,2025,17,Azerbaijan Grand Prix,antonelli,0.028788990841726658,0
-rf_clf,2025,17,Azerbaijan Grand Prix,lawson,0.05156458276751654,0
-rf_clf,2025,17,Azerbaijan Grand Prix,tsunoda,0.05781600939747109,0
-rf_clf,2025,17,Azerbaijan Grand Prix,norris,0.0039068159782694655,0
-rf_clf,2025,17,Azerbaijan Grand Prix,hamilton,0.07559057785336312,0
-rf_clf,2025,17,Azerbaijan Grand Prix,leclerc,0.013733506602455356,0
-rf_clf,2025,17,Azerbaijan Grand Prix,hadjar,0.07948791725544985,1
-rf_clf,2025,17,Azerbaijan Grand Prix,bortoleto,0.07795634112990554,0
-rf_clf,2025,17,Azerbaijan Grand Prix,bearman,0.07896763824458874,0
-rf_clf,2025,17,Azerbaijan Grand Prix,albon,0.08985667222674451,0
-rf_clf,2025,17,Azerbaijan Grand Prix,ocon,0.07366496305112413,0
-rf_clf,2025,17,Azerbaijan Grand Prix,alonso,0.08879816030229959,0
-rf_clf,2025,17,Azerbaijan Grand Prix,hulkenberg,0.07951664881568873,0
-rf_clf,2025,17,Azerbaijan Grand Prix,stroll,0.10172134926046565,0
-rf_clf,2025,17,Azerbaijan Grand Prix,gasly,0.05465667384876549,0
-rf_clf,2025,17,Azerbaijan Grand Prix,colapinto,0.05790214201358378,0
-rf_clf,2025,17,Azerbaijan Grand Prix,piastri,0.0019545996926532945,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,max_verstappen,0.02999090471026063,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,russell,0.035087022141534134,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,sainz,0.046774714376531856,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,antonelli,0.05334087145873837,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,lawson,0.046585680341519976,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,tsunoda,0.05481451737787901,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,norris,0.038507023176085245,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,hamilton,0.048157354147515874,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,leclerc,0.04657546805982231,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,hadjar,0.04818131366128407,1
-xgb_clf,2025,17,Azerbaijan Grand Prix,bortoleto,0.054742967922383215,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,bearman,0.04908135364051749,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,albon,0.08022436507491766,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,ocon,0.046410820909491016,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,alonso,0.04090733018947752,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,hulkenberg,0.04428059691584223,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,stroll,0.08711583365786066,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,gasly,0.03802808038771438,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,colapinto,0.04711453403600531,0
-xgb_clf,2025,17,Azerbaijan Grand Prix,piastri,0.03595462178131213,0
+rf_clf,2025,16,Italian Grand Prix,leclerc,0.002875817577141927,0
+rf_clf,2025,16,Italian Grand Prix,russell,0.01413398278380984,0
+rf_clf,2025,16,Italian Grand Prix,hamilton,0.01310658195860202,0
+rf_clf,2025,16,Italian Grand Prix,albon,0.1930768426249419,0
+rf_clf,2025,16,Italian Grand Prix,bortoleto,0.08193381216513643,0
+rf_clf,2025,16,Italian Grand Prix,antonelli,0.05440770026194197,0
+rf_clf,2025,16,Italian Grand Prix,hadjar,0.08978839427253252,1
+rf_clf,2025,16,Italian Grand Prix,sainz,0.09251678608071276,0
+rf_clf,2025,16,Italian Grand Prix,bearman,0.09490111454146491,0
+rf_clf,2025,16,Italian Grand Prix,tsunoda,0.09173062959958997,0
+rf_clf,2025,16,Italian Grand Prix,lawson,0.05823760113882344,0
+rf_clf,2025,16,Italian Grand Prix,ocon,0.10156321872398813,0
+rf_clf,2025,16,Italian Grand Prix,gasly,0.05221208670608526,0
+rf_clf,2025,16,Italian Grand Prix,colapinto,0.027890316479628814,0
+rf_clf,2025,16,Italian Grand Prix,stroll,0.084269055391937,0
+rf_clf,2025,16,Italian Grand Prix,alonso,0.09302599871439957,0
+rf_clf,2025,16,Italian Grand Prix,hulkenberg,0.08377560171795873,0
+xgb_clf,2025,16,Italian Grand Prix,max_verstappen,0.029516864179701018,0
+xgb_clf,2025,16,Italian Grand Prix,norris,0.03135298727002573,0
+xgb_clf,2025,16,Italian Grand Prix,piastri,0.0337113375391089,0
+xgb_clf,2025,16,Italian Grand Prix,leclerc,0.03330562846561403,0
+xgb_clf,2025,16,Italian Grand Prix,russell,0.03497729521273487,0
+xgb_clf,2025,16,Italian Grand Prix,hamilton,0.033077143368976936,0
+xgb_clf,2025,16,Italian Grand Prix,albon,0.21643735604627512,0
+xgb_clf,2025,16,Italian Grand Prix,bortoleto,0.057026275736241284,0
+xgb_clf,2025,16,Italian Grand Prix,antonelli,0.06065434692592758,0
+xgb_clf,2025,16,Italian Grand Prix,hadjar,0.045579458755940674,1
+xgb_clf,2025,16,Italian Grand Prix,sainz,0.04819188162226,0
+xgb_clf,2025,16,Italian Grand Prix,bearman,0.06208514215793799,0
+xgb_clf,2025,16,Italian Grand Prix,tsunoda,0.07369945833332273,0
+xgb_clf,2025,16,Italian Grand Prix,lawson,0.04860633003749971,0
+xgb_clf,2025,16,Italian Grand Prix,ocon,0.05833885248891246,0
+xgb_clf,2025,16,Italian Grand Prix,gasly,0.037556774261629275,0
+xgb_clf,2025,16,Italian Grand Prix,colapinto,0.03929692657338487,0
+xgb_clf,2025,16,Italian Grand Prix,stroll,0.04827733317323375,0
+xgb_clf,2025,16,Italian Grand Prix,alonso,0.04601968483222647,0
+xgb_clf,2025,16,Italian Grand Prix,hulkenberg,0.04866362539726269,0
+rf_clf,2025,17,Azerbaijan Grand Prix,max_verstappen,0.0022255350178460825,0
+rf_clf,2025,17,Azerbaijan Grand Prix,russell,0.007724210935783816,0
+rf_clf,2025,17,Azerbaijan Grand Prix,sainz,0.037264475650053294,0
+rf_clf,2025,17,Azerbaijan Grand Prix,antonelli,0.027016261977647938,0
+rf_clf,2025,17,Azerbaijan Grand Prix,lawson,0.05667196296363623,0
+rf_clf,2025,17,Azerbaijan Grand Prix,tsunoda,0.06205404571167552,0
+rf_clf,2025,17,Azerbaijan Grand Prix,norris,0.005192763198580462,0
+rf_clf,2025,17,Azerbaijan Grand Prix,hamilton,0.07485644320935242,0
+rf_clf,2025,17,Azerbaijan Grand Prix,leclerc,0.026843958543597984,0
+rf_clf,2025,17,Azerbaijan Grand Prix,hadjar,0.06520708599912954,1
+rf_clf,2025,17,Azerbaijan Grand Prix,bortoleto,0.10605295863968625,0
+rf_clf,2025,17,Azerbaijan Grand Prix,bearman,0.08532101722531024,0
+rf_clf,2025,17,Azerbaijan Grand Prix,albon,0.09296158733907603,0
+rf_clf,2025,17,Azerbaijan Grand Prix,ocon,0.05923203968927067,0
+rf_clf,2025,17,Azerbaijan Grand Prix,alonso,0.07854280976738348,0
+rf_clf,2025,17,Azerbaijan Grand Prix,hulkenberg,0.06477159817189829,0
+rf_clf,2025,17,Azerbaijan Grand Prix,stroll,0.12750450910227787,0
+rf_clf,2025,17,Azerbaijan Grand Prix,gasly,0.048712655549087706,0
+rf_clf,2025,17,Azerbaijan Grand Prix,colapinto,0.05839236503270101,0
+rf_clf,2025,17,Azerbaijan Grand Prix,piastri,0.0019460822872631226,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,max_verstappen,0.029792637461899467,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,russell,0.03589089386048295,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,sainz,0.043169341924937175,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,antonelli,0.05028096814768608,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,lawson,0.0515130479051766,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,tsunoda,0.04928350865092354,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,norris,0.035106334596431865,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,hamilton,0.04519730021714934,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,leclerc,0.044381918050317715,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,hadjar,0.04437736772369462,1
+xgb_clf,2025,17,Azerbaijan Grand Prix,bortoleto,0.050170170879425824,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,bearman,0.05146688308127369,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,albon,0.06757004894617212,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,ocon,0.045346051123929976,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,alonso,0.04080331587263873,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,hulkenberg,0.04077918288481653,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,stroll,0.1292048426357426,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,gasly,0.03648755316195904,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,colapinto,0.047387931411363944,0
+xgb_clf,2025,17,Azerbaijan Grand Prix,piastri,0.034328183478994356,0
 rf_clf,2025,18,Singapore Grand Prix,russell,0.0,0
-rf_clf,2025,18,Singapore Grand Prix,max_verstappen,0.0,0
-rf_clf,2025,18,Singapore Grand Prix,norris,0.005583986551336165,0
-rf_clf,2025,18,Singapore Grand Prix,piastri,0.013424008774688568,0
-rf_clf,2025,18,Singapore Grand Prix,antonelli,0.02047285751256458,0
-rf_clf,2025,18,Singapore Grand Prix,leclerc,0.022415222570150866,0
-rf_clf,2025,18,Singapore Grand Prix,alonso,0.07935802301701222,0
-rf_clf,2025,18,Singapore Grand Prix,hamilton,0.010936144513385608,0
-rf_clf,2025,18,Singapore Grand Prix,bearman,0.09573988264114738,0
-rf_clf,2025,18,Singapore Grand Prix,sainz,0.07887078056589034,1
-rf_clf,2025,18,Singapore Grand Prix,hadjar,0.08023210581256332,0
-rf_clf,2025,18,Singapore Grand Prix,tsunoda,0.12512982943422282,0
-rf_clf,2025,18,Singapore Grand Prix,stroll,0.08333068082016251,0
-rf_clf,2025,18,Singapore Grand Prix,albon,0.08824668963911027,0
-rf_clf,2025,18,Singapore Grand Prix,lawson,0.09844834906341,0
-rf_clf,2025,18,Singapore Grand Prix,colapinto,0.051225090585468445,0
-rf_clf,2025,18,Singapore Grand Prix,bortoleto,0.08009520906109333,0
-rf_clf,2025,18,Singapore Grand Prix,ocon,0.07875455493254162,0
-rf_clf,2025,18,Singapore Grand Prix,gasly,0.04198731316392183,0
-rf_clf,2025,18,Singapore Grand Prix,hulkenberg,0.08107189883840919,0
-xgb_clf,2025,18,Singapore Grand Prix,russell,0.023817655181284942,0
-xgb_clf,2025,18,Singapore Grand Prix,max_verstappen,0.02918232491351742,0
-xgb_clf,2025,18,Singapore Grand Prix,norris,0.03577879098909157,0
-xgb_clf,2025,18,Singapore Grand Prix,piastri,0.03410053188494212,0
-xgb_clf,2025,18,Singapore Grand Prix,antonelli,0.04390913488772856,0
-xgb_clf,2025,18,Singapore Grand Prix,leclerc,0.03627676788335617,0
-xgb_clf,2025,18,Singapore Grand Prix,alonso,0.04214206124632473,0
-xgb_clf,2025,18,Singapore Grand Prix,hamilton,0.035726788701646375,0
-xgb_clf,2025,18,Singapore Grand Prix,bearman,0.04675560732405097,0
-xgb_clf,2025,18,Singapore Grand Prix,sainz,0.04333009612199394,1
-xgb_clf,2025,18,Singapore Grand Prix,hadjar,0.05218795792314247,0
-xgb_clf,2025,18,Singapore Grand Prix,tsunoda,0.10489061706915717,0
-xgb_clf,2025,18,Singapore Grand Prix,stroll,0.049986265980642694,0
-xgb_clf,2025,18,Singapore Grand Prix,albon,0.060793477041811615,0
-xgb_clf,2025,18,Singapore Grand Prix,lawson,0.05262366863528051,0
-xgb_clf,2025,18,Singapore Grand Prix,colapinto,0.04776779745941695,0
-xgb_clf,2025,18,Singapore Grand Prix,bortoleto,0.0650982923930134,0
-xgb_clf,2025,18,Singapore Grand Prix,ocon,0.06098279748234932,0
-xgb_clf,2025,18,Singapore Grand Prix,gasly,0.03891097761762456,0
-xgb_clf,2025,18,Singapore Grand Prix,hulkenberg,0.05084719662965481,0
-rf_clf,2025,19,United States Grand Prix,max_verstappen,0.0,0
-rf_clf,2025,19,United States Grand Prix,norris,0.0054192131134419225,0
-rf_clf,2025,19,United States Grand Prix,leclerc,0.003832655153450183,0
-rf_clf,2025,19,United States Grand Prix,hamilton,0.008051236456720356,0
-rf_clf,2025,19,United States Grand Prix,piastri,0.0037686102744903145,0
-rf_clf,2025,19,United States Grand Prix,russell,0.0018168551586347746,0
-rf_clf,2025,19,United States Grand Prix,tsunoda,0.10577245962828745,0
-rf_clf,2025,19,United States Grand Prix,hulkenberg,0.08173094782418709,0
-rf_clf,2025,19,United States Grand Prix,bearman,0.08160701736559098,0
-rf_clf,2025,19,United States Grand Prix,alonso,0.08293770378362054,1
-rf_clf,2025,19,United States Grand Prix,lawson,0.09867655711225483,0
-rf_clf,2025,19,United States Grand Prix,stroll,0.08018280693294595,0
-rf_clf,2025,19,United States Grand Prix,antonelli,0.03297065241963864,0
-rf_clf,2025,19,United States Grand Prix,albon,0.08994617160365187,0
-rf_clf,2025,19,United States Grand Prix,ocon,0.0800151033151341,0
-rf_clf,2025,19,United States Grand Prix,hadjar,0.08773750007431072,0
-rf_clf,2025,19,United States Grand Prix,colapinto,0.0696872391335443,0
-rf_clf,2025,19,United States Grand Prix,bortoleto,0.08066228228268231,0
-rf_clf,2025,19,United States Grand Prix,gasly,0.07114470692528843,0
-rf_clf,2025,19,United States Grand Prix,sainz,0.07604071068100654,0
-xgb_clf,2025,19,United States Grand Prix,max_verstappen,0.02951707002274052,0
-xgb_clf,2025,19,United States Grand Prix,norris,0.0333909587020958,0
-xgb_clf,2025,19,United States Grand Prix,leclerc,0.03921772051371344,0
-xgb_clf,2025,19,United States Grand Prix,hamilton,0.03504885140424381,0
-xgb_clf,2025,19,United States Grand Prix,piastri,0.03378910115273636,0
-xgb_clf,2025,19,United States Grand Prix,russell,0.032126162207087555,0
-xgb_clf,2025,19,United States Grand Prix,tsunoda,0.07094842487074286,0
-xgb_clf,2025,19,United States Grand Prix,hulkenberg,0.05393998013778535,0
-xgb_clf,2025,19,United States Grand Prix,bearman,0.041806247758895174,0
-xgb_clf,2025,19,United States Grand Prix,alonso,0.043905625123250594,1
-xgb_clf,2025,19,United States Grand Prix,lawson,0.04965351253335273,0
-xgb_clf,2025,19,United States Grand Prix,stroll,0.04372049485793113,0
-xgb_clf,2025,19,United States Grand Prix,antonelli,0.0518237288167271,0
-xgb_clf,2025,19,United States Grand Prix,albon,0.06048679747303034,0
-xgb_clf,2025,19,United States Grand Prix,ocon,0.05713334230618713,0
-xgb_clf,2025,19,United States Grand Prix,hadjar,0.07920284027460758,0
-xgb_clf,2025,19,United States Grand Prix,colapinto,0.045282576210603345,0
-xgb_clf,2025,19,United States Grand Prix,bortoleto,0.049138322257827424,0
-xgb_clf,2025,19,United States Grand Prix,gasly,0.061213092087680485,0
-xgb_clf,2025,19,United States Grand Prix,sainz,0.0406344865590055,0
+rf_clf,2025,18,Singapore Grand Prix,max_verstappen,0.0020844752041392044,0
+rf_clf,2025,18,Singapore Grand Prix,norris,0.00709269589157367,0
+rf_clf,2025,18,Singapore Grand Prix,piastri,0.011334913011232966,0
+rf_clf,2025,18,Singapore Grand Prix,antonelli,0.017282928409899315,0
+rf_clf,2025,18,Singapore Grand Prix,leclerc,0.02339355250177254,0
+rf_clf,2025,18,Singapore Grand Prix,alonso,0.0662099295202577,0
+rf_clf,2025,18,Singapore Grand Prix,hamilton,0.01357087150769563,0
+rf_clf,2025,18,Singapore Grand Prix,bearman,0.08714107251727465,0
+rf_clf,2025,18,Singapore Grand Prix,sainz,0.06439232256964127,1
+rf_clf,2025,18,Singapore Grand Prix,hadjar,0.07443793815171217,0
+rf_clf,2025,18,Singapore Grand Prix,tsunoda,0.15003802295680344,0
+rf_clf,2025,18,Singapore Grand Prix,stroll,0.08684529077824148,0
+rf_clf,2025,18,Singapore Grand Prix,albon,0.08669206372481346,0
+rf_clf,2025,18,Singapore Grand Prix,lawson,0.09118783759517247,0
+rf_clf,2025,18,Singapore Grand Prix,colapinto,0.05174662214620861,0
+rf_clf,2025,18,Singapore Grand Prix,bortoleto,0.08879339046578592,0
+rf_clf,2025,18,Singapore Grand Prix,ocon,0.08149121411641916,0
+rf_clf,2025,18,Singapore Grand Prix,gasly,0.0431591285347477,0
+rf_clf,2025,18,Singapore Grand Prix,hulkenberg,0.07842527368990956,0
+xgb_clf,2025,18,Singapore Grand Prix,russell,0.023608652613372312,0
+xgb_clf,2025,18,Singapore Grand Prix,max_verstappen,0.028386586512724066,0
+xgb_clf,2025,18,Singapore Grand Prix,norris,0.036728333185929184,0
+xgb_clf,2025,18,Singapore Grand Prix,piastri,0.035563397530644705,0
+xgb_clf,2025,18,Singapore Grand Prix,antonelli,0.04230345429213924,0
+xgb_clf,2025,18,Singapore Grand Prix,leclerc,0.0384968736617758,0
+xgb_clf,2025,18,Singapore Grand Prix,alonso,0.04269496651961134,0
+xgb_clf,2025,18,Singapore Grand Prix,hamilton,0.03645193297564715,0
+xgb_clf,2025,18,Singapore Grand Prix,bearman,0.04710282709509654,0
+xgb_clf,2025,18,Singapore Grand Prix,sainz,0.04135169552286018,1
+xgb_clf,2025,18,Singapore Grand Prix,hadjar,0.048658009294855184,0
+xgb_clf,2025,18,Singapore Grand Prix,tsunoda,0.08566347072387852,0
+xgb_clf,2025,18,Singapore Grand Prix,stroll,0.04983557589303585,0
+xgb_clf,2025,18,Singapore Grand Prix,albon,0.06926703292300888,0
+xgb_clf,2025,18,Singapore Grand Prix,lawson,0.05032519177440682,0
+xgb_clf,2025,18,Singapore Grand Prix,colapinto,0.04558115521311353,0
+xgb_clf,2025,18,Singapore Grand Prix,bortoleto,0.07348014809600051,0
+xgb_clf,2025,18,Singapore Grand Prix,ocon,0.06095646433402446,0
+xgb_clf,2025,18,Singapore Grand Prix,gasly,0.03719939792244345,0
+xgb_clf,2025,18,Singapore Grand Prix,hulkenberg,0.05907816895155402,0
+rf_clf,2025,19,United States Grand Prix,max_verstappen,0.0019699098198832535,0
+rf_clf,2025,19,United States Grand Prix,norris,0.007795902037731161,0
+rf_clf,2025,19,United States Grand Prix,leclerc,0.009222375361449198,0
+rf_clf,2025,19,United States Grand Prix,hamilton,0.008097785101578348,0
+rf_clf,2025,19,United States Grand Prix,piastri,0.005001490926186493,0
+rf_clf,2025,19,United States Grand Prix,russell,0.0020809078996792607,0
+rf_clf,2025,19,United States Grand Prix,tsunoda,0.10439772791374324,0
+rf_clf,2025,19,United States Grand Prix,hulkenberg,0.08862756906637206,0
+rf_clf,2025,19,United States Grand Prix,bearman,0.0709034170143599,0
+rf_clf,2025,19,United States Grand Prix,alonso,0.060473473392450114,1
+rf_clf,2025,19,United States Grand Prix,lawson,0.10049698582053428,0
+rf_clf,2025,19,United States Grand Prix,stroll,0.060218054469925786,0
+rf_clf,2025,19,United States Grand Prix,antonelli,0.027210786807906236,0
+rf_clf,2025,19,United States Grand Prix,albon,0.08369162663752665,0
+rf_clf,2025,19,United States Grand Prix,ocon,0.08318498482284085,0
+rf_clf,2025,19,United States Grand Prix,hadjar,0.08586544587671016,0
+rf_clf,2025,19,United States Grand Prix,colapinto,0.06401836417730895,0
+rf_clf,2025,19,United States Grand Prix,bortoleto,0.0823907161803626,0
+rf_clf,2025,19,United States Grand Prix,gasly,0.06995670919947919,0
+rf_clf,2025,19,United States Grand Prix,sainz,0.07614977381497823,0
+xgb_clf,2025,19,United States Grand Prix,max_verstappen,0.03275770556159984,0
+xgb_clf,2025,19,United States Grand Prix,norris,0.03441749820353356,0
+xgb_clf,2025,19,United States Grand Prix,leclerc,0.039147698078544596,0
+xgb_clf,2025,19,United States Grand Prix,hamilton,0.03531177735611163,0
+xgb_clf,2025,19,United States Grand Prix,piastri,0.032879285980873474,0
+xgb_clf,2025,19,United States Grand Prix,russell,0.03317967407185672,0
+xgb_clf,2025,19,United States Grand Prix,tsunoda,0.0654347395375833,0
+xgb_clf,2025,19,United States Grand Prix,hulkenberg,0.05924275859720283,0
+xgb_clf,2025,19,United States Grand Prix,bearman,0.0430697536981329,0
+xgb_clf,2025,19,United States Grand Prix,alonso,0.04166513288745952,1
+xgb_clf,2025,19,United States Grand Prix,lawson,0.05398796165068537,0
+xgb_clf,2025,19,United States Grand Prix,stroll,0.05038763669768468,0
+xgb_clf,2025,19,United States Grand Prix,antonelli,0.04435507821343401,0
+xgb_clf,2025,19,United States Grand Prix,albon,0.07087748773218668,0
+xgb_clf,2025,19,United States Grand Prix,ocon,0.05557958427224606,0
+xgb_clf,2025,19,United States Grand Prix,hadjar,0.09652749514111843,0
+xgb_clf,2025,19,United States Grand Prix,colapinto,0.04312053985064264,0
+xgb_clf,2025,19,United States Grand Prix,bortoleto,0.053715767367611855,0
+xgb_clf,2025,19,United States Grand Prix,gasly,0.052583444063321695,0
+xgb_clf,2025,19,United States Grand Prix,sainz,0.03616409236705685,0
 rf_clf,2025,20,Mexico City Grand Prix,norris,0.0,0
-rf_clf,2025,20,Mexico City Grand Prix,leclerc,0.008532327696010688,0
-rf_clf,2025,20,Mexico City Grand Prix,max_verstappen,0.010494278973231205,0
-rf_clf,2025,20,Mexico City Grand Prix,bearman,0.1091305869507656,0
-rf_clf,2025,20,Mexico City Grand Prix,piastri,0.015447239479355954,0
-rf_clf,2025,20,Mexico City Grand Prix,antonelli,0.03289778760068345,0
-rf_clf,2025,20,Mexico City Grand Prix,russell,0.0020242498026589203,0
-rf_clf,2025,20,Mexico City Grand Prix,hamilton,0.007145784990248533,0
-rf_clf,2025,20,Mexico City Grand Prix,ocon,0.08643675016139293,0
-rf_clf,2025,20,Mexico City Grand Prix,bortoleto,0.0649142476934764,1
-rf_clf,2025,20,Mexico City Grand Prix,tsunoda,0.09833393226545865,0
-rf_clf,2025,20,Mexico City Grand Prix,albon,0.08307621086504548,0
-rf_clf,2025,20,Mexico City Grand Prix,hadjar,0.09748440302794006,0
-rf_clf,2025,20,Mexico City Grand Prix,stroll,0.05653260795129274,0
-rf_clf,2025,20,Mexico City Grand Prix,gasly,0.03062146372815892,0
-rf_clf,2025,20,Mexico City Grand Prix,colapinto,0.01632577644427514,0
-rf_clf,2025,20,Mexico City Grand Prix,sainz,0.0589312337614307,0
-rf_clf,2025,20,Mexico City Grand Prix,alonso,0.08902837277605505,0
-rf_clf,2025,20,Mexico City Grand Prix,hulkenberg,0.08658081271859813,0
-rf_clf,2025,20,Mexico City Grand Prix,lawson,0.14117929727128273,0
-xgb_clf,2025,20,Mexico City Grand Prix,norris,0.028448608597431934,0
-xgb_clf,2025,20,Mexico City Grand Prix,leclerc,0.03335797721276965,0
-xgb_clf,2025,20,Mexico City Grand Prix,max_verstappen,0.03133867143365297,0
-xgb_clf,2025,20,Mexico City Grand Prix,bearman,0.060978466772475516,0
-xgb_clf,2025,20,Mexico City Grand Prix,piastri,0.031803004270756455,0
-xgb_clf,2025,20,Mexico City Grand Prix,antonelli,0.03829781805665332,0
-xgb_clf,2025,20,Mexico City Grand Prix,russell,0.02600586614456591,0
-xgb_clf,2025,20,Mexico City Grand Prix,hamilton,0.02934323310926098,0
-xgb_clf,2025,20,Mexico City Grand Prix,ocon,0.08829345233913691,0
-xgb_clf,2025,20,Mexico City Grand Prix,bortoleto,0.04534143797274648,1
-xgb_clf,2025,20,Mexico City Grand Prix,tsunoda,0.11479134075889338,0
-xgb_clf,2025,20,Mexico City Grand Prix,albon,0.050521870463840934,0
-xgb_clf,2025,20,Mexico City Grand Prix,hadjar,0.05671820475624223,0
-xgb_clf,2025,20,Mexico City Grand Prix,stroll,0.0412284137528919,0
-xgb_clf,2025,20,Mexico City Grand Prix,gasly,0.03493293621751175,0
-xgb_clf,2025,20,Mexico City Grand Prix,colapinto,0.03720221162149613,0
-xgb_clf,2025,20,Mexico City Grand Prix,sainz,0.036870501427634636,0
-xgb_clf,2025,20,Mexico City Grand Prix,alonso,0.05064822183844997,0
-xgb_clf,2025,20,Mexico City Grand Prix,hulkenberg,0.05404809248004627,0
-xgb_clf,2025,20,Mexico City Grand Prix,lawson,0.10138042419972534,0
+rf_clf,2025,20,Mexico City Grand Prix,leclerc,0.007835338822456342,0
+rf_clf,2025,20,Mexico City Grand Prix,max_verstappen,0.007929745144949638,0
+rf_clf,2025,20,Mexico City Grand Prix,bearman,0.09608620338658866,0
+rf_clf,2025,20,Mexico City Grand Prix,piastri,0.02220035665173236,0
+rf_clf,2025,20,Mexico City Grand Prix,antonelli,0.026607322098681586,0
+rf_clf,2025,20,Mexico City Grand Prix,russell,0.0029194349265424966,0
+rf_clf,2025,20,Mexico City Grand Prix,hamilton,0.005814133720631014,0
+rf_clf,2025,20,Mexico City Grand Prix,ocon,0.08809153544127257,0
+rf_clf,2025,20,Mexico City Grand Prix,bortoleto,0.061029743668888116,1
+rf_clf,2025,20,Mexico City Grand Prix,tsunoda,0.15003777775657792,0
+rf_clf,2025,20,Mexico City Grand Prix,albon,0.08613305509665461,0
+rf_clf,2025,20,Mexico City Grand Prix,hadjar,0.10010805746740614,0
+rf_clf,2025,20,Mexico City Grand Prix,stroll,0.05527133586652555,0
+rf_clf,2025,20,Mexico City Grand Prix,gasly,0.030368395982681012,0
+rf_clf,2025,20,Mexico City Grand Prix,colapinto,0.01828607743481079,0
+rf_clf,2025,20,Mexico City Grand Prix,sainz,0.04589371307770747,0
+rf_clf,2025,20,Mexico City Grand Prix,alonso,0.10448064719706278,0
+rf_clf,2025,20,Mexico City Grand Prix,hulkenberg,0.09022444253101305,0
+rf_clf,2025,20,Mexico City Grand Prix,lawson,0.1500351678001593,0
+xgb_clf,2025,20,Mexico City Grand Prix,norris,0.028330512323592526,0
+xgb_clf,2025,20,Mexico City Grand Prix,leclerc,0.032702456223826254,0
+xgb_clf,2025,20,Mexico City Grand Prix,max_verstappen,0.03150456367683753,0
+xgb_clf,2025,20,Mexico City Grand Prix,bearman,0.06739155956241034,0
+xgb_clf,2025,20,Mexico City Grand Prix,piastri,0.03715774922855808,0
+xgb_clf,2025,20,Mexico City Grand Prix,antonelli,0.03518185485326529,0
+xgb_clf,2025,20,Mexico City Grand Prix,russell,0.027785390902697143,0
+xgb_clf,2025,20,Mexico City Grand Prix,hamilton,0.027818888642050055,0
+xgb_clf,2025,20,Mexico City Grand Prix,ocon,0.08651358257198796,0
+xgb_clf,2025,20,Mexico City Grand Prix,bortoleto,0.044199615922723146,1
+xgb_clf,2025,20,Mexico City Grand Prix,tsunoda,0.12279959856216167,0
+xgb_clf,2025,20,Mexico City Grand Prix,albon,0.046209149928146474,0
+xgb_clf,2025,20,Mexico City Grand Prix,hadjar,0.06334325197238622,0
+xgb_clf,2025,20,Mexico City Grand Prix,stroll,0.042521897533960226,0
+xgb_clf,2025,20,Mexico City Grand Prix,gasly,0.03562152802902865,0
+xgb_clf,2025,20,Mexico City Grand Prix,colapinto,0.038676154576853236,0
+xgb_clf,2025,20,Mexico City Grand Prix,sainz,0.0347842069438691,0
+xgb_clf,2025,20,Mexico City Grand Prix,alonso,0.049964943478266265,0
+xgb_clf,2025,20,Mexico City Grand Prix,hulkenberg,0.052054249944999055,0
+xgb_clf,2025,20,Mexico City Grand Prix,lawson,0.11451421282132439,0
 rf_clf,2025,21,São Paulo Grand Prix,norris,0.0,0
-rf_clf,2025,21,São Paulo Grand Prix,antonelli,0.011382212329464318,0
-rf_clf,2025,21,São Paulo Grand Prix,max_verstappen,0.0838603512492609,0
-rf_clf,2025,21,São Paulo Grand Prix,russell,0.008153843518938105,0
-rf_clf,2025,21,São Paulo Grand Prix,piastri,0.013177466517542941,0
-rf_clf,2025,21,São Paulo Grand Prix,bearman,0.07825709617753854,0
-rf_clf,2025,21,São Paulo Grand Prix,lawson,0.061959577185669024,0
-rf_clf,2025,21,São Paulo Grand Prix,hadjar,0.05905826369873214,0
-rf_clf,2025,21,São Paulo Grand Prix,hulkenberg,0.07939868856898853,0
-rf_clf,2025,21,São Paulo Grand Prix,gasly,0.07465053474771936,1
-rf_clf,2025,21,São Paulo Grand Prix,albon,0.09849395231651106,0
-rf_clf,2025,21,São Paulo Grand Prix,ocon,0.07999738945084107,0
-rf_clf,2025,21,São Paulo Grand Prix,sainz,0.0970069219077592,0
-rf_clf,2025,21,São Paulo Grand Prix,alonso,0.08164509445514642,0
-rf_clf,2025,21,São Paulo Grand Prix,colapinto,0.037346369978197624,0
-rf_clf,2025,21,São Paulo Grand Prix,stroll,0.08078095231823987,0
-rf_clf,2025,21,São Paulo Grand Prix,tsunoda,0.09415142161536402,0
-rf_clf,2025,21,São Paulo Grand Prix,hamilton,0.11159866213699905,0
-rf_clf,2025,21,São Paulo Grand Prix,leclerc,0.00414993453974693,0
-rf_clf,2025,21,São Paulo Grand Prix,bortoleto,0.05112206687899821,0
-xgb_clf,2025,21,São Paulo Grand Prix,norris,0.026857667625379927,0
-xgb_clf,2025,21,São Paulo Grand Prix,antonelli,0.0515125459977688,0
-xgb_clf,2025,21,São Paulo Grand Prix,max_verstappen,0.07974207305407235,0
-xgb_clf,2025,21,São Paulo Grand Prix,russell,0.04399088580428516,0
-xgb_clf,2025,21,São Paulo Grand Prix,piastri,0.04236119606790938,0
-xgb_clf,2025,21,São Paulo Grand Prix,bearman,0.047227257388416086,0
-xgb_clf,2025,21,São Paulo Grand Prix,lawson,0.04082615097363226,0
-xgb_clf,2025,21,São Paulo Grand Prix,hadjar,0.06122712528146793,0
-xgb_clf,2025,21,São Paulo Grand Prix,hulkenberg,0.04592490747724728,0
-xgb_clf,2025,21,São Paulo Grand Prix,gasly,0.04089274399636332,1
-xgb_clf,2025,21,São Paulo Grand Prix,albon,0.06356027524714632,0
-xgb_clf,2025,21,São Paulo Grand Prix,ocon,0.044315880496066995,0
-xgb_clf,2025,21,São Paulo Grand Prix,sainz,0.06291260442095774,0
-xgb_clf,2025,21,São Paulo Grand Prix,alonso,0.04511838038864563,0
-xgb_clf,2025,21,São Paulo Grand Prix,colapinto,0.04224146661860358,0
-xgb_clf,2025,21,São Paulo Grand Prix,stroll,0.061449471439666725,0
-xgb_clf,2025,21,São Paulo Grand Prix,tsunoda,0.0825035377765342,0
-xgb_clf,2025,21,São Paulo Grand Prix,hamilton,0.07726596206785644,0
-xgb_clf,2025,21,São Paulo Grand Prix,leclerc,0.032905297595683725,0
-xgb_clf,2025,21,São Paulo Grand Prix,bortoleto,0.037827527108041714,0
-rf_clf,2025,22,Las Vegas Grand Prix,max_verstappen,0.0037012370506785868,0
-rf_clf,2025,22,Las Vegas Grand Prix,russell,0.008052575909402447,0
-rf_clf,2025,22,Las Vegas Grand Prix,antonelli,0.08439029064186314,0
-rf_clf,2025,22,Las Vegas Grand Prix,leclerc,0.0412424001743056,0
-rf_clf,2025,22,Las Vegas Grand Prix,sainz,0.03206855706225618,0
-rf_clf,2025,22,Las Vegas Grand Prix,hadjar,0.08605650281933078,0
-rf_clf,2025,22,Las Vegas Grand Prix,hulkenberg,0.08903241843007488,0
-rf_clf,2025,22,Las Vegas Grand Prix,hamilton,0.1342868359281281,0
-rf_clf,2025,22,Las Vegas Grand Prix,ocon,0.08553637167500723,0
-rf_clf,2025,22,Las Vegas Grand Prix,bearman,0.1577169438798276,1
-rf_clf,2025,22,Las Vegas Grand Prix,alonso,0.07441508778311877,0
-rf_clf,2025,22,Las Vegas Grand Prix,tsunoda,0.08074104263049353,0
-rf_clf,2025,22,Las Vegas Grand Prix,gasly,0.07247276843486246,0
-rf_clf,2025,22,Las Vegas Grand Prix,lawson,0.06422393134918994,0
-rf_clf,2025,22,Las Vegas Grand Prix,colapinto,0.042549825181490156,0
-rf_clf,2025,22,Las Vegas Grand Prix,albon,0.09021637937075508,0
-rf_clf,2025,22,Las Vegas Grand Prix,bortoleto,0.045417087571089663,0
-rf_clf,2025,22,Las Vegas Grand Prix,stroll,0.08110148350270853,0
+rf_clf,2025,21,São Paulo Grand Prix,antonelli,0.013216212438589055,0
+rf_clf,2025,21,São Paulo Grand Prix,max_verstappen,0.07286082796894403,0
+rf_clf,2025,21,São Paulo Grand Prix,russell,0.012373764211455616,0
+rf_clf,2025,21,São Paulo Grand Prix,piastri,0.004958937264315239,0
+rf_clf,2025,21,São Paulo Grand Prix,bearman,0.06702550571136831,0
+rf_clf,2025,21,São Paulo Grand Prix,lawson,0.05998633739199947,0
+rf_clf,2025,21,São Paulo Grand Prix,hadjar,0.058298260030727134,0
+rf_clf,2025,21,São Paulo Grand Prix,hulkenberg,0.08664497164406809,0
+rf_clf,2025,21,São Paulo Grand Prix,gasly,0.06059930207978785,1
+rf_clf,2025,21,São Paulo Grand Prix,albon,0.14104043657952103,0
+rf_clf,2025,21,São Paulo Grand Prix,ocon,0.08409738737791506,0
+rf_clf,2025,21,São Paulo Grand Prix,sainz,0.10089952805410438,0
+rf_clf,2025,21,São Paulo Grand Prix,alonso,0.08226846271386033,0
+rf_clf,2025,21,São Paulo Grand Prix,colapinto,0.03646305647749772,0
+rf_clf,2025,21,São Paulo Grand Prix,stroll,0.10067759641051825,0
+rf_clf,2025,21,São Paulo Grand Prix,tsunoda,0.09283757330868922,0
+rf_clf,2025,21,São Paulo Grand Prix,hamilton,0.0906062571073532,0
+rf_clf,2025,21,São Paulo Grand Prix,leclerc,0.005384474553869691,0
+rf_clf,2025,21,São Paulo Grand Prix,bortoleto,0.05316671407835479,0
+xgb_clf,2025,21,São Paulo Grand Prix,norris,0.02694860260880797,0
+xgb_clf,2025,21,São Paulo Grand Prix,antonelli,0.046373481512614244,0
+xgb_clf,2025,21,São Paulo Grand Prix,max_verstappen,0.06618020810794514,0
+xgb_clf,2025,21,São Paulo Grand Prix,russell,0.036980264838465116,0
+xgb_clf,2025,21,São Paulo Grand Prix,piastri,0.038402592390535104,0
+xgb_clf,2025,21,São Paulo Grand Prix,bearman,0.04426544217900552,0
+xgb_clf,2025,21,São Paulo Grand Prix,lawson,0.043663041916234976,0
+xgb_clf,2025,21,São Paulo Grand Prix,hadjar,0.05126841549671305,0
+xgb_clf,2025,21,São Paulo Grand Prix,hulkenberg,0.05289755572813489,0
+xgb_clf,2025,21,São Paulo Grand Prix,gasly,0.04045696085159597,1
+xgb_clf,2025,21,São Paulo Grand Prix,albon,0.057984287895860076,0
+xgb_clf,2025,21,São Paulo Grand Prix,ocon,0.047662624636826745,0
+xgb_clf,2025,21,São Paulo Grand Prix,sainz,0.05708474598778712,0
+xgb_clf,2025,21,São Paulo Grand Prix,alonso,0.0498203356563679,0
+xgb_clf,2025,21,São Paulo Grand Prix,colapinto,0.04258446184806033,0
+xgb_clf,2025,21,São Paulo Grand Prix,stroll,0.0608766247524928,0
+xgb_clf,2025,21,São Paulo Grand Prix,tsunoda,0.09194309308879252,0
+xgb_clf,2025,21,São Paulo Grand Prix,hamilton,0.06326513225087589,0
+xgb_clf,2025,21,São Paulo Grand Prix,leclerc,0.029670739552118786,0
+xgb_clf,2025,21,São Paulo Grand Prix,bortoleto,0.03890689028372252,0
+rf_clf,2025,22,Las Vegas Grand Prix,max_verstappen,0.004660987411374521,0
+rf_clf,2025,22,Las Vegas Grand Prix,russell,0.008393422408384834,0
+rf_clf,2025,22,Las Vegas Grand Prix,antonelli,0.08886226119494721,0
+rf_clf,2025,22,Las Vegas Grand Prix,leclerc,0.04699560456967468,0
+rf_clf,2025,22,Las Vegas Grand Prix,sainz,0.04279796873856999,0
+rf_clf,2025,22,Las Vegas Grand Prix,hadjar,0.07980555999798236,0
+rf_clf,2025,22,Las Vegas Grand Prix,hulkenberg,0.08697181327370115,0
+rf_clf,2025,22,Las Vegas Grand Prix,hamilton,0.13818027590377885,0
+rf_clf,2025,22,Las Vegas Grand Prix,ocon,0.09115639530109106,0
+rf_clf,2025,22,Las Vegas Grand Prix,bearman,0.1132027615092103,1
+rf_clf,2025,22,Las Vegas Grand Prix,alonso,0.07209602901942772,0
+rf_clf,2025,22,Las Vegas Grand Prix,tsunoda,0.07696779930694674,0
+rf_clf,2025,22,Las Vegas Grand Prix,gasly,0.0766979471751978,0
+rf_clf,2025,22,Las Vegas Grand Prix,lawson,0.058380751362721986,0
+rf_clf,2025,22,Las Vegas Grand Prix,colapinto,0.04530694357274455,0
+rf_clf,2025,22,Las Vegas Grand Prix,albon,0.09551924535175044,0
+rf_clf,2025,22,Las Vegas Grand Prix,bortoleto,0.038442656814294804,0
+rf_clf,2025,22,Las Vegas Grand Prix,stroll,0.07395342654081695,0
 rf_clf,2025,22,Las Vegas Grand Prix,norris,0.0,0
-rf_clf,2025,22,Las Vegas Grand Prix,piastri,0.005608982698860862,0
-xgb_clf,2025,22,Las Vegas Grand Prix,max_verstappen,0.03133982994236924,0
-xgb_clf,2025,22,Las Vegas Grand Prix,russell,0.03470373893009,0
-xgb_clf,2025,22,Las Vegas Grand Prix,antonelli,0.04680300069351158,0
-xgb_clf,2025,22,Las Vegas Grand Prix,leclerc,0.03481349854292328,0
-xgb_clf,2025,22,Las Vegas Grand Prix,sainz,0.03932007654571529,0
-xgb_clf,2025,22,Las Vegas Grand Prix,hadjar,0.05898715166332158,0
-xgb_clf,2025,22,Las Vegas Grand Prix,hulkenberg,0.05954001787032102,0
-xgb_clf,2025,22,Las Vegas Grand Prix,hamilton,0.09073219112242017,0
-xgb_clf,2025,22,Las Vegas Grand Prix,ocon,0.04862803180089143,0
-xgb_clf,2025,22,Las Vegas Grand Prix,bearman,0.09315905995964155,1
-xgb_clf,2025,22,Las Vegas Grand Prix,alonso,0.039436194941999854,0
-xgb_clf,2025,22,Las Vegas Grand Prix,tsunoda,0.07090955767511987,0
-xgb_clf,2025,22,Las Vegas Grand Prix,gasly,0.04586737602168951,0
-xgb_clf,2025,22,Las Vegas Grand Prix,lawson,0.04927414864041998,0
-xgb_clf,2025,22,Las Vegas Grand Prix,colapinto,0.049121616976139884,0
-xgb_clf,2025,22,Las Vegas Grand Prix,albon,0.05136330930607726,0
-xgb_clf,2025,22,Las Vegas Grand Prix,bortoleto,0.04176431450891547,0
-xgb_clf,2025,22,Las Vegas Grand Prix,stroll,0.04691260802933169,0
-xgb_clf,2025,22,Las Vegas Grand Prix,norris,0.0250047861619642,0
-xgb_clf,2025,22,Las Vegas Grand Prix,piastri,0.035164592413640935,0
-rf_clf,2025,23,Qatar Grand Prix,max_verstappen,0.004206512228359125,0
+rf_clf,2025,22,Las Vegas Grand Prix,piastri,0.006028725584827603,0
+xgb_clf,2025,22,Las Vegas Grand Prix,max_verstappen,0.029364749351396748,0
+xgb_clf,2025,22,Las Vegas Grand Prix,russell,0.03393742586144137,0
+xgb_clf,2025,22,Las Vegas Grand Prix,antonelli,0.04421012759448892,0
+xgb_clf,2025,22,Las Vegas Grand Prix,leclerc,0.03592784051353002,0
+xgb_clf,2025,22,Las Vegas Grand Prix,sainz,0.04087300625679557,0
+xgb_clf,2025,22,Las Vegas Grand Prix,hadjar,0.051466773735303395,0
+xgb_clf,2025,22,Las Vegas Grand Prix,hulkenberg,0.060443409138738136,0
+xgb_clf,2025,22,Las Vegas Grand Prix,hamilton,0.14971934956930893,0
+xgb_clf,2025,22,Las Vegas Grand Prix,ocon,0.0476689093723694,0
+xgb_clf,2025,22,Las Vegas Grand Prix,bearman,0.07631525103189152,1
+xgb_clf,2025,22,Las Vegas Grand Prix,alonso,0.045326443950396825,0
+xgb_clf,2025,22,Las Vegas Grand Prix,tsunoda,0.07139980297351652,0
+xgb_clf,2025,22,Las Vegas Grand Prix,gasly,0.04321180377607244,0
+xgb_clf,2025,22,Las Vegas Grand Prix,lawson,0.04687097375870568,0
+xgb_clf,2025,22,Las Vegas Grand Prix,colapinto,0.04533365878509387,0
+xgb_clf,2025,22,Las Vegas Grand Prix,albon,0.047772337047771084,0
+xgb_clf,2025,22,Las Vegas Grand Prix,bortoleto,0.040755737165415404,0
+xgb_clf,2025,22,Las Vegas Grand Prix,stroll,0.04729445886634841,0
+xgb_clf,2025,22,Las Vegas Grand Prix,norris,0.024325357903447448,0
+xgb_clf,2025,22,Las Vegas Grand Prix,piastri,0.03356137936771366,0
+rf_clf,2025,23,Qatar Grand Prix,max_verstappen,0.006567622481510408,0
 rf_clf,2025,23,Qatar Grand Prix,piastri,0.0,0
-rf_clf,2025,23,Qatar Grand Prix,sainz,0.051102465109773995,0
-rf_clf,2025,23,Qatar Grand Prix,norris,0.0,0
-rf_clf,2025,23,Qatar Grand Prix,antonelli,0.008256626483960756,0
-rf_clf,2025,23,Qatar Grand Prix,russell,0.008302602492358983,0
-rf_clf,2025,23,Qatar Grand Prix,alonso,0.0797326529551176,0
-rf_clf,2025,23,Qatar Grand Prix,leclerc,0.04487902810157881,0
-rf_clf,2025,23,Qatar Grand Prix,lawson,0.09829116178400332,0
-rf_clf,2025,23,Qatar Grand Prix,tsunoda,0.09914190256529591,1
-rf_clf,2025,23,Qatar Grand Prix,albon,0.10322735020610656,0
-rf_clf,2025,23,Qatar Grand Prix,hamilton,0.12948447192929796,0
-rf_clf,2025,23,Qatar Grand Prix,bortoleto,0.08070623417387983,0
-rf_clf,2025,23,Qatar Grand Prix,colapinto,0.019493577904004307,0
-rf_clf,2025,23,Qatar Grand Prix,ocon,0.07875134959898145,0
-rf_clf,2025,23,Qatar Grand Prix,gasly,0.08355524547297258,0
-rf_clf,2025,23,Qatar Grand Prix,stroll,0.055533323052529004,0
-rf_clf,2025,23,Qatar Grand Prix,hadjar,0.05937288838470517,0
-rf_clf,2025,23,Qatar Grand Prix,bearman,0.13306396878878454,0
-rf_clf,2025,23,Qatar Grand Prix,hulkenberg,0.0951509305492416,0
-xgb_clf,2025,23,Qatar Grand Prix,max_verstappen,0.03496823587076346,0
-xgb_clf,2025,23,Qatar Grand Prix,piastri,0.029596301031627116,0
-xgb_clf,2025,23,Qatar Grand Prix,sainz,0.038709883215739524,0
-xgb_clf,2025,23,Qatar Grand Prix,norris,0.029456898661206755,0
-xgb_clf,2025,23,Qatar Grand Prix,antonelli,0.03712346923853686,0
-xgb_clf,2025,23,Qatar Grand Prix,russell,0.03622464436345783,0
-xgb_clf,2025,23,Qatar Grand Prix,alonso,0.05056392113703476,0
-xgb_clf,2025,23,Qatar Grand Prix,leclerc,0.07900908627073448,0
-xgb_clf,2025,23,Qatar Grand Prix,lawson,0.04700276188494682,0
-xgb_clf,2025,23,Qatar Grand Prix,tsunoda,0.05840404748198206,1
-xgb_clf,2025,23,Qatar Grand Prix,albon,0.07135518677286182,0
-xgb_clf,2025,23,Qatar Grand Prix,hamilton,0.11837023101430293,0
-xgb_clf,2025,23,Qatar Grand Prix,bortoleto,0.04178337703180801,0
-xgb_clf,2025,23,Qatar Grand Prix,colapinto,0.040482559514406956,0
-xgb_clf,2025,23,Qatar Grand Prix,ocon,0.05992495460667753,0
-xgb_clf,2025,23,Qatar Grand Prix,gasly,0.040822994385788305,0
-xgb_clf,2025,23,Qatar Grand Prix,stroll,0.047659131198399665,0
-xgb_clf,2025,23,Qatar Grand Prix,hadjar,0.04304599899308394,0
-xgb_clf,2025,23,Qatar Grand Prix,bearman,0.06864337031953846,0
-xgb_clf,2025,23,Qatar Grand Prix,hulkenberg,0.047572410022515346,0
+rf_clf,2025,23,Qatar Grand Prix,sainz,0.06271701112639032,0
+rf_clf,2025,23,Qatar Grand Prix,norris,0.0029513919129194473,0
+rf_clf,2025,23,Qatar Grand Prix,antonelli,0.01580513134115096,0
+rf_clf,2025,23,Qatar Grand Prix,russell,0.008048575326790786,0
+rf_clf,2025,23,Qatar Grand Prix,alonso,0.08867174936530979,0
+rf_clf,2025,23,Qatar Grand Prix,leclerc,0.047168933986986586,0
+rf_clf,2025,23,Qatar Grand Prix,lawson,0.09893759285859638,0
+rf_clf,2025,23,Qatar Grand Prix,tsunoda,0.08300182577855271,1
+rf_clf,2025,23,Qatar Grand Prix,albon,0.171619569977221,0
+rf_clf,2025,23,Qatar Grand Prix,hamilton,0.16461177648674624,0
+rf_clf,2025,23,Qatar Grand Prix,bortoleto,0.07784174952827683,0
+rf_clf,2025,23,Qatar Grand Prix,colapinto,0.02459808437427578,0
+rf_clf,2025,23,Qatar Grand Prix,ocon,0.07107643370623157,0
+rf_clf,2025,23,Qatar Grand Prix,gasly,0.07270091375480583,0
+rf_clf,2025,23,Qatar Grand Prix,stroll,0.05530105370675366,0
+rf_clf,2025,23,Qatar Grand Prix,hadjar,0.06254119942557931,0
+rf_clf,2025,23,Qatar Grand Prix,bearman,0.185842476854098,0
+rf_clf,2025,23,Qatar Grand Prix,hulkenberg,0.0990842746893315,0
+xgb_clf,2025,23,Qatar Grand Prix,max_verstappen,0.03098903427203873,0
+xgb_clf,2025,23,Qatar Grand Prix,piastri,0.02610403360970585,0
+xgb_clf,2025,23,Qatar Grand Prix,sainz,0.0362156097528727,0
+xgb_clf,2025,23,Qatar Grand Prix,norris,0.029154954400772322,0
+xgb_clf,2025,23,Qatar Grand Prix,antonelli,0.033958830480591486,0
+xgb_clf,2025,23,Qatar Grand Prix,russell,0.03703124665634476,0
+xgb_clf,2025,23,Qatar Grand Prix,alonso,0.045094109795047424,0
+xgb_clf,2025,23,Qatar Grand Prix,leclerc,0.06161798416153659,0
+xgb_clf,2025,23,Qatar Grand Prix,lawson,0.04462898431849592,0
+xgb_clf,2025,23,Qatar Grand Prix,tsunoda,0.04957714350001687,1
+xgb_clf,2025,23,Qatar Grand Prix,albon,0.07651047239333197,0
+xgb_clf,2025,23,Qatar Grand Prix,hamilton,0.1698080848845163,0
+xgb_clf,2025,23,Qatar Grand Prix,bortoleto,0.042747274558299596,0
+xgb_clf,2025,23,Qatar Grand Prix,colapinto,0.03971062211911582,0
+xgb_clf,2025,23,Qatar Grand Prix,ocon,0.06760457651527826,0
+xgb_clf,2025,23,Qatar Grand Prix,gasly,0.042564751730201265,0
+xgb_clf,2025,23,Qatar Grand Prix,stroll,0.04424879829163017,0
+xgb_clf,2025,23,Qatar Grand Prix,hadjar,0.043034242137361484,0
+xgb_clf,2025,23,Qatar Grand Prix,bearman,0.0697646883171311,0
+xgb_clf,2025,23,Qatar Grand Prix,hulkenberg,0.047425671630823486,0
 rf_clf,2025,24,Abu Dhabi Grand Prix,max_verstappen,0.0,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,piastri,0.01753579680395832,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,norris,0.007988736972541297,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,leclerc,0.023790539349155034,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,russell,0.007951349969742292,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,alonso,0.050526309308842686,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,ocon,0.11838028442758172,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,hamilton,0.12962011432829773,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,hulkenberg,0.06411100095439289,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,stroll,0.0775768746694869,1
-rf_clf,2025,24,Abu Dhabi Grand Prix,bortoleto,0.07410170764477553,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,bearman,0.08935403193571648,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,sainz,0.15992552087555742,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,tsunoda,0.07939442103409637,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,antonelli,0.08532905843543082,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,albon,0.08755137725313265,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,hadjar,0.08264791646975883,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,lawson,0.15161211575004135,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,gasly,0.039723831050731816,0
-rf_clf,2025,24,Abu Dhabi Grand Prix,colapinto,0.016977082656676197,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,max_verstappen,0.02635422645030252,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,piastri,0.03375276707805615,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,norris,0.033295216313496044,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,leclerc,0.0379725047679156,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,russell,0.0317853821681563,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,alonso,0.03856834995219476,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,ocon,0.0749067464597257,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,hamilton,0.09126803373489885,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,hulkenberg,0.044689532829714926,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,stroll,0.046757380840310954,1
-xgb_clf,2025,24,Abu Dhabi Grand Prix,bortoleto,0.04103443876260558,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,bearman,0.053481742005157706,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,sainz,0.050709146772605275,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,tsunoda,0.04431299511919089,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,antonelli,0.04984747476468488,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,albon,0.05271291202578212,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,hadjar,0.05148050314716503,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,lawson,0.09212002831983036,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,gasly,0.036099306192645404,0
-xgb_clf,2025,24,Abu Dhabi Grand Prix,colapinto,0.034458196788309685,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,piastri,0.014548439932399296,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,norris,0.015482532114838719,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,leclerc,0.02533405913594578,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,russell,0.00808774769341614,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,alonso,0.0657704535949992,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,ocon,0.08280411040316374,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,hamilton,0.1175026845439322,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,hulkenberg,0.05722522650895814,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,stroll,0.0857714134767302,1
+rf_clf,2025,24,Abu Dhabi Grand Prix,bortoleto,0.07217305949602411,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,bearman,0.10035589232462434,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,sainz,0.14981411023259938,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,tsunoda,0.0734175121838854,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,antonelli,0.08108446142526338,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,albon,0.09420576056787903,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,hadjar,0.09056181960644796,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,lawson,0.12965745334454254,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,gasly,0.0375490109789601,0
+rf_clf,2025,24,Abu Dhabi Grand Prix,colapinto,0.018877317431082234,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,max_verstappen,0.025959419442021382,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,piastri,0.03379180201173047,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,norris,0.03081943954746012,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,leclerc,0.04259825654957868,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,russell,0.03107414267274079,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,alonso,0.04308516783907348,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,ocon,0.07131877850665716,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,hamilton,0.09407415064455706,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,hulkenberg,0.04231663836012594,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,stroll,0.039837044102101024,1
+xgb_clf,2025,24,Abu Dhabi Grand Prix,bortoleto,0.04164682576096938,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,bearman,0.060422364927812444,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,sainz,0.04936297500347097,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,tsunoda,0.04241835669742888,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,antonelli,0.04304555443742223,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,albon,0.054889459799113104,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,hadjar,0.048949403825857496,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,lawson,0.10608389508756191,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,gasly,0.03653723332810851,0
+xgb_clf,2025,24,Abu Dhabi Grand Prix,colapinto,0.034698294137252915,0

@@ -19,6 +19,7 @@
 | F-005 | P3 | Broad `sys.path.insert` usage increased import coupling/noise. | Present across many scripts and some core modules. | **Partially fixed**: hardened active core modules to avoid unconditional duplicate path insertion; full packaging cleanup deferred. |
 | F-006 | P3 | Placeholder and duplicate marker docs add low signal in active navigation. | Multiple one-line placeholders and archive mirrors. | **Accepted**: retained placeholders for directory intent, classified explicitly in matrix below. |
 | F-007 | P2 | LightGBM inference produced repeated feature-name warnings in prediction/evaluation paths. | `LGBMRegressor`/`LGBMRanker` persisted `feature_names_in_`; ndarray prediction emitted warning noise. | **Fixed**: added inference input normalization in `src/models.py` to provide named DataFrame inputs when required. |
+| F-008 | P2 | Candidate A promotion showed retrain-time drift vs tracked holdout baseline. | Local promotion check on 2026-03-26 regressed holdout avg points (`13.58` tracked baseline vs `13.04` retrained promoted ensemble). | **Open**: promotion deferred; keep sweep artifacts and proceed with Candidate B while retrain drift is investigated. |
 
 ## Documentation Classification Matrix
 
@@ -36,6 +37,7 @@ Classification legend:
 | `docs/REPO_DECISIONS_2026-03-25.md` | canonical | Structural decisions and rationale. |
 | `docs/TECHNICAL_FINDINGS_REPO_AUDIT_2026-03-26.md` | canonical | This audit record. |
 | `docs/DEVELOPMENT_PLAN_REPO_REVIEW_2026-03-26.md` | canonical | Forward development roadmap. |
+| `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md` | canonical | Candidate A cycle-1 decision and promotion status. |
 | `data/aux_data/aux_data.md` | placeholder | Directory marker for auxiliary data folder. |
 | `data/data.md` | placeholder | Directory marker. |
 | `data/processed/processed.md` | placeholder | Directory marker. |
@@ -85,6 +87,9 @@ Classification legend:
 - Candidate A diagnostics now have a reproducible script + baseline gate artifact:
   - `scripts/91_candidate_a_calibration_robustness.py`
   - `results/scorecards/candidate_a_baseline.json`
+- Candidate A cycle-1 sweep tooling and artifacts are now tracked:
+  - `scripts/92_candidate_a_weight_sweep.py`
+  - `results/candidate_a/candidate_a_weight_sweep_recommendation.md`
 
 ## Remaining Follow-Ups (Planned)
 - Continue reducing `sys.path` coupling in non-core experimentation scripts as a separate cleanup batch.
