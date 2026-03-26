@@ -87,6 +87,11 @@ Candidate A — Ranking/calibration robustness:
 Candidate B — Season-stage weighting recalibration:
 - Re-test stage weight logic using current baselines and anti-overfit gates.
 - Require improvement consistency, not single-metric spikes.
+- Cycle-1 status (2026-03-26):
+  - Implemented stage sweep tool: `scripts/94_candidate_b_stage_weight_sweep.py`
+  - Artifacts produced under `results/candidate_b/`
+  - Promotion decision: deferred pending retrain-drift stabilization
+  - Details: `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md`
 
 Candidate C — Regulation-shift stress tests and ablations:
 - Run focused ablations on existing feature set before introducing new external data.

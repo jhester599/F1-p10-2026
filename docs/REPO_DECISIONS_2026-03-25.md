@@ -113,3 +113,17 @@ This document records structural decisions made for CI reliability, Windows comp
 - Added baseline artifact: `results/scorecards/candidate_a_baseline.json`.
 - Added diagnostics outputs under `results/candidate_a/`.
 - `.github/workflows/repo-sanity.yml` now runs Candidate A diagnostics with `--enforce-gates`.
+
+## 9) Candidate B cycle-1 stage recalibration tooling (no auto-promotion)
+
+### Decision
+- Add stage-aware sweep tooling for Candidate B and keep promotion manual/deferred.
+
+### Why
+- Candidate B needs explicit anti-overfit testing across early/mid/late race segments.
+- Current retrain-time baseline drift means stage-weight promotion should not be automatic.
+
+### Impact
+- Added `scripts/94_candidate_b_stage_weight_sweep.py`.
+- Added results artifacts under `results/candidate_b/`.
+- Promotion status is documented in `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md`.
