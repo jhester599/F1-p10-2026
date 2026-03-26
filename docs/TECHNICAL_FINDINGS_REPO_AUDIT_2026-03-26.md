@@ -36,6 +36,7 @@ Classification legend:
 | `docs/REPO_DECISIONS_2026-03-25.md` | canonical | Structural decisions and rationale. |
 | `docs/TECHNICAL_FINDINGS_REPO_AUDIT_2026-03-26.md` | canonical | This audit record. |
 | `docs/DEVELOPMENT_PLAN_REPO_REVIEW_2026-03-26.md` | canonical | Forward development roadmap. |
+| `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md` | canonical | Candidate B cycle-1 decision and promotion status. |
 | `data/aux_data/aux_data.md` | placeholder | Directory marker for auxiliary data folder. |
 | `data/data.md` | placeholder | Directory marker. |
 | `data/processed/processed.md` | placeholder | Directory marker. |
@@ -85,6 +86,9 @@ Classification legend:
 - Candidate A diagnostics now have a reproducible script + baseline gate artifact:
   - `scripts/91_candidate_a_calibration_robustness.py`
   - `results/scorecards/candidate_a_baseline.json`
+- Candidate B cycle-1 stage sweep tooling and artifacts are now tracked:
+  - `scripts/94_candidate_b_stage_weight_sweep.py`
+  - `results/candidate_b/candidate_b_stage_recommendation.md`
 
 ## Remaining Follow-Ups (Planned)
 - Continue reducing `sys.path` coupling in non-core experimentation scripts as a separate cleanup batch.

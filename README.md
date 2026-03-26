@@ -63,6 +63,7 @@ Canonical planning and audit documents:
 - `docs/DEVELOPMENT_PLAN_REPO_REVIEW_2026-03-26.md` (current forward plan)
 - `docs/TECHNICAL_FINDINGS_REPO_AUDIT_2026-03-26.md` (latest audit and doc classification matrix)
 - `docs/REPO_DECISIONS_2026-03-25.md` (structural repo decisions)
+- `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md` (Candidate B cycle-1 status and promotion decision)
 
 Historical plans/reports are preserved for context. The `v6x/` tree is treated as
 archive-only in active validation and development.
@@ -97,6 +98,17 @@ Outputs:
 - `results/candidate_a/candidate_a_ranking_summary.csv`
 - `results/candidate_a/candidate_a_gate_report.{json,md}`
 - `results/scorecards/candidate_a_baseline.json`
+
+Candidate B stage recalibration sweep:
+
+```bash
+python scripts/94_candidate_b_stage_weight_sweep.py --year 2025 --boundaries 5,15 --scales 0.85,1.0,1.15
+```
+
+Outputs:
+
+- `results/candidate_b/candidate_b_stage_recommendation.{json,md}`
+- `results/candidate_b/candidate_b_stage_sweep_top.csv`
 
 PR sanity validation is defined in `.github/workflows/repo-sanity.yml`.
 
