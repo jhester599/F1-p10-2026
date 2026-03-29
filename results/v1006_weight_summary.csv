@@ -1,0 +1,9 @@
+model,current_weight,bootstrap_median,bootstrap_mean,ci_lo_95,ci_hi_95,james_stein,ci_includes_zero
+lgb_reg,0.0952,0.0,0.002,0.0,0.0,0.0046,True
+lgbm_ranker,0.1429,0.0052,0.158,0.0,1.0,0.0096,True
+rf_clf,0.1429,0.988,0.412,0.0,1.0,0.9564,False
+rf_reg,0.0,0.0,0.0,0.0,0.0,0.0046,True
+ridge,0.0,0.0,0.004,0.0,0.0,0.0046,True
+xgb_clf,0.0476,0.0065,0.252,0.0,1.0,0.0108,False
+xgb_ranker,0.5714,0.0003,0.17,0.0,1.0,0.0049,False
+xgb_reg,0.0,0.0,0.002,0.0,0.0,0.0046,True

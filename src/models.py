@@ -82,6 +82,63 @@ if str(_ROOT) not in sys.path:
 from config import FEATURE_COLS, MODEL_FEATURES, MODELS_DIR, TARGET_COL, DNF_POSITION, FANTASY_POINTS, era_sample_weight
 
 
+# ── v10.04: Fantasy-score sample weights ──────────────────────────────────────
+# Focus model training on the P8–P12 zone where fantasy points are maximised.
+# Maps |finish_position - 10| → weight; symmetric tent peaked at P10.
+_FANTASY_SAMPLE_WEIGHTS: dict[int, float] = {
+    0:  25.0,   # P10  — maximum relevance
+    1:  18.0,   # P9/P11
+    2:  15.0,   # P8/P12
+    3:  12.0,   # P7/P13
+    4:  10.0,   # P6/P14
+    5:   8.0,   # P5/P15
+    6:   6.0,   # P4/P16
+    7:   4.0,   # P3/P17
+    8:   2.0,   # P2/P18
+    9:   1.0,   # P1/P19
+}
+_FANTASY_WEIGHT_DEFAULT = 0.1   # ≥P20 / DNF
+
+
+def fantasy_sample_weight(finish_position: float) -> float:
+    """
+    Return a training sample weight proportional to fantasy scoring relevance.
+
+    Higher weight → model focuses more on predicting this position accurately.
+    The tent function mirrors FANTASY_POINTS, so P10 gets max weight (25).
+    """
+    diff = abs(int(round(finish_position)) - 10)
+    return _FANTASY_SAMPLE_WEIGHTS.get(diff, _FANTASY_WEIGHT_DEFAULT)
+
+
+def _compute_combined_weights(
+    positions: np.ndarray,
+    years: np.ndarray | None,
+    use_era: bool,
+    use_fantasy: bool,
+) -> np.ndarray | None:
+    """
+    Compute combined sample weights as elementwise product of:
+      - era weights (if use_era=True)
+      - fantasy-score weights (if use_fantasy=True)
+
+    Returns None if both flags are False.
+    Normalises the output to mean=1.0 to keep learning rates stable.
+    """
+    w = np.ones(len(positions), dtype=float)
+    if use_era and years is not None:
+        w *= np.array([era_sample_weight(int(y)) for y in years])
+    if use_fantasy:
+        w *= np.array([fantasy_sample_weight(p) for p in positions])
+    if not use_era and not use_fantasy:
+        return None
+    # Normalise to mean = 1.0 so effective learning rate is unchanged
+    mean_w = w.mean()
+    if mean_w > 0:
+        w /= mean_w
+    return w
+
+
 def _model_feature_indices(model_name: str) -> list[int]:
     """Return column indices into FEATURE_COLS for this model's feature subset."""
     feats = MODEL_FEATURES.get(model_name, FEATURE_COLS)
@@ -779,6 +836,9 @@ def train_all(
     train_df: pd.DataFrame,
     force: bool = False,
     use_era_weights: bool = True,
+    use_fantasy_weights: bool = False,
+    use_time_decay: bool = False,
+    time_decay_half_life_years: float = 3.0,
 ) -> dict[str, Any]:
     """
     Fit all models on *train_df* and save to MODELS_DIR.
@@ -794,6 +854,16 @@ def train_all(
           V8 era 2010–2013 → 0.25,  turbo-hybrid 2014–2021 → 0.60,
           ground-effect 2022+ → 1.00.
         This down-weights pre-turbo data where positional dynamics differ.
+    use_fantasy_weights : bool
+        v10.04: If True, multiply sample weights by a P10-zone tent function:
+          weight ∝ fantasy_pts(|finish_position - 10|).
+        Focuses model learning on the P8–P12 scoring zone.
+    use_time_decay : bool
+        v10.07: If True, apply exponential time-decay so recent races have
+        higher weight. Half-life controlled by time_decay_half_life_years.
+    time_decay_half_life_years : float
+        v10.07: Half-life for exponential time decay (default 3.0 years).
+        Races this many years ago get weight 0.5.
 
     Returns dict {model_name: fitted_estimator}.
     """
@@ -801,14 +871,49 @@ def train_all(
     # Multi-class: predict full finish position (1–20), not binary is_p10
     y_clf  = train_df[TARGET_COL].values.astype(int)
 
-    # Era-stratified sample weights (v3.64).
-    # Regressors, classifiers: weights aligned to X rows.
-    if use_era_weights and "year" in train_df.columns:
-        sample_weights = np.array([era_sample_weight(y) for y in train_df["year"].values])
-        logger.info("  Era weights: V8(≤2013)=0.25  hybrid(2014-21)=0.60  GE(2022+)=1.00  "
-                    "mean=%.3f  [%d rows]", sample_weights.mean(), len(sample_weights))
-    else:
+    # ── Combined sample weights ────────────────────────────────────────────────
+    # Build a single weight vector combining era, fantasy-score, and time-decay
+    # weights multiplicatively, then normalise to mean=1.
+    years_arr  = train_df["year"].values if "year" in train_df.columns else None
+    rounds_arr = train_df["round"].values if "round" in train_df.columns else None
+
+    w = np.ones(len(train_df), dtype=float)
+    if use_era_weights and years_arr is not None:
+        era_w = np.array([era_sample_weight(int(y)) for y in years_arr])
+        w *= era_w
+    if use_fantasy_weights:
+        fant_w = np.array([fantasy_sample_weight(p) for p in y_reg])
+        w *= fant_w
+    if use_time_decay and years_arr is not None:
+        # Approximate race time as year + round/24
+        if rounds_arr is not None:
+            race_time = years_arr + rounds_arr / 24.0
+        else:
+            race_time = years_arr.astype(float)
+        current_time = float(train_df["year"].max()) + 1.0  # end of latest training year
+        years_ago = current_time - race_time
+        decay_w = np.exp(-np.log(2) * years_ago / time_decay_half_life_years)
+        w *= decay_w
+
+    if w.mean() > 0:
+        w /= w.mean()  # normalise to mean=1.0
+
+    # Only use weights if any flag is set
+    if not use_era_weights and not use_fantasy_weights and not use_time_decay:
         sample_weights = None
+    else:
+        sample_weights = w
+
+    if sample_weights is not None:
+        logger.info(
+            "  Sample weights: era=%s fantasy=%s time_decay=%s  "
+            "mean=%.3f  min=%.3f  max=%.3f  [%d rows]",
+            use_era_weights, use_fantasy_weights, use_time_decay,
+            sample_weights.mean(), sample_weights.min(), sample_weights.max(),
+            len(sample_weights),
+        )
+    else:
+        logger.info("  Sample weights: none")
 
     # v3.4/v5.3: pre-compute ranker training artefacts.
     # XGBRanker (rank:ndcg) and LGBMRanker (lambdarank) both require:
@@ -838,17 +943,30 @@ def train_all(
     group_sizes_train = train_sorted.groupby(
         ["year", "round"], sort=True
     ).size().values
-    # Per-group era weights (XGBRanker: one per race)
-    if use_era_weights and "year" in train_sorted.columns:
-        group_years = (
-            train_sorted.groupby(["year", "round"], sort=True)["year"]
-            .first()
-            .values
+    # Per-group and per-row weights for rankers.
+    # XGBRanker (rank:ndcg) needs one weight per query group (race).
+    # LGBMRanker (lambdarank) needs one weight per row.
+    # For fantasy weights on rankers: use the mean fantasy weight within each race
+    # as the group weight (since XGBRanker can't use per-row weights).
+    any_weight = use_era_weights or use_time_decay or use_fantasy_weights
+    if any_weight and "year" in train_sorted.columns:
+        # Realign row-level weights to the sort order of train_sorted.
+        # train_sorted = train_df.sort_values(["year","round"]).reset_index(drop=True)
+        # so we need the same stable sort permutation applied to sample_weights.
+        _sort_key = (
+            train_df["year"].values.astype(int) * 10000
+            + train_df["round"].values.astype(int)
         )
-        sample_weights_rank = np.array([era_sample_weight(y) for y in group_years])
-        # Per-row era weights (LGBMRanker: one per row)
-        sample_weights_rank_row = np.array(
-            [era_sample_weight(y) for y in train_sorted["year"].values]
+        _sort_perm = np.argsort(_sort_key, kind="stable")
+        _base_w = sample_weights if sample_weights is not None else np.ones(len(train_df))
+        _sw_sorted = _base_w[_sort_perm]
+        sample_weights_rank_row = _sw_sorted
+        # Per-group weight = mean of per-row weights in that group (for XGBRanker)
+        sample_weights_rank = (
+            train_sorted.assign(_w=_sw_sorted)
+            .groupby(["year", "round"], sort=True)["_w"]
+            .mean()
+            .values
         )
     else:
         sample_weights_rank = None
