@@ -97,3 +97,123 @@ def score_table(results: dict[str, dict]) -> pd.DataFrame:
     rows = [{"model": k, **v} for k, v in results.items()]
     df   = pd.DataFrame(rows).sort_values("avg_pts", ascending=False).reset_index(drop=True)
     return df
+
+
+# ── v10.05: Expected-score post-processing ────────────────────────────────────
+
+def _regressor_to_position_probs(
+    predicted_position: float,
+    sigma: float = 2.0,
+    n_positions: int = 20,
+) -> np.ndarray:
+    """
+    Convert a scalar predicted finish position to a probability distribution
+    over positions 1–20 using a Gaussian kernel.
+
+    Parameters
+    ----------
+    predicted_position : float
+        Raw regressor output (e.g. 9.7 means the model thinks P10 is likely).
+    sigma : float
+        Gaussian spread; smaller = more peaked around predicted position.
+    n_positions : int
+        Number of positions (default 20).
+
+    Returns
+    -------
+    probs : ndarray, shape (n_positions,)
+        P(finish == k) for k in 1..n_positions, normalised to sum to 1.
+    """
+    positions = np.arange(1, n_positions + 1, dtype=float)
+    logits = -0.5 * ((positions - predicted_position) / sigma) ** 2
+    probs = np.exp(logits - logits.max())   # numerically stable softmax
+    probs /= probs.sum()
+    return probs
+
+
+def pick_by_expected_fantasy_score(
+    model_scores: pd.Series,
+    scoring_vector: Sequence[float],
+    model_type: str = "regressor",
+    sigma: float = 2.0,
+    proba_matrix: np.ndarray | None = None,
+) -> str:
+    """
+    v10.05: Select the driver that maximises expected fantasy score.
+
+    For regressors: convert predicted position → Gaussian position distribution,
+    then compute EV = Σ P(finish=k) × scoring_vector[k-1].
+
+    For classifiers/rankers: apply softmax to scores to get position
+    probabilities, then compute EV the same way.
+
+    Parameters
+    ----------
+    model_scores : pd.Series
+        Raw model output indexed by driver_id.  For regressors, these are
+        predicted finish positions; for classifiers/rankers, they are raw
+        scores (higher = better P10 candidate).
+    scoring_vector : array-like, length 20
+        Fantasy points by finishing position (scoring_vector[0] = pts for P1).
+    model_type : str
+        'regressor' — use Gaussian kernel on predicted position.
+        'classifier' — model_scores are EV outputs already (pick idxmax).
+        'ranker'     — apply softmax to scores, map to position probabilities.
+    sigma : float
+        Gaussian spread for regressor conversion (default 2.0).
+    proba_matrix : ndarray, shape (n_drivers, 20) or None
+        If provided (e.g. from predict_proba), use directly instead of
+        converting model_scores. Expected proba_matrix[i, k] = P(driver i
+        finishes in position k+1).
+
+    Returns
+    -------
+    pick : str
+        Driver ID with highest expected fantasy score.
+    """
+    sv = np.asarray(scoring_vector, dtype=float)
+    drivers = list(model_scores.index)
+    scores_arr = model_scores.values.astype(float)
+    n_drivers = len(drivers)
+
+    if proba_matrix is not None:
+        # Direct probability matrix provided
+        ev = proba_matrix @ sv
+    elif model_type == "regressor":
+        # Convert each predicted position to a Gaussian distribution
+        ev = np.array([
+            np.dot(
+                _regressor_to_position_probs(scores_arr[i], sigma=sigma, n_positions=len(sv)),
+                sv,
+            )
+            for i in range(n_drivers)
+        ])
+    else:
+        # Ranker/classifier: softmax scores → treat as P(rank ≈ position)
+        # Negative scores because lower predicted rank = higher finish
+        if model_type == "ranker":
+            raw = -scores_arr   # invert: higher ranker score → lower position
+        else:
+            raw = scores_arr
+        # Temperature-scaled softmax
+        raw = raw - raw.max()
+        prob_best = np.exp(raw) / np.exp(raw).sum()
+        # Map "probability of being best" to a position distribution via rank model:
+        # P(finish=k | prob_best=p) ~ Gaussian centred at rank(p) × n_positions
+        # Simpler: use prob_best directly for EV since scoring peaks at best pick
+        ev = prob_best * sv[9]  # approximate: score proportional to P(P10)
+        # More principled: treat scores as a proxy for position proximity
+        ev = np.array([
+            np.dot(
+                _regressor_to_position_probs(
+                    float(np.searchsorted(-scores_arr, -scores_arr[i]) + 1),
+                    sigma=sigma,
+                    n_positions=len(sv),
+                ),
+                sv,
+            )
+            for i in range(n_drivers)
+        ])
+
+    best_idx = int(np.argmax(ev))
+    return drivers[best_idx]
