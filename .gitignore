@@ -14,9 +14,8 @@ venv/
 *.ipynb_checkpoints
 .DS_Store
 data/raw/
-# Derived artifacts (regenerable in CI; restored via cache when available)
-data/processed/
-models/
+# data/processed/ and models/ are tracked in git so workflows never start cold.
+# The refresh-models workflow retrains and commits them monthly.
 results/eval_2025_plots/
 *.zip
 *.tar.gz
