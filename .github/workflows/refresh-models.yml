@@ -1,0 +1,138 @@
+name: Refresh model artifacts
+
+# Rebuilds the processed dataset and all trained models from the bundled raw
+# cache, then commits the artifacts to the repo so qualifying workflows never
+# start cold.  Runs automatically on the 1st of each month and can be triggered
+# manually to bootstrap after a fresh clone or cache wipe.
+
+on:
+  schedule:
+    - cron: "0 10 1 * *"
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: "Force rebuild even if artifacts are already present"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history so the auto-commit action can push back cleanly.
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyarrow
+
+      - name: Check whether rebuild is needed
+        id: need_rebuild
+        run: |
+          PARQUET_EXISTS=false
+          MODELS_EXIST=false
+
+          if ls data/processed/*.parquet 2>/dev/null | head -1 | grep -q .; then
+            PARQUET_EXISTS=true
+          fi
+          if ls models/*.joblib 2>/dev/null | head -1 | grep -q .; then
+            MODELS_EXIST=true
+          fi
+
+          FORCE="${{ inputs.force_rebuild }}"
+          if [ "$PARQUET_EXISTS" = "true" ] && [ "$MODELS_EXIST" = "true" ] && [ "$FORCE" != "true" ]; then
+            echo "rebuild=false" >> "$GITHUB_OUTPUT"
+            echo "Artifacts already present and force_rebuild is false — skipping rebuild."
+          else
+            echo "rebuild=true" >> "$GITHUB_OUTPUT"
+            echo "Rebuild needed (parquet=$PARQUET_EXISTS models=$MODELS_EXIST force=$FORCE)."
+          fi
+
+      - name: Extract bundled raw cache
+        if: steps.need_rebuild.outputs.rebuild == 'true'
+        run: |
+          ZIP="f1_data_cache_2026-03-09.zip"
+          if [ ! -f "$ZIP" ]; then
+            echo "ERROR: $ZIP not found in repo root." >&2
+            exit 1
+          fi
+          mkdir -p data/raw
+          COUNT_BEFORE=$(ls data/raw/*.json 2>/dev/null | wc -l)
+          if [ "$COUNT_BEFORE" -lt 500 ]; then
+            echo "Extracting $ZIP → data/raw/ ..."
+            unzip -q "$ZIP" -d data/raw/
+          fi
+          COUNT_AFTER=$(ls data/raw/*.json 2>/dev/null | wc -l)
+          echo "Raw JSON files available: $COUNT_AFTER"
+          if [ "$COUNT_AFTER" -lt 500 ]; then
+            echo "ERROR: Insufficient raw cache files ($COUNT_AFTER < 500)." >&2
+            exit 1
+          fi
+
+      - name: Build processed dataset
+        if: steps.need_rebuild.outputs.rebuild == 'true'
+        run: |
+          mkdir -p data/processed
+          F1_FETCH_CACHE_ONLY=1 python scripts/02_build_dataset.py --years 2010 2025
+          echo "Parquet files in data/processed/:"
+          ls -lh data/processed/
+
+      - name: Train models
+        if: steps.need_rebuild.outputs.rebuild == 'true'
+        run: |
+          mkdir -p models
+          python scripts/03_train_models.py
+          echo "Model files in models/:"
+          ls -lh models/
+
+      - name: Commit artifacts to repo
+        if: steps.need_rebuild.outputs.rebuild == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: refresh model artifacts and processed data (monthly rebuild) [skip ci]"
+          file_pattern: |
+            data/processed/*.parquet
+            models/*.joblib
+
+      - name: Save processed-data cache
+        if: steps.need_rebuild.outputs.rebuild == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: data/processed
+          key: processed-2026-${{ hashFiles('config.py', 'src/feature_engineering.py', 'scripts/02_build_dataset.py', 'requirements.txt') }}
+
+      - name: Save raw-data cache
+        if: steps.need_rebuild.outputs.rebuild == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw
+          key: rawcache-2026-${{ hashFiles('f1_data_cache_2026-03-09.zip') }}
+
+      - name: Save model-artifact cache
+        if: steps.need_rebuild.outputs.rebuild == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: models
+          key: models-2026-${{ hashFiles('config.py', 'src/models.py', 'scripts/03_train_models.py', 'requirements.txt') }}
+
+      - name: Skip notice
+        if: steps.need_rebuild.outputs.rebuild != 'true'
+        run: echo "Artifacts already up to date; nothing to do."

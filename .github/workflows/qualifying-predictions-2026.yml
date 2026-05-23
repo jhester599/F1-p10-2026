@@ -162,7 +162,7 @@ concurrency:
 jobs:
   run-automation:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -247,6 +247,8 @@ jobs:
         with:
           path: data/processed
           key: processed-2026-${{ hashFiles('config.py', 'src/feature_engineering.py', 'scripts/02_build_dataset.py', 'requirements.txt') }}
+          restore-keys: |
+            processed-2026-
 
       - name: Restore raw-cache extraction
         if: steps.preflight.outputs.run_full == 'true'
@@ -255,6 +257,8 @@ jobs:
         with:
           path: data/raw
           key: rawcache-2026-${{ hashFiles('f1_data_cache_2026-03-09.zip') }}
+          restore-keys: |
+            rawcache-2026-
 
       - name: Restore model-artifact cache
         if: steps.preflight.outputs.run_full == 'true'
@@ -263,6 +267,8 @@ jobs:
         with:
           path: models
           key: models-2026-${{ hashFiles('config.py', 'src/models.py', 'scripts/03_train_models.py', 'requirements.txt') }}
+          restore-keys: |
+            models-2026-
 
       - name: Install dependencies
         if: steps.preflight.outputs.run_full == 'true'
@@ -328,6 +334,15 @@ jobs:
         with:
           path: models
           key: ${{ steps.cache_models_restore.outputs.cache-primary-key }}
+
+      - name: Commit rebuilt model artifacts
+        if: steps.preflight.outputs.run_full == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: persist rebuilt model artifacts and processed data [skip ci]"
+          file_pattern: |
+            data/processed/*.parquet
+            models/*.joblib
 
       - name: Commit documentation updates
         if: steps.run_prediction.outputs.new_prediction == 'true'
