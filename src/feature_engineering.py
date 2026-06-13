@@ -33,7 +33,8 @@ from config import (
     STREET_CIRCUITS,
     TARGET_COL,
 )
-from src.data_fetch import F1Fetcher, parse_laptime, _status_is_finish
+from src.data_fetch import F1Fetcher, _status_is_finish
+from src.qualifying_features import parse_qualifying_session
 
 logger = logging.getLogger(__name__)
 
@@ -111,22 +112,10 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
             logger.debug("%d R%02d  %s", year, rnd, race_name)
 
             # --- qualifying ---
-            qual_map: dict[str, dict] = {}
-            for qr in fetcher.qualifying(year, rnd):
-                did  = qr["Driver"]["driverId"]
-                q1   = parse_laptime(qr.get("Q1"))
-                q2   = parse_laptime(qr.get("Q2"))
-                q3   = parse_laptime(qr.get("Q3"))
-                best = min(t for t in [q1, q2, q3] if t is not None) if any(
-                    t is not None for t in [q1, q2, q3]
-                ) else None
-                qual_map[did] = {
-                    "grid_position": _safe_float(qr.get("position"), np.nan),
-                    "best_q_time":   best,
-                    "q1_time":       q1,
-                    "q2_time":       q2,
-                    "q3_time":       q3,
-                }
+            qualifying = parse_qualifying_session(fetcher.qualifying(year, rnd))
+            qual_map = qualifying.by_driver
+            pole_time = qualifying.pole_time
+            q3_cutoff_time = qualifying.q3_cutoff_time
 
             # --- FP2 position (fallback: FP1, then qualifying position) ---
             fp2_map: dict[str, int] = {}
@@ -142,19 +131,6 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     did = pr["Driver"]["driverId"]
                     fp2_map[did] = _safe_pos(pr.get("position"), 20)
 
-            # Pole time = fastest Q3 time among all drivers
-            q3_times  = [v["best_q_time"] for v in qual_map.values() if v["best_q_time"] is not None]
-            pole_time = min(q3_times) if q3_times else None
-
-            # Q2-to-Q3 cutoff: slowest Q2 time among drivers who made Q3.
-            # A driver needed a Q2 time faster (lower) than this value to advance.
-            # Any Q2-eliminated driver has q2_time > q3_cutoff_time.
-            q3_qualifiers_q2 = [
-                v["q2_time"] for v in qual_map.values()
-                if v["q3_time"] is not None and v["q2_time"] is not None
-            ]
-            q3_cutoff_time = max(q3_qualifiers_q2) if q3_qualifiers_q2 else None
-
             # --- race results ---
             for rr in fetcher.results(year, rnd):
                 did  = rr["Driver"]["driverId"]
@@ -164,21 +140,18 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                 stat = rr.get("status", "Unknown")
                 is_dnf = not _status_is_finish(stat)
 
-                q_info = qual_map.get(did, {})
-                grid   = q_info.get("grid_position", np.nan)
+                q_info = qual_map.get(did)
+                grid = q_info.grid_position if q_info is not None else np.nan
                 if np.isnan(grid):
                     grid = _safe_float(rr.get("grid"), np.nan)
 
-                best_q = q_info.get("best_q_time")
-                if best_q is not None and pole_time is not None and pole_time > 0:
-                    q_gap_pct = (best_q - pole_time) / pole_time * 100.0
-                else:
-                    q_gap_pct = np.nan
+                best_q = q_info.best_q_time if q_info is not None else None
+                q_gap_pct = qualifying.gap_pct_by_driver.get(did, np.nan)
 
                 # fp2_position: FP2 → FP1 → qualifying position fallback
                 fp2_pos = fp2_map.get(did)
                 if fp2_pos is None:
-                    q_grid = q_info.get("grid_position", np.nan)
+                    q_grid = q_info.grid_position if q_info is not None else np.nan
                     fp2_pos = int(q_grid) if not (isinstance(q_grid, float) and np.isnan(q_grid)) else 20
 
                 rows.append({
@@ -197,9 +170,9 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
                     "pole_time":       pole_time,
                     "q_gap_pct":       q_gap_pct,
                     "fp2_position":    fp2_pos,
-                    "q1_time":         q_info.get("q1_time"),
-                    "q2_time":         q_info.get("q2_time"),
-                    "q3_time":         q_info.get("q3_time"),
+                    "q1_time":         q_info.q1_time if q_info is not None else None,
+                    "q2_time":         q_info.q2_time if q_info is not None else None,
+                    "q3_time":         q_info.q3_time if q_info is not None else None,
                     "q3_cutoff_time":  q3_cutoff_time,
                 })
 

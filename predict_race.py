@@ -50,8 +50,9 @@ from config import (
     TARGET_COL,
     TRAIN_YEARS,
 )
-from src.data_fetch import F1Fetcher, _status_is_finish, parse_laptime
+from src.data_fetch import F1Fetcher, _status_is_finish
 from src.models import load_all, predict_race
+from src.qualifying_features import parse_qualifying_session
 from src.scoring import fantasy_pts
 
 logging.basicConfig(
@@ -106,31 +107,20 @@ def build_live_features(
     logger.info("Race: %s  (circuit: %s, street: %s)", race_name, circuit_id, bool(is_street))
 
     # ── parse qualifying ──────────────────────────────────────────────────────
-    qual_info: dict[str, dict] = {}
-    for qr in qual_rows:
-        did  = qr["Driver"]["driverId"]
-        cid  = qr["Constructor"]["constructorId"]
-        grid = float(qr.get("position", MISSING_POSITION))
-        q1   = parse_laptime(qr.get("Q1"))
-        q2   = parse_laptime(qr.get("Q2"))
-        q3   = parse_laptime(qr.get("Q3"))
-        best = min(t for t in [q1, q2, q3] if t is not None) if any(
-            t is not None for t in [q1, q2, q3]
-        ) else None
-        qual_info[did] = {
-            "grid": grid, "best_q": best, "cid": cid,
-            "q1_time": q1, "q2_time": q2, "q3_time": q3,
+    qualifying = parse_qualifying_session(qual_rows)
+    pole_time = qualifying.pole_time
+    q3_cutoff_time = qualifying.q3_cutoff_time
+    qual_info: dict[str, dict] = {
+        did: {
+            "grid": info.grid_position if not np.isnan(info.grid_position) else float(MISSING_POSITION),
+            "best_q": info.best_q_time,
+            "cid": info.constructor_id,
+            "q1_time": info.q1_time,
+            "q2_time": info.q2_time,
+            "q3_time": info.q3_time,
         }
-
-    q3_times  = [v["best_q"] for v in qual_info.values() if v["best_q"] is not None]
-    pole_time = min(q3_times) if q3_times else None
-
-    # Q2-to-Q3 cutoff: slowest Q2 time among drivers who made Q3 (v5.2)
-    q3_qualifiers_q2 = [
-        v["q2_time"] for v in qual_info.values()
-        if v["q3_time"] is not None and v["q2_time"] is not None
-    ]
-    q3_cutoff_time = max(q3_qualifiers_q2) if q3_qualifiers_q2 else None
+        for did, info in qualifying.by_driver.items()
+    }
 
     # ── FP2 position (v3.1: race pace proxy, fallback: FP1 → qualifying pos) ──
     from src.feature_engineering import _safe_pos as _fe_safe_pos
@@ -191,11 +181,7 @@ def build_live_features(
     # ── grid and gap maps for teammate/density lookups ────────────────────────
     grid_map = {did: info["grid"]  for did, info in qual_info.items()}
     con_map  = {did: info["cid"]   for did, info in qual_info.items()}
-    gap_map  = {
-        did: (info["best_q"] - pole_time) / pole_time * 100.0
-        if info["best_q"] is not None and pole_time else None
-        for did, info in qual_info.items()
-    }
+    gap_map = qualifying.gap_pct_by_driver
 
     # ── circuit volatility features (v3.3) — computed once per race ──────────
     circ_past = historical_df[
