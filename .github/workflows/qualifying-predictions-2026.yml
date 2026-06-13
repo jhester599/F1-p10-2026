@@ -195,8 +195,8 @@ jobs:
           year = 2026
           schedule_url = f"https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json"
           now = datetime.now(timezone.utc)
-          offset_minutes = 60
-          window_minutes = 90
+          offset_minutes = 90
+          window_minutes = 150
 
           with urlopen(schedule_url, timeout=30) as resp:
               payload = json.loads(resp.read().decode("utf-8"))
@@ -284,8 +284,8 @@ jobs:
             python scripts/65_run_qualifying_automation.py \
               --year 2026 \
               --require-schedule-window \
-              --offset-minutes 60 \
-              --window-minutes 90
+              --offset-minutes 90 \
+              --window-minutes 150
           else
             CMD="python scripts/65_run_qualifying_automation.py --year 2026"
             if [ -n "${{ inputs.round_override }}" ]; then
@@ -343,6 +343,14 @@ jobs:
           file_pattern: |
             data/processed/*.parquet
             models/*.joblib
+
+      - name: Stage prediction documentation
+        if: steps.run_prediction.outputs.new_prediction == 'true'
+        run: |
+          git add -- \
+            "${{ steps.run_prediction.outputs.prediction_csv }}" \
+            "${{ steps.run_prediction.outputs.report_path }}" \
+            "${{ steps.run_prediction.outputs.season_log }}"
 
       - name: Commit documentation updates
         if: steps.run_prediction.outputs.new_prediction == 'true'
