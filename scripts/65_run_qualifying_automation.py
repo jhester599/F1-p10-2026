@@ -366,6 +366,15 @@ def main() -> None:
     if out_csv.exists() and args.force_rerun:
         logger.info("Force rerun enabled: overwriting existing output for R%02d.", target_round)
 
+    if not fetcher.qualifying(year, target_round):
+        msg = f"No qualifying results found yet for {year} R{target_round:02d} ({race_name})."
+        logger.info(msg)
+        set_output("new_prediction", "false")
+        set_output("skip_reason", msg)
+        set_output("round", str(target_round))
+        set_output("race_name", race_name)
+        return
+
     ensure_processed_data()
     ensure_models()
 
