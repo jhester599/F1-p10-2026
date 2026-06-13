@@ -13,7 +13,9 @@ on:
         default: false
         type: boolean
   schedule:
-    # 2026-specific explicit schedule windows (qualifying +60/+75/+90 minutes, UTC).
+    # 2026-specific cron triggers (qualifying +60/+75/+90 minutes, UTC).
+    # The Python gate below allows execution from qualifying +90 through +240
+    # to tolerate delayed Ergast/FastF1 qualifying publication.
     # Note: GitHub cron has no year field; these entries will still trigger in future years,
     # but the runner script gates execution against the 2026 published schedule window.
     # R01 Australian +60m
@@ -217,7 +219,7 @@ jobs:
 
           if in_window_round is None:
               set_output("run_full", "false")
-              set_output("skip_reason", "Not in qualifying+60..+90 window.")
+              set_output("skip_reason", "Not in qualifying+90..+240 window.")
               raise SystemExit(0)
 
           out_csv = Path(f"results/prediction_{year}_R{in_window_round:02d}.csv")

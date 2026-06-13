@@ -69,6 +69,9 @@ Canonical planning and audit documents:
 Historical plans/reports are preserved for context. The `v6x/` tree is treated as
 archive-only in active validation and development.
 
+Artifact ownership, archive boundaries, and dependency policy are documented in
+`docs/ARTIFACT_AND_ARCHIVE_POLICY.md`.
+
 Scorecard harness:
 
 ```bash
@@ -131,14 +134,15 @@ Automated post-qualifying predictions are implemented in:
 
 ### Scheduled behavior
 
-- Workflow now uses explicit 2026 race-date cron entries (UTC), scheduled at:
+- Workflow uses explicit 2026 race-date cron probe entries (UTC), scheduled at:
   - `qualifying_time + 60 minutes`
   - `qualifying_time + 75 minutes`
   - `qualifying_time + 90 minutes`
-- The runner still executes prediction only inside the published qualifying window:
-  - `qualifying_time + 60 minutes` to `+90 minutes`
+- The runner executes prediction only inside the published qualifying window:
+  - `qualifying_time + 90 minutes` to `qualifying_time + 240 minutes` (`+90..+240`)
+  - This wider gate allows delayed qualifying publication while keeping the workflow round-specific.
 - A workflow preflight gate checks whether the round output CSV already exists.
-  - If `+60` run already succeeded, `+75`/`+90` runs skip before dependency install/training.
+  - If an earlier run already succeeded, later cron probes skip before dependency install/training.
 - Published schedule source (f1calendar data backend):
   - `https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json`
 - Reference schedule export:
@@ -248,7 +252,7 @@ F1-p10-2026/
 │
 ├── data/
 │   ├── raw/                    # cached JSON from Jolpica API + FastF1
-│   ├── processed/              # feature parquet files (gitignored; CI cacheable)
+│   ├── processed/              # committed feature parquet snapshots; CI cacheable
 │   └── aux_data/               # circuit/driver lookup tables (Windows-safe name)
 │
 ├── models/                     # saved .joblib files (gitignored; CI cacheable)
@@ -553,8 +557,9 @@ Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`
 
 **Auxiliary lookup tables** (`data/aux_data/`) — rebuild with `python scripts/07_build_aux_features.py`.
 
-**Optional CI dependency lock snapshot** (`requirements-ci.txt`) is kept for reference,
-but workflow installs currently use `requirements.txt` + `pyarrow` for training compatibility.
+**CI dependency lock snapshot** (`requirements-ci.txt`) is used by repo sanity checks.
+Race-day prediction and model refresh workflows install from `requirements.txt` plus
+explicit runtime extras for training/model-cache compatibility.
 
 ---
 

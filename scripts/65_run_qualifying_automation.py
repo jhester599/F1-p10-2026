@@ -49,6 +49,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+DEFAULT_OFFSET_MINUTES = 90
+DEFAULT_WINDOW_MINUTES = 150
+
+
 def set_output(name: str, value: str) -> None:
     out_path = os.getenv("GITHUB_OUTPUT")
     if not out_path:
@@ -122,6 +126,10 @@ def parse_utc_iso(ts: str) -> datetime:
     return datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(timezone.utc)
 
 
+def qualifying_window_label(offset_minutes: int, window_minutes: int) -> str:
+    return f"+{offset_minutes}..+{offset_minutes + window_minutes}"
+
+
 def round_from_published_qualifying_schedule(
     *,
     year: int,
@@ -151,9 +159,10 @@ def round_from_published_qualifying_schedule(
             candidates.append((int(race["round"]), qual_dt, race.get("name", "Unknown")))
 
     if not candidates:
+        label = qualifying_window_label(offset_minutes, window_minutes)
         return None, (
-            f"No qualifying event is currently in the +{offset_minutes} minute window "
-            f"(window length {window_minutes} minutes)."
+            f"No qualifying event is currently in the qualifying{label} window "
+            f"(offset {offset_minutes} minutes, length {window_minutes} minutes)."
         )
 
     candidates.sort(key=lambda x: x[1], reverse=True)
@@ -240,28 +249,28 @@ def render_report(
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     section_title = f"Round {rnd:02d} - {race_name}"
     model_pick_rows = "\n".join(pick_rows)
-    report_md = textwrap.dedent(
-        f"""\
-        ## {section_title} ({race_date})
-
-        Generated: {generated_at}
-
-        ### Consensus
-        {vote_lines}
-
-        Recommended pick: **{consensus_driver}**
-
-        ### Model Picks
-        | Model | Pick | Grid | Model score |
-        |---|---|---|---|
-        {model_pick_rows}
-
-        ### Top Ensemble Candidates
-        | Driver | Constructor | Grid | Ensemble score |
-        |---|---|---|---|
-        {ens_lines}
-        """
-    ).strip()
+    report_md = "\n".join(
+        [
+            f"## {section_title} ({race_date})",
+            "",
+            f"Generated: {generated_at}",
+            "",
+            "### Consensus",
+            vote_lines,
+            "",
+            f"Recommended pick: **{consensus_driver}**",
+            "",
+            "### Model Picks",
+            "| Model | Pick | Grid | Model score |",
+            "|---|---|---|---|",
+            model_pick_rows,
+            "",
+            "### Top Ensemble Candidates",
+            "| Driver | Constructor | Grid | Ensemble score |",
+            "|---|---|---|---|",
+            ens_lines,
+        ]
+    )
     return section_title, report_md
 
 
@@ -302,13 +311,13 @@ def main() -> None:
     parser.add_argument(
         "--offset-minutes",
         type=int,
-        default=60,
+        default=DEFAULT_OFFSET_MINUTES,
         help="Run this many minutes after qualifying start time.",
     )
     parser.add_argument(
         "--window-minutes",
         type=int,
-        default=30,
+        default=DEFAULT_WINDOW_MINUTES,
         help="Allowed run window after offset to tolerate cron jitter.",
     )
     parser.add_argument(

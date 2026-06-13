@@ -10,12 +10,12 @@ The workflow runs on a schedule, aligns execution to published qualifying times,
 ## Timing Logic
 
 - Source schedule template: `https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json` (f1calendar data source)
-- Scheduled workflow uses explicit 2026 cron entries at qualifying `+60`, `+75`, and `+90` minutes (UTC) for each race.
+- Scheduled workflow uses explicit 2026 cron probe entries at qualifying `+60`, `+75`, and `+90` minutes (UTC) for each race.
 - On scheduled runs, predictions execute only when current UTC time is inside:
-  - `qualifying_time + 60 minutes` to `qualifying_time + 90 minutes`
-- This keeps an intended "1 hour after qualifying" run with jitter tolerance while reducing non-race polling.
+  - `qualifying_time + 90 minutes` to `qualifying_time + 240 minutes` (`+90..+240`)
+- This keeps the intended post-qualifying run round-specific while giving upstream qualifying data up to 4 hours after session start to publish.
 - A preflight gate runs before Python dependency setup:
-  - If the round CSV already exists (for example, `+60` run already completed), the `+75` and `+90` jobs skip gracefully.
+  - If the round CSV already exists, later scheduled probes skip gracefully.
 - Note: GitHub cron has no year field. The workflow is effectively 2026-specific because the runner script gates execution against the 2026 published schedule window.
 - Reference schedule export: `docs/2026_qualifying_workflow_windows.csv`
 
@@ -27,8 +27,9 @@ The workflow runs on a schedule, aligns execution to published qualifying times,
 
 ## Dependency Install Strategy
 
-- Workflow currently installs from `requirements.txt` + `pyarrow` for compatibility with training/calibration paths.
-- `requirements-ci.txt` is kept in-repo as an optional lock snapshot, but is not the default installer in workflow.
+- Repo sanity checks install from pinned `requirements-ci.txt`.
+- Race-day prediction and model refresh workflows install from `requirements.txt` + explicit runtime extras for compatibility with training/calibration paths and cached model artifacts.
+- Artifact ownership and cache policy are documented in `docs/ARTIFACT_AND_ARCHIVE_POLICY.md`.
 
 ## Required GitHub Secrets
 

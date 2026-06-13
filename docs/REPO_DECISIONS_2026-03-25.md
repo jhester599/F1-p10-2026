@@ -15,24 +15,26 @@ This document records structural decisions made for CI reliability, Windows comp
 - Code paths updated to read/write auxiliary tables from `data/aux_data/`.
 - Documentation updated to reference `data/aux_data/`.
 
-## 2) Keep `models/` and `data/processed/` ignored
+## 2) Keep `models/` cached and `data/processed/` committed
 
 ### Decision
-- Continue to ignore `models/` and `data/processed/` in git.
+- Continue to ignore `models/` in git and restore/save it through GitHub Actions cache.
+- Keep small `data/processed/` feature parquet snapshots committed while also allowing workflow cache refreshes.
 
 ### Why
-- Both are derived artifacts, often large and environment-sensitive.
-- Committing model binaries/parquets increases repo bloat and merge churn.
-- Rebuilding or restoring from cache is more maintainable.
+- Model binaries are derived, often large, and environment-sensitive.
+- Committing model binaries increases repo bloat and merge churn.
+- Committed processed snapshots let clean CI validate important paths without rebuilding every raw API cache.
 
 ### Impact
-- `.gitignore` now includes rationale comments.
-- CI workflow restores/saves both directories via cache for speed.
+- `.gitignore` now protects `models/`, raw API caches, and large compressed downloads.
+- CI workflow restores/saves processed data and model directories via cache for speed.
+- Clean runners can validate against committed processed snapshots even when model artifacts are absent.
 
 ## 3) Add pinned CI dependencies (`requirements-ci.txt`)
 
 ### Decision
-- Keep `requirements-ci.txt` in-repo as an optional lock snapshot, but do not use it as the default workflow installer.
+- Keep `requirements-ci.txt` in-repo as the pinned repo-sanity verification snapshot, but do not use it as the default race-day prediction installer.
 
 ### Why
 - Current training/calibration paths are most compatible with:
@@ -41,8 +43,8 @@ This document records structural decisions made for CI reliability, Windows comp
 - Keeping the lock snapshot is useful for controlled reproduction and debugging.
 
 ### Impact
-- GitHub Actions workflow installs from `requirements.txt` + `pyarrow`.
-- `requirements-ci.txt` remains available for optional pinned runs.
+- Repo sanity workflow installs from `requirements-ci.txt`.
+- Race-day prediction/model refresh workflows install from `requirements.txt` + explicit runtime extras for training and cached-model compatibility.
 
 ## 4) Qualifying schedule alignment
 
@@ -55,9 +57,9 @@ This document records structural decisions made for CI reliability, Windows comp
 - Reduces unnecessary scheduled execution compared with broad weekend polling.
 
 ### Impact
-- Workflow defines explicit 2026 cron entries for `qualifying +60/+75/+90` minutes.
-- Script still enforces run window guard (`+60m` to `+90m`) using published schedule data.
-- Preflight gate skips full run if round output already exists (so `+75/+90` abort gracefully after a successful `+60` run).
+- Workflow defines explicit 2026 cron probe entries for `qualifying +60/+75/+90` minutes.
+- Script still enforces run window guard (`+90m` to `+240m`, or `+90..+240`) using published schedule data.
+- Preflight gate skips full run if round output already exists, so later cron probes abort gracefully after a successful prediction.
 
 ## 5) Treat `v6x/` as archive-only
 

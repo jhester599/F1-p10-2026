@@ -76,6 +76,19 @@ def evaluate_predictions(
     close  = (pred_df[pred_col].apply(lambda x: abs(x - 10) <= 2)).sum()
     n      = len(pred_df)
 
+    if n == 0:
+        return {
+            "n_races":       0,
+            "total_pts":     0,
+            "avg_pts":       0.0,
+            "exact_p10":     0,
+            "exact_pct":     0.0,
+            "within_2_pos":  0,
+            "within_2_pct":  0.0,
+            "max_pts":       0,
+            "min_pts":       0,
+        }
+
     return {
         "n_races":       n,
         "total_pts":     int(scores.sum()),
