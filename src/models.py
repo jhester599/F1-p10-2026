@@ -141,8 +141,42 @@ def _compute_combined_weights(
 
 def _model_feature_indices(model_name: str) -> list[int]:
     """Return column indices into FEATURE_COLS for this model's feature subset."""
-    feats = MODEL_FEATURES.get(model_name, FEATURE_COLS)
+    feats = _model_features(model_name)
     return [FEATURE_COLS.index(f) for f in feats]
+
+
+def _model_features(model_name: str) -> list[str]:
+    """Return the configured feature list for a model, or the full schema."""
+    return MODEL_FEATURES.get(model_name, FEATURE_COLS)
+
+
+def _feature_matrix_for_model(df: pd.DataFrame, model_name: str) -> np.ndarray:
+    """Build a float feature matrix for one model's configured feature subset."""
+    feats = _model_features(model_name)
+    missing = [col for col in feats if col not in df.columns]
+    if missing:
+        raise KeyError(
+            "Missing required model feature columns for "
+            f"{model_name}: {', '.join(missing)}"
+        )
+    return df[feats].values.astype(float)
+
+
+def _prepare_race_features_for_prediction(race_features: pd.DataFrame) -> pd.DataFrame:
+    """Backfill missing prediction-time feature columns with neutral defaults."""
+    missing_feature_cols = [c for c in FEATURE_COLS if c not in race_features.columns]
+    if not missing_feature_cols:
+        return race_features
+
+    logger.warning(
+        "Race features missing %d model columns; filling with 0.0 defaults: %s",
+        len(missing_feature_cols),
+        ", ".join(missing_feature_cols),
+    )
+    prepared = race_features.copy()
+    for col in missing_feature_cols:
+        prepared[col] = 0.0
+    return prepared
 
 
 def _prepare_inference_input(estimator: Any, X_m: np.ndarray) -> Any:
@@ -989,11 +1023,11 @@ def train_all(
         is_ranker = name.endswith("_ranker")
 
         # v9.0: build model-specific feature matrix (subset of FEATURE_COLS)
-        model_feats = MODEL_FEATURES.get(name, FEATURE_COLS)
+        model_feats = _model_features(name)
         n_feats = len(model_feats)
 
         if is_ranker:
-            X_rank_m = train_sorted[model_feats].values.astype(float)
+            X_rank_m = _feature_matrix_for_model(train_sorted, name)
             if name == "lgbm_ranker":
                 # LGBMRanker (lambdarank): group sizes + per-row era weights.
                 logger.info("  %-14s → training (lambdarank, era_weights=%s, n_features=%d) …",
@@ -1011,7 +1045,7 @@ def train_all(
                     est.fit(X_rank_m, y_rank, qid=qid_train,
                             sample_weight=sample_weights_rank)
         else:
-            X_m = train_df[model_feats].values.astype(float)
+            X_m = _feature_matrix_for_model(train_df, name)
             if is_clf:
                 # XGBoost multi:softprob requires 0-indexed classes (0–19);
                 # RandomForest handles 1-indexed classes (1–20) natively.
@@ -1136,18 +1170,7 @@ def predict_race(
     fitted_models : dict
         Output of train_all() or load_all().
     """
-    # Keep prediction robust when race feature generation lags behind
-    # the training schema: backfill any missing model features with 0.0.
-    missing_feature_cols = [c for c in FEATURE_COLS if c not in race_features.columns]
-    if missing_feature_cols:
-        logger.warning(
-            "Race features missing %d model columns; filling with 0.0 defaults: %s",
-            len(missing_feature_cols),
-            ", ".join(missing_feature_cols),
-        )
-        race_features = race_features.copy()
-        for col in missing_feature_cols:
-            race_features[col] = 0.0
+    race_features = _prepare_race_features_for_prediction(race_features)
 
     # v9.0: build the full feature matrix (all FEATURE_COLS) once.
     # WeightedEnsemble / StackingEnsemble receive X_full and slice internally.
@@ -1168,8 +1191,7 @@ def predict_race(
             pick_driver = scores.idxmax()
         elif is_clf:
             # v9.0: slice to model-specific features
-            feats = MODEL_FEATURES.get(name, FEATURE_COLS)
-            X_m   = race_features[feats].values.astype(float)
+            X_m = _feature_matrix_for_model(race_features, name)
             X_pred = _prepare_inference_input(est, X_m)
             if hasattr(est, "predict_proba"):
                 proba   = est.predict_proba(X_pred)
@@ -1187,8 +1209,7 @@ def predict_race(
             pick_driver = scores.idxmax()
         else:
             # v9.0: slice to model-specific features
-            feats  = MODEL_FEATURES.get(name, FEATURE_COLS)
-            X_m    = race_features[feats].values.astype(float)
+            X_m = _feature_matrix_for_model(race_features, name)
             X_pred = _prepare_inference_input(est, X_m)
             scores = pd.Series(est.predict(X_pred), index=race_features["driver_id"].values)
             pick_driver = _pick_p10(name, scores)
