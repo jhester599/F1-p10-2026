@@ -4,7 +4,7 @@ This repo keeps active source code, small reproducibility snapshots, and histori
 
 ## Active Source
 
-Active code lives in `config.py`, `predict_race.py`, `run_pipeline.py`, `src/`, `scripts/65_run_qualifying_automation.py`, `scripts/90_*` through `scripts/94_*`, `.github/workflows/`, and `tests/`.
+Active code lives in `config.py`, `predict_race.py`, `run_pipeline.py`, `src/`, `scripts/65_run_qualifying_automation.py`, `scripts/90_*` through `scripts/95_*`, `.github/workflows/`, and `tests/`.
 
 Changes to active code should include focused tests under `tests/` when behavior changes.
 
@@ -13,6 +13,7 @@ Changes to active code should include focused tests under `tests/` when behavior
 - `data/processed/` keeps small feature parquet snapshots that let clean CI validate important paths without rebuilding every historical API response.
 - `results/prediction_2026_RXX.csv`, `results/prediction_reports/`, and `results/automated_predictions_2026.md` are committed race-day outputs.
 - `results/scorecards/`, `results/candidate_a/`, and `results/candidate_b/` contain review-cycle benchmark artifacts that document model decisions.
+- `results/retrain_drift/` contains non-mutating audit outputs comparing the loaded model cache against tracked baseline summaries.
 
 Do not commit `data/raw/` API caches or large compressed downloads.
 
@@ -30,6 +31,6 @@ Prefer adding a short pointer from active docs to archive material instead of co
 
 ## Dependency Policy
 
-- `requirements.txt` remains the broad runtime/training dependency spec.
+- `requirements.txt` is the race-day/runtime training dependency spec and may pin artifact-sensitive packages when cached model compatibility requires it.
 - `requirements-ci.txt` is the pinned repo-sanity verification snapshot.
-- Race-day prediction and model refresh workflows intentionally install from `requirements.txt` plus explicit runtime extras to avoid locking live automation to stale model-cache dependencies.
+- Race-day prediction and model refresh workflows install from `requirements.txt` so local and automation runtimes stay aligned with serialized model artifacts.

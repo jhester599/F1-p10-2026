@@ -18,6 +18,7 @@ defines the current execution sequence and acceptance gates.
 - Current active baseline (v9.x, holdout): **13.33 avg pts/race** (`results/eval_2025_summary.csv`, ensemble).
 - Current live log artifact: `results/2026_live_log.csv`.
 - Latest automation prediction artifact: `results/prediction_2026_R02.csv`.
+- Current retrain/model-cache audit artifact: `results/retrain_drift/retrain_drift_report.md`.
 
 ## Workstream Sequence
 
@@ -77,6 +78,26 @@ Exit criteria:
 - Gate report is reproducible and available as JSON/Markdown outputs.
 - CI can fail on material regressions when `--enforce-gates` is enabled.
 
+### Phase 3B - Retrain/Model-Cache Drift Stabilization (In Progress)
+Owner: Repo maintainer
+
+1. Use `scripts/95_retrain_drift_audit.py` before any Candidate A/B promotion.
+2. Keep audit outputs in:
+   - `results/retrain_drift/`
+3. Pin artifact-sensitive runtime dependencies when cached model artifacts require it.
+4. Refresh model artifacts only when dependencies and data snapshots are intentionally locked.
+
+Current status:
+- Loaded model cache ensemble: **13.0417 avg pts/race** on 2025 holdout.
+- Tracked baseline ensemble: **13.58 avg pts/race**.
+- Drift: **-0.5383 avg pts/race**.
+- Dependency finding: local sklearn `1.9.0` loaded artifacts serialized under sklearn `1.8.0`; `requirements.txt` now pins `scikit-learn==1.8.0`.
+
+Exit criteria:
+- Fresh audit under the pinned runtime is recorded.
+- Candidate A/B sweeps are rerun only after the audit result is understood.
+- Any intentional model refresh updates the audit report and scorecard artifacts together.
+
 ### Phase 4 — Model Enhancement Program (No External Research Refresh Yet)
 Owner: Repo maintainer
 
@@ -89,7 +110,7 @@ Candidate A — Ranking/calibration robustness:
   - Promotion decision: deferred due retrain-time regression risk
   - Details: `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md`
 
-Candidate B — Season-stage weighting recalibration:
+Candidate B - Season-stage weighting recalibration:
 - Re-test stage weight logic using current baselines and anti-overfit gates.
 - Require improvement consistency, not single-metric spikes.
 - Cycle-1 status (2026-03-26):
@@ -110,11 +131,13 @@ Promotion gates for all candidates:
 
 ## Operating Playbook per Enhancement PR
 1. Refresh scorecards with `python scripts/90_benchmark_scorecards.py`.
-2. Implement candidate change.
-3. Re-run scorecards and compare deltas.
-4. Accept/reject using promotion gates.
-5. Update:
+2. Run `python scripts/95_retrain_drift_audit.py` when the change depends on loaded model artifacts.
+3. Implement candidate change.
+4. Re-run scorecards and compare deltas.
+5. Accept/reject using promotion gates.
+6. Update:
    - `results/scorecards/benchmark_scorecard_latest.md`
+   - `results/retrain_drift/retrain_drift_report.md` when model-cache compatibility is relevant
    - technical findings note for the change
    - README/docs only if canonical behavior changed
 

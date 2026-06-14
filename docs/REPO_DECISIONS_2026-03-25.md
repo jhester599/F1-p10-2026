@@ -31,20 +31,22 @@ This document records structural decisions made for CI reliability, Windows comp
 - CI workflow restores/saves processed data and model directories via cache for speed.
 - Clean runners can validate against committed processed snapshots even when model artifacts are absent.
 
-## 3) Add pinned CI dependencies (`requirements-ci.txt`)
+## 3) Add pinned CI dependencies (`requirements-ci.txt`) and pin artifact-sensitive runtime dependencies
 
 ### Decision
-- Keep `requirements-ci.txt` in-repo as the pinned repo-sanity verification snapshot, but do not use it as the default race-day prediction installer.
+- Keep `requirements-ci.txt` in-repo as the pinned repo-sanity verification snapshot.
+- Use `requirements.txt` as the race-day/training runtime spec.
+- Pin `scikit-learn==1.8.0` in `requirements.txt` while the current cached model artifacts are serialized with scikit-learn 1.8.0.
 
 ### Why
-- Current training/calibration paths are most compatible with:
-  - `requirements.txt`
-  - plus explicit `pyarrow`
 - Keeping the lock snapshot is useful for controlled reproduction and debugging.
+- scikit-learn pickle/joblib artifacts are version-sensitive; loading 1.8.0 artifacts under newer local runtimes emitted `InconsistentVersionWarning` and coincided with measurable 2025 holdout drift.
+- Race-day automation should prefer compatibility with the model cache used for inference over opportunistic dependency upgrades.
 
 ### Impact
 - Repo sanity workflow installs from `requirements-ci.txt`.
-- Race-day prediction/model refresh workflows install from `requirements.txt` + explicit runtime extras for training and cached-model compatibility.
+- Race-day prediction/model refresh workflows install from `requirements.txt`.
+- Future dependency upgrades should include a model refresh and `scripts/95_retrain_drift_audit.py` comparison before promotion.
 
 ## 4) Qualifying schedule alignment
 
@@ -143,3 +145,20 @@ This document records structural decisions made for CI reliability, Windows comp
 - Added `scripts/92_candidate_a_weight_sweep.py`.
 - Added results artifacts under `results/candidate_a/`.
 - Promotion status is documented in `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md`.
+
+## 11) Add retrain/model-cache drift audit before model-promotion work
+
+### Decision
+- Add `scripts/95_retrain_drift_audit.py` as a non-mutating audit of the currently loaded `models/*.joblib` cache against tracked 2025 evaluation summaries.
+- Store audit artifacts under `results/retrain_drift/`.
+
+### Why
+- Candidate A/B sweeps showed promising local configurations but promotion was blocked by retrain/model-cache drift.
+- The audit creates a repeatable way to see whether a local or CI model cache matches the tracked baseline before changing ensemble behavior.
+- The script fingerprints key code, processed data, model artifacts, and runtime package versions so drift can be diagnosed rather than guessed at.
+
+### Impact
+- Candidate A/B promotion work should start with:
+  - `python scripts/95_retrain_drift_audit.py`
+- The audit does not retrain models and does not overwrite canonical `results/eval_2025_*` files.
+- Current audit status: loaded model cache ensemble scored `13.0417` avg pts/race vs tracked `13.58` (`-0.5383`), with runtime sklearn `1.9.0` loading artifacts created under sklearn `1.8.0`.

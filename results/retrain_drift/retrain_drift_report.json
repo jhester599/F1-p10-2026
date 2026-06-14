@@ -1,0 +1,178 @@
+{
+  "generated_at_utc": "2026-06-14 12:18 UTC",
+  "tracked_summary": "results/eval_2025_summary.csv",
+  "outputs": {
+    "current_picks": "results/retrain_drift/current_model_eval_picks.csv",
+    "current_summary": "results/retrain_drift/current_model_eval_summary.csv"
+  },
+  "comparison_to_tracked": [
+    {
+      "model": "rf_clf",
+      "avg_pts_tracked": 13.5,
+      "total_pts_tracked": 324,
+      "avg_pts_current": 11.5833,
+      "total_pts_current": 278,
+      "delta_avg_pts": -1.9167000000000005,
+      "delta_total_pts": -46
+    },
+    {
+      "model": "lgbm_ranker",
+      "avg_pts_tracked": 12.21,
+      "total_pts_tracked": 293,
+      "avg_pts_current": 11.0833,
+      "total_pts_current": 266,
+      "delta_avg_pts": -1.1267000000000014,
+      "delta_total_pts": -27
+    },
+    {
+      "model": "xgb_ranker",
+      "avg_pts_tracked": 12.17,
+      "total_pts_tracked": 292,
+      "avg_pts_current": 11.0833,
+      "total_pts_current": 266,
+      "delta_avg_pts": -1.0867000000000004,
+      "delta_total_pts": -26
+    },
+    {
+      "model": "ensemble",
+      "avg_pts_tracked": 13.58,
+      "total_pts_tracked": 326,
+      "avg_pts_current": 13.0417,
+      "total_pts_current": 313,
+      "delta_avg_pts": -0.5382999999999996,
+      "delta_total_pts": -13
+    },
+    {
+      "model": "xgb_clf",
+      "avg_pts_tracked": 12.88,
+      "total_pts_tracked": 309,
+      "avg_pts_current": 12.875,
+      "total_pts_current": 309,
+      "delta_avg_pts": -0.005000000000000782,
+      "delta_total_pts": 0
+    },
+    {
+      "model": "ridge",
+      "avg_pts_tracked": 10.04,
+      "total_pts_tracked": 241,
+      "avg_pts_current": 10.0417,
+      "total_pts_current": 241,
+      "delta_avg_pts": 0.001700000000001367,
+      "delta_total_pts": 0
+    },
+    {
+      "model": "xgb_reg",
+      "avg_pts_tracked": 9.71,
+      "total_pts_tracked": 233,
+      "avg_pts_current": 10.2917,
+      "total_pts_current": 247,
+      "delta_avg_pts": 0.5816999999999997,
+      "delta_total_pts": 14
+    },
+    {
+      "model": "rf_reg",
+      "avg_pts_tracked": 7.71,
+      "total_pts_tracked": 185,
+      "avg_pts_current": 8.6667,
+      "total_pts_current": 208,
+      "delta_avg_pts": 0.9567000000000005,
+      "delta_total_pts": 23
+    },
+    {
+      "model": "lgb_reg",
+      "avg_pts_tracked": 9.17,
+      "total_pts_tracked": 220,
+      "avg_pts_current": 11.75,
+      "total_pts_current": 282,
+      "delta_avg_pts": 2.58,
+      "delta_total_pts": 62
+    }
+  ],
+  "fingerprint": {
+    "files": {
+      "config.py": {
+        "exists": true,
+        "sha256": "facfbe37907c7d9dcc262ebb7b17fb6842155443c58a70f098a3c5cbb4bc099d",
+        "bytes": 22320
+      },
+      "src/models.py": {
+        "exists": true,
+        "sha256": "f303998aaf4a926431e61e295ed79fb38b8bfc47f922d49236e437d845d286e9",
+        "bytes": 58234
+      },
+      "src/feature_engineering.py": {
+        "exists": true,
+        "sha256": "06613accd6962843ee3b390c5821223849af3a8cb5815f6d2bee2dd5e7b95f26",
+        "bytes": 45655
+      },
+      "requirements.txt": {
+        "exists": true,
+        "sha256": "428354e9c85eed28181b18a985917669e18232821cfd0dd89400d53adeae3801",
+        "bytes": 184
+      },
+      "data/processed/features_2010_2024.parquet": {
+        "exists": true,
+        "sha256": "770f1fde18c1d4b3de5c2af70367f705cefa5c994528014a8755f90c1eb1ebf0",
+        "bytes": 957593
+      },
+      "data/processed/features_2010_2025.parquet": {
+        "exists": true,
+        "sha256": "3a44dd49682ae65e71243145d9ba60b10a5a22305daad896b5c6d96c5c3de268",
+        "bytes": 1027560
+      },
+      "data/processed/features_2025_2025.parquet": {
+        "exists": true,
+        "sha256": "271dfef809210cb4b812dccc8b182edf84cf3edb1958d54bfd1ccd3d87ca23f4",
+        "bytes": 156026
+      }
+    },
+    "models": {
+      "models/ensemble.joblib": {
+        "sha256": "f630434ed9701830b250753f26518475387270c3ac7fd7700c5dc4ee3c8b635f",
+        "bytes": 238494323
+      },
+      "models/lgb_reg.joblib": {
+        "sha256": "cc196707fcbf806b20e96c27237f5c6bdb303e5721efcb4c8288847ded76455a",
+        "bytes": 1679170
+      },
+      "models/lgbm_ranker.joblib": {
+        "sha256": "210b91454812f3bf5792a41670776d43ad55755af22d67a35087a8958b10b963",
+        "bytes": 1765064
+      },
+      "models/rf_clf.joblib": {
+        "sha256": "7aabdc63ab096783339d50ea6c3b7d22ad7e67e42dd57428b5f803dcd69cfbc0",
+        "bytes": 126892708
+      },
+      "models/rf_reg.joblib": {
+        "sha256": "711fa5fe6a97c033b75e2121f82cb151422e16e195f0347bcdcf934c752904dc",
+        "bytes": 8477521
+      },
+      "models/ridge.joblib": {
+        "sha256": "2e694769f8641a1866b1b3c8c1bca602a3726feff31425b5b3b85f86848e80d1",
+        "bytes": 2337
+      },
+      "models/xgb_clf.joblib": {
+        "sha256": "6794699fc0f991bea5d615f2316f074aa3feb0f001f0ab2a7b2dbcbf77a09603",
+        "bytes": 97201731
+      },
+      "models/xgb_ranker.joblib": {
+        "sha256": "0e53fea02c24b40936fba2ea1b066eb7d4775de1679e250b058feb0f2baace06",
+        "bytes": 1185102
+      },
+      "models/xgb_reg.joblib": {
+        "sha256": "3e059665a91ab47b66f6dad2f4af2b3a141fd4ae4f5b0f97cc1ae4aa595aa94c",
+        "bytes": 1291336
+      }
+    },
+    "packages": {
+      "numpy": "2.4.6",
+      "pandas": "3.0.3",
+      "scikit-learn": "1.9.0",
+      "xgboost": "3.2.0",
+      "lightgbm": "4.6.0",
+      "joblib": "1.5.3",
+      "scipy": "1.17.1",
+      "pyarrow": "24.0.0"
+    }
+  }
+}

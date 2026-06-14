@@ -83,6 +83,22 @@ Outputs:
 - `results/scorecards/benchmark_scorecard_latest.json`
 - `results/scorecards/benchmark_scorecard_latest.md`
 
+Retrain/model-cache drift audit:
+
+```bash
+python scripts/95_retrain_drift_audit.py
+```
+
+Outputs:
+
+- `results/retrain_drift/current_model_eval_summary.csv`
+- `results/retrain_drift/current_model_eval_picks.csv`
+- `results/retrain_drift/retrain_drift_report.{json,md}`
+
+Use this before Candidate A/B promotion work. It evaluates the currently loaded
+`models/*.joblib` cache against the tracked 2025 eval summary without retraining
+or overwriting canonical `results/eval_2025_*` files.
+
 Candidate A diagnostics (ranking/calibration robustness with scorecard gates):
 
 ```bash
@@ -557,9 +573,12 @@ Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`
 
 **Auxiliary lookup tables** (`data/aux_data/`) — rebuild with `python scripts/07_build_aux_features.py`.
 
-**CI dependency lock snapshot** (`requirements-ci.txt`) is used by repo sanity checks.
-Race-day prediction and model refresh workflows install from `requirements.txt` plus
-explicit runtime extras for training/model-cache compatibility.
+**Dependency snapshots:**
+
+- `requirements.txt` is the race-day/training runtime spec. It pins
+  `scikit-learn==1.8.0` because the current cached model artifacts were serialized
+  with that version.
+- `requirements-ci.txt` is the pinned repo-sanity verification snapshot.
 
 ---
 
