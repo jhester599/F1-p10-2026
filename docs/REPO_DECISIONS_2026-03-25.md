@@ -231,6 +231,7 @@ This document records structural decisions made for CI reliability, Windows comp
 ### Decision
 - Add `scripts/96_candidate_promotion_readiness.py`.
 - Add `scripts/97_candidate_replay_gates.py`.
+- Add `scripts/98_candidate_rolling_cv_replay.py`.
 - Track `results/scorecards/candidate_replay_gates.{json,md}`.
 - Track `results/scorecards/candidate_promotion_readiness.{json,md}`.
 - Run the readiness snapshot in repo sanity CI.
@@ -242,10 +243,14 @@ This document records structural decisions made for CI reliability, Windows comp
   blended candidate weights, so they should not be treated as promotion evidence.
 - A dedicated replay-gate artifact makes missing candidate-specific evidence
   machine-checkable before promotion readiness is computed.
+- A rolling-CV replay generator is required because legacy CV outputs are
+  pick-only; promotion evidence needs per-driver score checkpoints that can
+  replay Candidate A/B weight blends.
 
 ### Impact
 - Candidate A is ranked as the leading holdout candidate.
 - Production promotion remains explicitly blocked with status
   `blocked_missing_candidate_cv_live`.
-- The next model-development task is to generate candidate-specific rolling-CV
-  and live replay artifacts, not to change race-weekend inference weights yet.
+- The next model-development task is to run the candidate-specific rolling-CV
+  replay generator and continue accumulating live replay evidence, not to change
+  race-weekend inference weights yet.

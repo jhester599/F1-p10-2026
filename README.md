@@ -77,6 +77,7 @@ Scorecard harness:
 
 ```bash
 python scripts/90_benchmark_scorecards.py
+python scripts/98_candidate_rolling_cv_replay.py --from-checkpoints  # or --resume after generating checkpoints
 python scripts/97_candidate_replay_gates.py
 python scripts/96_candidate_promotion_readiness.py
 ```
@@ -87,13 +88,17 @@ Outputs:
 - `results/scorecards/benchmark_scorecard_latest.md`
 - `results/scorecards/candidate_replay_gates.{json,md}`
 - `results/scorecards/candidate_promotion_readiness.{json,md}`
+- `results/candidate_a/candidate_a_rolling_cv_replay.json`
+- `results/candidate_b/candidate_b_rolling_cv_replay.json`
 - `results/candidate_a/candidate_a_live_2026_replay.json`
 - `results/candidate_b/candidate_b_live_2026_replay.json`
 
-The replay-gates report validates candidate-specific rolling-CV and 2026 live
-replay evidence when those artifacts exist. The promotion-readiness report ranks
-Candidate A/B holdout evidence and keeps production promotion blocked until the
-candidate replay gates pass.
+The rolling-CV replay generator creates per-driver scored CV checkpoints because
+the legacy CV CSVs contain only model picks and cannot replay blended candidate
+weights. The replay-gates report validates candidate-specific rolling-CV and
+2026 live replay evidence when those artifacts exist. The promotion-readiness
+report ranks Candidate A/B holdout evidence and keeps production promotion
+blocked until the candidate replay gates pass.
 Current live replay evidence covers only one usable completed race, so the live
 gate is intentionally marked `insufficient_data`.
 

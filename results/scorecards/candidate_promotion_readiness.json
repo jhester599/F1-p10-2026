@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-14 17:30 UTC",
+  "generated_at_utc": "2026-06-14 18:57 UTC",
   "inputs": {
     "benchmark": "results/scorecards/benchmark_scorecard_latest.json",
     "candidate_a": "results/candidate_a/candidate_a_weight_sweep_recommendation.json",
@@ -26,10 +26,10 @@
         "balanced_gate_pass": true
       },
       "required_replay_gates": {
-        "rolling_cv_candidate_replay": "missing",
+        "rolling_cv_candidate_replay": "fail",
         "live_2026_candidate_replay": "insufficient_data"
       },
-      "promotion_status": "blocked_missing_candidate_cv_live"
+      "promotion_status": "blocked_candidate_replay_failed"
     },
     {
       "candidate": "Candidate B",
@@ -45,10 +45,10 @@
         "balanced_gate_pass": true
       },
       "required_replay_gates": {
-        "rolling_cv_candidate_replay": "missing",
+        "rolling_cv_candidate_replay": "pass",
         "live_2026_candidate_replay": "insufficient_data"
       },
-      "promotion_status": "blocked_missing_candidate_cv_live"
+      "promotion_status": "blocked_live_replay_insufficient"
     }
   ]
 }

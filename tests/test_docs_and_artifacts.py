@@ -58,18 +58,24 @@ def test_artifact_policy_is_documented_and_linked() -> None:
 def test_candidate_replay_gate_artifacts_are_documented_and_wired() -> None:
     assert (ROOT / "results" / "scorecards" / "candidate_replay_gates.json").exists()
     assert (ROOT / "results" / "scorecards" / "candidate_replay_gates.md").exists()
+    assert (ROOT / "results" / "candidate_a" / "candidate_a_rolling_cv_replay.json").exists()
+    assert (ROOT / "results" / "candidate_b" / "candidate_b_rolling_cv_replay.json").exists()
     assert (ROOT / "results" / "candidate_a" / "candidate_a_live_2026_replay.json").exists()
     assert (ROOT / "results" / "candidate_b" / "candidate_b_live_2026_replay.json").exists()
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     assert "scripts/97_candidate_replay_gates.py" in readme
+    assert "scripts/98_candidate_rolling_cv_replay.py" in readme
     assert "results/scorecards/candidate_replay_gates.{json,md}" in readme
+    assert "candidate_a_rolling_cv_replay.json" in readme
+    assert "candidate_b_rolling_cv_replay.json" in readme
     assert "candidate_a_live_2026_replay.json" in readme
 
     workflow = (ROOT / ".github" / "workflows" / "repo-sanity.yml").read_text(
         encoding="utf-8"
     )
     assert "scripts/97_candidate_replay_gates.py" in workflow
+    assert "scripts/98_candidate_rolling_cv_replay.py" in workflow
     assert "python scripts/97_candidate_replay_gates.py" in workflow
 
 

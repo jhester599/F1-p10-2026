@@ -192,6 +192,23 @@ def build_report() -> dict[str, Any]:
     }
 
 
+def next_gate_lines(candidates: list[dict[str, Any]]) -> list[str]:
+    statuses = [
+        status
+        for row in candidates
+        for status in row.get("required_replay_gates", {}).values()
+    ]
+    lines: list[str] = []
+    if "fail" in statuses:
+        lines.append("- Resolve failed candidate replay gates before promotion review.")
+    if "missing" in statuses:
+        lines.append("- Add or run candidate-specific rolling/expanding validation that can replay blended Candidate A/B weights.")
+    if "insufficient_data" in statuses:
+        lines.append("- Replay candidate picks against available 2026 completed races once enough live rounds exist.")
+    lines.append("- Promote only after holdout, rolling/CV, and live gates are all recorded without critical regression.")
+    return lines
+
+
 def write_markdown(report: dict[str, Any]) -> str:
     lines = [
         "# Candidate Promotion Readiness",
@@ -231,11 +248,9 @@ def write_markdown(report: dict[str, Any]) -> str:
         [
             "",
             "## Next Gate",
-            "- Add or run candidate-specific rolling/expanding validation that can replay blended Candidate A/B weights.",
-            "- Replay candidate picks against available 2026 completed races once enough live rounds exist.",
-            "- Promote only after holdout, rolling/CV, and live gates are all recorded without critical regression.",
         ]
     )
+    lines.extend(next_gate_lines(report["candidates"]))
     return "\n".join(lines) + "\n"
 
 
