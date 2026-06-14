@@ -89,3 +89,57 @@ Candidate B cycle-1 should be rerun against this refreshed baseline before any
 stage-weight promotion decision. Do not promote the prior cycle-1 recommendation
 without rerunning the sweep.
 
+## Refreshed Baseline Rerun (2026-06-14)
+Candidate B has now been rerun against the refreshed current baseline after the
+model-cache drift audit reported `0/216` changed picks.
+
+Command:
+
+```bash
+python scripts/94_candidate_b_stage_weight_sweep.py --year 2025 --boundaries 5,15 --scales 0.85,1.0,1.15
+```
+
+Refreshed baseline:
+- Ensemble baseline: `13.1250 avg_pts`.
+- Top individual model from the refreshed eval snapshot: `xgb_clf`, `14.0417 avg_pts`.
+- Stage baseline: early `17.0000`, mid `14.4000`, late `9.5556`.
+
+Best gated Candidate B configuration:
+- `avg_pts=14.0417` (`+0.9167` vs refreshed ensemble baseline).
+- `top1_hit_rate=0.1667` (unchanged).
+- `mean_actual_p10_rank=8.9583` (`-0.0417`, lower is better).
+- `mean_ndcg_at_5=0.2425` (`+0.0159`).
+- Stage deltas: early `+0.0000`, mid `+0.7000`, late `+1.6667`.
+- Balanced gate: **passed**.
+
+Recommended stage/group scales from the refreshed rerun:
+- Early: ranker `0.85`, classifier `0.85`, regressor `1.00`.
+- Mid: ranker `0.85`, classifier `1.00`, regressor `0.85`.
+- Late: ranker `0.85`, classifier `0.85`, regressor `1.15`.
+
+## Refreshed Rerun Promotion Decision
+Do not change production inference weights yet.
+
+Reason:
+- The refreshed Candidate B rerun is materially better than the current ensemble
+  on the 2025 holdout, but it ties the refreshed `xgb_clf` individual model
+  rather than clearly exceeding the best available model signal.
+- The improvement is concentrated in the late-season 2025 segment, which has a
+  small sample size and therefore remains vulnerable to stage-specific overfit.
+- Rolling-CV and 2026 live-log gates have not yet been run for this refreshed
+  stage configuration.
+
+Decision:
+- Treat the refreshed Candidate B configuration as the leading promotion
+  candidate for the next validation pass.
+- Keep race-weekend production behavior unchanged until the rolling-CV/live
+  gates are recorded.
+
+Next step:
+1. Run a rolling or expanding-window validation of the refreshed Candidate B
+   scales.
+2. Compare against both the refreshed ensemble and the refreshed `xgb_clf`
+   reference.
+3. Promote only if the Candidate B configuration improves the balanced
+   scorecard without a critical regression on live 2026 outcomes.
+
