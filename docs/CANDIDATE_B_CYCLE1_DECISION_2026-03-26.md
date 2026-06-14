@@ -50,3 +50,17 @@ After retrain-drift stabilization:
    - 2026 live log
 3. Promote only if all gates pass without critical regression.
 
+## Stabilization Update (2026-06-14)
+Retrain/model-cache drift is now explicitly auditable with:
+
+```bash
+python scripts/95_retrain_drift_audit.py
+```
+
+Current audit output is stored in `results/retrain_drift/`. The first audit found
+the loaded model cache ensemble at `13.0417` avg pts/race vs tracked baseline
+`13.58` (`-0.5383`). It also captured a scikit-learn version mismatch: cached
+artifacts were serialized under sklearn `1.8.0` while the local runtime was
+`1.9.0`. Candidate B remains deferred until a pinned-runtime audit and any
+intentional model refresh are complete.
+

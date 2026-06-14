@@ -19,6 +19,7 @@
 | F-005 | P3 | Broad `sys.path.insert` usage increased import coupling/noise. | Present across many scripts and some core modules. | **Partially fixed**: hardened active core modules to avoid unconditional duplicate path insertion; full packaging cleanup deferred. |
 | F-006 | P3 | Placeholder and duplicate marker docs add low signal in active navigation. | Multiple one-line placeholders and archive mirrors. | **Accepted**: retained placeholders for directory intent, classified explicitly in matrix below. |
 | F-007 | P2 | LightGBM inference produced repeated feature-name warnings in prediction/evaluation paths. | `LGBMRegressor`/`LGBMRanker` persisted `feature_names_in_`; ndarray prediction emitted warning noise. | **Fixed**: added inference input normalization in `src/models.py` to provide named DataFrame inputs when required. |
+| F-008 | P2 | Cached model artifacts and local runtime dependencies can drift enough to affect promotion decisions. | `scripts/95_retrain_drift_audit.py` measured loaded-cache ensemble `13.0417` vs tracked `13.58`; local sklearn `1.9.0` loaded artifacts serialized under sklearn `1.8.0`. | **Mitigated**: added non-mutating drift audit artifacts and pinned `scikit-learn==1.8.0` in `requirements.txt`; model refresh/re-audit remains the next promotion gate. |
 
 ## Documentation Classification Matrix
 
@@ -50,6 +51,7 @@ Classification legend:
 | `RACE_PREDICTIONS.md` | generated | Ongoing race prediction log. |
 | `results/scorecards/benchmark_scorecard_latest.md` | generated | Latest benchmark scorecard snapshot output. |
 | `results/candidate_a/candidate_a_gate_report.md` | generated | Candidate A gate summary output. |
+| `results/retrain_drift/retrain_drift_report.md` | generated | Retrain/model-cache drift audit output. |
 | `results/seasonal_performance_analysis.md` | generated | Generated analysis output. |
 | `scripts/v5_results/V5_RESULTS.md` | generated | Versioned results log. |
 | `v6x/scripts/v5_results/V5_RESULTS.md` | generated | Archive mirror of results log. |
@@ -93,8 +95,12 @@ Classification legend:
 - Candidate B cycle-1 stage sweep tooling and artifacts are now tracked:
   - `scripts/94_candidate_b_stage_weight_sweep.py`
   - `results/candidate_b/candidate_b_stage_recommendation.md`
+- Retrain/model-cache drift audit tooling and artifacts are now tracked:
+  - `scripts/95_retrain_drift_audit.py`
+  - `results/retrain_drift/retrain_drift_report.md`
 
 ## Remaining Follow-Ups (Planned)
 - Continue reducing `sys.path` coupling in non-core experimentation scripts as a separate cleanup batch.
 - Keep `v6x/` archive frozen and out of active validation workflows.
 - Use the canonical development plan for enhancement sequencing and promotion gates.
+- Reinstall dependencies from the pinned runtime spec, refresh model artifacts when practical, and rerun `scripts/95_retrain_drift_audit.py` before promoting Candidate A/B changes.
