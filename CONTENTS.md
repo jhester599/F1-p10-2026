@@ -154,7 +154,7 @@ python scripts/03_train_models.py
 ```bash
 unzip F1-p10-source.zip
 cd F1-p10-2026
-pip install -r requirements.txt pyarrow fastf1
+pip install -r requirements.txt fastf1
 
 # Step 1 — ALWAYS restore from the repo zip first (committed to repo root):
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
