@@ -249,8 +249,6 @@ jobs:
         with:
           path: data/processed
           key: processed-2026-${{ hashFiles('config.py', 'src/feature_engineering.py', 'scripts/02_build_dataset.py', 'requirements.txt') }}
-          restore-keys: |
-            processed-2026-
 
       - name: Restore raw-cache extraction
         if: steps.preflight.outputs.run_full == 'true'
@@ -269,14 +267,12 @@ jobs:
         with:
           path: models
           key: models-2026-${{ hashFiles('config.py', 'src/models.py', 'scripts/03_train_models.py', 'requirements.txt') }}
-          restore-keys: |
-            models-2026-
 
       - name: Install dependencies
         if: steps.preflight.outputs.run_full == 'true'
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt pyarrow
+          pip install -r requirements.txt
 
       - name: Run post-qualifying automation
         if: steps.preflight.outputs.run_full == 'true'

@@ -48,6 +48,7 @@ This document records structural decisions made for CI reliability, Windows comp
 - Race-day prediction/model refresh workflows install from `requirements.txt`.
 - Future dependency upgrades should include a model refresh and `scripts/95_retrain_drift_audit.py` comparison before promotion.
 - `pyarrow` is included in `requirements.txt` because active scripts read committed parquet snapshots directly.
+- Processed-data and model-artifact caches use exact behavior/input keys in race-day automation. They intentionally do not use broad restore-key fallbacks, because a stale model cache can satisfy `models/*.joblib` existence checks and bypass retraining after code/dependency changes.
 
 ## 4) Qualifying schedule alignment
 
@@ -164,3 +165,4 @@ This document records structural decisions made for CI reliability, Windows comp
 - The audit does not retrain models and does not overwrite canonical `results/eval_2025_*` files.
 - Current audit status: loaded model cache ensemble scored `13.0417` avg pts/race vs tracked `13.58` (`-0.5383`).
 - A pinned-runtime rerun under sklearn `1.8.0` removed the unpickle warnings but did not close the performance delta, so remaining drift is likely model-cache/data/provenance mismatch rather than only sklearn version mismatch.
+- Workflow mitigation: race-day automation now avoids broad model/processed cache restore fallbacks so exact key misses do not silently reuse stale artifacts.
