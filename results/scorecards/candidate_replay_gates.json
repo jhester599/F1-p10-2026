@@ -1,0 +1,55 @@
+{
+  "generated_at_utc": "2026-06-14 18:57 UTC",
+  "gate_requirements": {
+    "rolling_cv_min_races": 20,
+    "live_2026_min_races": 3
+  },
+  "candidates": [
+    {
+      "candidate": "Candidate A",
+      "rolling_cv_candidate_replay": {
+        "status": "fail",
+        "n_races": 24,
+        "baseline_avg_pts": 11.208333333333334,
+        "candidate_avg_pts": 10.916666666666666,
+        "delta_avg_pts": -0.29166666666666785,
+        "artifact_gate_pass": false,
+        "reason": "candidate_avg_pts below baseline_avg_pts",
+        "source": "results/candidate_a/candidate_a_rolling_cv_replay.json"
+      },
+      "live_2026_candidate_replay": {
+        "status": "insufficient_data",
+        "n_races": 1,
+        "baseline_avg_pts": 15.0,
+        "candidate_avg_pts": 15.0,
+        "delta_avg_pts": 0.0,
+        "artifact_gate_pass": true,
+        "reason": "n_races 1 below required minimum 3",
+        "source": "results/candidate_a/candidate_a_live_2026_replay.json"
+      }
+    },
+    {
+      "candidate": "Candidate B",
+      "rolling_cv_candidate_replay": {
+        "status": "pass",
+        "n_races": 24,
+        "baseline_avg_pts": 11.208333333333334,
+        "candidate_avg_pts": 11.208333333333334,
+        "delta_avg_pts": 0.0,
+        "artifact_gate_pass": true,
+        "reason": "candidate replay gate passed",
+        "source": "results/candidate_b/candidate_b_rolling_cv_replay.json"
+      },
+      "live_2026_candidate_replay": {
+        "status": "insufficient_data",
+        "n_races": 1,
+        "baseline_avg_pts": 15.0,
+        "candidate_avg_pts": 15.0,
+        "delta_avg_pts": 0.0,
+        "artifact_gate_pass": true,
+        "reason": "n_races 1 below required minimum 3",
+        "source": "results/candidate_b/candidate_b_live_2026_replay.json"
+      }
+    }
+  ]
+}

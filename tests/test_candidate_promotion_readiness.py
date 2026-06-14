@@ -14,7 +14,7 @@ def load_module():
     return module
 
 
-def test_candidate_promotion_readiness_blocks_missing_replay_gates():
+def test_candidate_promotion_readiness_uses_tracked_replay_gates():
     module = load_module()
 
     report = module.build_report()
@@ -23,6 +23,71 @@ def test_candidate_promotion_readiness_blocks_missing_replay_gates():
     assert report["interpretation"]["production_change_recommended"] is False
 
     candidates = {row["candidate"]: row for row in report["candidates"]}
-    assert candidates["Candidate A"]["promotion_status"] == "blocked_missing_candidate_cv_live"
-    assert candidates["Candidate B"]["promotion_status"] == "blocked_missing_candidate_cv_live"
+    assert candidates["Candidate A"]["promotion_status"] == "blocked_candidate_replay_failed"
+    assert candidates["Candidate B"]["promotion_status"] == "blocked_live_replay_insufficient"
     assert candidates["Candidate A"]["holdout"]["candidate_avg_pts"] > candidates["Candidate B"]["holdout"]["candidate_avg_pts"]
+    assert report["inputs"]["candidate_replay_gates"] == "results/scorecards/candidate_replay_gates.json"
+
+
+def test_candidate_promotion_readiness_uses_replay_gate_artifact(tmp_path, monkeypatch):
+    module = load_module()
+    replay_path = tmp_path / "candidate_replay_gates.json"
+    replay_path.write_text(
+        """
+        {
+          "candidates": [
+            {
+              "candidate": "Candidate A",
+              "rolling_cv_candidate_replay": {"status": "pass"},
+              "live_2026_candidate_replay": {"status": "insufficient_data"}
+            },
+            {
+              "candidate": "Candidate B",
+              "rolling_cv_candidate_replay": {"status": "missing"},
+              "live_2026_candidate_replay": {"status": "missing"}
+            }
+          ]
+        }
+        """,
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(module, "CANDIDATE_REPLAY_GATES", replay_path)
+
+    report = module.build_report()
+    candidate_a = {row["candidate"]: row for row in report["candidates"]}["Candidate A"]
+
+    assert candidate_a["required_replay_gates"]["rolling_cv_candidate_replay"] == "pass"
+    assert candidate_a["required_replay_gates"]["live_2026_candidate_replay"] == "insufficient_data"
+    assert candidate_a["promotion_status"] == "blocked_live_replay_insufficient"
+
+
+def test_next_gate_describes_failed_replay_before_live_data() -> None:
+    module = load_module()
+    report = {
+        "generated_at_utc": "2026-06-14 00:00 UTC",
+        "interpretation": {
+            "leader": "Candidate A",
+            "production_change_recommended": False,
+            "reason": "test",
+        },
+        "candidates": [
+            {
+                "candidate": "Candidate A",
+                "holdout": {
+                    "candidate_avg_pts": 14.0,
+                    "delta_vs_ensemble": 1.0,
+                    "delta_vs_best_individual": 0.1,
+                    "balanced_gate_pass": True,
+                },
+                "required_replay_gates": {
+                    "rolling_cv_candidate_replay": "fail",
+                    "live_2026_candidate_replay": "insufficient_data",
+                },
+                "promotion_status": "blocked_candidate_replay_failed",
+            }
+        ],
+    }
+
+    markdown = module.write_markdown(report)
+
+    assert "Resolve failed candidate replay gates before promotion review." in markdown

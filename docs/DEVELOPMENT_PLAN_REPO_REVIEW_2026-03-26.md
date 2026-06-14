@@ -156,13 +156,18 @@ Promotion gates for all candidates:
 
 ## Operating Playbook per Enhancement PR
 1. Refresh scorecards with `python scripts/90_benchmark_scorecards.py`.
-2. Refresh candidate promotion status with `python scripts/96_candidate_promotion_readiness.py`.
-3. Run `python scripts/95_retrain_drift_audit.py` when the change depends on loaded model artifacts.
-4. Implement candidate change.
-5. Re-run scorecards and compare deltas.
-6. Accept/reject using promotion gates.
-7. Update:
+2. Generate or refresh candidate rolling-CV replay artifacts with
+   `python scripts/98_candidate_rolling_cv_replay.py --resume` when validating
+   Candidate A/B promotion evidence.
+3. Refresh candidate replay gates with `python scripts/97_candidate_replay_gates.py`.
+4. Refresh candidate promotion status with `python scripts/96_candidate_promotion_readiness.py`.
+5. Run `python scripts/95_retrain_drift_audit.py` when the change depends on loaded model artifacts.
+6. Implement candidate change.
+7. Re-run scorecards and compare deltas.
+8. Accept/reject using promotion gates.
+9. Update:
    - `results/scorecards/benchmark_scorecard_latest.md`
+   - `results/scorecards/candidate_replay_gates.md`
    - `results/scorecards/candidate_promotion_readiness.md`
    - `results/retrain_drift/retrain_drift_report.md` when model-cache compatibility is relevant
    - technical findings note for the change

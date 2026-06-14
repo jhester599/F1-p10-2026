@@ -21,6 +21,7 @@ SCORECARD_DIR = RESULTS_DIR / "scorecards"
 CANDIDATE_A = RESULTS_DIR / "candidate_a" / "candidate_a_weight_sweep_recommendation.json"
 CANDIDATE_B = RESULTS_DIR / "candidate_b" / "candidate_b_stage_recommendation.json"
 BENCHMARK = SCORECARD_DIR / "benchmark_scorecard_latest.json"
+CANDIDATE_REPLAY_GATES = SCORECARD_DIR / "candidate_replay_gates.json"
 OUT_JSON = SCORECARD_DIR / "candidate_promotion_readiness.json"
 OUT_MD = SCORECARD_DIR / "candidate_promotion_readiness.md"
 
@@ -49,11 +50,48 @@ def best_individual_holdout(benchmark: dict[str, Any] | None) -> dict[str, Any] 
     return None
 
 
+def load_replay_gate_statuses(path: Path) -> dict[str, dict[str, str]]:
+    payload = load_json(path)
+    if not payload:
+        return {}
+
+    statuses: dict[str, dict[str, str]] = {}
+    for row in payload.get("candidates", []):
+        name = row.get("candidate")
+        if not name:
+            continue
+        statuses[name] = {
+            "rolling_cv_candidate_replay": row.get("rolling_cv_candidate_replay", {}).get(
+                "status", "missing"
+            ),
+            "live_2026_candidate_replay": row.get("live_2026_candidate_replay", {}).get(
+                "status", "missing"
+            ),
+        }
+    return statuses
+
+
+def promotion_status(holdout_pass: bool, replay_gates: dict[str, str]) -> str:
+    if not holdout_pass:
+        return "blocked_holdout_gate_failed"
+
+    cv_status = replay_gates.get("rolling_cv_candidate_replay", "missing")
+    live_status = replay_gates.get("live_2026_candidate_replay", "missing")
+    if cv_status == "pass" and live_status == "pass":
+        return "ready_for_promotion_review"
+    if cv_status == "fail" or live_status == "fail":
+        return "blocked_candidate_replay_failed"
+    if live_status == "insufficient_data" and cv_status == "pass":
+        return "blocked_live_replay_insufficient"
+    return "blocked_missing_candidate_cv_live"
+
+
 def summarize_candidate(
     name: str,
     source: Path,
     payload: dict[str, Any] | None,
     best_individual: dict[str, Any] | None,
+    replay_gates: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     if payload is None:
         return {
@@ -77,6 +115,10 @@ def summarize_candidate(
     delta_vs_best_individual = (
         best_avg - best_individual_avg if best_individual_avg is not None else None
     )
+    replay_gates = replay_gates or {
+        "rolling_cv_candidate_replay": "missing",
+        "live_2026_candidate_replay": "missing",
+    }
 
     return {
         "candidate": name,
@@ -91,15 +133,8 @@ def summarize_candidate(
             "delta_vs_best_individual": delta_vs_best_individual,
             "balanced_gate_pass": holdout_pass,
         },
-        "required_replay_gates": {
-            "rolling_cv_candidate_replay": "missing",
-            "live_2026_candidate_replay": "missing",
-        },
-        "promotion_status": (
-            "blocked_missing_candidate_cv_live"
-            if holdout_pass
-            else "blocked_holdout_gate_failed"
-        ),
+        "required_replay_gates": replay_gates,
+        "promotion_status": promotion_status(holdout_pass, replay_gates),
     }
 
 
@@ -116,10 +151,23 @@ def rank_candidates(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def build_report() -> dict[str, Any]:
     benchmark = load_json(BENCHMARK)
     best_individual = best_individual_holdout(benchmark)
+    replay_statuses = load_replay_gate_statuses(CANDIDATE_REPLAY_GATES)
 
     candidates = [
-        summarize_candidate("Candidate A", CANDIDATE_A, load_json(CANDIDATE_A), best_individual),
-        summarize_candidate("Candidate B", CANDIDATE_B, load_json(CANDIDATE_B), best_individual),
+        summarize_candidate(
+            "Candidate A",
+            CANDIDATE_A,
+            load_json(CANDIDATE_A),
+            best_individual,
+            replay_statuses.get("Candidate A"),
+        ),
+        summarize_candidate(
+            "Candidate B",
+            CANDIDATE_B,
+            load_json(CANDIDATE_B),
+            best_individual,
+            replay_statuses.get("Candidate B"),
+        ),
     ]
     ranked = rank_candidates(candidates)
     leader = ranked[0] if ranked else None
@@ -130,17 +178,35 @@ def build_report() -> dict[str, Any]:
             "benchmark": rel_path(BENCHMARK),
             "candidate_a": rel_path(CANDIDATE_A),
             "candidate_b": rel_path(CANDIDATE_B),
+            "candidate_replay_gates": rel_path(CANDIDATE_REPLAY_GATES),
         },
         "interpretation": {
             "leader": leader.get("candidate") if leader else None,
             "production_change_recommended": False,
             "reason": (
-                "Candidate holdout sweeps are available, but candidate-specific "
-                "rolling-CV and 2026 live replay gates are missing."
+                "Candidate holdout sweeps are available, but promotion still "
+                "depends on candidate-specific rolling-CV and 2026 live replay gates."
             ),
         },
         "candidates": ranked,
     }
+
+
+def next_gate_lines(candidates: list[dict[str, Any]]) -> list[str]:
+    statuses = [
+        status
+        for row in candidates
+        for status in row.get("required_replay_gates", {}).values()
+    ]
+    lines: list[str] = []
+    if "fail" in statuses:
+        lines.append("- Resolve failed candidate replay gates before promotion review.")
+    if "missing" in statuses:
+        lines.append("- Add or run candidate-specific rolling/expanding validation that can replay blended Candidate A/B weights.")
+    if "insufficient_data" in statuses:
+        lines.append("- Replay candidate picks against available 2026 completed races once enough live rounds exist.")
+    lines.append("- Promote only after holdout, rolling/CV, and live gates are all recorded without critical regression.")
+    return lines
 
 
 def write_markdown(report: dict[str, Any]) -> str:
@@ -182,11 +248,9 @@ def write_markdown(report: dict[str, Any]) -> str:
         [
             "",
             "## Next Gate",
-            "- Add or run candidate-specific rolling/expanding validation that can replay blended Candidate A/B weights.",
-            "- Replay candidate picks against available 2026 completed races once enough live rounds exist.",
-            "- Promote only after holdout, rolling/CV, and live gates are all recorded without critical regression.",
         ]
     )
+    lines.extend(next_gate_lines(report["candidates"]))
     return "\n".join(lines) + "\n"
 
 
