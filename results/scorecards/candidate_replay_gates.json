@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-14 17:25 UTC",
+  "generated_at_utc": "2026-06-14 17:30 UTC",
   "gate_requirements": {
     "rolling_cv_min_races": 20,
     "live_2026_min_races": 3
@@ -13,9 +13,14 @@
         "reason": "candidate-specific replay artifact is missing"
       },
       "live_2026_candidate_replay": {
-        "status": "missing",
-        "source": "results/candidate_a/candidate_a_live_2026_replay.json",
-        "reason": "candidate-specific replay artifact is missing"
+        "status": "insufficient_data",
+        "n_races": 1,
+        "baseline_avg_pts": 15.0,
+        "candidate_avg_pts": 15.0,
+        "delta_avg_pts": 0.0,
+        "artifact_gate_pass": true,
+        "reason": "n_races 1 below required minimum 3",
+        "source": "results/candidate_a/candidate_a_live_2026_replay.json"
       }
     },
     {
@@ -26,9 +31,14 @@
         "reason": "candidate-specific replay artifact is missing"
       },
       "live_2026_candidate_replay": {
-        "status": "missing",
-        "source": "results/candidate_b/candidate_b_live_2026_replay.json",
-        "reason": "candidate-specific replay artifact is missing"
+        "status": "insufficient_data",
+        "n_races": 1,
+        "baseline_avg_pts": 15.0,
+        "candidate_avg_pts": 15.0,
+        "delta_avg_pts": 0.0,
+        "artifact_gate_pass": true,
+        "reason": "n_races 1 below required minimum 3",
+        "source": "results/candidate_b/candidate_b_live_2026_replay.json"
       }
     }
   ]

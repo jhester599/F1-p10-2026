@@ -1,0 +1,53 @@
+{
+  "generated_at_utc": "2026-06-14 17:30 UTC",
+  "candidate": "Candidate A",
+  "status": "ok",
+  "baseline_metrics": {
+    "n_races": 1,
+    "avg_pts": 15.0,
+    "total_pts": 15
+  },
+  "candidate_metrics": {
+    "n_races": 1,
+    "avg_pts": 15.0,
+    "total_pts": 15
+  },
+  "passes_gate": true,
+  "races": [
+    {
+      "round": 2,
+      "baseline_pick": "hadjar",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "hadjar",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    }
+  ],
+  "skipped_rounds": [
+    {
+      "round": 1,
+      "reason": "missing_score_columns: xgb_ranker_score, lgbm_ranker_score"
+    },
+    {
+      "round": 3,
+      "reason": "missing_live_actuals"
+    },
+    {
+      "round": 4,
+      "reason": "missing_live_actuals"
+    },
+    {
+      "round": 5,
+      "reason": "missing_live_actuals"
+    },
+    {
+      "round": 6,
+      "reason": "missing_live_actuals"
+    },
+    {
+      "round": 7,
+      "reason": "missing_live_actuals"
+    }
+  ]
+}

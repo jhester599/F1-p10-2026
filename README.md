@@ -87,11 +87,15 @@ Outputs:
 - `results/scorecards/benchmark_scorecard_latest.md`
 - `results/scorecards/candidate_replay_gates.{json,md}`
 - `results/scorecards/candidate_promotion_readiness.{json,md}`
+- `results/candidate_a/candidate_a_live_2026_replay.json`
+- `results/candidate_b/candidate_b_live_2026_replay.json`
 
 The replay-gates report validates candidate-specific rolling-CV and 2026 live
 replay evidence when those artifacts exist. The promotion-readiness report ranks
 Candidate A/B holdout evidence and keeps production promotion blocked until the
 candidate replay gates pass.
+Current live replay evidence covers only one usable completed race, so the live
+gate is intentionally marked `insufficient_data`.
 
 Retrain/model-cache drift audit:
 
