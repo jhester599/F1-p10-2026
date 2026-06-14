@@ -185,3 +185,19 @@ This document records structural decisions made for CI reliability, Windows comp
 - Refreshed best individual model: `xgb_clf`, `14.04 avg_pts`.
 - Drift audit now reports `0/216` changed picks between tracked eval artifacts and the loaded current model cache.
 - Candidate A/B sweeps must be rerun in separate PRs against this refreshed baseline before any production weight promotion.
+
+## 13) Rerun Candidate B against the refreshed baseline without auto-promotion
+
+### Decision
+- Rerun `scripts/94_candidate_b_stage_weight_sweep.py` after the refreshed baseline landed.
+- Keep production inference weights unchanged even though the refreshed Candidate B holdout gate passed.
+
+### Why
+- The refreshed Candidate B configuration improved the current ensemble from `13.1250` to `14.0417 avg_pts` on the 2025 holdout.
+- The result ties the refreshed `xgb_clf` individual model and is concentrated in the small late-season segment, so it remains an overfit risk without rolling-CV and 2026 live-log confirmation.
+- Race-weekend inference should remain stable unless a candidate clears the balanced promotion gates, not only a single holdout sweep.
+
+### Impact
+- Updated Candidate B artifacts under `results/candidate_b/`.
+- Updated `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md` with the refreshed rerun.
+- Next validation should compare Candidate B against both the refreshed ensemble and refreshed `xgb_clf` reference.

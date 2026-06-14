@@ -141,6 +141,10 @@ Outputs:
 - `results/candidate_b/candidate_b_stage_recommendation.{json,md}`
 - `results/candidate_b/candidate_b_stage_sweep_top.csv`
 
+Current status: the refreshed Candidate B rerun passed the 2025 holdout gate
+(`14.0417 avg_pts` vs `13.1250` ensemble baseline), but production weights remain
+unchanged until rolling-CV and 2026 live-log gates are recorded.
+
 PR sanity validation is defined in `.github/workflows/repo-sanity.yml`.
 
 ---

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-14 12:42 UTC",
+  "generated_at_utc": "2026-06-14 12:47 UTC",
   "tracked_summary": "results/eval_2025_summary.csv",
   "tracked_picks": "results/eval_2025_picks.csv",
   "outputs": {
@@ -243,7 +243,7 @@
     }
   },
   "provenance": {
-    "head": "d86bec94bb9e80641675f203861cc6c323dddb3b",
+    "head": "4656165700f036d07108d427899bdf52cd7f2689",
     "tracked_artifacts": {
       "results/eval_2025_summary.csv": {
         "last_commit": "d86bec94bb9e80641675f203861cc6c323dddb3b",

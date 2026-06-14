@@ -23,6 +23,15 @@ The original V10 research notes below are retained as historical context.
 Candidate A/B experiments should be rerun against the refreshed baseline before
 any promotion decision.
 
+Candidate B refreshed rerun:
+- Command: `python scripts/94_candidate_b_stage_weight_sweep.py --year 2025 --boundaries 5,15 --scales 0.85,1.0,1.15`
+- Refreshed ensemble baseline: `13.1250 avg_pts`
+- Best gated Candidate B configuration: `14.0417 avg_pts` (`+0.9167`)
+- Balanced holdout gate: passed
+- Production decision: do not promote yet; validate against rolling-CV and
+  2026 live-log gates first because the result ties refreshed `xgb_clf` and is
+  sensitive to small stage samples.
+
 ---
 
 ## Current Baselines (eval_2025_picks.csv)

@@ -102,8 +102,10 @@ Owner: Repo maintainer
 - Baseline refresh runbook: `docs/BASELINE_REFRESH_RUNBOOK_2026-06-14.md`.
 
 Exit criteria:
-- Fresh audit under the pinned runtime is recorded.
+- Fresh audit under the pinned runtime is recorded. **Complete:** latest audit
+  reports `0/216` changed picks.
 - Candidate A/B sweeps are rerun after the refreshed baseline branch lands.
+  **Candidate B complete; Candidate A refreshed rerun remains pending.**
 - Any intentional model refresh updates the audit report and scorecard artifacts together.
 
 ### Phase 4 — Model Enhancement Program (No External Research Refresh Yet)
@@ -124,7 +126,12 @@ Candidate B - Season-stage weighting recalibration:
 - Cycle-1 status (2026-03-26):
   - Implemented stage sweep tool: `scripts/94_candidate_b_stage_weight_sweep.py`
   - Artifacts produced under `results/candidate_b/`
-  - Promotion decision: deferred until Candidate B is rerun against refreshed baseline
+  - Refreshed rerun complete on 2026-06-14:
+    - refreshed ensemble baseline: `13.1250 avg_pts`
+    - best Candidate B configuration: `14.0417 avg_pts`
+    - balanced holdout gate: passed
+  - Promotion decision: keep production weights unchanged until rolling-CV and
+    2026 live-log gates are recorded
   - Details: `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md`
 
 Candidate C — Regulation-shift stress tests and ablations:
