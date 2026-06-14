@@ -1,0 +1,53 @@
+{
+  "generated_at_utc": "2026-06-14 13:01 UTC",
+  "inputs": {
+    "benchmark": "results/scorecards/benchmark_scorecard_latest.json",
+    "candidate_a": "results/candidate_a/candidate_a_weight_sweep_recommendation.json",
+    "candidate_b": "results/candidate_b/candidate_b_stage_recommendation.json"
+  },
+  "interpretation": {
+    "leader": "Candidate A",
+    "production_change_recommended": false,
+    "reason": "Candidate holdout sweeps are available, but candidate-specific rolling-CV and 2026 live replay gates are missing."
+  },
+  "candidates": [
+    {
+      "candidate": "Candidate A",
+      "status": "evaluated",
+      "source": "results/candidate_a/candidate_a_weight_sweep_recommendation.json",
+      "holdout": {
+        "baseline_avg_pts": 13.125,
+        "candidate_avg_pts": 14.416666666666666,
+        "delta_vs_ensemble": 1.291666666666666,
+        "best_individual_model": "xgb_clf",
+        "best_individual_avg_pts": 14.04,
+        "delta_vs_best_individual": 0.3766666666666669,
+        "balanced_gate_pass": true
+      },
+      "required_replay_gates": {
+        "rolling_cv_candidate_replay": "missing",
+        "live_2026_candidate_replay": "missing"
+      },
+      "promotion_status": "blocked_missing_candidate_cv_live"
+    },
+    {
+      "candidate": "Candidate B",
+      "status": "evaluated",
+      "source": "results/candidate_b/candidate_b_stage_recommendation.json",
+      "holdout": {
+        "baseline_avg_pts": 13.125,
+        "candidate_avg_pts": 14.041666666666666,
+        "delta_vs_ensemble": 0.9166666666666661,
+        "best_individual_model": "xgb_clf",
+        "best_individual_avg_pts": 14.04,
+        "delta_vs_best_individual": 0.0016666666666669272,
+        "balanced_gate_pass": true
+      },
+      "required_replay_gates": {
+        "rolling_cv_candidate_replay": "missing",
+        "live_2026_candidate_replay": "missing"
+      },
+      "promotion_status": "blocked_missing_candidate_cv_live"
+    }
+  ]
+}

@@ -77,12 +77,18 @@ Scorecard harness:
 
 ```bash
 python scripts/90_benchmark_scorecards.py
+python scripts/96_candidate_promotion_readiness.py
 ```
 
 Outputs:
 
 - `results/scorecards/benchmark_scorecard_latest.json`
 - `results/scorecards/benchmark_scorecard_latest.md`
+- `results/scorecards/candidate_promotion_readiness.{json,md}`
+
+The promotion-readiness report ranks Candidate A/B holdout evidence and keeps
+production promotion blocked until candidate-specific rolling-CV and 2026 live
+replay gates are recorded.
 
 Retrain/model-cache drift audit:
 

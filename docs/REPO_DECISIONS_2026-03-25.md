@@ -225,3 +225,23 @@ This document records structural decisions made for CI reliability, Windows comp
 - Candidate A is now the leading production promotion candidate for the next
   validation pass.
 - Production race-weekend inference remains unchanged.
+
+## 15) Add candidate promotion-readiness matrix
+
+### Decision
+- Add `scripts/96_candidate_promotion_readiness.py`.
+- Track `results/scorecards/candidate_promotion_readiness.{json,md}`.
+- Run the readiness snapshot in repo sanity CI.
+
+### Why
+- Candidate A and Candidate B now both pass their refreshed 2025 holdout gates,
+  but neither has candidate-specific rolling-CV or 2026 live replay validation.
+- Existing rolling/live artifacts show useful model context but cannot replay
+  blended candidate weights, so they should not be treated as promotion evidence.
+
+### Impact
+- Candidate A is ranked as the leading holdout candidate.
+- Production promotion remains explicitly blocked with status
+  `blocked_missing_candidate_cv_live`.
+- The next model-development task is to add a candidate-specific replay harness,
+  not to change race-weekend inference weights yet.
