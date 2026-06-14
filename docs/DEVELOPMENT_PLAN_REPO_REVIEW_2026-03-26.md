@@ -93,10 +93,11 @@ Current status:
 - Drift: **-0.5383 avg pts/race**.
 - Dependency finding: local sklearn `1.9.0` loaded artifacts serialized under sklearn `1.8.0`; `requirements.txt` now pins `scikit-learn==1.8.0`.
 - Follow-up finding: rerunning the audit inside a clean sklearn `1.8.0` virtualenv removed the unpickle warnings but left the same `-0.5383` ensemble drift, so remaining work should focus on model-cache/data provenance before Candidate B promotion.
+- Provenance finding: tracked eval artifacts last changed in `0f78f1c`, while current `src/models.py`, `src/feature_engineering.py`, and committed processed parquet snapshots differ from that artifact commit. The audit now writes `results/retrain_drift/pick_drift_detail.csv` and git provenance metadata to make this mismatch visible.
 
 Exit criteria:
 - Fresh audit under the pinned runtime is recorded.
-- Candidate A/B sweeps are rerun only after the audit result is understood.
+- Candidate A/B sweeps are rerun only after tracked eval artifacts are refreshed from a self-contained current code/data/model snapshot or intentionally replaced by a new baseline.
 - Any intentional model refresh updates the audit report and scorecard artifacts together.
 
 ### Phase 4 — Model Enhancement Program (No External Research Refresh Yet)

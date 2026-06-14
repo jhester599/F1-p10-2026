@@ -1,9 +1,11 @@
 {
-  "generated_at_utc": "2026-06-14 12:26 UTC",
+  "generated_at_utc": "2026-06-14 12:30 UTC",
   "tracked_summary": "results/eval_2025_summary.csv",
+  "tracked_picks": "results/eval_2025_picks.csv",
   "outputs": {
     "current_picks": "results/retrain_drift/current_model_eval_picks.csv",
-    "current_summary": "results/retrain_drift/current_model_eval_summary.csv"
+    "current_summary": "results/retrain_drift/current_model_eval_summary.csv",
+    "pick_drift_detail": "results/retrain_drift/pick_drift_detail.csv"
   },
   "comparison_to_tracked": [
     {
@@ -86,6 +88,71 @@
       "total_pts_current": 282,
       "delta_avg_pts": 2.58,
       "delta_total_pts": 62
+    }
+  ],
+  "pick_drift_summary": [
+    {
+      "model": "lgb_reg",
+      "n_rows": 24,
+      "changed_picks": 18,
+      "total_pts_delta": 62,
+      "changed_pick_pct": 75.0
+    },
+    {
+      "model": "xgb_reg",
+      "n_rows": 24,
+      "changed_picks": 15,
+      "total_pts_delta": 14,
+      "changed_pick_pct": 62.5
+    },
+    {
+      "model": "lgbm_ranker",
+      "n_rows": 24,
+      "changed_picks": 14,
+      "total_pts_delta": -27,
+      "changed_pick_pct": 58.3
+    },
+    {
+      "model": "xgb_clf",
+      "n_rows": 24,
+      "changed_picks": 14,
+      "total_pts_delta": 0,
+      "changed_pick_pct": 58.3
+    },
+    {
+      "model": "xgb_ranker",
+      "n_rows": 24,
+      "changed_picks": 12,
+      "total_pts_delta": -26,
+      "changed_pick_pct": 50.0
+    },
+    {
+      "model": "rf_clf",
+      "n_rows": 24,
+      "changed_picks": 10,
+      "total_pts_delta": -46,
+      "changed_pick_pct": 41.7
+    },
+    {
+      "model": "ensemble",
+      "n_rows": 24,
+      "changed_picks": 9,
+      "total_pts_delta": -13,
+      "changed_pick_pct": 37.5
+    },
+    {
+      "model": "rf_reg",
+      "n_rows": 24,
+      "changed_picks": 7,
+      "total_pts_delta": 23,
+      "changed_pick_pct": 29.2
+    },
+    {
+      "model": "ridge",
+      "n_rows": 24,
+      "changed_picks": 2,
+      "total_pts_delta": 0,
+      "changed_pick_pct": 8.3
     }
   ],
   "fingerprint": {
@@ -173,6 +240,97 @@
       "joblib": "1.5.3",
       "scipy": "1.17.1",
       "pyarrow": "24.0.0"
+    }
+  },
+  "provenance": {
+    "head": "97e730b0dafbcc7b45bd778d1ef5e9a8d657b006",
+    "tracked_artifacts": {
+      "results/eval_2025_summary.csv": {
+        "last_commit": "0f78f1c3396c24b28762930b72e6607517838c34",
+        "last_commit_short": "0f78f1c",
+        "subject": "Refresh cache-only baseline artifacts and scorecards"
+      },
+      "results/eval_2025_picks.csv": {
+        "last_commit": "0f78f1c3396c24b28762930b72e6607517838c34",
+        "last_commit_short": "0f78f1c",
+        "subject": "Refresh cache-only baseline artifacts and scorecards"
+      }
+    },
+    "input_comparison": {
+      "0f78f1c": {
+        "config.py": {
+          "at_eval_commit": {
+            "exists": true,
+            "sha256": "8d5b8d1e5c31ab06c57343a4c08e7585a985de1afe22735cf463239389935aa4",
+            "bytes": 21924
+          },
+          "at_head": {
+            "exists": true,
+            "sha256": "8d5b8d1e5c31ab06c57343a4c08e7585a985de1afe22735cf463239389935aa4",
+            "bytes": 21924
+          }
+        },
+        "src/models.py": {
+          "at_eval_commit": {
+            "exists": true,
+            "sha256": "9a89caa3ad226dfd119f69c2120bc8c918ad9e5ca5f5e6f07ee9126c739953fa",
+            "bytes": 50334
+          },
+          "at_head": {
+            "exists": true,
+            "sha256": "419421ee8c8cc2838dd28ed007bee7085a1a50483f5ff4ee624abce01110ca57",
+            "bytes": 56949
+          }
+        },
+        "src/feature_engineering.py": {
+          "at_eval_commit": {
+            "exists": true,
+            "sha256": "eaca9eac0d8b7285dcfea759b8567b7686f61b9ce1869faa08a04fe3bb24ead9",
+            "bytes": 45927
+          },
+          "at_head": {
+            "exists": true,
+            "sha256": "d2990a815918810a1930fb91cdc8b778e52e5e016c1f71875d4c6f01947a6683",
+            "bytes": 44726
+          }
+        },
+        "data/processed/features_2010_2024.parquet": {
+          "at_eval_commit": {
+            "exists": false,
+            "sha256": null,
+            "bytes": null
+          },
+          "at_head": {
+            "exists": true,
+            "sha256": "770f1fde18c1d4b3de5c2af70367f705cefa5c994528014a8755f90c1eb1ebf0",
+            "bytes": 957593
+          }
+        },
+        "data/processed/features_2010_2025.parquet": {
+          "at_eval_commit": {
+            "exists": false,
+            "sha256": null,
+            "bytes": null
+          },
+          "at_head": {
+            "exists": true,
+            "sha256": "3a44dd49682ae65e71243145d9ba60b10a5a22305daad896b5c6d96c5c3de268",
+            "bytes": 1027560
+          }
+        },
+        "data/processed/features_2025_2025.parquet": {
+          "at_eval_commit": {
+            "exists": false,
+            "sha256": null,
+            "bytes": null
+          },
+          "at_head": {
+            "exists": true,
+            "sha256": "271dfef809210cb4b812dccc8b182edf84cf3edb1958d54bfd1ccd3d87ca23f4",
+            "bytes": 156026
+          }
+        }
+      }
     }
   }
 }

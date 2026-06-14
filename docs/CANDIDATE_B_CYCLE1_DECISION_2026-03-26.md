@@ -70,3 +70,10 @@ virtualenv removed the unpickle warnings but kept the same ensemble delta
 provenance stabilization or an intentional model refresh, not merely a dependency
 downgrade.
 
+Provenance follow-up: the audit now records per-pick drift and git provenance.
+It found `101/216` tracked model-round picks differ from the current loaded-cache
+evaluation. The tracked `results/eval_2025_*` artifacts last changed in `0f78f1c`,
+but current model code and committed processed parquet snapshots differ from that
+artifact commit. Candidate B promotion should wait until the baseline is refreshed
+from one self-contained current code/data/model snapshot.
+

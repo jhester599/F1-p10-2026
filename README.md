@@ -93,11 +93,14 @@ Outputs:
 
 - `results/retrain_drift/current_model_eval_summary.csv`
 - `results/retrain_drift/current_model_eval_picks.csv`
+- `results/retrain_drift/pick_drift_detail.csv`
 - `results/retrain_drift/retrain_drift_report.{json,md}`
 
 Use this before Candidate A/B promotion work. It evaluates the currently loaded
 `models/*.joblib` cache against the tracked 2025 eval summary without retraining
-or overwriting canonical `results/eval_2025_*` files.
+or overwriting canonical `results/eval_2025_*` files. The report also captures
+runtime package versions, model/data fingerprints, per-pick drift, and git
+provenance for the tracked baseline artifacts.
 
 Candidate A diagnostics (ranking/calibration robustness with scorecard gates):
 
