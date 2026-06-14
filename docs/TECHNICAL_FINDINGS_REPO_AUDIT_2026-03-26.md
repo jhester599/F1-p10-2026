@@ -92,6 +92,9 @@ Classification legend:
 - Candidate A cycle-1 sweep tooling and artifacts are now tracked:
   - `scripts/92_candidate_a_weight_sweep.py`
   - `results/candidate_a/candidate_a_weight_sweep_recommendation.md`
+  - Refreshed rerun on 2026-06-14 passed the 2025 holdout gate
+    (`14.4167 avg_pts` vs `13.1250` ensemble baseline), making Candidate A
+    the leading promotion candidate pending rolling-CV and 2026 live-log gates.
 - Candidate B cycle-1 stage sweep tooling and artifacts are now tracked:
   - `scripts/94_candidate_b_stage_weight_sweep.py`
   - `results/candidate_b/candidate_b_stage_recommendation.md`
@@ -106,6 +109,7 @@ Classification legend:
 - Continue reducing `sys.path` coupling in non-core experimentation scripts as a separate cleanup batch.
 - Keep `v6x/` archive frozen and out of active validation workflows.
 - Use the canonical development plan for enhancement sequencing and promotion gates.
-- Rerun Candidate A against the refreshed baseline before promoting any weight changes.
+- Candidate A refreshed rerun is complete; validate it against rolling-CV and
+  2026 live-log gates before promoting any weight changes.
 - Validate the refreshed Candidate B promotion candidate against rolling-CV and
   2026 live-log gates before changing production inference weights.

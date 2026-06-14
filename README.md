@@ -130,6 +130,10 @@ Outputs:
 - `results/candidate_a/candidate_a_weight_sweep_recommendation.{json,md}`
 - `results/scorecards/candidate_a_baseline.json`
 
+Current status: the refreshed Candidate A rerun is the leading holdout candidate
+(`14.4167 avg_pts` vs `13.1250` ensemble baseline), but production weights remain
+unchanged until rolling-CV and 2026 live-log gates are recorded.
+
 Candidate B stage recalibration sweep:
 
 ```bash

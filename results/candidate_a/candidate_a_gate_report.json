@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-26 15:52 UTC",
+  "generated_at_utc": "2026-06-14 12:57 UTC",
   "year": 2025,
   "write_baseline": false,
   "baseline_path": "results/scorecards/candidate_a_baseline.json",
@@ -62,7 +62,7 @@
         "pass": true
       },
       {
-        "model": "lgbm_ranker",
+        "model": "xgb_ranker",
         "category": "ranking",
         "metric": "mean_actual_p10_rank",
         "delta": 0.0,
@@ -70,7 +70,7 @@
         "pass": true
       },
       {
-        "model": "lgbm_ranker",
+        "model": "xgb_ranker",
         "category": "ranking",
         "metric": "mean_ndcg_at_5",
         "delta": 0.0,
@@ -78,7 +78,7 @@
         "pass": true
       },
       {
-        "model": "xgb_ranker",
+        "model": "lgbm_ranker",
         "category": "ranking",
         "metric": "mean_actual_p10_rank",
         "delta": 0.0,
@@ -86,7 +86,7 @@
         "pass": true
       },
       {
-        "model": "xgb_ranker",
+        "model": "lgbm_ranker",
         "category": "ranking",
         "metric": "mean_ndcg_at_5",
         "delta": 0.0,

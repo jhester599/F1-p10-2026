@@ -1,6 +1,6 @@
 # Retrain Drift Audit
 
-- Generated: 2026-06-14 12:47 UTC
+- Generated: 2026-06-14 12:53 UTC
 - Tracked summary: `results/eval_2025_summary.csv`
 - Tracked picks: `results/eval_2025_picks.csv`
 - Current summary: `results/retrain_drift/current_model_eval_summary.csv`
@@ -35,7 +35,7 @@
 - xgb_reg: 0/24 changed (0.0%), pts delta +0
 
 ## Provenance
-- HEAD: `4656165`
+- HEAD: `64ca2ea`
 - `results/eval_2025_summary.csv` last changed in `d86bec9`: Refresh current 2025 baseline artifacts
 - `results/eval_2025_picks.csv` last changed in `d86bec9`: Refresh current 2025 baseline artifacts
 - Inputs compared against eval artifact commit `d86bec9`:
