@@ -52,15 +52,20 @@ Exit criteria:
 Owner: Repo maintainer
 
 1. Use `scripts/90_benchmark_scorecards.py` as the reproducible scorecard entrypoint.
-2. Track three scorecards every enhancement cycle:
+2. Use `scripts/96_candidate_promotion_readiness.py` to summarize Candidate A/B
+   promotion readiness from tracked artifacts.
+3. Track three scorecards every enhancement cycle:
    - 2025 holdout
    - rolling CV
    - 2026 live log
-3. Update `results/scorecards/benchmark_scorecard_latest.{json,md}` per review cycle.
+4. Update `results/scorecards/benchmark_scorecard_latest.{json,md}` and
+   `results/scorecards/candidate_promotion_readiness.{json,md}` per review cycle.
 
 Exit criteria:
 - Scorecards are generated in one command.
 - Missing local artifacts are reported clearly without blocking repo checks.
+- Candidate promotion reports distinguish generic scorecard availability from
+  candidate-specific replay validation.
 
 ### Phase 3A - Candidate A Diagnostic Harness (Implemented)
 Owner: Repo maintainer
@@ -151,12 +156,14 @@ Promotion gates for all candidates:
 
 ## Operating Playbook per Enhancement PR
 1. Refresh scorecards with `python scripts/90_benchmark_scorecards.py`.
-2. Run `python scripts/95_retrain_drift_audit.py` when the change depends on loaded model artifacts.
-3. Implement candidate change.
-4. Re-run scorecards and compare deltas.
-5. Accept/reject using promotion gates.
-6. Update:
+2. Refresh candidate promotion status with `python scripts/96_candidate_promotion_readiness.py`.
+3. Run `python scripts/95_retrain_drift_audit.py` when the change depends on loaded model artifacts.
+4. Implement candidate change.
+5. Re-run scorecards and compare deltas.
+6. Accept/reject using promotion gates.
+7. Update:
    - `results/scorecards/benchmark_scorecard_latest.md`
+   - `results/scorecards/candidate_promotion_readiness.md`
    - `results/retrain_drift/retrain_drift_report.md` when model-cache compatibility is relevant
    - technical findings note for the change
    - README/docs only if canonical behavior changed

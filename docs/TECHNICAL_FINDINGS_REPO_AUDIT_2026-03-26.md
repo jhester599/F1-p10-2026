@@ -104,6 +104,12 @@ Classification legend:
 - Retrain/model-cache drift audit tooling and artifacts are now tracked:
   - `scripts/95_retrain_drift_audit.py`
   - `results/retrain_drift/retrain_drift_report.md`
+- Candidate promotion-readiness tooling and artifacts are now tracked:
+  - `scripts/96_candidate_promotion_readiness.py`
+  - `results/scorecards/candidate_promotion_readiness.md`
+  - Current status: Candidate A leads on refreshed holdout, but production
+    promotion is blocked until candidate-specific rolling-CV and 2026 live
+    replay gates exist.
 
 ## Remaining Follow-Ups (Planned)
 - Continue reducing `sys.path` coupling in non-core experimentation scripts as a separate cleanup batch.
@@ -113,3 +119,5 @@ Classification legend:
   2026 live-log gates before promoting any weight changes.
 - Validate the refreshed Candidate B promotion candidate against rolling-CV and
   2026 live-log gates before changing production inference weights.
+- Build a replay harness that can evaluate Candidate A/B blended weights on
+  rolling-CV and 2026 completed-race contexts.
