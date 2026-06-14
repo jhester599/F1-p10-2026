@@ -8,6 +8,23 @@
 
 ---
 
+## Baseline Refresh Addendum (2026-06-14)
+
+The canonical `results/eval_2025_*` artifacts were refreshed from a current
+code/data/model snapshot after retrain-drift provenance work.
+
+Current refreshed 2025 holdout:
+- `xgb_clf`: `14.04 avg_pts` (best individual model)
+- `ensemble`: `13.12 avg_pts`
+- Drift audit: `0/216` changed picks between tracked eval artifacts and the
+  loaded current model cache
+
+The original V10 research notes below are retained as historical context.
+Candidate A/B experiments should be rerun against the refreshed baseline before
+any promotion decision.
+
+---
+
 ## Current Baselines (eval_2025_picks.csv)
 
 | Model        | pts/race | Exact P10 | Within 2 pos |

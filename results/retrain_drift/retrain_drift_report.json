@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-14 12:30 UTC",
+  "generated_at_utc": "2026-06-14 12:42 UTC",
   "tracked_summary": "results/eval_2025_summary.csv",
   "tracked_picks": "results/eval_2025_picks.csv",
   "outputs": {
@@ -9,150 +9,150 @@
   },
   "comparison_to_tracked": [
     {
-      "model": "rf_clf",
-      "avg_pts_tracked": 13.5,
-      "total_pts_tracked": 324,
-      "avg_pts_current": 11.5833,
-      "total_pts_current": 278,
-      "delta_avg_pts": -1.9167000000000005,
-      "delta_total_pts": -46
+      "model": "xgb_reg",
+      "avg_pts_tracked": 9.92,
+      "total_pts_tracked": 238,
+      "avg_pts_current": 9.9167,
+      "total_pts_current": 238,
+      "delta_avg_pts": -0.0032999999999994145,
+      "delta_total_pts": 0
     },
     {
-      "model": "lgbm_ranker",
-      "avg_pts_tracked": 12.21,
-      "total_pts_tracked": 293,
-      "avg_pts_current": 11.0833,
-      "total_pts_current": 266,
-      "delta_avg_pts": -1.1267000000000014,
-      "delta_total_pts": -27
+      "model": "lgb_reg",
+      "avg_pts_tracked": 9.46,
+      "total_pts_tracked": 227,
+      "avg_pts_current": 9.4583,
+      "total_pts_current": 227,
+      "delta_avg_pts": -0.001700000000001367,
+      "delta_total_pts": 0
     },
     {
       "model": "xgb_ranker",
-      "avg_pts_tracked": 12.17,
-      "total_pts_tracked": 292,
-      "avg_pts_current": 11.0833,
-      "total_pts_current": 266,
-      "delta_avg_pts": -1.0867000000000004,
-      "delta_total_pts": -26
-    },
-    {
-      "model": "ensemble",
-      "avg_pts_tracked": 13.58,
-      "total_pts_tracked": 326,
-      "avg_pts_current": 13.0417,
-      "total_pts_current": 313,
-      "delta_avg_pts": -0.5382999999999996,
-      "delta_total_pts": -13
-    },
-    {
-      "model": "xgb_clf",
-      "avg_pts_tracked": 12.88,
-      "total_pts_tracked": 309,
-      "avg_pts_current": 12.875,
-      "total_pts_current": 309,
-      "delta_avg_pts": -0.005000000000000782,
+      "avg_pts_tracked": 11.21,
+      "total_pts_tracked": 269,
+      "avg_pts_current": 11.2083,
+      "total_pts_current": 269,
+      "delta_avg_pts": -0.001700000000001367,
       "delta_total_pts": 0
-    },
-    {
-      "model": "ridge",
-      "avg_pts_tracked": 10.04,
-      "total_pts_tracked": 241,
-      "avg_pts_current": 10.0417,
-      "total_pts_current": 241,
-      "delta_avg_pts": 0.001700000000001367,
-      "delta_total_pts": 0
-    },
-    {
-      "model": "xgb_reg",
-      "avg_pts_tracked": 9.71,
-      "total_pts_tracked": 233,
-      "avg_pts_current": 10.2917,
-      "total_pts_current": 247,
-      "delta_avg_pts": 0.5816999999999997,
-      "delta_total_pts": 14
     },
     {
       "model": "rf_reg",
       "avg_pts_tracked": 7.71,
       "total_pts_tracked": 185,
-      "avg_pts_current": 8.6667,
-      "total_pts_current": 208,
-      "delta_avg_pts": 0.9567000000000005,
-      "delta_total_pts": 23
+      "avg_pts_current": 7.7083,
+      "total_pts_current": 185,
+      "delta_avg_pts": -0.0016999999999995907,
+      "delta_total_pts": 0
     },
     {
-      "model": "lgb_reg",
-      "avg_pts_tracked": 9.17,
-      "total_pts_tracked": 220,
-      "avg_pts_current": 11.75,
-      "total_pts_current": 282,
-      "delta_avg_pts": 2.58,
-      "delta_total_pts": 62
+      "model": "lgbm_ranker",
+      "avg_pts_tracked": 11.25,
+      "total_pts_tracked": 270,
+      "avg_pts_current": 11.25,
+      "total_pts_current": 270,
+      "delta_avg_pts": 0.0,
+      "delta_total_pts": 0
+    },
+    {
+      "model": "xgb_clf",
+      "avg_pts_tracked": 14.04,
+      "total_pts_tracked": 337,
+      "avg_pts_current": 14.0417,
+      "total_pts_current": 337,
+      "delta_avg_pts": 0.001700000000001367,
+      "delta_total_pts": 0
+    },
+    {
+      "model": "rf_clf",
+      "avg_pts_tracked": 12.83,
+      "total_pts_tracked": 308,
+      "avg_pts_current": 12.8333,
+      "total_pts_current": 308,
+      "delta_avg_pts": 0.0032999999999994145,
+      "delta_total_pts": 0
+    },
+    {
+      "model": "ensemble",
+      "avg_pts_tracked": 13.12,
+      "total_pts_tracked": 315,
+      "avg_pts_current": 13.125,
+      "total_pts_current": 315,
+      "delta_avg_pts": 0.005000000000000782,
+      "delta_total_pts": 0
+    },
+    {
+      "model": "ridge",
+      "avg_pts_tracked": 10.12,
+      "total_pts_tracked": 243,
+      "avg_pts_current": 10.125,
+      "total_pts_current": 243,
+      "delta_avg_pts": 0.005000000000000782,
+      "delta_total_pts": 0
     }
   ],
   "pick_drift_summary": [
     {
-      "model": "lgb_reg",
+      "model": "ensemble",
       "n_rows": 24,
-      "changed_picks": 18,
-      "total_pts_delta": 62,
-      "changed_pick_pct": 75.0
+      "changed_picks": 0,
+      "total_pts_delta": 0,
+      "changed_pick_pct": 0.0
     },
     {
-      "model": "xgb_reg",
+      "model": "lgb_reg",
       "n_rows": 24,
-      "changed_picks": 15,
-      "total_pts_delta": 14,
-      "changed_pick_pct": 62.5
+      "changed_picks": 0,
+      "total_pts_delta": 0,
+      "changed_pick_pct": 0.0
     },
     {
       "model": "lgbm_ranker",
       "n_rows": 24,
-      "changed_picks": 14,
-      "total_pts_delta": -27,
-      "changed_pick_pct": 58.3
-    },
-    {
-      "model": "xgb_clf",
-      "n_rows": 24,
-      "changed_picks": 14,
+      "changed_picks": 0,
       "total_pts_delta": 0,
-      "changed_pick_pct": 58.3
-    },
-    {
-      "model": "xgb_ranker",
-      "n_rows": 24,
-      "changed_picks": 12,
-      "total_pts_delta": -26,
-      "changed_pick_pct": 50.0
+      "changed_pick_pct": 0.0
     },
     {
       "model": "rf_clf",
       "n_rows": 24,
-      "changed_picks": 10,
-      "total_pts_delta": -46,
-      "changed_pick_pct": 41.7
-    },
-    {
-      "model": "ensemble",
-      "n_rows": 24,
-      "changed_picks": 9,
-      "total_pts_delta": -13,
-      "changed_pick_pct": 37.5
+      "changed_picks": 0,
+      "total_pts_delta": 0,
+      "changed_pick_pct": 0.0
     },
     {
       "model": "rf_reg",
       "n_rows": 24,
-      "changed_picks": 7,
-      "total_pts_delta": 23,
-      "changed_pick_pct": 29.2
+      "changed_picks": 0,
+      "total_pts_delta": 0,
+      "changed_pick_pct": 0.0
     },
     {
       "model": "ridge",
       "n_rows": 24,
-      "changed_picks": 2,
+      "changed_picks": 0,
       "total_pts_delta": 0,
-      "changed_pick_pct": 8.3
+      "changed_pick_pct": 0.0
+    },
+    {
+      "model": "xgb_clf",
+      "n_rows": 24,
+      "changed_picks": 0,
+      "total_pts_delta": 0,
+      "changed_pick_pct": 0.0
+    },
+    {
+      "model": "xgb_ranker",
+      "n_rows": 24,
+      "changed_picks": 0,
+      "total_pts_delta": 0,
+      "changed_pick_pct": 0.0
+    },
+    {
+      "model": "xgb_reg",
+      "n_rows": 24,
+      "changed_picks": 0,
+      "total_pts_delta": 0,
+      "changed_pick_pct": 0.0
     }
   ],
   "fingerprint": {
@@ -174,8 +174,8 @@
       },
       "requirements.txt": {
         "exists": true,
-        "sha256": "325a48916e51b6f07f08b48061c472306d279d65cb8b72f3ab1d145504d6a786",
-        "bytes": 200
+        "sha256": "d027296258de022f867513d3e758c0afd4165876b4f883bf4f966e9e06d622c2",
+        "bytes": 202
       },
       "data/processed/features_2010_2024.parquet": {
         "exists": true,
@@ -195,40 +195,40 @@
     },
     "models": {
       "models/ensemble.joblib": {
-        "sha256": "f630434ed9701830b250753f26518475387270c3ac7fd7700c5dc4ee3c8b635f",
-        "bytes": 238494323
+        "sha256": "85262fbbb9a743dec60857a2bb1aca6f3f7dce23eb812dfd9909ebdd4deebef7",
+        "bytes": 241379117
       },
       "models/lgb_reg.joblib": {
-        "sha256": "cc196707fcbf806b20e96c27237f5c6bdb303e5721efcb4c8288847ded76455a",
-        "bytes": 1679170
+        "sha256": "b6cc0b16d20da0f9ae3c0798fc099dd1d41440ecf3519177c3796c4374df126a",
+        "bytes": 1706103
       },
       "models/lgbm_ranker.joblib": {
-        "sha256": "210b91454812f3bf5792a41670776d43ad55755af22d67a35087a8958b10b963",
-        "bytes": 1765064
+        "sha256": "caa1bbc46dd4151b18f88b9cede463cef9bff3b11aecc851a4995ad179fdd50c",
+        "bytes": 1757926
       },
       "models/rf_clf.joblib": {
-        "sha256": "7aabdc63ab096783339d50ea6c3b7d22ad7e67e42dd57428b5f803dcd69cfbc0",
-        "bytes": 126892708
+        "sha256": "f69f700acdc831f2514fcc4dbca5e1ebf35e52ac28df62fa6c7215a231131d63",
+        "bytes": 125986020
       },
       "models/rf_reg.joblib": {
-        "sha256": "711fa5fe6a97c033b75e2121f82cb151422e16e195f0347bcdcf934c752904dc",
-        "bytes": 8477521
+        "sha256": "a7e2584bd42c9a270bc98bc992aff528a5ec3a083a4d5ef9fffc95658d433d16",
+        "bytes": 8378593
       },
       "models/ridge.joblib": {
-        "sha256": "2e694769f8641a1866b1b3c8c1bca602a3726feff31425b5b3b85f86848e80d1",
+        "sha256": "6aa1f8443cc82bfbe25f9fedc241eb38cf835848de3049204e615343b39c7406",
         "bytes": 2337
       },
       "models/xgb_clf.joblib": {
-        "sha256": "6794699fc0f991bea5d615f2316f074aa3feb0f001f0ab2a7b2dbcbf77a09603",
-        "bytes": 97201731
+        "sha256": "47b2b7ad6ca1c33fe0649b2e7cb98042a8a00340ff62e867667bb2a2d0ff188c",
+        "bytes": 101060371
       },
       "models/xgb_ranker.joblib": {
-        "sha256": "0e53fea02c24b40936fba2ea1b066eb7d4775de1679e250b058feb0f2baace06",
-        "bytes": 1185102
+        "sha256": "f0d1d563724ec2f3a2781286acb4f8ba2f2dce2270c9ff60731224dfca88c313",
+        "bytes": 1200425
       },
       "models/xgb_reg.joblib": {
-        "sha256": "3e059665a91ab47b66f6dad2f4af2b3a141fd4ae4f5b0f97cc1ae4aa595aa94c",
-        "bytes": 1291336
+        "sha256": "2b8f6f1074c1f904670f0013c9378ec64addaae622590b641443a00327d7ac6a",
+        "bytes": 1288029
       }
     },
     "packages": {
@@ -243,21 +243,21 @@
     }
   },
   "provenance": {
-    "head": "97e730b0dafbcc7b45bd778d1ef5e9a8d657b006",
+    "head": "d86bec94bb9e80641675f203861cc6c323dddb3b",
     "tracked_artifacts": {
       "results/eval_2025_summary.csv": {
-        "last_commit": "0f78f1c3396c24b28762930b72e6607517838c34",
-        "last_commit_short": "0f78f1c",
-        "subject": "Refresh cache-only baseline artifacts and scorecards"
+        "last_commit": "d86bec94bb9e80641675f203861cc6c323dddb3b",
+        "last_commit_short": "d86bec9",
+        "subject": "Refresh current 2025 baseline artifacts"
       },
       "results/eval_2025_picks.csv": {
-        "last_commit": "0f78f1c3396c24b28762930b72e6607517838c34",
-        "last_commit_short": "0f78f1c",
-        "subject": "Refresh cache-only baseline artifacts and scorecards"
+        "last_commit": "d86bec94bb9e80641675f203861cc6c323dddb3b",
+        "last_commit_short": "d86bec9",
+        "subject": "Refresh current 2025 baseline artifacts"
       }
     },
     "input_comparison": {
-      "0f78f1c": {
+      "d86bec9": {
         "config.py": {
           "at_eval_commit": {
             "exists": true,
@@ -273,8 +273,8 @@
         "src/models.py": {
           "at_eval_commit": {
             "exists": true,
-            "sha256": "9a89caa3ad226dfd119f69c2120bc8c918ad9e5ca5f5e6f07ee9126c739953fa",
-            "bytes": 50334
+            "sha256": "419421ee8c8cc2838dd28ed007bee7085a1a50483f5ff4ee624abce01110ca57",
+            "bytes": 56949
           },
           "at_head": {
             "exists": true,
@@ -285,8 +285,8 @@
         "src/feature_engineering.py": {
           "at_eval_commit": {
             "exists": true,
-            "sha256": "eaca9eac0d8b7285dcfea759b8567b7686f61b9ce1869faa08a04fe3bb24ead9",
-            "bytes": 45927
+            "sha256": "d2990a815918810a1930fb91cdc8b778e52e5e016c1f71875d4c6f01947a6683",
+            "bytes": 44726
           },
           "at_head": {
             "exists": true,
@@ -296,9 +296,9 @@
         },
         "data/processed/features_2010_2024.parquet": {
           "at_eval_commit": {
-            "exists": false,
-            "sha256": null,
-            "bytes": null
+            "exists": true,
+            "sha256": "770f1fde18c1d4b3de5c2af70367f705cefa5c994528014a8755f90c1eb1ebf0",
+            "bytes": 957593
           },
           "at_head": {
             "exists": true,
@@ -308,9 +308,9 @@
         },
         "data/processed/features_2010_2025.parquet": {
           "at_eval_commit": {
-            "exists": false,
-            "sha256": null,
-            "bytes": null
+            "exists": true,
+            "sha256": "3a44dd49682ae65e71243145d9ba60b10a5a22305daad896b5c6d96c5c3de268",
+            "bytes": 1027560
           },
           "at_head": {
             "exists": true,
@@ -320,9 +320,9 @@
         },
         "data/processed/features_2025_2025.parquet": {
           "at_eval_commit": {
-            "exists": false,
-            "sha256": null,
-            "bytes": null
+            "exists": true,
+            "sha256": "271dfef809210cb4b812dccc8b182edf84cf3edb1958d54bfd1ccd3d87ca23f4",
+            "bytes": 156026
           },
           "at_head": {
             "exists": true,

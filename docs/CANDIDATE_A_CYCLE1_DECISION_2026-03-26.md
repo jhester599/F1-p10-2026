@@ -49,3 +49,15 @@ Reason:
 Proceed to Candidate B (season-stage recalibration) while keeping Candidate A
 cycle-1 artifacts as a validated candidate input for a later promotion attempt
 after retrain-drift stability is addressed.
+
+## Baseline Refresh Update (2026-06-14)
+The 2025 baseline was refreshed from a current code/data/model snapshot:
+
+- Ensemble: `13.12 avg_pts`.
+- Best individual model: `xgb_clf`, `14.04 avg_pts`.
+- Drift audit: `0/216` changed picks between tracked eval artifacts and the
+  loaded current model cache.
+
+Candidate A cycle-1 artifacts remain useful historical evidence, but promotion
+requires rerunning Candidate A sweeps against this refreshed baseline in a
+separate PR.
