@@ -55,6 +55,21 @@ def test_artifact_policy_is_documented_and_linked() -> None:
     assert "data/processed/ contains small committed feature snapshots" in ignore_rules
 
 
+def test_candidate_replay_gate_artifacts_are_documented_and_wired() -> None:
+    assert (ROOT / "results" / "scorecards" / "candidate_replay_gates.json").exists()
+    assert (ROOT / "results" / "scorecards" / "candidate_replay_gates.md").exists()
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert "scripts/97_candidate_replay_gates.py" in readme
+    assert "results/scorecards/candidate_replay_gates.{json,md}" in readme
+
+    workflow = (ROOT / ".github" / "workflows" / "repo-sanity.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "scripts/97_candidate_replay_gates.py" in workflow
+    assert "python scripts/97_candidate_replay_gates.py" in workflow
+
+
 def test_repo_sanity_uses_pinned_dependency_snapshot() -> None:
     workflow = (ROOT / ".github" / "workflows" / "repo-sanity.yml").read_text(
         encoding="utf-8"

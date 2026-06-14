@@ -77,6 +77,7 @@ Scorecard harness:
 
 ```bash
 python scripts/90_benchmark_scorecards.py
+python scripts/97_candidate_replay_gates.py
 python scripts/96_candidate_promotion_readiness.py
 ```
 
@@ -84,11 +85,13 @@ Outputs:
 
 - `results/scorecards/benchmark_scorecard_latest.json`
 - `results/scorecards/benchmark_scorecard_latest.md`
+- `results/scorecards/candidate_replay_gates.{json,md}`
 - `results/scorecards/candidate_promotion_readiness.{json,md}`
 
-The promotion-readiness report ranks Candidate A/B holdout evidence and keeps
-production promotion blocked until candidate-specific rolling-CV and 2026 live
-replay gates are recorded.
+The replay-gates report validates candidate-specific rolling-CV and 2026 live
+replay evidence when those artifacts exist. The promotion-readiness report ranks
+Candidate A/B holdout evidence and keeps production promotion blocked until the
+candidate replay gates pass.
 
 Retrain/model-cache drift audit:
 
@@ -138,7 +141,8 @@ Outputs:
 
 Current status: the refreshed Candidate A rerun is the leading holdout candidate
 (`14.4167 avg_pts` vs `13.1250` ensemble baseline), but production weights remain
-unchanged until rolling-CV and 2026 live-log gates are recorded.
+unchanged until `candidate_replay_gates` records passing rolling-CV and 2026
+live-log gates.
 
 Candidate B stage recalibration sweep:
 

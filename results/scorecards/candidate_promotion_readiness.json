@@ -1,14 +1,15 @@
 {
-  "generated_at_utc": "2026-06-14 13:01 UTC",
+  "generated_at_utc": "2026-06-14 17:25 UTC",
   "inputs": {
     "benchmark": "results/scorecards/benchmark_scorecard_latest.json",
     "candidate_a": "results/candidate_a/candidate_a_weight_sweep_recommendation.json",
-    "candidate_b": "results/candidate_b/candidate_b_stage_recommendation.json"
+    "candidate_b": "results/candidate_b/candidate_b_stage_recommendation.json",
+    "candidate_replay_gates": "results/scorecards/candidate_replay_gates.json"
   },
   "interpretation": {
     "leader": "Candidate A",
     "production_change_recommended": false,
-    "reason": "Candidate holdout sweeps are available, but candidate-specific rolling-CV and 2026 live replay gates are missing."
+    "reason": "Candidate holdout sweeps are available, but promotion still depends on candidate-specific rolling-CV and 2026 live replay gates."
   },
   "candidates": [
     {

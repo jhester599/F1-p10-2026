@@ -12,7 +12,7 @@ Changes to active code should include focused tests under `tests/` when behavior
 
 - `data/processed/` keeps small feature parquet snapshots that let clean CI validate important paths without rebuilding every historical API response.
 - `results/prediction_2026_RXX.csv`, `results/prediction_reports/`, and `results/automated_predictions_2026.md` are committed race-day outputs.
-- `results/scorecards/`, `results/candidate_a/`, and `results/candidate_b/` contain review-cycle benchmark artifacts that document model decisions.
+- `results/scorecards/`, `results/candidate_a/`, and `results/candidate_b/` contain review-cycle benchmark artifacts that document model decisions, candidate replay gates, and promotion readiness.
 - `results/retrain_drift/` contains non-mutating audit outputs comparing the loaded model cache against tracked baseline summaries.
 
 Do not commit `data/raw/` API caches or large compressed downloads.

@@ -1,11 +1,11 @@
 # Candidate Promotion Readiness
 
-Generated: 2026-06-14 13:01 UTC
+Generated: 2026-06-14 17:25 UTC
 
 ## Decision
 - Leading candidate: `Candidate A`
 - Production change recommended: `False`
-- Reason: Candidate holdout sweeps are available, but candidate-specific rolling-CV and 2026 live replay gates are missing.
+- Reason: Candidate holdout sweeps are available, but promotion still depends on candidate-specific rolling-CV and 2026 live replay gates.
 
 ## Candidate Matrix
 

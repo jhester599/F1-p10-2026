@@ -31,7 +31,7 @@ jobs:
         run: |
           python -m py_compile config.py predict_race.py run_pipeline.py
           python -m py_compile src/data_fetch.py src/feature_engineering.py src/models.py src/scoring.py
-          python -m py_compile scripts/65_run_qualifying_automation.py scripts/90_benchmark_scorecards.py scripts/91_candidate_a_calibration_robustness.py scripts/92_candidate_a_weight_sweep.py scripts/93_validate_candidate_a_artifacts.py scripts/94_candidate_b_stage_weight_sweep.py scripts/95_retrain_drift_audit.py scripts/96_candidate_promotion_readiness.py
+          python -m py_compile scripts/65_run_qualifying_automation.py scripts/90_benchmark_scorecards.py scripts/91_candidate_a_calibration_robustness.py scripts/92_candidate_a_weight_sweep.py scripts/93_validate_candidate_a_artifacts.py scripts/94_candidate_b_stage_weight_sweep.py scripts/95_retrain_drift_audit.py scripts/96_candidate_promotion_readiness.py scripts/97_candidate_replay_gates.py
 
       - name: Validate pytest collection
         run: pytest --collect-only -q
@@ -43,7 +43,9 @@ jobs:
         run: python scripts/90_benchmark_scorecards.py
 
       - name: Build candidate promotion readiness snapshot
-        run: python scripts/96_candidate_promotion_readiness.py
+        run: |
+          python scripts/97_candidate_replay_gates.py
+          python scripts/96_candidate_promotion_readiness.py
 
       - name: Run Candidate A diagnostics with gate checks
         run: |

@@ -1,0 +1,35 @@
+{
+  "generated_at_utc": "2026-06-14 17:25 UTC",
+  "gate_requirements": {
+    "rolling_cv_min_races": 20,
+    "live_2026_min_races": 3
+  },
+  "candidates": [
+    {
+      "candidate": "Candidate A",
+      "rolling_cv_candidate_replay": {
+        "status": "missing",
+        "source": "results/candidate_a/candidate_a_rolling_cv_replay.json",
+        "reason": "candidate-specific replay artifact is missing"
+      },
+      "live_2026_candidate_replay": {
+        "status": "missing",
+        "source": "results/candidate_a/candidate_a_live_2026_replay.json",
+        "reason": "candidate-specific replay artifact is missing"
+      }
+    },
+    {
+      "candidate": "Candidate B",
+      "rolling_cv_candidate_replay": {
+        "status": "missing",
+        "source": "results/candidate_b/candidate_b_rolling_cv_replay.json",
+        "reason": "candidate-specific replay artifact is missing"
+      },
+      "live_2026_candidate_replay": {
+        "status": "missing",
+        "source": "results/candidate_b/candidate_b_live_2026_replay.json",
+        "reason": "candidate-specific replay artifact is missing"
+      }
+    }
+  ]
+}
