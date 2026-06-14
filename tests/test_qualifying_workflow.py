@@ -6,6 +6,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "qualifying-predictions-2026.yml"
+KEEPALIVE_WORKFLOW = ROOT / ".github" / "workflows" / "cache-keepalive.yml"
 
 
 def test_workflow_stages_all_prediction_outputs_before_commit() -> None:
@@ -51,3 +52,12 @@ def test_prediction_workflow_does_not_commit_ignored_model_binaries() -> None:
 
     assert "models/*.joblib" not in workflow
     assert "Commit rebuilt processed artifacts" in workflow
+
+
+def test_cache_keepalive_uses_exact_behavior_keys() -> None:
+    workflow = KEEPALIVE_WORKFLOW.read_text(encoding="utf-8")
+
+    assert "keepalive-${{ github.run_number }}" not in workflow
+    assert "restore-keys:" not in workflow
+    assert "processed-2026-${{ hashFiles('config.py', 'src/feature_engineering.py', 'scripts/02_build_dataset.py', 'requirements.txt') }}" in workflow
+    assert "models-2026-${{ hashFiles('config.py', 'src/models.py', 'scripts/03_train_models.py', 'requirements.txt') }}" in workflow
