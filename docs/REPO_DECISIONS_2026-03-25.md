@@ -201,3 +201,27 @@ This document records structural decisions made for CI reliability, Windows comp
 - Updated Candidate B artifacts under `results/candidate_b/`.
 - Updated `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md` with the refreshed rerun.
 - Next validation should compare Candidate B against both the refreshed ensemble and refreshed `xgb_clf` reference.
+
+## 14) Refresh Candidate A gates and rerun weight sweep without auto-promotion
+
+### Decision
+- Refresh `results/scorecards/candidate_a_baseline.json` from the current
+  model/data snapshot.
+- Rerun Candidate A diagnostics and the cycle-1 weight sweep.
+- Keep production inference weights unchanged until rolling-CV and 2026 live-log
+  validation are recorded.
+
+### Why
+- The previous Candidate A gate baseline was tied to the pre-refresh baseline
+  and no longer represented the current eval artifacts.
+- The refreshed Candidate A sweep improved the ensemble from `13.1250` to
+  `14.4167 avg_pts`, beating both the refreshed ensemble and refreshed `xgb_clf`
+  reference.
+- The result is promising but still comes from a 24-race holdout search, so
+  promotion needs cross-season/live confirmation.
+
+### Impact
+- Candidate A diagnostics pass against the refreshed gate baseline.
+- Candidate A is now the leading production promotion candidate for the next
+  validation pass.
+- Production race-weekend inference remains unchanged.

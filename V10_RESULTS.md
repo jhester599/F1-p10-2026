@@ -32,6 +32,17 @@ Candidate B refreshed rerun:
   2026 live-log gates first because the result ties refreshed `xgb_clf` and is
   sensitive to small stage samples.
 
+Candidate A refreshed rerun:
+- Commands:
+  - `python scripts/91_candidate_a_calibration_robustness.py --year 2025 --write-baseline`
+  - `python scripts/91_candidate_a_calibration_robustness.py --year 2025 --enforce-gates`
+  - `python scripts/92_candidate_a_weight_sweep.py --year 2025 --multipliers 0.7,1.0,1.3`
+- Refreshed ensemble baseline: `13.1250 avg_pts`
+- Best gated Candidate A configuration: `14.4167 avg_pts` (`+1.2917`)
+- Balanced holdout gate: passed
+- Production decision: do not promote yet; Candidate A is the leading promotion
+  candidate but needs rolling-CV and 2026 live-log confirmation.
+
 ---
 
 ## Current Baselines (eval_2025_picks.csv)

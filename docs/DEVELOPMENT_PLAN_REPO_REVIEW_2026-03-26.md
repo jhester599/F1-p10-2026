@@ -105,7 +105,7 @@ Exit criteria:
 - Fresh audit under the pinned runtime is recorded. **Complete:** latest audit
   reports `0/216` changed picks.
 - Candidate A/B sweeps are rerun after the refreshed baseline branch lands.
-  **Candidate B complete; Candidate A refreshed rerun remains pending.**
+  **Complete:** both refreshed reruns are recorded.
 - Any intentional model refresh updates the audit report and scorecard artifacts together.
 
 ### Phase 4 — Model Enhancement Program (No External Research Refresh Yet)
@@ -117,7 +117,12 @@ Candidate A — Ranking/calibration robustness:
 - Cycle-1 status (2026-03-26):
   - Implemented sweep tool: `scripts/92_candidate_a_weight_sweep.py`
   - Artifacts produced under `results/candidate_a/`
-  - Promotion decision: deferred due retrain-time regression risk
+  - Refreshed rerun complete on 2026-06-14:
+    - refreshed ensemble baseline: `13.1250 avg_pts`
+    - best Candidate A configuration: `14.4167 avg_pts`
+    - balanced holdout gate: passed
+  - Promotion decision: leading production candidate, but still deferred until
+    rolling-CV and 2026 live-log gates are recorded
   - Details: `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md`
 
 Candidate B - Season-stage weighting recalibration:
