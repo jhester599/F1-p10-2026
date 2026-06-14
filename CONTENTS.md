@@ -18,6 +18,7 @@ For current repository development status and implementation planning, use:
 - `docs/REPO_DECISIONS_2026-03-25.md`
 - `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md`
 - `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md`
+- `docs/BASELINE_REFRESH_RUNBOOK_2026-06-14.md`
 - `results/retrain_drift/retrain_drift_report.md` (latest generated model-cache drift audit)
 - `README.md`
 
