@@ -1,6 +1,6 @@
 # Benchmark Scorecard (Latest)
 
-Generated: 2026-03-26 15:50 UTC
+Generated: 2026-06-14 12:42 UTC
 
 ## Locked Baselines
 - v8.23 2025 holdout avg pts: **14.21**
@@ -20,7 +20,7 @@ Generated: 2026-03-26 15:50 UTC
 
 ## Latest Automation Output
 - Status: `ok`
-- Source: `results/prediction_2026_R02.csv`
-- Recommended driver: **hadjar** (red_bull)
-- Grid position: `9.0`
-- Vote count: `4`
+- Source: `results/prediction_2026_R07.csv`
+- Recommended driver: **leclerc** (ferrari)
+- Grid position: `10.0`
+- Vote count: `2`
