@@ -241,6 +241,36 @@ Email contents include:
   - `results/automated_predictions_2026.md`
   - The specific Actions run
 
+### League results automation
+
+The first league Google Sheet can be updated after race results are published:
+
+```bash
+python scripts/66_update_results_automation.py --year 2026 --round 9 --spreadsheet-id <sheet_id> --dry-run
+```
+
+The script reads `Form Responses 1`, skips any row whose Column F already has a
+position, skips superseded duplicate responses for the same race/email concat,
+and writes official finishing positions into Column F when Jolpica race results
+are available. Column G and the `results` tab remain spreadsheet-driven.
+
+GitHub Actions workflow: `.github/workflows/results-automation-2026.yml`.
+
+Required secrets:
+
+- `GOOGLE_SERVICE_ACCOUNT_JSON`
+- `RESULTS_SPREADSHEET_ID`
+- `SMTP_SERVER`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `RESULTS_EMAIL_FROM`
+- `RESULTS_EMAIL_TO`
+
+Share the Google Sheet with the `client_email` from the service-account JSON
+before enabling scheduled writes. The workflow sends a results email only when
+rows are actually updated.
+
 ---
 
 ## Project Structure

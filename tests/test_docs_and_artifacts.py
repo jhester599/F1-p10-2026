@@ -85,3 +85,21 @@ def test_repo_sanity_uses_pinned_dependency_snapshot() -> None:
     )
 
     assert "pip install -r requirements-ci.txt pytest" in workflow
+
+
+def test_results_automation_is_documented_and_wired() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "results-automation-2026.yml").read_text(
+        encoding="utf-8"
+    )
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    automation_docs = (ROOT / "docs" / "GITHUB_ACTIONS_AUTOMATION.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "scripts/66_update_results_automation.py" in workflow
+    assert "GOOGLE_SERVICE_ACCOUNT_JSON" in workflow
+    assert "RESULTS_SPREADSHEET_ID" in workflow
+    assert "RESULTS_EMAIL_TO" in workflow
+    assert "scripts/66_update_results_automation.py" in readme
+    assert "GOOGLE_SERVICE_ACCOUNT_JSON" in automation_docs
+    assert "RESULTS_EMAIL_TO" in automation_docs
