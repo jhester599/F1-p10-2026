@@ -27,7 +27,7 @@ fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetric
 > ⚠️ **Always restore the cache before running any data scripts.** See [Data Sources](#data-sources).
 
 ```bash
-pip install -r requirements.txt pyarrow
+pip install -r requirements.txt
 
 # Step 1 — Restore pre-built data cache (fast, no network needed)
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
@@ -93,11 +93,14 @@ Outputs:
 
 - `results/retrain_drift/current_model_eval_summary.csv`
 - `results/retrain_drift/current_model_eval_picks.csv`
+- `results/retrain_drift/pick_drift_detail.csv`
 - `results/retrain_drift/retrain_drift_report.{json,md}`
 
 Use this before Candidate A/B promotion work. It evaluates the currently loaded
 `models/*.joblib` cache against the tracked 2025 eval summary without retraining
-or overwriting canonical `results/eval_2025_*` files.
+or overwriting canonical `results/eval_2025_*` files. The report also captures
+runtime package versions, model/data fingerprints, per-pick drift, and git
+provenance for the tracked baseline artifacts.
 
 Candidate A diagnostics (ranking/calibration robustness with scorecard gates):
 
@@ -575,9 +578,9 @@ Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`
 
 **Dependency snapshots:**
 
-- `requirements.txt` is the race-day/training runtime spec. It pins
-  `scikit-learn==1.8.0` because the current cached model artifacts were serialized
-  with that version.
+- `requirements.txt` is the race-day/training runtime spec. It includes `pyarrow`
+  for committed parquet snapshots and pins `scikit-learn==1.8.0` because the
+  current cached model artifacts were serialized with that version.
 - `requirements-ci.txt` is the pinned repo-sanity verification snapshot.
 
 ---

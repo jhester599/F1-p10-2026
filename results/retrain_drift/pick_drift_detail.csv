@@ -1,0 +1,217 @@
+year,round,race_name_tracked,model,predicted_tracked,predicted_current,actual_p10_tracked,actual_pos_tracked,actual_pos_current,fantasy_pts_tracked,fantasy_pts_current,fantasy_pts_delta,pick_changed,_merge
+2025,1,Australian Grand Prix,ensemble,bortoleto,bortoleto,hamilton,16,16,6,6,0,False,both
+2025,2,Chinese Grand Prix,ensemble,hadjar,albon,sainz,11,7,18,12,-6,True,both
+2025,3,Japanese Grand Prix,ensemble,bearman,bearman,bearman,10,10,25,25,0,False,both
+2025,4,Bahrain Grand Prix,ensemble,tsunoda,tsunoda,bearman,9,9,18,18,0,False,both
+2025,5,Saudi Arabian Grand Prix,ensemble,albon,albon,hadjar,9,9,18,18,0,False,both
+2025,6,Miami Grand Prix,ensemble,hadjar,tsunoda,tsunoda,11,10,18,25,7,True,both
+2025,7,Emilia Romagna Grand Prix,ensemble,alonso,alonso,tsunoda,11,11,18,18,0,False,both
+2025,8,Monaco Grand Prix,ensemble,albon,hadjar,sainz,9,6,18,10,-8,True,both
+2025,9,Spanish Grand Prix,ensemble,hadjar,hadjar,max_verstappen,7,7,12,12,0,False,both
+2025,10,Canadian Grand Prix,ensemble,ocon,ocon,sainz,9,9,18,18,0,False,both
+2025,11,Austrian Grand Prix,ensemble,hadjar,hadjar,ocon,12,12,15,15,0,False,both
+2025,12,British Grand Prix,ensemble,bearman,bearman,russell,11,11,18,18,0,False,both
+2025,13,Belgian Grand Prix,ensemble,gasly,ocon,gasly,10,15,25,8,-17,True,both
+2025,14,Hungarian Grand Prix,ensemble,bearman,bearman,antonelli,20,20,0,0,0,False,both
+2025,15,Dutch Grand Prix,ensemble,antonelli,antonelli,ocon,16,16,6,6,0,False,both
+2025,16,Italian Grand Prix,ensemble,albon,albon,hadjar,7,7,12,12,0,False,both
+2025,17,Azerbaijan Grand Prix,ensemble,bearman,stroll,hadjar,12,17,15,4,-11,True,both
+2025,18,Singapore Grand Prix,ensemble,lawson,hadjar,sainz,15,11,8,18,10,True,both
+2025,19,United States Grand Prix,ensemble,lawson,lawson,alonso,11,11,18,18,0,False,both
+2025,20,Mexico City Grand Prix,ensemble,hadjar,lawson,bortoleto,13,20,12,0,-12,True,both
+2025,21,São Paulo Grand Prix,ensemble,hamilton,sainz,gasly,18,13,2,12,10,True,both
+2025,22,Las Vegas Grand Prix,ensemble,hadjar,hadjar,bearman,6,6,10,10,0,False,both
+2025,23,Qatar Grand Prix,ensemble,bearman,hamilton,tsunoda,19,12,1,15,14,True,both
+2025,24,Abu Dhabi Grand Prix,ensemble,bearman,bearman,stroll,12,12,15,15,0,False,both
+2025,1,Australian Grand Prix,lgb_reg,alonso,hadjar,hamilton,17,20,4,0,-4,True,both
+2025,2,Chinese Grand Prix,lgb_reg,albon,sainz,sainz,7,10,12,25,13,True,both
+2025,3,Japanese Grand Prix,lgb_reg,bearman,hadjar,bearman,10,8,25,15,-10,True,both
+2025,4,Bahrain Grand Prix,lgb_reg,hamilton,tsunoda,bearman,5,9,8,18,10,True,both
+2025,5,Saudi Arabian Grand Prix,lgb_reg,tsunoda,norris,hadjar,19,4,1,6,5,True,both
+2025,6,Miami Grand Prix,lgb_reg,tsunoda,tsunoda,tsunoda,10,10,25,25,0,False,both
+2025,7,Emilia Romagna Grand Prix,lgb_reg,antonelli,alonso,tsunoda,19,11,1,18,17,True,both
+2025,8,Monaco Grand Prix,lgb_reg,tsunoda,hadjar,sainz,17,6,4,10,6,True,both
+2025,9,Spanish Grand Prix,lgb_reg,hadjar,hadjar,max_verstappen,7,7,12,12,0,False,both
+2025,10,Canadian Grand Prix,lgb_reg,alonso,tsunoda,sainz,7,12,12,15,3,True,both
+2025,11,Austrian Grand Prix,lgb_reg,antonelli,max_verstappen,ocon,19,18,1,2,1,True,both
+2025,12,British Grand Prix,lgb_reg,alonso,albon,russell,9,8,18,15,-3,True,both
+2025,13,Belgian Grand Prix,lgb_reg,hadjar,ocon,gasly,20,15,0,8,8,True,both
+2025,14,Hungarian Grand Prix,lgb_reg,stroll,stroll,antonelli,7,7,12,12,0,False,both
+2025,15,Dutch Grand Prix,lgb_reg,sainz,sainz,ocon,13,13,12,12,0,False,both
+2025,16,Italian Grand Prix,lgb_reg,alonso,alonso,hadjar,19,19,1,1,0,False,both
+2025,17,Azerbaijan Grand Prix,lgb_reg,russell,alonso,hadjar,2,15,2,8,6,True,both
+2025,18,Singapore Grand Prix,lgb_reg,lawson,lawson,sainz,15,15,8,8,0,False,both
+2025,19,United States Grand Prix,lgb_reg,sainz,lawson,alonso,20,11,0,18,18,True,both
+2025,20,Mexico City Grand Prix,lgb_reg,hadjar,sainz,bortoleto,13,17,12,4,-8,True,both
+2025,21,São Paulo Grand Prix,lgb_reg,bearman,hamilton,gasly,6,18,10,2,-8,True,both
+2025,22,Las Vegas Grand Prix,lgb_reg,hadjar,hamilton,bearman,6,8,10,15,5,True,both
+2025,23,Qatar Grand Prix,lgb_reg,alonso,lawson,tsunoda,7,9,12,18,6,True,both
+2025,24,Abu Dhabi Grand Prix,lgb_reg,bortoleto,bearman,stroll,11,12,18,15,-3,True,both
+2025,1,Australian Grand Prix,lgbm_ranker,bortoleto,bortoleto,hamilton,16,16,6,6,0,False,both
+2025,2,Chinese Grand Prix,lgbm_ranker,albon,albon,sainz,7,7,12,12,0,False,both
+2025,3,Japanese Grand Prix,lgbm_ranker,albon,albon,bearman,9,9,18,18,0,False,both
+2025,4,Bahrain Grand Prix,lgbm_ranker,alonso,hamilton,bearman,15,5,8,8,0,True,both
+2025,5,Saudi Arabian Grand Prix,lgbm_ranker,albon,gasly,hadjar,9,20,18,0,-18,True,both
+2025,6,Miami Grand Prix,lgbm_ranker,hamilton,alonso,tsunoda,8,15,15,8,-7,True,both
+2025,7,Emilia Romagna Grand Prix,lgbm_ranker,hadjar,hadjar,tsunoda,9,9,18,18,0,False,both
+2025,8,Monaco Grand Prix,lgbm_ranker,albon,albon,sainz,9,9,18,18,0,False,both
+2025,9,Spanish Grand Prix,lgbm_ranker,bortoleto,albon,max_verstappen,12,19,15,1,-14,True,both
+2025,10,Canadian Grand Prix,lgbm_ranker,bortoleto,ocon,sainz,14,9,10,18,8,True,both
+2025,11,Austrian Grand Prix,lgbm_ranker,bortoleto,hadjar,ocon,8,12,15,15,0,True,both
+2025,12,British Grand Prix,lgbm_ranker,lawson,bearman,russell,19,11,1,18,17,True,both
+2025,13,Belgian Grand Prix,lgbm_ranker,gasly,ocon,gasly,10,15,25,8,-17,True,both
+2025,14,Hungarian Grand Prix,lgbm_ranker,antonelli,tsunoda,antonelli,10,17,25,4,-21,True,both
+2025,15,Dutch Grand Prix,lgbm_ranker,antonelli,hadjar,ocon,16,3,6,4,-2,True,both
+2025,16,Italian Grand Prix,lgbm_ranker,albon,albon,hadjar,7,7,12,12,0,False,both
+2025,17,Azerbaijan Grand Prix,lgbm_ranker,hamilton,hamilton,hadjar,8,8,15,15,0,False,both
+2025,18,Singapore Grand Prix,lgbm_ranker,bortoleto,hadjar,sainz,17,11,4,18,14,True,both
+2025,19,United States Grand Prix,lgbm_ranker,hadjar,lawson,alonso,16,11,6,18,12,True,both
+2025,20,Mexico City Grand Prix,lgbm_ranker,lawson,lawson,bortoleto,20,20,0,0,0,False,both
+2025,21,São Paulo Grand Prix,lgbm_ranker,tsunoda,hadjar,gasly,17,8,4,15,11,True,both
+2025,22,Las Vegas Grand Prix,lgbm_ranker,hamilton,hamilton,bearman,8,8,15,15,0,False,both
+2025,23,Qatar Grand Prix,lgbm_ranker,hamilton,hamilton,tsunoda,12,12,15,15,0,False,both
+2025,24,Abu Dhabi Grand Prix,lgbm_ranker,ocon,lawson,stroll,7,18,12,2,-10,True,both
+2025,1,Australian Grand Prix,rf_clf,hadjar,hadjar,hamilton,20,20,0,0,0,False,both
+2025,2,Chinese Grand Prix,rf_clf,hulkenberg,hulkenberg,sainz,15,15,8,8,0,False,both
+2025,3,Japanese Grand Prix,rf_clf,bearman,bearman,bearman,10,10,25,25,0,False,both
+2025,4,Bahrain Grand Prix,rf_clf,hadjar,tsunoda,bearman,13,9,12,18,6,True,both
+2025,5,Saudi Arabian Grand Prix,rf_clf,albon,gasly,hadjar,9,20,18,0,-18,True,both
+2025,6,Miami Grand Prix,rf_clf,ocon,ocon,tsunoda,12,12,15,15,0,False,both
+2025,7,Emilia Romagna Grand Prix,rf_clf,hadjar,gasly,tsunoda,9,13,18,12,-6,True,both
+2025,8,Monaco Grand Prix,rf_clf,albon,ocon,sainz,9,7,18,12,-6,True,both
+2025,9,Spanish Grand Prix,rf_clf,hadjar,hadjar,max_verstappen,7,7,12,12,0,False,both
+2025,10,Canadian Grand Prix,rf_clf,hadjar,hadjar,sainz,16,16,6,6,0,False,both
+2025,11,Austrian Grand Prix,rf_clf,hadjar,albon,ocon,12,17,15,4,-11,True,both
+2025,12,British Grand Prix,rf_clf,bearman,bearman,russell,11,11,18,18,0,False,both
+2025,13,Belgian Grand Prix,rf_clf,ocon,hulkenberg,gasly,15,12,8,15,7,True,both
+2025,14,Hungarian Grand Prix,rf_clf,hadjar,hadjar,antonelli,11,11,18,18,0,False,both
+2025,15,Dutch Grand Prix,rf_clf,alonso,albon,ocon,8,5,15,8,-7,True,both
+2025,16,Italian Grand Prix,rf_clf,albon,albon,hadjar,7,7,12,12,0,False,both
+2025,17,Azerbaijan Grand Prix,rf_clf,alonso,alonso,hadjar,15,15,8,8,0,False,both
+2025,18,Singapore Grand Prix,rf_clf,bearman,lawson,sainz,9,15,18,8,-10,True,both
+2025,19,United States Grand Prix,rf_clf,lawson,lawson,alonso,11,11,18,18,0,False,both
+2025,20,Mexico City Grand Prix,rf_clf,bearman,tsunoda,bortoleto,4,11,6,18,12,True,both
+2025,21,São Paulo Grand Prix,rf_clf,albon,albon,gasly,11,11,18,18,0,False,both
+2025,22,Las Vegas Grand Prix,rf_clf,bearman,hulkenberg,bearman,10,7,25,12,-13,True,both
+2025,23,Qatar Grand Prix,rf_clf,bearman,bearman,tsunoda,19,19,1,1,0,False,both
+2025,24,Abu Dhabi Grand Prix,rf_clf,sainz,sainz,stroll,13,13,12,12,0,False,both
+2025,1,Australian Grand Prix,rf_reg,sainz,sainz,hamilton,18,18,2,2,0,False,both
+2025,2,Chinese Grand Prix,rf_reg,albon,hadjar,sainz,7,11,12,18,6,True,both
+2025,3,Japanese Grand Prix,rf_reg,hamilton,hamilton,bearman,7,7,12,12,0,False,both
+2025,4,Bahrain Grand Prix,rf_reg,sainz,sainz,bearman,19,19,1,1,0,False,both
+2025,5,Saudi Arabian Grand Prix,rf_reg,tsunoda,tsunoda,hadjar,19,19,1,1,0,False,both
+2025,6,Miami Grand Prix,rf_reg,hamilton,ocon,tsunoda,8,12,15,15,0,True,both
+2025,7,Emilia Romagna Grand Prix,rf_reg,antonelli,alonso,tsunoda,19,11,1,18,17,True,both
+2025,8,Monaco Grand Prix,rf_reg,russell,russell,sainz,11,11,18,18,0,False,both
+2025,9,Spanish Grand Prix,rf_reg,hadjar,albon,max_verstappen,7,19,12,1,-11,True,both
+2025,10,Canadian Grand Prix,rf_reg,albon,albon,sainz,20,20,0,0,0,False,both
+2025,11,Austrian Grand Prix,rf_reg,antonelli,lawson,ocon,19,6,1,10,9,True,both
+2025,12,British Grand Prix,rf_reg,bearman,bearman,russell,11,11,18,18,0,False,both
+2025,13,Belgian Grand Prix,rf_reg,hamilton,hamilton,gasly,7,7,12,12,0,False,both
+2025,14,Hungarian Grand Prix,rf_reg,bortoleto,bortoleto,antonelli,6,6,10,10,0,False,both
+2025,15,Dutch Grand Prix,rf_reg,antonelli,antonelli,ocon,16,16,6,6,0,False,both
+2025,16,Italian Grand Prix,rf_reg,alonso,alonso,hadjar,19,19,1,1,0,False,both
+2025,17,Azerbaijan Grand Prix,rf_reg,sainz,hamilton,hadjar,3,8,4,15,11,True,both
+2025,18,Singapore Grand Prix,rf_reg,hadjar,hadjar,sainz,11,11,18,18,0,False,both
+2025,19,United States Grand Prix,rf_reg,sainz,sainz,alonso,20,20,0,0,0,False,both
+2025,20,Mexico City Grand Prix,rf_reg,sainz,sainz,bortoleto,17,17,4,4,0,False,both
+2025,21,São Paulo Grand Prix,rf_reg,hamilton,hamilton,gasly,18,18,2,2,0,False,both
+2025,22,Las Vegas Grand Prix,rf_reg,hamilton,leclerc,bearman,8,4,15,6,-9,True,both
+2025,23,Qatar Grand Prix,rf_reg,alonso,alonso,tsunoda,7,7,12,12,0,False,both
+2025,24,Abu Dhabi Grand Prix,rf_reg,antonelli,antonelli,stroll,15,15,8,8,0,False,both
+2025,1,Australian Grand Prix,ridge,tsunoda,tsunoda,hamilton,12,12,15,15,0,False,both
+2025,2,Chinese Grand Prix,ridge,hadjar,hadjar,sainz,11,11,18,18,0,False,both
+2025,3,Japanese Grand Prix,ridge,albon,albon,bearman,9,9,18,18,0,False,both
+2025,4,Bahrain Grand Prix,ridge,sainz,sainz,bearman,19,19,1,1,0,False,both
+2025,5,Saudi Arabian Grand Prix,ridge,tsunoda,tsunoda,hadjar,19,19,1,1,0,False,both
+2025,6,Miami Grand Prix,ridge,hamilton,hamilton,tsunoda,8,8,15,15,0,False,both
+2025,7,Emilia Romagna Grand Prix,ridge,alonso,alonso,tsunoda,11,11,18,18,0,False,both
+2025,8,Monaco Grand Prix,ridge,hadjar,hadjar,sainz,6,6,10,10,0,False,both
+2025,9,Spanish Grand Prix,ridge,hadjar,hadjar,max_verstappen,7,7,12,12,0,False,both
+2025,10,Canadian Grand Prix,ridge,alonso,alonso,sainz,7,7,12,12,0,False,both
+2025,11,Austrian Grand Prix,ridge,antonelli,antonelli,ocon,19,19,1,1,0,False,both
+2025,12,British Grand Prix,ridge,alonso,alonso,russell,9,9,18,18,0,False,both
+2025,13,Belgian Grand Prix,ridge,albon,albon,gasly,6,6,10,10,0,False,both
+2025,14,Hungarian Grand Prix,ridge,stroll,stroll,antonelli,7,7,12,12,0,False,both
+2025,15,Dutch Grand Prix,ridge,hadjar,hadjar,ocon,3,3,4,4,0,False,both
+2025,16,Italian Grand Prix,ridge,antonelli,antonelli,hadjar,9,9,18,18,0,False,both
+2025,17,Azerbaijan Grand Prix,ridge,tsunoda,tsunoda,hadjar,6,6,10,10,0,False,both
+2025,18,Singapore Grand Prix,ridge,hadjar,hadjar,sainz,11,11,18,18,0,False,both
+2025,19,United States Grand Prix,ridge,sainz,sainz,alonso,20,20,0,0,0,False,both
+2025,20,Mexico City Grand Prix,ridge,sainz,sainz,bortoleto,17,17,4,4,0,False,both
+2025,21,São Paulo Grand Prix,ridge,hamilton,max_verstappen,gasly,18,3,2,4,2,True,both
+2025,22,Las Vegas Grand Prix,ridge,lawson,lawson,bearman,14,14,10,10,0,False,both
+2025,23,Qatar Grand Prix,ridge,sainz,hadjar,tsunoda,3,18,4,2,-2,True,both
+2025,24,Abu Dhabi Grand Prix,ridge,alonso,alonso,stroll,6,6,10,10,0,False,both
+2025,1,Australian Grand Prix,xgb_clf,bortoleto,bortoleto,hamilton,16,16,6,6,0,False,both
+2025,2,Chinese Grand Prix,xgb_clf,tsunoda,albon,sainz,16,7,6,12,6,True,both
+2025,3,Japanese Grand Prix,xgb_clf,bearman,albon,bearman,10,9,25,18,-7,True,both
+2025,4,Bahrain Grand Prix,xgb_clf,doohan,hadjar,bearman,14,13,10,12,2,True,both
+2025,5,Saudi Arabian Grand Prix,xgb_clf,albon,albon,hadjar,9,9,18,18,0,False,both
+2025,6,Miami Grand Prix,xgb_clf,hadjar,hadjar,tsunoda,11,11,18,18,0,False,both
+2025,7,Emilia Romagna Grand Prix,xgb_clf,hadjar,hadjar,tsunoda,9,9,18,18,0,False,both
+2025,8,Monaco Grand Prix,xgb_clf,albon,tsunoda,sainz,9,17,18,4,-14,True,both
+2025,9,Spanish Grand Prix,xgb_clf,hadjar,hadjar,max_verstappen,7,7,12,12,0,False,both
+2025,10,Canadian Grand Prix,xgb_clf,hadjar,hadjar,sainz,16,16,6,6,0,False,both
+2025,11,Austrian Grand Prix,xgb_clf,tsunoda,bortoleto,ocon,16,8,6,15,9,True,both
+2025,12,British Grand Prix,xgb_clf,tsunoda,bearman,russell,15,11,8,18,10,True,both
+2025,13,Belgian Grand Prix,xgb_clf,bearman,bearman,gasly,11,11,18,18,0,False,both
+2025,14,Hungarian Grand Prix,xgb_clf,tsunoda,antonelli,antonelli,17,10,4,25,21,True,both
+2025,15,Dutch Grand Prix,xgb_clf,sainz,alonso,ocon,13,8,12,15,3,True,both
+2025,16,Italian Grand Prix,xgb_clf,albon,albon,hadjar,7,7,12,12,0,False,both
+2025,17,Azerbaijan Grand Prix,xgb_clf,hulkenberg,stroll,hadjar,16,17,6,4,-2,True,both
+2025,18,Singapore Grand Prix,xgb_clf,hadjar,hadjar,sainz,11,11,18,18,0,False,both
+2025,19,United States Grand Prix,xgb_clf,alonso,hadjar,alonso,10,16,25,6,-19,True,both
+2025,20,Mexico City Grand Prix,xgb_clf,tsunoda,tsunoda,bortoleto,11,11,18,18,0,False,both
+2025,21,São Paulo Grand Prix,xgb_clf,alonso,tsunoda,gasly,14,17,10,4,-6,True,both
+2025,22,Las Vegas Grand Prix,xgb_clf,bearman,hamilton,bearman,10,8,25,15,-10,True,both
+2025,23,Qatar Grand Prix,xgb_clf,hulkenberg,hamilton,tsunoda,20,12,0,15,15,True,both
+2025,24,Abu Dhabi Grand Prix,xgb_clf,alonso,lawson,stroll,6,18,10,2,-8,True,both
+2025,1,Australian Grand Prix,xgb_ranker,bortoleto,bortoleto,hamilton,16,16,6,6,0,False,both
+2025,2,Chinese Grand Prix,xgb_ranker,ocon,stroll,sainz,5,9,8,18,10,True,both
+2025,3,Japanese Grand Prix,xgb_ranker,bearman,bearman,bearman,10,10,25,25,0,False,both
+2025,4,Bahrain Grand Prix,xgb_ranker,tsunoda,alonso,bearman,9,15,18,8,-10,True,both
+2025,5,Saudi Arabian Grand Prix,xgb_ranker,albon,hadjar,hadjar,9,10,18,25,7,True,both
+2025,6,Miami Grand Prix,xgb_ranker,hadjar,alonso,tsunoda,11,15,18,8,-10,True,both
+2025,7,Emilia Romagna Grand Prix,xgb_ranker,ocon,ocon,tsunoda,20,20,0,0,0,False,both
+2025,8,Monaco Grand Prix,xgb_ranker,albon,ocon,sainz,9,7,18,12,-6,True,both
+2025,9,Spanish Grand Prix,xgb_ranker,lawson,albon,max_verstappen,11,19,18,1,-17,True,both
+2025,10,Canadian Grand Prix,xgb_ranker,ocon,ocon,sainz,9,9,18,18,0,False,both
+2025,11,Austrian Grand Prix,xgb_ranker,colapinto,colapinto,ocon,15,15,8,8,0,False,both
+2025,12,British Grand Prix,xgb_ranker,bearman,bearman,russell,11,11,18,18,0,False,both
+2025,13,Belgian Grand Prix,xgb_ranker,gasly,gasly,gasly,10,10,25,25,0,False,both
+2025,14,Hungarian Grand Prix,xgb_ranker,antonelli,bearman,antonelli,10,20,25,0,-25,True,both
+2025,15,Dutch Grand Prix,xgb_ranker,antonelli,antonelli,ocon,16,16,6,6,0,False,both
+2025,16,Italian Grand Prix,xgb_ranker,albon,albon,hadjar,7,7,12,12,0,False,both
+2025,17,Azerbaijan Grand Prix,xgb_ranker,bearman,stroll,hadjar,12,17,15,4,-11,True,both
+2025,18,Singapore Grand Prix,xgb_ranker,tsunoda,hadjar,sainz,12,11,15,18,3,True,both
+2025,19,United States Grand Prix,xgb_ranker,hadjar,tsunoda,alonso,16,7,6,12,6,True,both
+2025,20,Mexico City Grand Prix,xgb_ranker,lawson,lawson,bortoleto,20,20,0,0,0,False,both
+2025,21,São Paulo Grand Prix,xgb_ranker,hamilton,sainz,gasly,18,13,2,12,10,True,both
+2025,22,Las Vegas Grand Prix,xgb_ranker,hadjar,hadjar,bearman,6,6,10,10,0,False,both
+2025,23,Qatar Grand Prix,xgb_ranker,bearman,albon,tsunoda,19,11,1,18,17,True,both
+2025,24,Abu Dhabi Grand Prix,xgb_ranker,lawson,lawson,stroll,18,18,2,2,0,False,both
+2025,1,Australian Grand Prix,xgb_reg,sainz,sainz,hamilton,18,18,2,2,0,False,both
+2025,2,Chinese Grand Prix,xgb_reg,albon,albon,sainz,7,7,12,12,0,False,both
+2025,3,Japanese Grand Prix,xgb_reg,hamilton,hamilton,bearman,7,7,12,12,0,False,both
+2025,4,Bahrain Grand Prix,xgb_reg,gasly,tsunoda,bearman,7,9,12,18,6,True,both
+2025,5,Saudi Arabian Grand Prix,xgb_reg,piastri,tsunoda,hadjar,1,19,1,1,0,True,both
+2025,6,Miami Grand Prix,xgb_reg,tsunoda,ocon,tsunoda,10,12,25,15,-10,True,both
+2025,7,Emilia Romagna Grand Prix,xgb_reg,antonelli,albon,tsunoda,19,5,1,8,7,True,both
+2025,8,Monaco Grand Prix,xgb_reg,hadjar,alonso,sainz,6,19,10,1,-9,True,both
+2025,9,Spanish Grand Prix,xgb_reg,hadjar,leclerc,max_verstappen,7,3,12,4,-8,True,both
+2025,10,Canadian Grand Prix,xgb_reg,tsunoda,tsunoda,sainz,12,12,15,15,0,False,both
+2025,11,Austrian Grand Prix,xgb_reg,antonelli,piastri,ocon,19,2,1,2,1,True,both
+2025,12,British Grand Prix,xgb_reg,sainz,bearman,russell,12,11,15,18,3,True,both
+2025,13,Belgian Grand Prix,xgb_reg,ocon,russell,gasly,15,5,8,8,0,True,both
+2025,14,Hungarian Grand Prix,xgb_reg,alonso,stroll,antonelli,5,7,8,12,4,True,both
+2025,15,Dutch Grand Prix,xgb_reg,lawson,lawson,ocon,12,12,15,15,0,False,both
+2025,16,Italian Grand Prix,xgb_reg,bortoleto,tsunoda,hadjar,8,13,15,12,-3,True,both
+2025,17,Azerbaijan Grand Prix,xgb_reg,sainz,alonso,hadjar,3,15,4,8,4,True,both
+2025,18,Singapore Grand Prix,xgb_reg,lawson,lawson,sainz,15,15,8,8,0,False,both
+2025,19,United States Grand Prix,xgb_reg,hulkenberg,bearman,alonso,8,9,15,18,3,True,both
+2025,20,Mexico City Grand Prix,xgb_reg,hadjar,hadjar,bortoleto,13,13,12,12,0,False,both
+2025,21,São Paulo Grand Prix,xgb_reg,max_verstappen,max_verstappen,gasly,3,3,4,4,0,False,both
+2025,22,Las Vegas Grand Prix,xgb_reg,leclerc,leclerc,bearman,4,4,6,6,0,False,both
+2025,23,Qatar Grand Prix,xgb_reg,alonso,lawson,tsunoda,7,9,12,18,6,True,both
+2025,24,Abu Dhabi Grand Prix,xgb_reg,antonelli,bortoleto,stroll,15,11,8,18,10,True,both

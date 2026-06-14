@@ -18,6 +18,7 @@ For current repository development status and implementation planning, use:
 - `docs/REPO_DECISIONS_2026-03-25.md`
 - `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md`
 - `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md`
+- `docs/BASELINE_REFRESH_RUNBOOK_2026-06-14.md`
 - `results/retrain_drift/retrain_drift_report.md` (latest generated model-cache drift audit)
 - `README.md`
 
@@ -153,7 +154,7 @@ python scripts/03_train_models.py
 ```bash
 unzip F1-p10-source.zip
 cd F1-p10-2026
-pip install -r requirements.txt pyarrow fastf1
+pip install -r requirements.txt fastf1
 
 # Step 1 — ALWAYS restore from the repo zip first (committed to repo root):
 unzip f1_data_cache_2026-03-09.zip -d data/raw/

@@ -2,9 +2,9 @@ name: Cache keepalive
 
 # Touches all three GitHub Actions caches every 5 days so they never hit the
 # 7-day inactivity eviction window between race weekends.
-# Using actions/cache (combined) with a run-number-keyed entry means each run
-# produces a fresh cache entry; the restore-keys prefix makes older entries
-# visible to both this workflow and the qualifying workflow.
+# Keepalive uses the same exact behavior/input keys as the prediction and
+# refresh workflows. Processed/model caches intentionally avoid broad fallback
+# restore keys so stale artifacts cannot bypass rebuild/retrain checks.
 
 on:
   schedule:
@@ -27,31 +27,25 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data/processed
-          key: processed-2026-keepalive-${{ github.run_number }}
-          restore-keys: |
-            processed-2026-
+          key: processed-2026-${{ hashFiles('config.py', 'src/feature_engineering.py', 'scripts/02_build_dataset.py', 'requirements.txt') }}
 
       - name: Touch raw-data cache
         id: cache_raw
         uses: actions/cache@v4
         with:
           path: data/raw
-          key: rawcache-2026-keepalive-${{ github.run_number }}
-          restore-keys: |
-            rawcache-2026-
+          key: rawcache-2026-${{ hashFiles('f1_data_cache_2026-03-09.zip') }}
 
       - name: Touch model-artifact cache
         id: cache_models
         uses: actions/cache@v4
         with:
           path: models
-          key: models-2026-keepalive-${{ github.run_number }}
-          restore-keys: |
-            models-2026-
+          key: models-2026-${{ hashFiles('config.py', 'src/models.py', 'scripts/03_train_models.py', 'requirements.txt') }}
 
       - name: Report
         run: |
           echo "processed cache restored: ${{ steps.cache_processed.outputs.cache-hit }}"
           echo "raw cache restored:       ${{ steps.cache_raw.outputs.cache-hit }}"
           echo "models cache restored:    ${{ steps.cache_models.outputs.cache-hit }}"
-          echo "Fresh keepalive entries written. Next run in ~5 days."
+          echo "Exact cache keys touched. Next run in ~5 days."

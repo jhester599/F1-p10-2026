@@ -92,10 +92,13 @@ Current status:
 - Tracked baseline ensemble: **13.58 avg pts/race**.
 - Drift: **-0.5383 avg pts/race**.
 - Dependency finding: local sklearn `1.9.0` loaded artifacts serialized under sklearn `1.8.0`; `requirements.txt` now pins `scikit-learn==1.8.0`.
+- Follow-up finding: rerunning the audit inside a clean sklearn `1.8.0` virtualenv removed the unpickle warnings but left the same `-0.5383` ensemble drift, so remaining work should focus on model-cache/data provenance before Candidate B promotion.
+- Provenance finding: tracked eval artifacts last changed in `0f78f1c`, while current `src/models.py`, `src/feature_engineering.py`, and committed processed parquet snapshots differ from that artifact commit. The audit now writes `results/retrain_drift/pick_drift_detail.csv` and git provenance metadata to make this mismatch visible.
+- Baseline refresh runbook: `docs/BASELINE_REFRESH_RUNBOOK_2026-06-14.md`.
 
 Exit criteria:
 - Fresh audit under the pinned runtime is recorded.
-- Candidate A/B sweeps are rerun only after the audit result is understood.
+- Candidate A/B sweeps are rerun only after tracked eval artifacts are refreshed from a self-contained current code/data/model snapshot or intentionally replaced by a new baseline.
 - Any intentional model refresh updates the audit report and scorecard artifacts together.
 
 ### Phase 4 — Model Enhancement Program (No External Research Refresh Yet)
@@ -144,3 +147,55 @@ Promotion gates for all candidates:
 ## Deferred Items
 - Full packaging/import refactor to eliminate most `sys.path` manipulation in all historical experiment scripts.
 - Archive footprint reduction for duplicated historical artifacts (optional future housekeeping pass).
+
+## Post-Maintenance Development Backlog
+These ideas are intentionally parked until the current repository maintenance,
+runtime stabilization, and model-cache provenance work are complete.
+
+### Backlog 1 - In-Season Retraining Policy Research
+Question:
+- Should models retrain after every completed round, only at fixed checkpoints, or not at all during the season?
+
+Research design:
+- Build an expanding in-season backtest where each 2025 race is predicted using
+  only data available before that race.
+- Compare static preseason models against rolling retrain schedules:
+  - no in-season retrain
+  - retrain after every race
+  - retrain every 3-5 races
+  - retrain at current checkpoint plan only
+- Score each individual model and the ensemble separately to identify which
+  model families benefit from fresh data and which overfit.
+- Consider a hybrid policy where only stable beneficiaries retrain, while
+  overfit-prone models remain fixed and run inference only.
+
+Acceptance criteria:
+- Promotion requires improvement on in-season backtest without degrading the
+  locked 2025 holdout and 2026 live scorecards.
+- Any automated retrain cadence must include cache/version fingerprints and
+  rollback criteria.
+
+### Backlog 2 - P10 League Scoring Automation
+Goal:
+- Automate post-race scoring updates for managed P10 racing leagues whose
+  player picks are submitted after qualifying through Google Forms into Google
+  Sheets.
+
+Initial design direction:
+- Read player picks from the league Google Sheet after submissions close.
+- Fetch official race results through the existing F1 data/API layer.
+- Compute fantasy points using the same scoring rules as the model project.
+- Write race results, player points, and season totals back to the Google Sheet.
+- Preserve manual override hooks for late corrections, penalties, or sheet
+  structure changes.
+
+Information needed later:
+- Google Sheet link and permission model.
+- Sheet/tab layout, key columns, formulas, and protected ranges.
+- Current manual update process after each race.
+- Whether multiple leagues share one sheet structure or need per-league config.
+
+Acceptance criteria:
+- First implementation should run manually/dry-run before any scheduled writes.
+- Automation must log exactly what cells would change and require explicit
+  approval before the first live update.

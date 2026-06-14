@@ -249,8 +249,6 @@ jobs:
         with:
           path: data/processed
           key: processed-2026-${{ hashFiles('config.py', 'src/feature_engineering.py', 'scripts/02_build_dataset.py', 'requirements.txt') }}
-          restore-keys: |
-            processed-2026-
 
       - name: Restore raw-cache extraction
         if: steps.preflight.outputs.run_full == 'true'
@@ -269,14 +267,12 @@ jobs:
         with:
           path: models
           key: models-2026-${{ hashFiles('config.py', 'src/models.py', 'scripts/03_train_models.py', 'requirements.txt') }}
-          restore-keys: |
-            models-2026-
 
       - name: Install dependencies
         if: steps.preflight.outputs.run_full == 'true'
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt pyarrow
+          pip install -r requirements.txt
 
       - name: Run post-qualifying automation
         if: steps.preflight.outputs.run_full == 'true'
@@ -337,14 +333,13 @@ jobs:
           path: models
           key: ${{ steps.cache_models_restore.outputs.cache-primary-key }}
 
-      - name: Commit rebuilt model artifacts
+      - name: Commit rebuilt processed artifacts
         if: steps.preflight.outputs.run_full == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: persist rebuilt model artifacts and processed data [skip ci]"
+          commit_message: "chore: persist rebuilt processed data [skip ci]"
           file_pattern: |
             data/processed/*.parquet
-            models/*.joblib
 
       - name: Stage prediction documentation
         if: steps.run_prediction.outputs.new_prediction == 'true'
