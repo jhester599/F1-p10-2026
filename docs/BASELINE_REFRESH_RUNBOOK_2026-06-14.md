@@ -59,3 +59,14 @@ against that locked snapshot.
 Race-day automation now requires exact processed/model cache keys. If model code
 or runtime dependencies change, exact model-cache restore misses should retrain
 instead of falling back to stale model artifacts.
+
+## Execution Outcome
+This runbook was executed on branch `codex/baseline-refresh-current-snapshot`.
+
+Outputs:
+- Refreshed ensemble baseline: `13.12 avg_pts`.
+- Refreshed best individual model: `xgb_clf`, `14.04 avg_pts`.
+- Drift audit: `0/216` changed picks between tracked eval artifacts and the
+  loaded current model cache.
+- Candidate A/B promotions remain out of scope for the baseline refresh PR and
+  should be rerun separately.

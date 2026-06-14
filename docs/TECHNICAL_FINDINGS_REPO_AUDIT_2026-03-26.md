@@ -19,7 +19,7 @@
 | F-005 | P3 | Broad `sys.path.insert` usage increased import coupling/noise. | Present across many scripts and some core modules. | **Partially fixed**: hardened active core modules to avoid unconditional duplicate path insertion; full packaging cleanup deferred. |
 | F-006 | P3 | Placeholder and duplicate marker docs add low signal in active navigation. | Multiple one-line placeholders and archive mirrors. | **Accepted**: retained placeholders for directory intent, classified explicitly in matrix below. |
 | F-007 | P2 | LightGBM inference produced repeated feature-name warnings in prediction/evaluation paths. | `LGBMRegressor`/`LGBMRanker` persisted `feature_names_in_`; ndarray prediction emitted warning noise. | **Fixed**: added inference input normalization in `src/models.py` to provide named DataFrame inputs when required. |
-| F-008 | P2 | Cached model artifacts and local runtime dependencies can drift enough to affect promotion decisions. | `scripts/95_retrain_drift_audit.py` measured loaded-cache ensemble `13.0417` vs tracked `13.58`; local sklearn `1.9.0` loaded artifacts serialized under sklearn `1.8.0`; pinned sklearn `1.8.0` removed warnings but did not close the delta. | **Mitigated**: added non-mutating drift audit artifacts, pinned `scikit-learn==1.8.0`, and added `pyarrow` to `requirements.txt`; model-cache provenance/model refresh remains the next promotion gate. |
+| F-008 | P2 | Cached model artifacts and local runtime dependencies can drift enough to affect promotion decisions. | Initial audit measured loaded-cache ensemble `13.0417` vs tracked `13.58`; pinned sklearn `1.8.0` removed warnings but did not close the delta; provenance showed stale eval artifacts. | **Fixed for current baseline**: refreshed 2025 eval artifacts from a current code/data/model snapshot; audit now reports `0/216` changed picks. Candidate A/B must rerun against the refreshed baseline. |
 
 ## Documentation Classification Matrix
 
@@ -103,4 +103,4 @@ Classification legend:
 - Continue reducing `sys.path` coupling in non-core experimentation scripts as a separate cleanup batch.
 - Keep `v6x/` archive frozen and out of active validation workflows.
 - Use the canonical development plan for enhancement sequencing and promotion gates.
-- Reinstall dependencies from the pinned runtime spec, refresh model artifacts when practical, and rerun `scripts/95_retrain_drift_audit.py` before promoting Candidate A/B changes.
+- Rerun Candidate A/B sweeps against the refreshed baseline before promoting any weight changes.

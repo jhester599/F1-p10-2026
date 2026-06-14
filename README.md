@@ -5,7 +5,8 @@ fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetric
 
 **Current model:** 104 features · 8 models · G_plus_clf ensemble (v9.2, per-model subspaces)
 **Benchmark:** `naive_grid_p10` — 14.04 avg pts/race on 2025 holdout
-**Current 2025 holdout:** ensemble — **13.33 avg pts/race** (−0.71 vs naive baseline)
+**Current 2025 holdout:** ensemble — **13.12 avg pts/race** (−0.92 vs naive baseline)
+**Best refreshed individual model:** `xgb_clf` — **14.04 avg pts/race**
 
 **v9.x improvements over v8.23 baseline (11.50 pts/race with old weights on 2025 holdout):**
 - v9.0: Heterogeneous feature subspace architecture — per-model `MODEL_FEATURES` routing
@@ -508,16 +509,16 @@ python scripts/03_train_models.py --cv --cv-years 2024
 
 ## Results
 
-### 2025 Holdout — v9.2 (104 features, G_plus_clf ensemble, per-model subspaces, trained on 2010–2024, 24 races)
+### 2025 Holdout — refreshed current snapshot (104 features, trained on 2010–2024, 24 races)
 
 | Model | Avg pts/race | Exact P10 | Within 2 | Notes |
 |---|---|---|---|---|
 | `naive_grid_p10` | **14.04** | — | — | Naive baseline |
-| **`ensemble (v9.2)`** | **13.33** | 3 | 13 | **G_plus_clf weights + per-model subspaces** |
-| `lgb_reg (v9.1)` | 12.58 | 3 | 12 | Best individual model (v9.1) |
-| `xgb_ranker (v9.1)` | 12.50 | 3 | 13 | Dominant ranker; 6× ensemble weight |
-| `rf_clf (v9.1)` | 11.67 | 2 | 9 | |
-| `ensemble (v8.23)` | ~11.50 | — | — | Old weights, v9.1 features |
+| **`xgb_clf`** | **14.04** | 4 | 11 | Best refreshed individual model |
+| **`ensemble`** | **13.12** | 4 | 11 | G_plus_clf weights + per-model subspaces |
+| `rf_clf` | 12.83 | 3 | 10 | |
+| `lgbm_ranker` | 11.25 | 2 | 11 | |
+| `xgb_ranker` | 11.21 | 4 | 9 | |
 
 **2026 live (R1–R2):**
 
@@ -733,8 +734,9 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
 
 **Active (v9.2 — current):**
 
-- **Ensemble vs naive:** v9.2 ensemble **13.33** vs naive 14.04 = **−0.71 pts** (gap narrowed significantly).
-  Note: v8.23 was 14.21 on a 2024 holdout; v9.2 is on a harder 2025 holdout with new regs.
+- **Ensemble vs naive:** refreshed ensemble **13.12** vs naive 14.04 = **−0.92 pts**.
+  `xgb_clf` matches the naive 14.04 average on this refreshed snapshot, so Candidate A/B follow-up
+  should re-evaluate whether ensemble weighting should lean more heavily on classifier signal.
 - **2026 regulatory era (CONDITIONAL ≥R7):** No DRS, Active Aero, 50/50 ICE-electric split.
   Activate `OVERTAKING_DIFFICULTY` recalibration after R7 2026.
 - **Madrid 2026 (R10):** Added to `STREET_CIRCUITS` and `OVERTAKING_DIFFICULTY` (score=8.0,

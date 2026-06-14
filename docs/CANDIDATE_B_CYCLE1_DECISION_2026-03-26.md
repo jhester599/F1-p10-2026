@@ -77,3 +77,15 @@ but current model code and committed processed parquet snapshots differ from tha
 artifact commit. Candidate B promotion should wait until the baseline is refreshed
 from one self-contained current code/data/model snapshot.
 
+## Baseline Refresh Update (2026-06-14)
+The baseline has now been refreshed from a current code/data/model snapshot:
+
+- Ensemble: `13.12 avg_pts`.
+- Best individual model: `xgb_clf`, `14.04 avg_pts`.
+- Drift audit: `0/216` changed picks between tracked eval artifacts and the
+  loaded current model cache.
+
+Candidate B cycle-1 should be rerun against this refreshed baseline before any
+stage-weight promotion decision. Do not promote the prior cycle-1 recommendation
+without rerunning the sweep.
+

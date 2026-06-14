@@ -15,7 +15,8 @@ defines the current execution sequence and acceptance gates.
 
 ## Current Baseline Checkpoints
 - Historical reference baseline (v8.23, holdout): **14.21 avg pts/race**.
-- Current active baseline (v9.x, holdout): **13.33 avg pts/race** (`results/eval_2025_summary.csv`, ensemble).
+- Current active baseline (refreshed current snapshot, holdout): **13.12 avg pts/race** (`results/eval_2025_summary.csv`, ensemble).
+- Current best refreshed individual model: **xgb_clf, 14.04 avg pts/race**.
 - Current live log artifact: `results/2026_live_log.csv`.
 - Latest automation prediction artifact: `results/prediction_2026_R02.csv`.
 - Current retrain/model-cache audit artifact: `results/retrain_drift/retrain_drift_report.md`.
@@ -87,18 +88,22 @@ Owner: Repo maintainer
 3. Pin artifact-sensitive runtime dependencies when cached model artifacts require it.
 4. Refresh model artifacts only when dependencies and data snapshots are intentionally locked.
 
-Current status:
-- Loaded model cache ensemble: **13.0417 avg pts/race** on 2025 holdout.
-- Tracked baseline ensemble: **13.58 avg pts/race**.
-- Drift: **-0.5383 avg pts/race**.
-- Dependency finding: local sklearn `1.9.0` loaded artifacts serialized under sklearn `1.8.0`; `requirements.txt` now pins `scikit-learn==1.8.0`.
-- Follow-up finding: rerunning the audit inside a clean sklearn `1.8.0` virtualenv removed the unpickle warnings but left the same `-0.5383` ensemble drift, so remaining work should focus on model-cache/data provenance before Candidate B promotion.
-- Provenance finding: tracked eval artifacts last changed in `0f78f1c`, while current `src/models.py`, `src/feature_engineering.py`, and committed processed parquet snapshots differ from that artifact commit. The audit now writes `results/retrain_drift/pick_drift_detail.csv` and git provenance metadata to make this mismatch visible.
+- Prior finding:
+  - Loaded model cache ensemble: **13.0417 avg pts/race** on 2025 holdout.
+  - Tracked baseline ensemble: **13.58 avg pts/race**.
+  - Drift: **-0.5383 avg pts/race**.
+  - Dependency finding: local sklearn `1.9.0` loaded artifacts serialized under sklearn `1.8.0`; `requirements.txt` now pins `scikit-learn==1.8.0`.
+  - Provenance finding: tracked eval artifacts last changed in `0f78f1c`, while current `src/models.py`, `src/feature_engineering.py`, and committed processed parquet snapshots differed from that artifact commit.
+- Refresh status:
+  - Baseline refreshed from current code/data/model snapshot on 2026-06-14.
+  - Refreshed ensemble: **13.12 avg pts/race**.
+  - Refreshed `xgb_clf`: **14.04 avg pts/race**.
+  - Drift audit: **0/216 changed picks**; only rounding-level aggregate deltas remain.
 - Baseline refresh runbook: `docs/BASELINE_REFRESH_RUNBOOK_2026-06-14.md`.
 
 Exit criteria:
 - Fresh audit under the pinned runtime is recorded.
-- Candidate A/B sweeps are rerun only after tracked eval artifacts are refreshed from a self-contained current code/data/model snapshot or intentionally replaced by a new baseline.
+- Candidate A/B sweeps are rerun after the refreshed baseline branch lands.
 - Any intentional model refresh updates the audit report and scorecard artifacts together.
 
 ### Phase 4 — Model Enhancement Program (No External Research Refresh Yet)
@@ -119,7 +124,7 @@ Candidate B - Season-stage weighting recalibration:
 - Cycle-1 status (2026-03-26):
   - Implemented stage sweep tool: `scripts/94_candidate_b_stage_weight_sweep.py`
   - Artifacts produced under `results/candidate_b/`
-  - Promotion decision: deferred pending retrain-drift stabilization
+  - Promotion decision: deferred until Candidate B is rerun against refreshed baseline
   - Details: `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md`
 
 Candidate C — Regulation-shift stress tests and ablations:

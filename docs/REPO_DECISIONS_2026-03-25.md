@@ -166,3 +166,22 @@ This document records structural decisions made for CI reliability, Windows comp
 - Current audit status: loaded model cache ensemble scored `13.0417` avg pts/race vs tracked `13.58` (`-0.5383`).
 - A pinned-runtime rerun under sklearn `1.8.0` removed the unpickle warnings but did not close the performance delta, so remaining drift is likely model-cache/data/provenance mismatch rather than only sklearn version mismatch.
 - Workflow mitigation: race-day automation now avoids broad model/processed cache restore fallbacks so exact key misses do not silently reuse stale artifacts.
+
+## 12) Refresh the 2025 baseline from a current self-contained snapshot
+
+### Decision
+- Replace stale `results/eval_2025_*` artifacts with a refreshed current snapshot generated from:
+  - current code on `claude/f1-tenth-place-predictor`
+  - committed processed parquet snapshots
+  - pinned runtime dependencies from `requirements.txt`
+  - intentionally retrained local model artifacts
+
+### Why
+- The audit proved the prior tracked baseline was not self-contained: eval artifacts last changed in `0f78f1c`, while current model code and processed data had changed.
+- Candidate A/B promotion gates need a baseline that can be reproduced from current repo state.
+
+### Impact
+- Refreshed 2025 holdout ensemble baseline: `13.12 avg_pts`.
+- Refreshed best individual model: `xgb_clf`, `14.04 avg_pts`.
+- Drift audit now reports `0/216` changed picks between tracked eval artifacts and the loaded current model cache.
+- Candidate A/B sweeps must be rerun in separate PRs against this refreshed baseline before any production weight promotion.
