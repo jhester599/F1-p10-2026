@@ -1,8 +1,8 @@
 name: Refresh model artifacts
 
 # Rebuilds the processed dataset and all trained models from the bundled raw
-# cache, then commits the artifacts to the repo so qualifying workflows never
-# start cold.  Runs automatically on the 1st of each month and can be triggered
+# cache. Processed parquet snapshots are committed; model binaries remain
+# cache-only. Runs automatically on the 1st of each month and can be triggered
 # manually to bootstrap after a fresh clone or cache wipe.
 
 on:
@@ -103,14 +103,13 @@ jobs:
           echo "Model files in models/:"
           ls -lh models/
 
-      - name: Commit artifacts to repo
+      - name: Commit processed artifacts to repo
         if: steps.need_rebuild.outputs.rebuild == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: refresh model artifacts and processed data (monthly rebuild) [skip ci]"
+          commit_message: "chore: refresh processed data (monthly rebuild) [skip ci]"
           file_pattern: |
             data/processed/*.parquet
-            models/*.joblib
 
       - name: Save processed-data cache
         if: steps.need_rebuild.outputs.rebuild == 'true'

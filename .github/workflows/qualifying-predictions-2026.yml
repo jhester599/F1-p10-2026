@@ -333,14 +333,13 @@ jobs:
           path: models
           key: ${{ steps.cache_models_restore.outputs.cache-primary-key }}
 
-      - name: Commit rebuilt model artifacts
+      - name: Commit rebuilt processed artifacts
         if: steps.preflight.outputs.run_full == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: persist rebuilt model artifacts and processed data [skip ci]"
+          commit_message: "chore: persist rebuilt processed data [skip ci]"
           file_pattern: |
             data/processed/*.parquet
-            models/*.joblib
 
       - name: Stage prediction documentation
         if: steps.run_prediction.outputs.new_prediction == 'true'
