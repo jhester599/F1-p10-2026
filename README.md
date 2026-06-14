@@ -253,6 +253,9 @@ The script reads `Form Responses 1`, skips any row whose Column F already has a
 position, skips superseded duplicate responses for the same race/email concat,
 and writes official finishing positions into Column F when Jolpica race results
 are available. Column G and the `results` tab remain spreadsheet-driven.
+For the 2026 sheet, R4/R5 are treated as skipped no-result rounds, and sheet
+rounds R6+ map to Jolpica official rounds offset by `-2` (for example, sheet R9
+Barcelona maps to Jolpica R7).
 
 GitHub Actions workflow: `.github/workflows/results-automation-2026.yml`.
 

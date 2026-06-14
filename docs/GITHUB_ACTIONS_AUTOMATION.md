@@ -109,6 +109,9 @@ workflow can authenticate but cannot edit the spreadsheet.
 - Existing Column F values are always skipped.
 - Earlier duplicate responses for the same race/email concat are skipped so a
   later response is treated as authoritative.
+- The 2026 league sheet includes skipped war rounds as R4/R5. Those rounds are
+  treated as no-result rounds, and sheet rounds R6+ map to Jolpica official
+  rounds with a `-2` offset.
 - Column G stays formula-driven from the `points` tab.
 - `results!A1:H26` stays formula-driven.
 - `results!J:Q` can be extended with cumulative formulas by passing

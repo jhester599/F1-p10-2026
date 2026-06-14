@@ -28,6 +28,7 @@ class RaceResult:
 class PositionUpdate:
     row_number: int
     round_number: int
+    official_round_number: int
     driver: str
     position: int
 
@@ -53,6 +54,15 @@ def parse_round(race_label: str) -> int | None:
     return int(match.group(1))
 
 
+def official_round_for_sheet_round(year: int, sheet_round: int) -> int | None:
+    if year == 2026:
+        if sheet_round in {4, 5}:
+            return None
+        if sheet_round >= 6:
+            return sheet_round - 2
+    return sheet_round
+
+
 def _normalize_code(value: str) -> str:
     return (value or "").strip().upper()
 
@@ -60,6 +70,7 @@ def _normalize_code(value: str) -> str:
 def build_position_updates(
     responses: list[FormResponse],
     race_results: list[RaceResult],
+    year: int | None = None,
 ) -> UpdatePlan:
     result_lookup = {
         (result.round_number, _normalize_code(result.driver_code)): result.position
@@ -83,6 +94,21 @@ def build_position_updates(
                 SkippedResponse(response.row_number, None, driver, "round_not_parseable")
             )
             continue
+        official_round = (
+            official_round_for_sheet_round(year, round_number)
+            if year is not None
+            else round_number
+        )
+        if official_round is None:
+            skipped.append(
+                SkippedResponse(
+                    response.row_number,
+                    round_number,
+                    driver,
+                    "sheet_round_skipped_no_results",
+                )
+            )
+            continue
         if response.position is not None:
             skipped.append(
                 SkippedResponse(
@@ -104,7 +130,7 @@ def build_position_updates(
             )
             continue
 
-        position = result_lookup.get((round_number, driver))
+        position = result_lookup.get((official_round, driver))
         if position is None:
             skipped.append(
                 SkippedResponse(
@@ -115,7 +141,15 @@ def build_position_updates(
                 )
             )
             continue
-        updates.append(PositionUpdate(response.row_number, round_number, driver, position))
+        updates.append(
+            PositionUpdate(
+                response.row_number,
+                round_number,
+                official_round,
+                driver,
+                position,
+            )
+        )
 
     return UpdatePlan(updates=updates, skipped=skipped)
 

@@ -34,6 +34,7 @@ from src.results_automation import (
     RaceResult,
     build_position_updates,
     cumulative_formula_row,
+    official_round_for_sheet_round,
 )
 
 
@@ -47,7 +48,17 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 def official_race_results(year: int, rounds: list[int] | None = None) -> list[RaceResult]:
     fetcher = F1Fetcher()
-    target_rounds = rounds or list(range(1, 25))
+    if rounds:
+        target_rounds = sorted(
+            {
+                official_round
+                for round_number in rounds
+                for official_round in [official_round_for_sheet_round(year, round_number)]
+                if official_round is not None
+            }
+        )
+    else:
+        target_rounds = list(range(1, 25))
     results: list[RaceResult] = []
     for rnd in target_rounds:
         for row in fetcher.results(year, rnd):
@@ -207,7 +218,15 @@ def format_summary(
     if updates:
         lines.append("Updated/planned position cells:")
         for update in updates:
-            lines.append(f"- Row {update.row_number}: R{update.round_number} {update.driver} -> P{update.position}")
+            official = (
+                f"official R{update.official_round_number}"
+                if update.official_round_number != update.round_number
+                else "same official round"
+            )
+            lines.append(
+                f"- Row {update.row_number}: sheet R{update.round_number} "
+                f"({official}) {update.driver} -> P{update.position}"
+            )
         lines.append("")
     notable_skips = [
         skip for skip in skipped
@@ -288,7 +307,7 @@ def main() -> None:
     form_values = read_values(service, args.spreadsheet_id, f"'{FORM_SHEET}'!{FORM_RANGE}")
     results_values = read_values(service, args.spreadsheet_id, f"'{RESULTS_SHEET}'!A1:Q26")
     responses = parse_form_responses(form_values)
-    plan = build_position_updates(responses, race_results)
+    plan = build_position_updates(responses, race_results, year=args.year)
     update_position_cells(service, args.spreadsheet_id, plan.updates, args.dry_run)
 
     series_updates: list[dict[str, Any]] = []

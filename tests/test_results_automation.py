@@ -3,6 +3,7 @@ from src.results_automation import (
     RaceResult,
     build_position_updates,
     cumulative_formula_row,
+    official_round_for_sheet_round,
     parse_round,
 )
 
@@ -10,6 +11,14 @@ from src.results_automation import (
 def test_parse_round_from_form_race_label() -> None:
     assert parse_round("R9-6/14-Barcelona") == 9
     assert parse_round("R20-11/1-Mexico") == 20
+
+
+def test_2026_sheet_round_mapping_accounts_for_skipped_rounds() -> None:
+    assert official_round_for_sheet_round(2026, 3) == 3
+    assert official_round_for_sheet_round(2026, 4) is None
+    assert official_round_for_sheet_round(2026, 5) is None
+    assert official_round_for_sheet_round(2026, 6) == 4
+    assert official_round_for_sheet_round(2026, 9) == 7
 
 
 def test_build_position_updates_skips_existing_values_and_superseded_duplicates() -> None:
@@ -21,11 +30,11 @@ def test_build_position_updates_skips_existing_values_and_superseded_duplicates(
         FormResponse(row_number=6, email="tim@example.com", race="R9-6/14-Barcelona", driver="UNK", concat="R9tim@example.com", position=None),
     ]
     results = [
-        RaceResult(round_number=9, driver_code="COL", position=8),
-        RaceResult(round_number=9, driver_code="LAW", position=9),
+        RaceResult(round_number=7, driver_code="COL", position=8),
+        RaceResult(round_number=7, driver_code="LAW", position=9),
     ]
 
-    plan = build_position_updates(rows, results)
+    plan = build_position_updates(rows, results, year=2026)
 
     assert [(update.row_number, update.position) for update in plan.updates] == [(4, 8)]
     assert {skip.row_number: skip.reason for skip in plan.skipped} == {
@@ -34,6 +43,19 @@ def test_build_position_updates_skips_existing_values_and_superseded_duplicates(
         5: "position_already_present",
         6: "driver_not_found_in_results",
     }
+
+
+def test_build_position_updates_skips_2026_sheet_rounds_without_races() -> None:
+    rows = [
+        FormResponse(row_number=2, email="eric@example.com", race="R4-4/12-Skipped", driver="COL", concat="R4eric@example.com", position=None),
+        FormResponse(row_number=3, email="jeff@example.com", race="R6-5/3-Miami", driver="COL", concat="R6jeff@example.com", position=None),
+    ]
+    results = [RaceResult(round_number=4, driver_code="COL", position=7)]
+
+    plan = build_position_updates(rows, results, year=2026)
+
+    assert [(update.row_number, update.round_number, update.official_round_number, update.position) for update in plan.updates] == [(3, 6, 4, 7)]
+    assert [(skip.row_number, skip.reason) for skip in plan.skipped] == [(2, "sheet_round_skipped_no_results")]
 
 
 def test_cumulative_formula_row_extends_results_time_series() -> None:
