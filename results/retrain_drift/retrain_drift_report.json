@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-14 12:18 UTC",
+  "generated_at_utc": "2026-06-14 12:26 UTC",
   "tracked_summary": "results/eval_2025_summary.csv",
   "outputs": {
     "current_picks": "results/retrain_drift/current_model_eval_picks.csv",
@@ -107,8 +107,8 @@
       },
       "requirements.txt": {
         "exists": true,
-        "sha256": "428354e9c85eed28181b18a985917669e18232821cfd0dd89400d53adeae3801",
-        "bytes": 184
+        "sha256": "325a48916e51b6f07f08b48061c472306d279d65cb8b72f3ab1d145504d6a786",
+        "bytes": 200
       },
       "data/processed/features_2010_2024.parquet": {
         "exists": true,
@@ -167,7 +167,7 @@
     "packages": {
       "numpy": "2.4.6",
       "pandas": "3.0.3",
-      "scikit-learn": "1.9.0",
+      "scikit-learn": "1.8.0",
       "xgboost": "3.2.0",
       "lightgbm": "4.6.0",
       "joblib": "1.5.3",

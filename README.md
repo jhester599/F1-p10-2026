@@ -27,7 +27,7 @@ fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetric
 > ⚠️ **Always restore the cache before running any data scripts.** See [Data Sources](#data-sources).
 
 ```bash
-pip install -r requirements.txt pyarrow
+pip install -r requirements.txt
 
 # Step 1 — Restore pre-built data cache (fast, no network needed)
 unzip f1_data_cache_2026-03-09.zip -d data/raw/
@@ -575,9 +575,9 @@ Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`
 
 **Dependency snapshots:**
 
-- `requirements.txt` is the race-day/training runtime spec. It pins
-  `scikit-learn==1.8.0` because the current cached model artifacts were serialized
-  with that version.
+- `requirements.txt` is the race-day/training runtime spec. It includes `pyarrow`
+  for committed parquet snapshots and pins `scikit-learn==1.8.0` because the
+  current cached model artifacts were serialized with that version.
 - `requirements-ci.txt` is the pinned repo-sanity verification snapshot.
 
 ---

@@ -92,6 +92,7 @@ Current status:
 - Tracked baseline ensemble: **13.58 avg pts/race**.
 - Drift: **-0.5383 avg pts/race**.
 - Dependency finding: local sklearn `1.9.0` loaded artifacts serialized under sklearn `1.8.0`; `requirements.txt` now pins `scikit-learn==1.8.0`.
+- Follow-up finding: rerunning the audit inside a clean sklearn `1.8.0` virtualenv removed the unpickle warnings but left the same `-0.5383` ensemble drift, so remaining work should focus on model-cache/data provenance before Candidate B promotion.
 
 Exit criteria:
 - Fresh audit under the pinned runtime is recorded.

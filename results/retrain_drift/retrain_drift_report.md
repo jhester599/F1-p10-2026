@@ -1,6 +1,6 @@
 # Retrain Drift Audit
 
-- Generated: 2026-06-14 12:18 UTC
+- Generated: 2026-06-14 12:26 UTC
 - Tracked summary: `results/eval_2025_summary.csv`
 - Current summary: `results/retrain_drift/current_model_eval_summary.csv`
 
@@ -23,7 +23,7 @@
 ## Runtime Packages
 - numpy: `2.4.6`
 - pandas: `3.0.3`
-- scikit-learn: `1.9.0`
+- scikit-learn: `1.8.0`
 - xgboost: `3.2.0`
 - lightgbm: `4.6.0`
 - joblib: `1.5.3`

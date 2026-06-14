@@ -64,3 +64,9 @@ artifacts were serialized under sklearn `1.8.0` while the local runtime was
 `1.9.0`. Candidate B remains deferred until a pinned-runtime audit and any
 intentional model refresh are complete.
 
+Pinned-runtime follow-up: running the audit inside a clean sklearn `1.8.0`
+virtualenv removed the unpickle warnings but kept the same ensemble delta
+(`13.0417` vs `13.58`). This means Candidate B should still wait for model-cache
+provenance stabilization or an intentional model refresh, not merely a dependency
+downgrade.
+
