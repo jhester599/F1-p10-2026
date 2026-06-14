@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,3 +24,30 @@ def test_scheduled_retry_gate_runs_from_90_to_240_minutes_after_qualifying() -> 
     assert "window_minutes = 150" in workflow
     assert "--offset-minutes 90" in workflow
     assert "--window-minutes 150" in workflow
+
+
+def test_model_and_processed_caches_require_exact_keys() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    processed_restore = re.search(
+        r"name: Restore processed-data cache(?P<body>.*?)- name: Restore raw-cache extraction",
+        workflow,
+        flags=re.S,
+    )
+    model_restore = re.search(
+        r"name: Restore model-artifact cache(?P<body>.*?)- name: Install dependencies",
+        workflow,
+        flags=re.S,
+    )
+
+    assert processed_restore is not None
+    assert model_restore is not None
+    assert "restore-keys:" not in processed_restore.group("body")
+    assert "restore-keys:" not in model_restore.group("body")
+
+
+def test_prediction_workflow_does_not_commit_ignored_model_binaries() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    assert "models/*.joblib" not in workflow
+    assert "Commit rebuilt processed artifacts" in workflow
