@@ -3,8 +3,10 @@ from src.results_automation import (
     RaceResult,
     build_position_updates,
     cumulative_formula_row,
+    detect_results_table_layout,
     official_round_for_sheet_round,
     parse_round,
+    parse_spreadsheet_ids,
     points_formula_for_row,
 )
 
@@ -71,6 +73,82 @@ def test_cumulative_formula_row_extends_results_time_series() -> None:
         "=O11+F12",
         "=P11+G12",
         "=Q11+H12",
+    ]
+
+
+def test_cumulative_formula_row_supports_second_league_width() -> None:
+    formulas = cumulative_formula_row(
+        row_number=12,
+        score_start_column=2,
+        series_start_column=13,
+        player_count=10,
+    )
+
+    assert formulas == [
+        "=A12",
+        "=N11+B12",
+        "=O11+C12",
+        "=P11+D12",
+        "=Q11+E12",
+        "=R11+F12",
+        "=S11+G12",
+        "=T11+H12",
+        "=U11+I12",
+        "=V11+J12",
+        "=W11+K12",
+    ]
+
+
+def test_detect_results_table_layout_from_header_row() -> None:
+    first_league_values = [
+        ["Race", "Eric", "Jeff", "Luke", "Matt", "Nick", "Tim", "Jim"],
+        ["Total", 118, 67, 98, 93, 49, 44, 54],
+    ]
+    second_league_values = [
+        [
+            "Race",
+            "Steve Broz",
+            "Craig Ewing",
+            "Jeff Ewing",
+            "Tricia Griffith",
+            "Jeff Hester",
+            "Kaitlin Marvin",
+            "Ken Rolsen",
+            "Rama Panguluri",
+            "Mark Thomas",
+            "Sean Allen",
+            "",
+            "",
+            "Steve Broz",
+        ],
+        ["Total", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    ]
+
+    assert detect_results_table_layout(first_league_values) == {
+        "player_count": 7,
+        "score_start_column": 2,
+        "series_start_column": 10,
+        "series_end_column": 17,
+    }
+    assert detect_results_table_layout(second_league_values) == {
+        "player_count": 10,
+        "score_start_column": 2,
+        "series_start_column": 13,
+        "series_end_column": 23,
+    }
+
+
+def test_parse_spreadsheet_ids_supports_single_comma_and_newline_values() -> None:
+    assert parse_spreadsheet_ids(" primary ") == ["primary"]
+    assert parse_spreadsheet_ids("primary,secondary\nthird") == [
+        "primary",
+        "secondary",
+        "third",
+    ]
+    assert parse_spreadsheet_ids("", fallback="primary") == ["primary"]
+    assert parse_spreadsheet_ids("primary\nprimary,secondary") == [
+        "primary",
+        "secondary",
     ]
 
 

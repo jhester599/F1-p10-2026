@@ -3,7 +3,8 @@
 Update league Google Sheets with official F1 race finishing positions.
 
 Required environment for live sheet updates:
-  RESULTS_SPREADSHEET_ID
+  RESULTS_SPREADSHEET_IDS      # comma-separated or newline-separated IDs
+  RESULTS_SPREADSHEET_ID       # legacy single-sheet fallback
   GOOGLE_SERVICE_ACCOUNT_JSON   # raw JSON, base64 JSON, or a path to JSON
 
 Optional SMTP email summary:
@@ -34,7 +35,9 @@ from src.results_automation import (
     RaceResult,
     build_position_updates,
     cumulative_formula_row,
+    detect_results_table_layout,
     official_round_for_sheet_round,
+    parse_spreadsheet_ids,
     points_formula_for_row,
 )
 
@@ -161,21 +164,42 @@ def update_position_cells(service, spreadsheet_id: str, updates, dry_run: bool) 
     )
 
 
+def _column_letter(column_number: int) -> str:
+    letters = ""
+    while column_number:
+        column_number, remainder = divmod(column_number - 1, 26)
+        letters = chr(65 + remainder) + letters
+    return letters
+
+
 def next_series_formula_updates(results_values: list[list[Any]], max_round: int) -> list[dict[str, Any]]:
     updates: list[dict[str, Any]] = []
+    layout = detect_results_table_layout(results_values)
+    series_start = layout["series_start_column"]
+    series_end = layout["series_end_column"]
     for rnd in range(1, max_round + 1):
         row_number = rnd + 2
         if row_number < 3:
             continue
         row_offset = row_number - 1
         row = results_values[row_offset] if row_offset < len(results_values) else []
-        existing_values = row[9:17] if len(row) >= 17 else []
-        if len(existing_values) >= 8 and all(str(value).strip() for value in existing_values):
+        existing_values = row[series_start - 1:series_end] if len(row) >= series_end else []
+        expected_width = layout["player_count"] + 1
+        if len(existing_values) >= expected_width and all(str(value).strip() for value in existing_values):
             continue
+        start_letter = _column_letter(series_start)
+        end_letter = _column_letter(series_end)
         updates.append(
             {
-                "range": f"'{RESULTS_SHEET}'!J{row_number}:Q{row_number}",
-                "values": [cumulative_formula_row(row_number)],
+                "range": f"'{RESULTS_SHEET}'!{start_letter}{row_number}:{end_letter}{row_number}",
+                "values": [
+                    cumulative_formula_row(
+                        row_number,
+                        score_start_column=layout["score_start_column"],
+                        series_start_column=layout["series_start_column"],
+                        player_count=layout["player_count"],
+                    )
+                ],
             }
         )
     return updates
@@ -198,6 +222,7 @@ def update_time_series(service, spreadsheet_id: str, updates: list[dict[str, Any
 def format_summary(
     *,
     year: int,
+    league_label: str | None = None,
     race_results: list[RaceResult],
     updates,
     skipped,
@@ -216,6 +241,8 @@ def format_summary(
         f"Time-series rows written/planned: {len(series_updates)}",
         "",
     ]
+    if league_label:
+        lines[2:2] = [f"League: {league_label}", ""]
     if updates:
         lines.append("Updated/planned position cells:")
         for update in updates:
@@ -241,9 +268,13 @@ def format_summary(
         lines.append("")
     if totals:
         lines.append("League totals:")
+        layout = detect_results_table_layout(totals)
         header = totals[0]
         total_row = totals[1] if len(totals) > 1 else []
-        for name, score in zip(header[1:], total_row[1:]):
+        player_count = layout["player_count"]
+        for name, score in zip(header[1:1 + player_count], total_row[1:1 + player_count]):
+            if not str(name).strip():
+                continue
             lines.append(f"- {name}: {score}")
     return "\n".join(lines).strip() + "\n"
 
@@ -274,23 +305,85 @@ def write_github_output(**values: str) -> None:
             handle.write(f"{key}={safe}\n")
 
 
+def spreadsheet_label(spreadsheet_id: str, index: int, total: int) -> str:
+    suffix = spreadsheet_id[-6:] if len(spreadsheet_id) > 6 else spreadsheet_id
+    if total == 1:
+        return f"spreadsheet ...{suffix}"
+    return f"league {index} spreadsheet ...{suffix}"
+
+
+def update_spreadsheet(
+    *,
+    service,
+    spreadsheet_id: str,
+    league_label: str,
+    year: int,
+    race_results: list[RaceResult],
+    dry_run: bool,
+    update_series: bool,
+) -> dict[str, Any]:
+    form_values = read_values(service, spreadsheet_id, f"'{FORM_SHEET}'!{FORM_RANGE}")
+    results_values = read_values(service, spreadsheet_id, f"'{RESULTS_SHEET}'!A1:AZ26")
+    responses = parse_form_responses(form_values)
+    plan = build_position_updates(responses, race_results, year=year)
+    update_position_cells(service, spreadsheet_id, plan.updates, dry_run)
+
+    series_updates: list[dict[str, Any]] = []
+    if update_series:
+        max_round = max((update.round_number for update in plan.updates), default=0)
+        series_updates = next_series_formula_updates(results_values, max_round)
+        update_time_series(service, spreadsheet_id, series_updates, dry_run)
+
+    refreshed_totals = results_values[:2]
+    if not dry_run and (plan.updates or series_updates):
+        refreshed_totals = read_values(service, spreadsheet_id, f"'{RESULTS_SHEET}'!A1:AZ26")[:2]
+
+    summary = format_summary(
+        year=year,
+        league_label=league_label,
+        race_results=race_results,
+        updates=plan.updates,
+        skipped=plan.skipped,
+        totals=refreshed_totals,
+        series_updates=series_updates,
+        dry_run=dry_run,
+    )
+    return {
+        "spreadsheet_id": spreadsheet_id,
+        "summary": summary,
+        "updated_rows": len(plan.updates),
+        "updates": [asdict(update) for update in plan.updates],
+        "skipped": [asdict(skip) for skip in plan.skipped],
+        "series_updates": series_updates,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Update league Google Sheet with official F1 results.")
     parser.add_argument("--year", type=int, default=PREDICT_YEAR)
     parser.add_argument("--round", type=int, action="append", dest="rounds")
-    parser.add_argument("--spreadsheet-id", default=os.getenv("RESULTS_SPREADSHEET_ID"))
+    parser.add_argument("--spreadsheet-id", action="append", dest="spreadsheet_ids")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--update-time-series", action="store_true")
     parser.add_argument("--send-email", action="store_true")
     args = parser.parse_args()
 
-    if not args.spreadsheet_id:
-        raise SystemExit("RESULTS_SPREADSHEET_ID or --spreadsheet-id is required.")
+    spreadsheet_ids: list[str] = []
+    for raw_id in args.spreadsheet_ids or []:
+        spreadsheet_ids.extend(parse_spreadsheet_ids(raw_id))
+    if not spreadsheet_ids:
+        spreadsheet_ids = parse_spreadsheet_ids(
+            os.getenv("RESULTS_SPREADSHEET_IDS"),
+            fallback=os.getenv("RESULTS_SPREADSHEET_ID"),
+        )
+    if not spreadsheet_ids:
+        raise SystemExit("RESULTS_SPREADSHEET_IDS, RESULTS_SPREADSHEET_ID, or --spreadsheet-id is required.")
 
     race_results = official_race_results(args.year, args.rounds)
     if not race_results:
         summary = format_summary(
             year=args.year,
+            league_label=None,
             race_results=[],
             updates=[],
             skipped=[],
@@ -305,44 +398,30 @@ def main() -> None:
         return
 
     service = sheets_service()
-    form_values = read_values(service, args.spreadsheet_id, f"'{FORM_SHEET}'!{FORM_RANGE}")
-    results_values = read_values(service, args.spreadsheet_id, f"'{RESULTS_SHEET}'!A1:Q26")
-    responses = parse_form_responses(form_values)
-    plan = build_position_updates(responses, race_results, year=args.year)
-    update_position_cells(service, args.spreadsheet_id, plan.updates, args.dry_run)
-
-    series_updates: list[dict[str, Any]] = []
-    if args.update_time_series:
-        max_round = max((update.round_number for update in plan.updates), default=0)
-        series_updates = next_series_formula_updates(results_values, max_round)
-        update_time_series(service, args.spreadsheet_id, series_updates, args.dry_run)
-
-    refreshed_totals = results_values[:2]
-    if not args.dry_run and (plan.updates or series_updates):
-        refreshed_totals = read_values(service, args.spreadsheet_id, f"'{RESULTS_SHEET}'!{RESULTS_MATRIX_RANGE}")[:2]
-
-    summary = format_summary(
-        year=args.year,
-        race_results=race_results,
-        updates=plan.updates,
-        skipped=plan.skipped,
-        totals=refreshed_totals,
-        series_updates=series_updates,
-        dry_run=args.dry_run,
-    )
+    results = [
+        update_spreadsheet(
+            service=service,
+            spreadsheet_id=spreadsheet_id,
+            league_label=spreadsheet_label(spreadsheet_id, index, len(spreadsheet_ids)),
+            year=args.year,
+            race_results=race_results,
+            dry_run=args.dry_run,
+            update_series=args.update_time_series,
+        )
+        for index, spreadsheet_id in enumerate(spreadsheet_ids, start=1)
+    ]
+    summary = "\n".join(result["summary"].strip() for result in results).strip() + "\n"
     print(summary)
-    subject = f"F1 P10 results update: {len(plan.updates)} row(s) updated"
+    updated_rows = sum(result["updated_rows"] for result in results)
+    subject = (
+        f"F1 P10 results update: {updated_rows} row(s) updated "
+        f"across {len(spreadsheet_ids)} league(s)"
+    )
     write_github_output(
-        updated_rows=str(len(plan.updates)),
+        updated_rows=str(updated_rows),
         email_subject=subject,
         email_body=summary,
-        update_summary_json=json.dumps(
-            {
-                "updates": [asdict(update) for update in plan.updates],
-                "skipped": [asdict(skip) for skip in plan.skipped],
-                "series_updates": series_updates,
-            }
-        ),
+        update_summary_json=json.dumps(results),
     )
     if args.send_email:
         sent = send_email(subject, summary)

@@ -243,7 +243,7 @@ Email contents include:
 
 ### League results automation
 
-The first league Google Sheet can be updated after race results are published:
+Configured league Google Sheets can be updated after race results are published:
 
 ```bash
 python scripts/66_update_results_automation.py --year 2026 --round 9 --spreadsheet-id <sheet_id> --dry-run
@@ -252,7 +252,10 @@ python scripts/66_update_results_automation.py --year 2026 --round 9 --spreadshe
 The script reads `Form Responses 1`, skips any row whose Column F already has a
 position, skips superseded duplicate responses for the same race/email concat,
 and writes official finishing positions into Column F when Jolpica race results
-are available. Column G and the `results` tab remain spreadsheet-driven.
+are available. Column G and the main `results` tab remain spreadsheet-driven.
+The cumulative time-series block is detected from the results table width, so
+both the seven-player and ten-player league sheets can be updated by the same
+workflow.
 For the 2026 sheet, R4/R5 are treated as skipped no-result rounds, and sheet
 rounds R6+ map to Jolpica official rounds offset by `-2` (for example, sheet R9
 Barcelona maps to Jolpica R7).
@@ -262,7 +265,8 @@ GitHub Actions workflow: `.github/workflows/results-automation-2026.yml`.
 Required secrets:
 
 - `GOOGLE_SERVICE_ACCOUNT_JSON`
-- `RESULTS_SPREADSHEET_ID`
+- `RESULTS_SPREADSHEET_IDS` for multiple sheets, comma-separated or one per line
+- `RESULTS_SPREADSHEET_ID` for the legacy single-sheet fallback
 - `SMTP_SERVER`
 - `SMTP_PORT`
 - `SMTP_USERNAME`
@@ -270,9 +274,9 @@ Required secrets:
 - `RESULTS_EMAIL_FROM`
 - `RESULTS_EMAIL_TO`
 
-Share the Google Sheet with the `client_email` from the service-account JSON
-before enabling scheduled writes. The workflow sends a results email only when
-rows are actually updated.
+Share each Google Sheet with the `client_email` from the service-account JSON
+before enabling scheduled writes. The workflow sends one results email only when
+rows are actually updated across the configured sheets.
 
 ---
 
