@@ -5,6 +5,7 @@ from src.results_automation import (
     cumulative_formula_row,
     official_round_for_sheet_round,
     parse_round,
+    points_formula_for_row,
 )
 
 
@@ -71,3 +72,7 @@ def test_cumulative_formula_row_extends_results_time_series() -> None:
         "=P11+G12",
         "=Q11+H12",
     ]
+
+
+def test_points_formula_for_form_response_row() -> None:
+    assert points_formula_for_row(52) == "=iferror(VLOOKUP(F52,points!$A$2:$B$23,2,0),0)"

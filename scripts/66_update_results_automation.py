@@ -35,6 +35,7 @@ from src.results_automation import (
     build_position_updates,
     cumulative_formula_row,
     official_round_for_sheet_round,
+    points_formula_for_row,
 )
 
 
@@ -144,8 +145,8 @@ def update_position_cells(service, spreadsheet_id: str, updates, dry_run: bool) 
         return
     data = [
         {
-            "range": f"'{FORM_SHEET}'!F{update.row_number}",
-            "values": [[update.position]],
+            "range": f"'{FORM_SHEET}'!F{update.row_number}:G{update.row_number}",
+            "values": [[update.position, points_formula_for_row(update.row_number)]],
         }
         for update in updates
     ]

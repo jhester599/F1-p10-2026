@@ -165,3 +165,7 @@ def cumulative_formula_row(row_number: int) -> list[str]:
         f"=P{row_number - 1}+G{row_number}",
         f"=Q{row_number - 1}+H{row_number}",
     ]
+
+
+def points_formula_for_row(row_number: int) -> str:
+    return f"=iferror(VLOOKUP(F{row_number},points!$A$2:$B$23,2,0),0)"
