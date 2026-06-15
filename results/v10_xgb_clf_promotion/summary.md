@@ -1,6 +1,6 @@
 # v10 xgb_clf Promotion Readiness
 
-Generated: 2026-06-15 11:53 UTC
+Generated: 2026-06-15 12:38 UTC
 
 ## Gates
 - `holdout_2025`: gate=True, xgb_avg=14.0417, baseline_avg=13.1250

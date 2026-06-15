@@ -1,121 +1,121 @@
 variant,year,round,race_name,circuit_id,picked_driver,grid_position,predicted_position,actual_pos,fantasy_pts,exact,within_2
-current_rf_reg,2025,1,Australian Grand Prix,albert_park,albon,6.0,9.957271772221665,5,8,0,0
-current_rf_reg,2025,2,Chinese Grand Prix,shanghai,hadjar,7.0,10.484275787951129,11,18,0,1
-current_rf_reg,2025,3,Japanese Grand Prix,suzuka,hamilton,8.0,10.084874044796898,7,12,0,0
-current_rf_reg,2025,4,Bahrain Grand Prix,bahrain,sainz,8.0,10.101164318116599,19,1,0,0
-current_rf_reg,2025,5,Saudi Arabian Grand Prix,jeddah,tsunoda,8.0,10.815605574863296,19,1,0,0
-current_rf_reg,2025,6,Miami Grand Prix,miami,hamilton,12.0,9.205826054502118,8,15,0,1
-current_rf_reg,2025,7,Emilia Romagna Grand Prix,imola,antonelli,13.0,10.270062298777152,19,1,0,0
-current_rf_reg,2025,8,Monaco Grand Prix,monaco,russell,14.0,9.977490306969472,11,18,0,1
-current_rf_reg,2025,9,Spanish Grand Prix,catalunya,albon,11.0,10.934692609184129,19,1,0,0
-current_rf_reg,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,11.089773323951418,20,0,0,0
-current_rf_reg,2025,11,Austrian Grand Prix,red_bull_ring,antonelli,9.0,9.417887611555035,19,1,0,0
-current_rf_reg,2025,12,British Grand Prix,silverstone,bearman,8.0,10.982586263676579,11,18,0,1
-current_rf_reg,2025,13,Belgian Grand Prix,spa,hamilton,16.0,9.050612417676398,7,12,0,0
-current_rf_reg,2025,14,Hungarian Grand Prix,hungaroring,stroll,6.0,9.714798959039502,7,12,0,0
-current_rf_reg,2025,15,Dutch Grand Prix,zandvoort,antonelli,11.0,9.875519032704162,16,6,0,0
-current_rf_reg,2025,16,Italian Grand Prix,monza,alonso,9.0,11.094798136082012,19,1,0,0
-current_rf_reg,2025,17,Azerbaijan Grand Prix,baku,hadjar,8.0,10.374148391986514,10,25,1,1
-current_rf_reg,2025,18,Singapore Grand Prix,marina_bay,hadjar,8.0,10.729329230483408,11,18,0,1
-current_rf_reg,2025,19,United States Grand Prix,americas,sainz,9.0,10.368068581675127,20,0,0,0
-current_rf_reg,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,10.810334202431836,11,18,0,1
-current_rf_reg,2025,21,São Paulo Grand Prix,interlagos,lawson,7.0,9.712342846480135,7,12,0,0
-current_rf_reg,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,10.745291404058971,8,15,0,1
-current_rf_reg,2025,23,Qatar Grand Prix,losail,alonso,8.0,10.678880198219904,7,12,0,0
-current_rf_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.308739283289588,15,8,0,0
-no_weather,2025,1,Australian Grand Prix,albert_park,albon,6.0,9.92213461904235,5,8,0,0
-no_weather,2025,2,Chinese Grand Prix,shanghai,albon,10.0,10.555855744413277,7,12,0,0
-no_weather,2025,3,Japanese Grand Prix,suzuka,hamilton,8.0,9.974693807184902,7,12,0,0
-no_weather,2025,4,Bahrain Grand Prix,bahrain,sainz,8.0,10.06711087367035,19,1,0,0
-no_weather,2025,5,Saudi Arabian Grand Prix,jeddah,tsunoda,8.0,10.771023427893187,19,1,0,0
-no_weather,2025,6,Miami Grand Prix,miami,hamilton,12.0,9.169196290758512,8,15,0,1
-no_weather,2025,7,Emilia Romagna Grand Prix,imola,antonelli,13.0,10.353731787194564,19,1,0,0
-no_weather,2025,8,Monaco Grand Prix,monaco,russell,14.0,10.045050651815815,11,18,0,1
-no_weather,2025,9,Spanish Grand Prix,catalunya,albon,11.0,10.968668988180525,19,1,0,0
-no_weather,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,11.094677601052984,20,0,0,0
-no_weather,2025,11,Austrian Grand Prix,red_bull_ring,antonelli,9.0,9.323489437882758,19,1,0,0
-no_weather,2025,12,British Grand Prix,silverstone,bearman,8.0,11.013841741947754,11,18,0,1
-no_weather,2025,13,Belgian Grand Prix,spa,hamilton,16.0,8.900902762006854,7,12,0,0
-no_weather,2025,14,Hungarian Grand Prix,hungaroring,stroll,6.0,9.744573775595182,7,12,0,0
-no_weather,2025,15,Dutch Grand Prix,zandvoort,antonelli,11.0,9.740507830918402,16,6,0,0
-no_weather,2025,16,Italian Grand Prix,monza,alonso,9.0,11.15691382719287,19,1,0,0
-no_weather,2025,17,Azerbaijan Grand Prix,baku,hadjar,8.0,10.40702868778302,10,25,1,1
-no_weather,2025,18,Singapore Grand Prix,marina_bay,hadjar,8.0,10.738962459927135,11,18,0,1
-no_weather,2025,19,United States Grand Prix,americas,sainz,9.0,10.290626692367807,20,0,0,0
-no_weather,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,10.808747742798605,11,18,0,1
-no_weather,2025,21,São Paulo Grand Prix,interlagos,lawson,7.0,9.80936793670871,7,12,0,0
-no_weather,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,10.803779684256002,8,15,0,1
-no_weather,2025,23,Qatar Grand Prix,losail,alonso,8.0,10.712131194980186,7,12,0,0
-no_weather,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.291920641522765,15,8,0,0
-no_v9_weather,2025,1,Australian Grand Prix,albert_park,albon,6.0,10.046091589041332,5,8,0,0
+current_rf_reg,2025,1,Australian Grand Prix,albert_park,albon,6.0,10.037415516832853,5,8,0,0
+current_rf_reg,2025,2,Chinese Grand Prix,shanghai,hadjar,7.0,10.44035042085584,11,18,0,1
+current_rf_reg,2025,3,Japanese Grand Prix,suzuka,hamilton,8.0,10.139855640433952,7,12,0,0
+current_rf_reg,2025,4,Bahrain Grand Prix,bahrain,sainz,8.0,10.086429382223177,19,1,0,0
+current_rf_reg,2025,5,Saudi Arabian Grand Prix,jeddah,tsunoda,8.0,10.753111003879104,19,1,0,0
+current_rf_reg,2025,6,Miami Grand Prix,miami,hamilton,12.0,9.170686114067855,8,15,0,1
+current_rf_reg,2025,7,Emilia Romagna Grand Prix,imola,antonelli,13.0,10.202684087055907,19,1,0,0
+current_rf_reg,2025,8,Monaco Grand Prix,monaco,russell,14.0,9.779595122646937,11,18,0,1
+current_rf_reg,2025,9,Spanish Grand Prix,catalunya,albon,11.0,10.970654635131815,19,1,0,0
+current_rf_reg,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,11.029405574610399,20,0,0,0
+current_rf_reg,2025,11,Austrian Grand Prix,red_bull_ring,antonelli,9.0,9.450460697765985,19,1,0,0
+current_rf_reg,2025,12,British Grand Prix,silverstone,bearman,8.0,10.974960911443956,11,18,0,1
+current_rf_reg,2025,13,Belgian Grand Prix,spa,hamilton,16.0,8.945312816555827,7,12,0,0
+current_rf_reg,2025,14,Hungarian Grand Prix,hungaroring,stroll,6.0,9.602524834658182,7,12,0,0
+current_rf_reg,2025,15,Dutch Grand Prix,zandvoort,antonelli,11.0,9.831174163636108,16,6,0,0
+current_rf_reg,2025,16,Italian Grand Prix,monza,alonso,9.0,11.057988299743846,19,1,0,0
+current_rf_reg,2025,17,Azerbaijan Grand Prix,baku,hadjar,8.0,10.496838086628536,10,25,1,1
+current_rf_reg,2025,18,Singapore Grand Prix,marina_bay,hadjar,8.0,10.772788151294858,11,18,0,1
+current_rf_reg,2025,19,United States Grand Prix,americas,sainz,9.0,10.317074662545359,20,0,0,0
+current_rf_reg,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,10.813398259245014,11,18,0,1
+current_rf_reg,2025,21,São Paulo Grand Prix,interlagos,lawson,7.0,9.710156802521999,7,12,0,0
+current_rf_reg,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,10.856987021038968,8,15,0,1
+current_rf_reg,2025,23,Qatar Grand Prix,losail,alonso,8.0,10.795930951194066,7,12,0,0
+current_rf_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.367219858280123,15,8,0,0
+no_weather,2025,1,Australian Grand Prix,albert_park,albon,6.0,10.015204153517528,5,8,0,0
+no_weather,2025,2,Chinese Grand Prix,shanghai,hadjar,7.0,10.564924199227962,11,18,0,1
+no_weather,2025,3,Japanese Grand Prix,suzuka,hamilton,8.0,10.002150671308991,7,12,0,0
+no_weather,2025,4,Bahrain Grand Prix,bahrain,sainz,8.0,10.012983533044311,19,1,0,0
+no_weather,2025,5,Saudi Arabian Grand Prix,jeddah,tsunoda,8.0,10.773179117466027,19,1,0,0
+no_weather,2025,6,Miami Grand Prix,miami,hamilton,12.0,9.134594801625202,8,15,0,1
+no_weather,2025,7,Emilia Romagna Grand Prix,imola,antonelli,13.0,10.284890054282958,19,1,0,0
+no_weather,2025,8,Monaco Grand Prix,monaco,russell,14.0,9.76111485312577,11,18,0,1
+no_weather,2025,9,Spanish Grand Prix,catalunya,albon,11.0,11.016037731404367,19,1,0,0
+no_weather,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,11.051946110900573,20,0,0,0
+no_weather,2025,11,Austrian Grand Prix,red_bull_ring,antonelli,9.0,9.365728893625688,19,1,0,0
+no_weather,2025,12,British Grand Prix,silverstone,bearman,8.0,11.019802999362266,11,18,0,1
+no_weather,2025,13,Belgian Grand Prix,spa,hamilton,16.0,8.867767823372901,7,12,0,0
+no_weather,2025,14,Hungarian Grand Prix,hungaroring,stroll,6.0,9.620533222499432,7,12,0,0
+no_weather,2025,15,Dutch Grand Prix,zandvoort,antonelli,11.0,9.663766482295703,16,6,0,0
+no_weather,2025,16,Italian Grand Prix,monza,alonso,9.0,11.121773498774203,19,1,0,0
+no_weather,2025,17,Azerbaijan Grand Prix,baku,hadjar,8.0,10.561538387452783,10,25,1,1
+no_weather,2025,18,Singapore Grand Prix,marina_bay,hadjar,8.0,10.743905918176438,11,18,0,1
+no_weather,2025,19,United States Grand Prix,americas,sainz,9.0,10.255623708423636,20,0,0,0
+no_weather,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,10.79666480100463,11,18,0,1
+no_weather,2025,21,São Paulo Grand Prix,interlagos,lawson,7.0,9.802357100329822,7,12,0,0
+no_weather,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,10.789672936877112,6,10,0,0
+no_weather,2025,23,Qatar Grand Prix,losail,alonso,8.0,10.814778390593508,7,12,0,0
+no_weather,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.317055687311926,15,8,0,0
+no_v9_weather,2025,1,Australian Grand Prix,albert_park,albon,6.0,10.046091589041334,5,8,0,0
 no_v9_weather,2025,2,Chinese Grand Prix,shanghai,albon,10.0,10.401299719007064,7,12,0,0
-no_v9_weather,2025,3,Japanese Grand Prix,suzuka,hamilton,8.0,9.910019552733266,7,12,0,0
+no_v9_weather,2025,3,Japanese Grand Prix,suzuka,hamilton,8.0,9.910019552733264,7,12,0,0
 no_v9_weather,2025,4,Bahrain Grand Prix,bahrain,sainz,8.0,10.087025693685263,19,1,0,0
-no_v9_weather,2025,5,Saudi Arabian Grand Prix,jeddah,tsunoda,8.0,10.75814521197083,19,1,0,0
-no_v9_weather,2025,6,Miami Grand Prix,miami,hamilton,12.0,9.21734567725385,8,15,0,1
-no_v9_weather,2025,7,Emilia Romagna Grand Prix,imola,alonso,5.0,9.67412043512545,11,18,0,1
-no_v9_weather,2025,8,Monaco Grand Prix,monaco,russell,14.0,10.334064807557102,11,18,0,1
+no_v9_weather,2025,5,Saudi Arabian Grand Prix,jeddah,tsunoda,8.0,10.758145211970827,19,1,0,0
+no_v9_weather,2025,6,Miami Grand Prix,miami,hamilton,12.0,9.217345677253853,8,15,0,1
+no_v9_weather,2025,7,Emilia Romagna Grand Prix,imola,alonso,5.0,9.674120435125449,11,18,0,1
+no_v9_weather,2025,8,Monaco Grand Prix,monaco,russell,14.0,10.3340648075571,11,18,0,1
 no_v9_weather,2025,9,Spanish Grand Prix,catalunya,hadjar,9.0,10.919078965477787,7,12,0,0
-no_v9_weather,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,11.133004692372765,20,0,0,0
-no_v9_weather,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,9.147912629406155,6,10,0,0
-no_v9_weather,2025,12,British Grand Prix,silverstone,bearman,8.0,10.902214976253783,11,18,0,1
+no_v9_weather,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,11.13300469237277,20,0,0,0
+no_v9_weather,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,9.147912629406157,6,10,0,0
+no_v9_weather,2025,12,British Grand Prix,silverstone,bearman,8.0,10.902214976253779,11,18,0,1
 no_v9_weather,2025,13,Belgian Grand Prix,spa,hamilton,16.0,9.201058839808146,7,12,0,0
-no_v9_weather,2025,14,Hungarian Grand Prix,hungaroring,bortoleto,7.0,10.474687328949301,6,10,0,0
+no_v9_weather,2025,14,Hungarian Grand Prix,hungaroring,bortoleto,7.0,10.474687328949306,6,10,0,0
 no_v9_weather,2025,15,Dutch Grand Prix,zandvoort,antonelli,11.0,9.570640740332117,16,6,0,0
-no_v9_weather,2025,16,Italian Grand Prix,monza,alonso,9.0,11.250822957061999,19,1,0,0
-no_v9_weather,2025,17,Azerbaijan Grand Prix,baku,sainz,2.0,9.59304210155016,3,4,0,0
-no_v9_weather,2025,18,Singapore Grand Prix,marina_bay,hadjar,8.0,10.874345252738646,11,18,0,1
-no_v9_weather,2025,19,United States Grand Prix,americas,sainz,9.0,10.305330568428541,20,0,0,0
+no_v9_weather,2025,16,Italian Grand Prix,monza,alonso,9.0,11.250822957062,19,1,0,0
+no_v9_weather,2025,17,Azerbaijan Grand Prix,baku,sainz,2.0,9.593042101550157,3,4,0,0
+no_v9_weather,2025,18,Singapore Grand Prix,marina_bay,hadjar,8.0,10.874345252738644,11,18,0,1
+no_v9_weather,2025,19,United States Grand Prix,americas,sainz,9.0,10.30533056842854,20,0,0,0
 no_v9_weather,2025,20,Mexico City Grand Prix,rodriguez,sainz,7.0,9.229158986668336,17,4,0,0
 no_v9_weather,2025,21,São Paulo Grand Prix,interlagos,lawson,7.0,10.099299720304993,7,12,0,0
-no_v9_weather,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,10.518675340731306,8,15,0,1
-no_v9_weather,2025,23,Qatar Grand Prix,losail,alonso,8.0,10.885022531929762,7,12,0,0
-no_v9_weather,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.238215095379731,15,8,0,0
-compact_rf_core,2025,1,Australian Grand Prix,albert_park,sainz,10.0,9.971412032342975,18,2,0,0
+no_v9_weather,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,10.518675340731308,8,15,0,1
+no_v9_weather,2025,23,Qatar Grand Prix,losail,alonso,8.0,10.88502253192976,7,12,0,0
+no_v9_weather,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.23821509537973,15,8,0,0
+compact_rf_core,2025,1,Australian Grand Prix,albert_park,sainz,10.0,9.971412032342977,18,2,0,0
 compact_rf_core,2025,2,Chinese Grand Prix,shanghai,albon,10.0,10.328743419124283,7,12,0,0
 compact_rf_core,2025,3,Japanese Grand Prix,suzuka,hadjar,7.0,10.113154997237501,8,15,0,1
-compact_rf_core,2025,4,Bahrain Grand Prix,bahrain,hamilton,9.0,9.929965857088227,5,8,0,0
+compact_rf_core,2025,4,Bahrain Grand Prix,bahrain,hamilton,9.0,9.929965857088229,5,8,0,0
 compact_rf_core,2025,5,Saudi Arabian Grand Prix,jeddah,tsunoda,8.0,10.392389650661626,19,1,0,0
-compact_rf_core,2025,6,Miami Grand Prix,miami,albon,7.0,8.893411653490968,5,8,0,0
+compact_rf_core,2025,6,Miami Grand Prix,miami,albon,7.0,8.89341165349097,5,8,0,0
 compact_rf_core,2025,7,Emilia Romagna Grand Prix,imola,alonso,5.0,9.802940529024582,11,18,0,1
 compact_rf_core,2025,8,Monaco Grand Prix,monaco,hadjar,6.0,10.49674590768805,6,10,0,0
 compact_rf_core,2025,9,Spanish Grand Prix,catalunya,hadjar,9.0,10.740103998972332,7,12,0,0
-compact_rf_core,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,11.078973572413283,16,6,0,0
-compact_rf_core,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,9.429645218660939,6,10,0,0
+compact_rf_core,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,11.078973572413286,16,6,0,0
+compact_rf_core,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,9.429645218660937,6,10,0,0
 compact_rf_core,2025,12,British Grand Prix,silverstone,bearman,8.0,10.959747688200853,11,18,0,1
 compact_rf_core,2025,13,Belgian Grand Prix,spa,albon,5.0,9.23066579508172,6,10,0,0
-compact_rf_core,2025,14,Hungarian Grand Prix,hungaroring,bortoleto,7.0,10.63820097352884,6,10,0,0
+compact_rf_core,2025,14,Hungarian Grand Prix,hungaroring,bortoleto,7.0,10.638200973528837,6,10,0,0
 compact_rf_core,2025,15,Dutch Grand Prix,zandvoort,antonelli,11.0,9.348408812798322,16,6,0,0
-compact_rf_core,2025,16,Italian Grand Prix,monza,alonso,9.0,11.484002054739523,19,1,0,0
-compact_rf_core,2025,17,Azerbaijan Grand Prix,baku,sainz,2.0,9.742149271639937,3,4,0,0
+compact_rf_core,2025,16,Italian Grand Prix,monza,alonso,9.0,11.484002054739527,19,1,0,0
+compact_rf_core,2025,17,Azerbaijan Grand Prix,baku,sainz,2.0,9.742149271639935,3,4,0,0
 compact_rf_core,2025,18,Singapore Grand Prix,marina_bay,hadjar,8.0,10.672872275064282,11,18,0,1
 compact_rf_core,2025,19,United States Grand Prix,americas,sainz,9.0,10.257668521978939,20,0,0,0
-compact_rf_core,2025,20,Mexico City Grand Prix,rodriguez,sainz,7.0,9.236473608460084,17,4,0,0
+compact_rf_core,2025,20,Mexico City Grand Prix,rodriguez,sainz,7.0,9.236473608460086,17,4,0,0
 compact_rf_core,2025,21,São Paulo Grand Prix,interlagos,lawson,7.0,10.363161954432435,7,12,0,0
-compact_rf_core,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,10.52354162249193,8,15,0,1
-compact_rf_core,2025,23,Qatar Grand Prix,losail,alonso,8.0,11.005400363048544,7,12,0,0
-compact_rf_core,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.370611890367632,15,8,0,0
+compact_rf_core,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,10.523541622491928,8,15,0,1
+compact_rf_core,2025,23,Qatar Grand Prix,losail,alonso,8.0,11.005400363048546,7,12,0,0
+compact_rf_core,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.370611890367634,15,8,0,0
 compact_no_q2,2025,1,Australian Grand Prix,albert_park,sainz,10.0,10.014410531536633,18,2,0,0
-compact_no_q2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,10.44241147259062,7,12,0,0
+compact_no_q2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,10.442411472590623,7,12,0,0
 compact_no_q2,2025,3,Japanese Grand Prix,suzuka,hadjar,7.0,10.149011838828672,8,15,0,1
-compact_no_q2,2025,4,Bahrain Grand Prix,bahrain,sainz,8.0,9.87251944761859,19,1,0,0
-compact_no_q2,2025,5,Saudi Arabian Grand Prix,jeddah,tsunoda,8.0,10.476448222255241,19,1,0,0
+compact_no_q2,2025,4,Bahrain Grand Prix,bahrain,sainz,8.0,9.872519447618592,19,1,0,0
+compact_no_q2,2025,5,Saudi Arabian Grand Prix,jeddah,tsunoda,8.0,10.476448222255238,19,1,0,0
 compact_no_q2,2025,6,Miami Grand Prix,miami,albon,7.0,8.962573307974361,5,8,0,0
 compact_no_q2,2025,7,Emilia Romagna Grand Prix,imola,alonso,5.0,9.774440534923631,11,18,0,1
-compact_no_q2,2025,8,Monaco Grand Prix,monaco,hadjar,6.0,10.43224605270082,6,10,0,0
-compact_no_q2,2025,9,Spanish Grand Prix,catalunya,hadjar,9.0,10.820073901105868,7,12,0,0
+compact_no_q2,2025,8,Monaco Grand Prix,monaco,hadjar,6.0,10.432246052700814,6,10,0,0
+compact_no_q2,2025,9,Spanish Grand Prix,catalunya,hadjar,9.0,10.820073901105864,7,12,0,0
 compact_no_q2,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,11.134544723300916,16,6,0,0
 compact_no_q2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,9.454516240640277,6,10,0,0
-compact_no_q2,2025,12,British Grand Prix,silverstone,bearman,8.0,10.996604306342745,11,18,0,1
+compact_no_q2,2025,12,British Grand Prix,silverstone,bearman,8.0,10.996604306342743,11,18,0,1
 compact_no_q2,2025,13,Belgian Grand Prix,spa,albon,5.0,9.187383369390597,6,10,0,0
-compact_no_q2,2025,14,Hungarian Grand Prix,hungaroring,bortoleto,7.0,10.548830912038348,6,10,0,0
-compact_no_q2,2025,15,Dutch Grand Prix,zandvoort,antonelli,11.0,9.243539667285486,16,6,0,0
+compact_no_q2,2025,14,Hungarian Grand Prix,hungaroring,bortoleto,7.0,10.54883091203835,6,10,0,0
+compact_no_q2,2025,15,Dutch Grand Prix,zandvoort,antonelli,11.0,9.243539667285484,16,6,0,0
 compact_no_q2,2025,16,Italian Grand Prix,monza,alonso,9.0,11.572997998684796,19,1,0,0
-compact_no_q2,2025,17,Azerbaijan Grand Prix,baku,sainz,2.0,9.580219739935265,3,4,0,0
+compact_no_q2,2025,17,Azerbaijan Grand Prix,baku,sainz,2.0,9.580219739935266,3,4,0,0
 compact_no_q2,2025,18,Singapore Grand Prix,marina_bay,hadjar,8.0,10.657590363002067,11,18,0,1
 compact_no_q2,2025,19,United States Grand Prix,americas,sainz,9.0,10.327683278747372,20,0,0,0
 compact_no_q2,2025,20,Mexico City Grand Prix,rodriguez,sainz,7.0,9.253883003834623,17,4,0,0
-compact_no_q2,2025,21,São Paulo Grand Prix,interlagos,lawson,7.0,10.448135401681446,7,12,0,0
-compact_no_q2,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,10.406021928560953,8,15,0,1
-compact_no_q2,2025,23,Qatar Grand Prix,losail,alonso,8.0,11.00638963725223,7,12,0,0
-compact_no_q2,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.41492336552543,15,8,0,0
+compact_no_q2,2025,21,São Paulo Grand Prix,interlagos,lawson,7.0,10.448135401681443,7,12,0,0
+compact_no_q2,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,10.406021928560952,8,15,0,1
+compact_no_q2,2025,23,Qatar Grand Prix,losail,alonso,8.0,11.006389637252232,7,12,0,0
+compact_no_q2,2025,24,Abu Dhabi Grand Prix,yas_marina,antonelli,14.0,10.414923365525432,15,8,0,0

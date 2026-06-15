@@ -1,6 +1,6 @@
 # v10 xgb_clf Leakage Audit
 
-Generated: 2026-06-15 11:53 UTC
+Generated: 2026-06-15 12:38 UTC
 
 ## Result
 - xgb_clf matched naive grid-P10 picks in **4 / 24** races.

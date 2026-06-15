@@ -205,9 +205,10 @@ Follow-up:
 - Direct `xgb_clf` promotion was audited on June 15, 2026 and remains blocked:
   holdout/in-season evidence is promising, but multi-year rolling CV does not
   pass and live 2026 sample size is too small.
-- Continue with leakage-safe feature/model research and rerun expanding
-  validation after processed data is rebuilt with historical-only
-  `circ_p10_grid_chaos`.
+- Leakage-safe processed parquet snapshots were refreshed with historical-only
+  `circ_p10_grid_chaos` via `scripts/105_refresh_circ_p10_grid_chaos.py`.
+  Continue with expanding feature/model validation before considering any
+  production weight or direct `xgb_clf` promotion.
 
 ### Backlog 2 - P10 League Scoring Automation
 Goal:

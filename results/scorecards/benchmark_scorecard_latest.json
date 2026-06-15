@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-14 12:42 UTC",
+  "generated_at_utc": "2026-06-15 12:38 UTC",
   "locked_baselines": {
     "v8_23_2025_holdout_avg_pts": 14.21,
     "v9_x_current_target": "balanced: optimize holdout + live without regressions"

@@ -109,6 +109,23 @@ V10 xgb_clf tie/leakage audit and follow-up research (2026-06-15):
   - `results/v10_xgb_clf_promotion/summary.{json,md}`
   - `results/v10_xgb_clf_grid_ablation/summary.{csv,json,md}`
 
+Leakage-safe processed-data refresh (2026-06-15):
+- Full `scripts/02_build_dataset.py --years 2010 2025 --force` rebuild attempts timed
+  out locally, so the targeted deterministic repair was used instead.
+- Command: `python scripts/105_refresh_circ_p10_grid_chaos.py`
+- Refresh behavior: recalculate `circ_p10_grid_chaos` on
+  `data/processed/features_2010_2025.parquet`, then derive
+  `features_2010_2024.parquet` and `features_2025_2025.parquet` from the refreshed
+  combined frame so split files keep prior-year circuit history.
+- Re-run result: leakage audit still reports `xgb_clf` matched naive grid-P10 in
+  only `4/24` races and does not use `circ_p10_grid_chaos`; promotion readiness
+  still blocks direct `xgb_clf` promotion; grid ablation still has current
+  `xgb_clf` best at `14.0417 avg_pts` and `grid_only` at `11.2083`.
+- RF subspace re-run result: current `MODEL_FEATURES["rf_reg"]` remains best at
+  `9.7083 avg_pts`; no RF subspace pruning recommended.
+- Decision: keep the source fix and refreshed processed snapshots, but do not
+  change production weights or promote `xgb_clf` from this evidence alone.
+
 ---
 
 ## Current Baselines (eval_2025_picks.csv)

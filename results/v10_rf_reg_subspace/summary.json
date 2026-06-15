@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-15 01:37 UTC",
+  "generated_at_utc": "2026-06-15 12:40 UTC",
   "baseline_variant": "current_rf_reg",
   "n_estimators": 400,
   "results": [
@@ -20,11 +20,11 @@
       "description": "Current rf_reg subspace with weather features removed.",
       "feature_count": 59,
       "n_races": 24,
-      "total_pts": 227,
-      "avg_pts": 9.458333333333334,
+      "total_pts": 228,
+      "avg_pts": 9.5,
       "exact_p10": 1,
       "within_2": 7,
-      "delta_vs_current": -0.25,
+      "delta_vs_current": -0.20833333333333393,
       "n_estimators": 400
     },
     {
