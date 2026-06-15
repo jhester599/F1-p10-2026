@@ -13,10 +13,229 @@ on:
         default: false
         type: boolean
   schedule:
-    # Scan after likely race-completion windows during the 2026 season.
-    # The script is idempotent: filled Column F cells are skipped, and no email
-    # is sent unless sheet rows are updated.
-    - cron: "30 22 * 3-12 0,1"
+    # Probe race result availability from race_start + 120 minutes through
+    # race_start + 240 minutes, every 30 minutes. The preflight gate below
+    # enforces the exact Jolpica 2026 race window and maps skipped sheet rounds.
+    # R01 Australian +120m
+    - cron: "0 6 8 3 *"
+    # R01 Australian +150m
+    - cron: "30 6 8 3 *"
+    # R01 Australian +180m
+    - cron: "0 7 8 3 *"
+    # R01 Australian +210m
+    - cron: "30 7 8 3 *"
+    # R01 Australian +240m
+    - cron: "0 8 8 3 *"
+    # R02 Chinese +120m
+    - cron: "0 9 15 3 *"
+    # R02 Chinese +150m
+    - cron: "30 9 15 3 *"
+    # R02 Chinese +180m
+    - cron: "0 10 15 3 *"
+    # R02 Chinese +210m
+    - cron: "30 10 15 3 *"
+    # R02 Chinese +240m
+    - cron: "0 11 15 3 *"
+    # R03 Japanese +120m
+    - cron: "0 7 29 3 *"
+    # R03 Japanese +150m
+    - cron: "30 7 29 3 *"
+    # R03 Japanese +180m
+    - cron: "0 8 29 3 *"
+    # R03 Japanese +210m
+    - cron: "30 8 29 3 *"
+    # R03 Japanese +240m
+    - cron: "0 9 29 3 *"
+    # R04 Miami +120m
+    - cron: "0 22 3 5 *"
+    # R04 Miami +150m
+    - cron: "30 22 3 5 *"
+    # R04 Miami +180m
+    - cron: "0 23 3 5 *"
+    # R04 Miami +210m
+    - cron: "30 23 3 5 *"
+    # R04 Miami +240m
+    - cron: "0 0 4 5 *"
+    # R05 Canadian +120m
+    - cron: "0 22 24 5 *"
+    # R05 Canadian +150m
+    - cron: "30 22 24 5 *"
+    # R05 Canadian +180m
+    - cron: "0 23 24 5 *"
+    # R05 Canadian +210m
+    - cron: "30 23 24 5 *"
+    # R05 Canadian +240m
+    - cron: "0 0 25 5 *"
+    # R06 Monaco +120m
+    - cron: "0 15 7 6 *"
+    # R06 Monaco +150m
+    - cron: "30 15 7 6 *"
+    # R06 Monaco +180m
+    - cron: "0 16 7 6 *"
+    # R06 Monaco +210m
+    - cron: "30 16 7 6 *"
+    # R06 Monaco +240m
+    - cron: "0 17 7 6 *"
+    # R07 Barcelona +120m
+    - cron: "0 15 14 6 *"
+    # R07 Barcelona +150m
+    - cron: "30 15 14 6 *"
+    # R07 Barcelona +180m
+    - cron: "0 16 14 6 *"
+    # R07 Barcelona +210m
+    - cron: "30 16 14 6 *"
+    # R07 Barcelona +240m
+    - cron: "0 17 14 6 *"
+    # R08 Austrian +120m
+    - cron: "0 15 28 6 *"
+    # R08 Austrian +150m
+    - cron: "30 15 28 6 *"
+    # R08 Austrian +180m
+    - cron: "0 16 28 6 *"
+    # R08 Austrian +210m
+    - cron: "30 16 28 6 *"
+    # R08 Austrian +240m
+    - cron: "0 17 28 6 *"
+    # R09 British +120m
+    - cron: "0 16 5 7 *"
+    # R09 British +150m
+    - cron: "30 16 5 7 *"
+    # R09 British +180m
+    - cron: "0 17 5 7 *"
+    # R09 British +210m
+    - cron: "30 17 5 7 *"
+    # R09 British +240m
+    - cron: "0 18 5 7 *"
+    # R10 Belgian +120m
+    - cron: "0 15 19 7 *"
+    # R10 Belgian +150m
+    - cron: "30 15 19 7 *"
+    # R10 Belgian +180m
+    - cron: "0 16 19 7 *"
+    # R10 Belgian +210m
+    - cron: "30 16 19 7 *"
+    # R10 Belgian +240m
+    - cron: "0 17 19 7 *"
+    # R11 Hungarian +120m
+    - cron: "0 15 26 7 *"
+    # R11 Hungarian +150m
+    - cron: "30 15 26 7 *"
+    # R11 Hungarian +180m
+    - cron: "0 16 26 7 *"
+    # R11 Hungarian +210m
+    - cron: "30 16 26 7 *"
+    # R11 Hungarian +240m
+    - cron: "0 17 26 7 *"
+    # R12 Dutch +120m
+    - cron: "0 15 23 8 *"
+    # R12 Dutch +150m
+    - cron: "30 15 23 8 *"
+    # R12 Dutch +180m
+    - cron: "0 16 23 8 *"
+    # R12 Dutch +210m
+    - cron: "30 16 23 8 *"
+    # R12 Dutch +240m
+    - cron: "0 17 23 8 *"
+    # R13 Italian +120m
+    - cron: "0 15 6 9 *"
+    # R13 Italian +150m
+    - cron: "30 15 6 9 *"
+    # R13 Italian +180m
+    - cron: "0 16 6 9 *"
+    # R13 Italian +210m
+    - cron: "30 16 6 9 *"
+    # R13 Italian +240m
+    - cron: "0 17 6 9 *"
+    # R14 Spanish +120m
+    - cron: "0 15 13 9 *"
+    # R14 Spanish +150m
+    - cron: "30 15 13 9 *"
+    # R14 Spanish +180m
+    - cron: "0 16 13 9 *"
+    # R14 Spanish +210m
+    - cron: "30 16 13 9 *"
+    # R14 Spanish +240m
+    - cron: "0 17 13 9 *"
+    # R15 Azerbaijan +120m
+    - cron: "0 13 26 9 *"
+    # R15 Azerbaijan +150m
+    - cron: "30 13 26 9 *"
+    # R15 Azerbaijan +180m
+    - cron: "0 14 26 9 *"
+    # R15 Azerbaijan +210m
+    - cron: "30 14 26 9 *"
+    # R15 Azerbaijan +240m
+    - cron: "0 15 26 9 *"
+    # R16 Singapore +120m
+    - cron: "0 14 11 10 *"
+    # R16 Singapore +150m
+    - cron: "30 14 11 10 *"
+    # R16 Singapore +180m
+    - cron: "0 15 11 10 *"
+    # R16 Singapore +210m
+    - cron: "30 15 11 10 *"
+    # R16 Singapore +240m
+    - cron: "0 16 11 10 *"
+    # R17 United States +120m
+    - cron: "0 22 25 10 *"
+    # R17 United States +150m
+    - cron: "30 22 25 10 *"
+    # R17 United States +180m
+    - cron: "0 23 25 10 *"
+    # R17 United States +210m
+    - cron: "30 23 25 10 *"
+    # R17 United States +240m
+    - cron: "0 0 26 10 *"
+    # R18 Mexico City +120m
+    - cron: "0 22 1 11 *"
+    # R18 Mexico City +150m
+    - cron: "30 22 1 11 *"
+    # R18 Mexico City +180m
+    - cron: "0 23 1 11 *"
+    # R18 Mexico City +210m
+    - cron: "30 23 1 11 *"
+    # R18 Mexico City +240m
+    - cron: "0 0 2 11 *"
+    # R19 Brazilian +120m
+    - cron: "0 19 8 11 *"
+    # R19 Brazilian +150m
+    - cron: "30 19 8 11 *"
+    # R19 Brazilian +180m
+    - cron: "0 20 8 11 *"
+    # R19 Brazilian +210m
+    - cron: "30 20 8 11 *"
+    # R19 Brazilian +240m
+    - cron: "0 21 8 11 *"
+    # R20 Las Vegas +120m
+    - cron: "0 6 22 11 *"
+    # R20 Las Vegas +150m
+    - cron: "30 6 22 11 *"
+    # R20 Las Vegas +180m
+    - cron: "0 7 22 11 *"
+    # R20 Las Vegas +210m
+    - cron: "30 7 22 11 *"
+    # R20 Las Vegas +240m
+    - cron: "0 8 22 11 *"
+    # R21 Qatar +120m
+    - cron: "0 18 29 11 *"
+    # R21 Qatar +150m
+    - cron: "30 18 29 11 *"
+    # R21 Qatar +180m
+    - cron: "0 19 29 11 *"
+    # R21 Qatar +210m
+    - cron: "30 19 29 11 *"
+    # R21 Qatar +240m
+    - cron: "0 20 29 11 *"
+    # R22 Abu Dhabi +120m
+    - cron: "0 15 6 12 *"
+    # R22 Abu Dhabi +150m
+    - cron: "30 15 6 12 *"
+    # R22 Abu Dhabi +180m
+    - cron: "0 16 6 12 *"
+    # R22 Abu Dhabi +210m
+    - cron: "30 16 6 12 *"
+    # R22 Abu Dhabi +240m
+    - cron: "0 17 6 12 *"
 
 permissions:
   contents: read
@@ -36,19 +255,92 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Results window preflight
+        id: preflight
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ROUND_OVERRIDE: ${{ inputs.round_override }}
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import urllib.request
+
+          # Results run window: --offset-minutes 120 --window-minutes 120
+          YEAR = 2026
+          OFFSET_MINUTES = 120
+          WINDOW_MINUTES = 120
+          SCHEDULE_URL = f"https://api.jolpi.ca/ergast/f1/{YEAR}.json?limit=1000"
+
+          def write_output(**values):
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+                  for key, value in values.items():
+                      handle.write(f"{key}={value}\n")
+
+          def sheet_round_for_official_round(official_round):
+              return official_round if official_round <= 3 else official_round + 2
+
+          event_name = os.environ.get("EVENT_NAME", "")
+          round_override = os.environ.get("ROUND_OVERRIDE", "").strip()
+
+          if event_name != "schedule":
+              write_output(run_full="true", round=round_override, skip_reason="")
+              raise SystemExit(0)
+
+          now = dt.datetime.now(dt.timezone.utc)
+          with urllib.request.urlopen(SCHEDULE_URL, timeout=30) as response:
+              payload = json.load(response)
+
+          races = payload["MRData"]["RaceTable"]["Races"]
+          for race in races:
+              race_time = race.get("time")
+              if not race_time:
+                  continue
+              race_start = dt.datetime.fromisoformat(
+                  f"{race['date']}T{race_time.replace('Z', '+00:00')}"
+              )
+              window_start = race_start + dt.timedelta(minutes=OFFSET_MINUTES)
+              window_end = window_start + dt.timedelta(minutes=WINDOW_MINUTES)
+              if window_start <= now <= window_end:
+                  official_round = int(race["round"])
+                  sheet_round = sheet_round_for_official_round(official_round)
+                  write_output(run_full="true", round=sheet_round, skip_reason="")
+                  print(
+                      f"Running sheet round {sheet_round} for official round "
+                      f"{official_round}: {race['raceName']}"
+                  )
+                  raise SystemExit(0)
+
+          write_output(
+              run_full="false",
+              round="",
+              skip_reason="Not in race_start+120..+240 window.",
+          )
+          print("Not in race_start+120..+240 window.")
+          PY
+
+      - name: Results window skip notice
+        if: steps.preflight.outputs.run_full != 'true'
+        run: |
+          echo "${{ steps.preflight.outputs.skip_reason }}"
+
       - name: Setup Python
+        if: steps.preflight.outputs.run_full == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
       - name: Install dependencies
+        if: steps.preflight.outputs.run_full == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Check Google Sheets secret configuration
         id: sheet_cfg
+        if: steps.preflight.outputs.run_full == 'true'
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           RESULTS_SPREADSHEET_ID: ${{ secrets.RESULTS_SPREADSHEET_ID }}
@@ -61,14 +353,15 @@ jobs:
 
       - name: Update league results sheet
         id: update_results
-        if: steps.sheet_cfg.outputs.sheet_ready == 'true'
+        if: steps.preflight.outputs.run_full == 'true' && steps.sheet_cfg.outputs.sheet_ready == 'true'
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           RESULTS_SPREADSHEET_ID: ${{ secrets.RESULTS_SPREADSHEET_ID }}
         run: |
           CMD="python scripts/66_update_results_automation.py --year 2026 --update-time-series"
-          if [ -n "${{ inputs.round_override }}" ]; then
-            CMD="$CMD --round ${{ inputs.round_override }}"
+          ROUND="${{ steps.preflight.outputs.round }}"
+          if [ -n "$ROUND" ]; then
+            CMD="$CMD --round $ROUND"
           fi
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             CMD="$CMD --dry-run"
@@ -77,13 +370,13 @@ jobs:
           eval "$CMD"
 
       - name: Missing Google Sheets secrets notice
-        if: steps.sheet_cfg.outputs.sheet_ready == 'false'
+        if: steps.preflight.outputs.run_full == 'true' && steps.sheet_cfg.outputs.sheet_ready == 'false'
         run: |
           echo "Skipping league results update because GOOGLE_SERVICE_ACCOUNT_JSON or RESULTS_SPREADSHEET_ID is missing."
 
       - name: Check email secret configuration
         id: email_cfg
-        if: steps.update_results.outputs.updated_rows != '0' && inputs.dry_run != true
+        if: steps.update_results.outcome == 'success' && steps.update_results.outputs.updated_rows != '' && steps.update_results.outputs.updated_rows != '0' && inputs.dry_run != true
         env:
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -99,7 +392,7 @@ jobs:
           fi
 
       - name: Send results email
-        if: steps.update_results.outputs.updated_rows != '0' && inputs.dry_run != true && steps.email_cfg.outputs.email_ready == 'true'
+        if: steps.update_results.outcome == 'success' && steps.update_results.outputs.updated_rows != '' && steps.update_results.outputs.updated_rows != '0' && inputs.dry_run != true && steps.email_cfg.outputs.email_ready == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
@@ -112,6 +405,6 @@ jobs:
           body: ${{ steps.update_results.outputs.email_body }}
 
       - name: Missing email secrets notice
-        if: steps.update_results.outputs.updated_rows != '0' && inputs.dry_run != true && steps.email_cfg.outputs.email_ready == 'false'
+        if: steps.update_results.outcome == 'success' && steps.update_results.outputs.updated_rows != '' && steps.update_results.outputs.updated_rows != '0' && inputs.dry_run != true && steps.email_cfg.outputs.email_ready == 'false'
         run: |
           echo "League results updated, but results email secrets are missing."

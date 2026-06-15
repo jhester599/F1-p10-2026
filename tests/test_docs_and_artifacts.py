@@ -103,3 +103,22 @@ def test_results_automation_is_documented_and_wired() -> None:
     assert "scripts/66_update_results_automation.py" in readme
     assert "GOOGLE_SERVICE_ACCOUNT_JSON" in automation_docs
     assert "RESULTS_EMAIL_TO" in automation_docs
+
+
+def test_results_automation_uses_race_result_probe_window() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "results-automation-2026.yml").read_text(
+        encoding="utf-8"
+    )
+    automation_docs = (ROOT / "docs" / "GITHUB_ACTIONS_AUTOMATION.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "race_start + 120 minutes" in workflow
+    assert "race_start + 240 minutes" in workflow
+    assert "`+120..+240`" in automation_docs
+    assert "window-minutes 120" in workflow
+    assert "offset-minutes 120" in workflow
+    assert "# R07 Barcelona +120m" in workflow
+    assert "# R07 Barcelona +240m" in workflow
+    assert "steps.update_results.outputs.updated_rows != ''" in workflow
+    assert '30 22 * 3-12 0,1' not in workflow

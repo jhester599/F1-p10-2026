@@ -84,6 +84,22 @@ fetcher, writes blank Column F positions in `Form Responses 1`, optionally
 extends the `results!J:Q` time-series formulas, and emails a summary when rows
 are updated.
 
+## Results Timing Logic
+
+- Scheduled workflow probes use explicit 2026 cron entries from
+  `race_start + 120 minutes` through `race_start + 240 minutes`
+  (`+120..+240`) every 30 minutes.
+- A preflight gate fetches the Jolpica 2026 schedule before dependency setup.
+  Scheduled runs continue only when the current UTC time is inside the active
+  race window.
+- Scheduled runs pass the mapped sheet round to
+  `scripts/66_update_results_automation.py`, so each probe only scans the
+  round that just completed.
+- Manual workflow dispatch always runs; `round_override` can be used to target a
+  single sheet round, and leaving it blank scans all sheet rounds.
+- For 2026 only, sheet R4/R5 are skipped no-result rounds, and sheet R6+ maps to
+  Jolpica official rounds with a `-2` offset.
+
 ## Results Sheet Setup
 
 Required repository secrets:
