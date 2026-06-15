@@ -1,0 +1,67 @@
+{
+  "generated_at_utc": "2026-06-15 01:37 UTC",
+  "baseline_variant": "current_rf_reg",
+  "n_estimators": 400,
+  "results": [
+    {
+      "variant": "current_rf_reg",
+      "description": "Current MODEL_FEATURES['rf_reg'] subspace.",
+      "feature_count": 62,
+      "n_races": 24,
+      "total_pts": 233,
+      "avg_pts": 9.708333333333334,
+      "exact_p10": 1,
+      "within_2": 8,
+      "delta_vs_current": 0.0,
+      "n_estimators": 400
+    },
+    {
+      "variant": "no_weather",
+      "description": "Current rf_reg subspace with weather features removed.",
+      "feature_count": 59,
+      "n_races": 24,
+      "total_pts": 227,
+      "avg_pts": 9.458333333333334,
+      "exact_p10": 1,
+      "within_2": 7,
+      "delta_vs_current": -0.25,
+      "n_estimators": 400
+    },
+    {
+      "variant": "no_v9_weather",
+      "description": "Current rf_reg subspace without v9 candidate or weather features.",
+      "feature_count": 48,
+      "n_races": 24,
+      "total_pts": 227,
+      "avg_pts": 9.458333333333334,
+      "exact_p10": 0,
+      "within_2": 6,
+      "delta_vs_current": -0.25,
+      "n_estimators": 400
+    },
+    {
+      "variant": "compact_rf_core",
+      "description": "Hand-pruned RF core focused on grid, qualifying, form, P10-zone, and circuit signals.",
+      "feature_count": 38,
+      "n_races": 24,
+      "total_pts": 220,
+      "avg_pts": 9.166666666666666,
+      "exact_p10": 0,
+      "within_2": 5,
+      "delta_vs_current": -0.5416666666666679,
+      "n_estimators": 400
+    },
+    {
+      "variant": "compact_no_q2",
+      "description": "compact_rf_core without Q2-only features.",
+      "feature_count": 36,
+      "n_races": 24,
+      "total_pts": 213,
+      "avg_pts": 8.875,
+      "exact_p10": 0,
+      "within_2": 5,
+      "delta_vs_current": -0.8333333333333339,
+      "n_estimators": 400
+    }
+  ]
+}

@@ -82,6 +82,13 @@ python scripts/97_candidate_replay_gates.py
 python scripts/96_candidate_promotion_readiness.py
 ```
 
+V10 research scripts:
+
+```bash
+python scripts/99_v10_rf_reg_subspace_pruning.py --year 2025 --n-estimators 400
+python scripts/100_v10_conditional_baseline_blends.py --year 2025
+```
+
 Outputs:
 
 - `results/scorecards/benchmark_scorecard_latest.json`
@@ -92,6 +99,8 @@ Outputs:
 - `results/candidate_b/candidate_b_rolling_cv_replay.json`
 - `results/candidate_a/candidate_a_live_2026_replay.json`
 - `results/candidate_b/candidate_b_live_2026_replay.json`
+- `results/v10_rf_reg_subspace/summary.{csv,json,md}`
+- `results/v10_conditional_baseline_blends/summary.{csv,json,md}`
 
 The rolling-CV replay generator creates per-driver scored CV checkpoints because
 the legacy CV CSVs contain only model picks and cannot replay blended candidate
@@ -805,10 +814,18 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
   Activate `OVERTAKING_DIFFICULTY` recalibration after R7 2026.
 - **Madrid 2026 (R10):** Added to `STREET_CIRCUITS` and `OVERTAKING_DIFFICULTY` (score=8.0,
   estimated — no empirical data yet; derive empirically after R10).
-- **rf_reg degraded to 7.50 pts/race in v9.1.** Root cause unclear; likely the expanded feature
-  set (62 features) is over-wide for the random forest variant. Consider pruning rf_reg's subspace.
-
 **Tested and concluded:**
+
+- **rf_reg subspace pruning (v10.x, 2026-06-15):** `scripts/99_v10_rf_reg_subspace_pruning.py`
+  tested current, weather-pruned, v9/weather-pruned, and compact RF feature subspaces on
+  2025 holdout. Current `MODEL_FEATURES["rf_reg"]` remained best at `9.7083 avg_pts`;
+  no production feature-subspace change recommended.
+- **Naive baseline gap conditional blends (v10.x, 2026-06-15):**
+  `scripts/100_v10_conditional_baseline_blends.py` replayed the 2025 rolling-CV scored
+  checkpoint with Candidate A, naive grid-P10, and circuit-conditional grid boosts. Plain
+  naive grid-P10 remained best at `14.0417 avg_pts`; the best conditional blend reached
+  `12.6667 avg_pts`, beating current rolling-CV ensemble but not the naive baseline.
+  No production ensemble change recommended from this sweep.
 
 - **Weather features (v6.13):** Originally REJECTED (−2.3 pts/race at global level).
   In v9.1 per-model testing: `chaos_index`, `temp_max_c`, `is_high_wind`, `rain_category` all
@@ -819,10 +836,9 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
 **Pended for later in season:**
 
 - **2026 retraining (v6.12):** Retrain after R5, R10, R15, R24 as 2026 data accumulates.
-- **rf_reg subspace pruning (v10.x):** rf_reg dropped to 7.50 in v9.1 — investigate optimal
-  subspace for the random forest regressor.
-- **Naive baseline gap (v10.x):** Current gap is −0.71 pts. Possible improvements: circuit-type
-  conditional ensemble weights, v9 features not yet tested (grid_x_overtaking interactions, etc.).
+- **Naive baseline gap follow-up (v10.x):** The conditional grid-blend sweep did not beat
+  naive grid-P10. Next viable direction is an expanding-window retrain/replay study rather
+  than another 2025-only weight tweak.
 
 ---
 

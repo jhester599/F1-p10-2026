@@ -43,6 +43,24 @@ Candidate A refreshed rerun:
 - Production decision: do not promote yet; Candidate A is the leading promotion
   candidate but needs rolling-CV and 2026 live-log confirmation.
 
+V10 pended-task research rerun (2026-06-15):
+- RF subspace pruning command:
+  `python scripts/99_v10_rf_reg_subspace_pruning.py --year 2025 --n-estimators 400`
+- RF result: current `MODEL_FEATURES["rf_reg"]` remained best at
+  `9.7083 avg_pts`; weather-pruned and compact variants all regressed.
+- RF decision: no production subspace change recommended from this sweep.
+- Conditional baseline blend command:
+  `python scripts/100_v10_conditional_baseline_blends.py --year 2025`
+- Conditional result: naive grid-P10 remained best at `14.0417 avg_pts`.
+  The best conditional grid/stability blend reached `12.6667 avg_pts`, above
+  the rolling-CV ensemble checkpoint (`11.2083`) but below naive grid-P10.
+- Conditional decision: no production ensemble change recommended from this
+  sweep. The next credible baseline-gap path is expanding-window replay or
+  retrain policy research, not another 2025-only weight tweak.
+- Artifacts:
+  - `results/v10_rf_reg_subspace/summary.{csv,json,md}`
+  - `results/v10_conditional_baseline_blends/summary.{csv,json,md}`
+
 ---
 
 ## Current Baselines (eval_2025_picks.csv)

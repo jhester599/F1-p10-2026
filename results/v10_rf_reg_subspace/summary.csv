@@ -1,0 +1,6 @@
+variant,description,feature_count,n_races,total_pts,avg_pts,exact_p10,within_2,delta_vs_current,n_estimators
+current_rf_reg,Current MODEL_FEATURES['rf_reg'] subspace.,62,24,233,9.708333333333334,1,8,0.0,400
+no_weather,Current rf_reg subspace with weather features removed.,59,24,227,9.458333333333334,1,7,-0.25,400
+no_v9_weather,Current rf_reg subspace without v9 candidate or weather features.,48,24,227,9.458333333333334,0,6,-0.25,400
+compact_rf_core,"Hand-pruned RF core focused on grid, qualifying, form, P10-zone, and circuit signals.",38,24,220,9.166666666666666,0,5,-0.5416666666666679,400
+compact_no_q2,compact_rf_core without Q2-only features.,36,24,213,8.875,0,5,-0.8333333333333339,400
