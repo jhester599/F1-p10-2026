@@ -1,0 +1,1393 @@
+strategy,year,round,race_name,circuit_id,picked_driver,grid_position,actual_pos,overtaking_difficulty,is_street,fantasy_pts,exact,within_2
+current_ensemble,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+naive_grid_p10,2025,1,Australian Grand Prix,albert_park,sainz,10.0,18,4.7,1,2,0,0
+candidate_a,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+current_ensemble,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+naive_grid_p10,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+candidate_a,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+current_ensemble,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+naive_grid_p10,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+candidate_a,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+current_ensemble,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+naive_grid_p10,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+candidate_a,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+current_ensemble,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+naive_grid_p10,2025,5,Saudi Arabian Grand Prix,jeddah,norris,10.0,4,7.2,1,6,0,0
+candidate_a,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+current_ensemble,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+naive_grid_p10,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+candidate_a,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+current_ensemble,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+naive_grid_p10,2025,7,Emilia Romagna Grand Prix,imola,gasly,10.0,13,5.2,0,12,0,0
+candidate_a,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+current_ensemble,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+naive_grid_p10,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+candidate_a,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+current_ensemble,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+naive_grid_p10,2025,9,Spanish Grand Prix,catalunya,alonso,10.0,9,6.7,0,18,0,1
+candidate_a,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+current_ensemble,2025,10,Canadian Grand Prix,villeneuve,ocon,15.0,9,6.8,0,18,0,1
+naive_grid_p10,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+candidate_a,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+current_ensemble,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+naive_grid_p10,2025,11,Austrian Grand Prix,red_bull_ring,gasly,10.0,13,5.9,0,12,0,0
+candidate_a,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+current_ensemble,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+naive_grid_p10,2025,12,British Grand Prix,silverstone,gasly,10.0,6,6.9,0,10,0,0
+candidate_a,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+current_ensemble,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+naive_grid_p10,2025,13,Belgian Grand Prix,spa,bortoleto,10.0,9,6.6,0,18,0,1
+candidate_a,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+current_ensemble,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+naive_grid_p10,2025,14,Hungarian Grand Prix,hungaroring,hadjar,10.0,11,6.2,0,18,0,1
+candidate_a,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+current_ensemble,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+naive_grid_p10,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+candidate_a,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+current_ensemble,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+naive_grid_p10,2025,16,Italian Grand Prix,monza,tsunoda,10.0,13,7.2,0,12,0,0
+candidate_a,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+current_ensemble,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+naive_grid_p10,2025,17,Azerbaijan Grand Prix,baku,leclerc,10.0,9,4.7,1,18,0,1
+candidate_a,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+current_ensemble,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+naive_grid_p10,2025,18,Singapore Grand Prix,marina_bay,alonso,10.0,7,4.8,0,12,0,0
+candidate_a,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+current_ensemble,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+naive_grid_p10,2025,19,United States Grand Prix,americas,alonso,10.0,10,4.5,0,25,1,1
+candidate_a,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+current_ensemble,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+naive_grid_p10,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+candidate_a,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+current_ensemble,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+naive_grid_p10,2025,21,São Paulo Grand Prix,interlagos,hulkenberg,10.0,9,5.6,0,18,0,1
+candidate_a,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+current_ensemble,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+naive_grid_p10,2025,22,Las Vegas Grand Prix,vegas,gasly,10.0,13,5.2,1,12,0,0
+candidate_a,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+current_ensemble,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+naive_grid_p10,2025,23,Qatar Grand Prix,losail,leclerc,10.0,8,6.4,0,15,0,1
+candidate_a,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+current_ensemble,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+naive_grid_p10,2025,24,Abu Dhabi Grand Prix,yas_marina,tsunoda,10.0,14,7.5,0,10,0,0
+candidate_a,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_grid_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_grid_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_4.5_grid_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_grid_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_grid_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_grid_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_4.5_grid_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_4.5_grid_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_4.5_grid_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_grid_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_4.5_grid_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_grid_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_grid_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_grid_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_grid_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_4.5_grid_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_grid_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_grid_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_grid_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_grid_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_4.5_grid_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_grid_0.25,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_grid_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_grid_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_stability_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_stability_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_4.5_stability_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_stability_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_stability_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_stability_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_4.5_stability_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_4.5_stability_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_4.5_stability_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_stability_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_4.5_stability_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_stability_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_stability_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_stability_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_stability_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_4.5_stability_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_stability_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_stability_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_stability_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_stability_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_4.5_stability_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_stability_0.25,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_stability_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_stability_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_grid_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_grid_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_4.5_grid_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_grid_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_grid_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_grid_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_4.5_grid_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_4.5_grid_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_4.5_grid_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_grid_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_4.5_grid_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_grid_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_grid_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_grid_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_grid_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_4.5_grid_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_grid_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_grid_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_grid_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_grid_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_4.5_grid_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_grid_0.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_grid_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_grid_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_stability_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_stability_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_4.5_stability_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_stability_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_stability_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_stability_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_4.5_stability_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_4.5_stability_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_4.5_stability_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_stability_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_4.5_stability_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_stability_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_stability_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_stability_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_stability_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_4.5_stability_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_stability_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_stability_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_stability_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_stability_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_4.5_stability_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_stability_0.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_stability_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_stability_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_grid_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_grid_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_4.5_grid_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_grid_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_grid_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_grid_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_4.5_grid_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_4.5_grid_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_4.5_grid_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_grid_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_4.5_grid_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_grid_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_grid_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_grid_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_grid_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_4.5_grid_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_grid_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_grid_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_grid_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_grid_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_4.5_grid_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_grid_1,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_grid_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_grid_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_stability_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_stability_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_4.5_stability_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_stability_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_stability_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_stability_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_4.5_stability_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_4.5_stability_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_4.5_stability_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_stability_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_4.5_stability_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_stability_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_stability_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_stability_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_stability_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_4.5_stability_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_stability_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_stability_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_stability_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_stability_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_4.5_stability_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_stability_1,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_stability_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_stability_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_grid_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_grid_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_4.5_grid_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_grid_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_grid_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_grid_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_4.5_grid_1.5,2025,7,Emilia Romagna Grand Prix,imola,hadjar,9.0,9,5.2,0,18,0,1
+ot_ge_4.5_grid_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_4.5_grid_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_grid_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_4.5_grid_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_grid_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_grid_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_grid_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_grid_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_4.5_grid_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_grid_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_grid_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_grid_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_grid_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_4.5_grid_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_grid_1.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_grid_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_grid_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_stability_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_stability_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_4.5_stability_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_stability_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_stability_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_stability_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_4.5_stability_1.5,2025,7,Emilia Romagna Grand Prix,imola,hadjar,9.0,9,5.2,0,18,0,1
+ot_ge_4.5_stability_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_4.5_stability_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_stability_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_4.5_stability_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_stability_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_stability_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_stability_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_stability_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_4.5_stability_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_stability_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_stability_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_stability_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_stability_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_4.5_stability_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_stability_1.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_stability_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_stability_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_grid_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_grid_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_4.5_grid_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_grid_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_grid_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_grid_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_4.5_grid_2,2025,7,Emilia Romagna Grand Prix,imola,hadjar,9.0,9,5.2,0,18,0,1
+ot_ge_4.5_grid_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_4.5_grid_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_grid_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_4.5_grid_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_grid_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_grid_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_grid_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_grid_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_4.5_grid_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_grid_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_grid_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_grid_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_grid_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_4.5_grid_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_grid_2,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_grid_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_grid_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_4.5_stability_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_4.5_stability_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_4.5_stability_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_4.5_stability_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_4.5_stability_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_4.5_stability_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_4.5_stability_2,2025,7,Emilia Romagna Grand Prix,imola,hadjar,9.0,9,5.2,0,18,0,1
+ot_ge_4.5_stability_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_4.5_stability_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_4.5_stability_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_4.5_stability_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_4.5_stability_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_4.5_stability_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_4.5_stability_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_4.5_stability_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_4.5_stability_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_4.5_stability_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_4.5_stability_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_4.5_stability_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_4.5_stability_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_4.5_stability_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_4.5_stability_2,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_4.5_stability_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_4.5_stability_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_grid_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_grid_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_5_grid_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_grid_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_grid_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_grid_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_5_grid_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5_grid_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5_grid_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_grid_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5_grid_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_grid_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_grid_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_grid_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_grid_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_5_grid_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_grid_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_grid_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_grid_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_grid_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_5_grid_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_grid_0.25,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_grid_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_grid_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_stability_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_stability_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_5_stability_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_stability_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_stability_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_stability_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_5_stability_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5_stability_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5_stability_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_stability_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5_stability_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_stability_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_stability_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_stability_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_stability_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_5_stability_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_stability_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_stability_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_stability_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_stability_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_5_stability_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_stability_0.25,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_stability_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_stability_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_grid_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_grid_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_5_grid_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_grid_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_grid_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_grid_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_5_grid_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5_grid_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5_grid_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_grid_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5_grid_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_grid_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_grid_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_grid_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_grid_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5_grid_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_grid_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_grid_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_grid_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_grid_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5_grid_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_grid_0.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_grid_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_grid_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_stability_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_stability_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_5_stability_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_stability_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_stability_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_stability_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_5_stability_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5_stability_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5_stability_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_stability_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5_stability_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_stability_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_stability_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_stability_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_stability_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5_stability_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_stability_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_stability_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_stability_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_stability_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5_stability_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_stability_0.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_stability_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_stability_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_grid_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_grid_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5_grid_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_grid_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_grid_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_grid_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5_grid_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5_grid_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5_grid_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_grid_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5_grid_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_grid_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_grid_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_grid_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_grid_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5_grid_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_grid_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_grid_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_grid_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_grid_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5_grid_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_grid_1,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_grid_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_grid_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_stability_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_stability_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5_stability_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_stability_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_stability_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_stability_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5_stability_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5_stability_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5_stability_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_stability_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5_stability_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_stability_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_stability_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_stability_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_stability_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5_stability_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_stability_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_stability_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_stability_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_stability_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5_stability_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_stability_1,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_stability_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_stability_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_grid_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_grid_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5_grid_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_grid_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_grid_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_grid_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5_grid_1.5,2025,7,Emilia Romagna Grand Prix,imola,hadjar,9.0,9,5.2,0,18,0,1
+ot_ge_5_grid_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_5_grid_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_grid_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5_grid_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_grid_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_grid_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_grid_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_grid_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5_grid_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_grid_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_grid_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_grid_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_grid_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5_grid_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_grid_1.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_grid_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_grid_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_stability_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_stability_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5_stability_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_stability_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_stability_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_stability_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5_stability_1.5,2025,7,Emilia Romagna Grand Prix,imola,hadjar,9.0,9,5.2,0,18,0,1
+ot_ge_5_stability_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_5_stability_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_stability_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5_stability_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_stability_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_stability_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_stability_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_stability_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5_stability_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_stability_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_stability_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_stability_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_stability_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5_stability_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_stability_1.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_stability_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_stability_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_grid_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_grid_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5_grid_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_grid_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_grid_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_grid_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5_grid_2,2025,7,Emilia Romagna Grand Prix,imola,hadjar,9.0,9,5.2,0,18,0,1
+ot_ge_5_grid_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_5_grid_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_grid_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_5_grid_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_grid_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_grid_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_grid_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_grid_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5_grid_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_grid_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_grid_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_grid_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_grid_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5_grid_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_grid_2,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_grid_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_grid_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5_stability_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5_stability_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5_stability_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5_stability_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5_stability_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5_stability_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5_stability_2,2025,7,Emilia Romagna Grand Prix,imola,hadjar,9.0,9,5.2,0,18,0,1
+ot_ge_5_stability_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_5_stability_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5_stability_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_5_stability_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5_stability_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5_stability_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5_stability_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5_stability_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5_stability_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5_stability_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5_stability_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5_stability_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5_stability_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5_stability_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5_stability_2,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+ot_ge_5_stability_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5_stability_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_grid_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_grid_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_5.5_grid_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_grid_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_grid_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_grid_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_5.5_grid_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_grid_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5.5_grid_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_grid_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5.5_grid_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_grid_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_grid_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_grid_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_grid_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_5.5_grid_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_grid_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_grid_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_grid_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_grid_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_5.5_grid_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_grid_0.25,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_grid_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_grid_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_stability_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_stability_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_5.5_stability_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_stability_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_stability_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_stability_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_5.5_stability_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_stability_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5.5_stability_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_stability_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5.5_stability_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_stability_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_stability_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_stability_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_stability_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_5.5_stability_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_stability_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_stability_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_stability_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_stability_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_5.5_stability_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_stability_0.25,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_stability_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_stability_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_grid_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_grid_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_5.5_grid_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_grid_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_grid_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_grid_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_5.5_grid_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_grid_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5.5_grid_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_grid_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5.5_grid_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_grid_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_grid_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_grid_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_grid_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5.5_grid_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_grid_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_grid_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_grid_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_grid_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5.5_grid_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_grid_0.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_grid_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_grid_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_stability_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_stability_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_5.5_stability_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_stability_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_stability_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_stability_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_5.5_stability_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_stability_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5.5_stability_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_stability_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5.5_stability_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_stability_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_stability_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_stability_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_stability_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5.5_stability_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_stability_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_stability_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_stability_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_stability_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5.5_stability_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_stability_0.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_stability_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_stability_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_grid_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_grid_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5.5_grid_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_grid_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_grid_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_grid_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5.5_grid_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_grid_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5.5_grid_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_grid_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5.5_grid_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_grid_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_grid_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_grid_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_grid_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5.5_grid_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_grid_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_grid_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_grid_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_grid_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5.5_grid_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_grid_1,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_grid_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_grid_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_stability_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_stability_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5.5_stability_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_stability_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_stability_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_stability_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5.5_stability_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_stability_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_5.5_stability_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_stability_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5.5_stability_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_stability_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_stability_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_stability_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_stability_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5.5_stability_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_stability_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_stability_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_stability_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_stability_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5.5_stability_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_stability_1,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_stability_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_stability_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_grid_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_grid_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5.5_grid_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_grid_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_grid_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_grid_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5.5_grid_1.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_grid_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_5.5_grid_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_grid_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5.5_grid_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_grid_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_grid_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_grid_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_grid_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5.5_grid_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_grid_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_grid_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_grid_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_grid_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5.5_grid_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_grid_1.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_grid_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_grid_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_stability_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_stability_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5.5_stability_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_stability_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_stability_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_stability_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5.5_stability_1.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_stability_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_5.5_stability_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_stability_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_5.5_stability_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_stability_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_stability_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_stability_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_stability_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5.5_stability_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_stability_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_stability_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_stability_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_stability_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5.5_stability_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_stability_1.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_stability_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_stability_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_grid_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_grid_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5.5_grid_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_grid_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_grid_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_grid_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5.5_grid_2,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_grid_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_5.5_grid_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_grid_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_5.5_grid_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_grid_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_grid_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_grid_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_grid_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5.5_grid_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_grid_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_grid_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_grid_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_grid_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5.5_grid_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_grid_2,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_grid_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_grid_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_5.5_stability_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_5.5_stability_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_5.5_stability_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_5.5_stability_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_5.5_stability_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_5.5_stability_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_5.5_stability_2,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_5.5_stability_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_5.5_stability_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_5.5_stability_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_5.5_stability_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_5.5_stability_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_5.5_stability_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_5.5_stability_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_5.5_stability_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_5.5_stability_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_5.5_stability_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_5.5_stability_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_5.5_stability_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_5.5_stability_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_5.5_stability_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_5.5_stability_2,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_5.5_stability_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_5.5_stability_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_grid_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_grid_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_6_grid_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_grid_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_grid_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_grid_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_6_grid_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_grid_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6_grid_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_grid_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6_grid_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_grid_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_grid_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_grid_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_grid_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_6_grid_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_grid_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_grid_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_grid_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_grid_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_6_grid_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_grid_0.25,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_grid_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_grid_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_stability_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_stability_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_6_stability_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_stability_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_stability_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_stability_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_6_stability_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_stability_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6_stability_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_stability_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6_stability_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_stability_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_stability_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_stability_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_stability_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_6_stability_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_stability_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_stability_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_stability_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_stability_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_6_stability_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_stability_0.25,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_stability_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_stability_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_grid_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_grid_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_6_grid_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_grid_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_grid_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_grid_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_6_grid_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_grid_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6_grid_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_grid_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6_grid_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_grid_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_grid_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_grid_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_grid_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6_grid_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_grid_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_grid_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_grid_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_grid_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6_grid_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_grid_0.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_grid_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_grid_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_stability_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_stability_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_6_stability_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_stability_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_stability_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_stability_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_6_stability_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_stability_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6_stability_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_stability_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6_stability_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_stability_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_stability_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_stability_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_stability_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6_stability_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_stability_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_stability_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_stability_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_stability_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6_stability_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_stability_0.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_stability_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_stability_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_grid_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_grid_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6_grid_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_grid_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_grid_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_grid_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6_grid_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_grid_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6_grid_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_grid_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6_grid_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_grid_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_grid_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_grid_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_grid_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6_grid_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_grid_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_grid_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_grid_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_grid_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6_grid_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_grid_1,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_grid_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_grid_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_stability_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_stability_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6_stability_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_stability_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_stability_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_stability_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6_stability_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_stability_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6_stability_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_stability_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6_stability_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_stability_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_stability_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_stability_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_stability_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6_stability_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_stability_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_stability_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_stability_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_stability_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6_stability_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_stability_1,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_stability_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_stability_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_grid_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_grid_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6_grid_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_grid_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_grid_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_grid_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6_grid_1.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_grid_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_6_grid_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_grid_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6_grid_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_grid_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_grid_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_grid_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_grid_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6_grid_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_grid_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_grid_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_grid_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_grid_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6_grid_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_grid_1.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_grid_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_grid_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_stability_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_stability_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6_stability_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_stability_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_stability_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_stability_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6_stability_1.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_stability_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_6_stability_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_stability_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6_stability_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_stability_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_stability_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_stability_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_stability_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6_stability_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_stability_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_stability_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_stability_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_stability_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6_stability_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_stability_1.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_stability_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_stability_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_grid_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_grid_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6_grid_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_grid_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_grid_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_grid_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6_grid_2,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_grid_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_6_grid_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_grid_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_6_grid_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_grid_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_grid_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_grid_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_grid_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6_grid_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_grid_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_grid_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_grid_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_grid_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6_grid_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_grid_2,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_grid_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_grid_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6_stability_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6_stability_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6_stability_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6_stability_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6_stability_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6_stability_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6_stability_2,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6_stability_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_6_stability_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6_stability_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_6_stability_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6_stability_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6_stability_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6_stability_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6_stability_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6_stability_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6_stability_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6_stability_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6_stability_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6_stability_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6_stability_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6_stability_2,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6_stability_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6_stability_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_grid_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_grid_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_6.5_grid_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_grid_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_grid_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_grid_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_6.5_grid_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_grid_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6.5_grid_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_grid_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6.5_grid_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_grid_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_grid_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_grid_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_grid_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_6.5_grid_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_grid_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_grid_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_grid_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_grid_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_6.5_grid_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_grid_0.25,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_grid_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_grid_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_stability_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_stability_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_6.5_stability_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_stability_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_stability_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_stability_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_6.5_stability_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_stability_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6.5_stability_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_stability_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6.5_stability_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_stability_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_stability_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_stability_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_stability_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+ot_ge_6.5_stability_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_stability_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_stability_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_stability_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_stability_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+ot_ge_6.5_stability_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_stability_0.25,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_stability_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_stability_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_grid_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_grid_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_6.5_grid_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_grid_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_grid_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_grid_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_6.5_grid_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_grid_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6.5_grid_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_grid_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6.5_grid_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_grid_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_grid_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_grid_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_grid_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6.5_grid_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_grid_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_grid_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_grid_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_grid_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6.5_grid_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_grid_0.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_grid_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_grid_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_stability_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_stability_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+ot_ge_6.5_stability_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_stability_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_stability_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_stability_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+ot_ge_6.5_stability_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_stability_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6.5_stability_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_stability_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6.5_stability_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_stability_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_stability_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_stability_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_stability_0.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6.5_stability_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_stability_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_stability_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_stability_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_stability_0.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6.5_stability_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_stability_0.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_stability_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_stability_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_grid_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_grid_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6.5_grid_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_grid_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_grid_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_grid_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6.5_grid_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_grid_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6.5_grid_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_grid_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6.5_grid_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_grid_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_grid_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_grid_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_grid_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6.5_grid_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_grid_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_grid_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_grid_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_grid_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6.5_grid_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_grid_1,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_grid_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_grid_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_stability_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_stability_1,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6.5_stability_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_stability_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_stability_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_stability_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6.5_stability_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_stability_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+ot_ge_6.5_stability_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_stability_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6.5_stability_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_stability_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_stability_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_stability_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_stability_1,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6.5_stability_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_stability_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_stability_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_stability_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_stability_1,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6.5_stability_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_stability_1,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_stability_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_stability_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_grid_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_grid_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6.5_grid_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_grid_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_grid_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_grid_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6.5_grid_1.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_grid_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_6.5_grid_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_grid_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6.5_grid_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_grid_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_grid_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_grid_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_grid_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6.5_grid_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_grid_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_grid_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_grid_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_grid_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6.5_grid_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_grid_1.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_grid_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_grid_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_stability_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_stability_1.5,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6.5_stability_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_stability_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_stability_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_stability_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6.5_stability_1.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_stability_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_6.5_stability_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_stability_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+ot_ge_6.5_stability_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_stability_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_stability_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_stability_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_stability_1.5,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6.5_stability_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_stability_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_stability_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_stability_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_stability_1.5,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6.5_stability_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_stability_1.5,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_stability_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_stability_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_grid_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_grid_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6.5_grid_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_grid_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_grid_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_grid_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6.5_grid_2,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_grid_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_6.5_grid_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_grid_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_6.5_grid_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_grid_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_grid_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_grid_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_grid_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6.5_grid_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_grid_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_grid_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_grid_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_grid_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6.5_grid_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_grid_2,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_grid_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_grid_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+ot_ge_6.5_stability_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+ot_ge_6.5_stability_2,2025,2,Chinese Grand Prix,shanghai,albon,10.0,7,8.3,0,12,0,0
+ot_ge_6.5_stability_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+ot_ge_6.5_stability_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+ot_ge_6.5_stability_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+ot_ge_6.5_stability_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+ot_ge_6.5_stability_2,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+ot_ge_6.5_stability_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+ot_ge_6.5_stability_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+ot_ge_6.5_stability_2,2025,10,Canadian Grand Prix,villeneuve,albon,10.0,20,6.8,0,0,0,0
+ot_ge_6.5_stability_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+ot_ge_6.5_stability_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+ot_ge_6.5_stability_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+ot_ge_6.5_stability_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+ot_ge_6.5_stability_2,2025,15,Dutch Grand Prix,zandvoort,alonso,10.0,8,7.5,0,15,0,1
+ot_ge_6.5_stability_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+ot_ge_6.5_stability_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+ot_ge_6.5_stability_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+ot_ge_6.5_stability_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+ot_ge_6.5_stability_2,2025,20,Mexico City Grand Prix,rodriguez,bearman,10.0,4,6.8,0,6,0,0
+ot_ge_6.5_stability_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+ot_ge_6.5_stability_2,2025,22,Las Vegas Grand Prix,vegas,hamilton,20.0,8,5.2,1,15,0,1
+ot_ge_6.5_stability_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+ot_ge_6.5_stability_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+street_stability_0.25,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+street_stability_0.25,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+street_stability_0.25,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+street_stability_0.25,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+street_stability_0.25,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+street_stability_0.25,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+street_stability_0.25,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+street_stability_0.25,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+street_stability_0.25,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+street_stability_0.25,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+street_stability_0.25,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+street_stability_0.25,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+street_stability_0.25,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+street_stability_0.25,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+street_stability_0.25,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+street_stability_0.25,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+street_stability_0.25,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+street_stability_0.25,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+street_stability_0.25,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+street_stability_0.25,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+street_stability_0.25,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+street_stability_0.25,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+street_stability_0.25,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+street_stability_0.25,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+street_stability_0.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+street_stability_0.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+street_stability_0.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+street_stability_0.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+street_stability_0.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+street_stability_0.5,2025,6,Miami Grand Prix,miami,ocon,9.0,12,8.0,1,15,0,1
+street_stability_0.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+street_stability_0.5,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+street_stability_0.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+street_stability_0.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+street_stability_0.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+street_stability_0.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+street_stability_0.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+street_stability_0.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+street_stability_0.5,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+street_stability_0.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+street_stability_0.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+street_stability_0.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+street_stability_0.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+street_stability_0.5,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+street_stability_0.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+street_stability_0.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+street_stability_0.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+street_stability_0.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+street_stability_1,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+street_stability_1,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+street_stability_1,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+street_stability_1,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+street_stability_1,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+street_stability_1,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+street_stability_1,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+street_stability_1,2025,8,Monaco Grand Prix,monaco,antonelli,15.0,18,6.7,1,2,0,0
+street_stability_1,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+street_stability_1,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+street_stability_1,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+street_stability_1,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+street_stability_1,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+street_stability_1,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+street_stability_1,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+street_stability_1,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+street_stability_1,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+street_stability_1,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+street_stability_1,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+street_stability_1,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+street_stability_1,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+street_stability_1,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+street_stability_1,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+street_stability_1,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+street_stability_1.5,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+street_stability_1.5,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+street_stability_1.5,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+street_stability_1.5,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+street_stability_1.5,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+street_stability_1.5,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+street_stability_1.5,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+street_stability_1.5,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+street_stability_1.5,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+street_stability_1.5,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+street_stability_1.5,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+street_stability_1.5,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+street_stability_1.5,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+street_stability_1.5,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+street_stability_1.5,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+street_stability_1.5,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+street_stability_1.5,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+street_stability_1.5,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+street_stability_1.5,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+street_stability_1.5,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+street_stability_1.5,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+street_stability_1.5,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+street_stability_1.5,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+street_stability_1.5,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
+street_stability_2,2025,1,Australian Grand Prix,albert_park,bortoleto,15.0,16,4.7,1,6,0,0
+street_stability_2,2025,2,Chinese Grand Prix,shanghai,alonso,13.0,17,8.3,0,4,0,0
+street_stability_2,2025,3,Japanese Grand Prix,suzuka,bearman,10.0,10,7.8,0,25,1,1
+street_stability_2,2025,4,Bahrain Grand Prix,bahrain,tsunoda,10.0,9,6.0,0,18,0,1
+street_stability_2,2025,5,Saudi Arabian Grand Prix,jeddah,albon,11.0,9,7.2,1,18,0,1
+street_stability_2,2025,6,Miami Grand Prix,miami,tsunoda,10.0,10,8.0,1,25,1,1
+street_stability_2,2025,7,Emilia Romagna Grand Prix,imola,ocon,18.0,20,5.2,0,0,0,0
+street_stability_2,2025,8,Monaco Grand Prix,monaco,albon,10.0,9,6.7,1,18,0,1
+street_stability_2,2025,9,Spanish Grand Prix,catalunya,albon,11.0,19,6.7,0,1,0,0
+street_stability_2,2025,10,Canadian Grand Prix,villeneuve,hadjar,9.0,16,6.8,0,6,0,0
+street_stability_2,2025,11,Austrian Grand Prix,red_bull_ring,lawson,6.0,6,5.9,0,10,0,0
+street_stability_2,2025,12,British Grand Prix,silverstone,bearman,8.0,11,6.9,0,18,0,1
+street_stability_2,2025,13,Belgian Grand Prix,spa,ocon,11.0,15,6.6,0,8,0,0
+street_stability_2,2025,14,Hungarian Grand Prix,hungaroring,bearman,11.0,20,6.2,0,0,0,0
+street_stability_2,2025,15,Dutch Grand Prix,zandvoort,albon,15.0,5,7.5,0,8,0,0
+street_stability_2,2025,16,Italian Grand Prix,monza,albon,14.0,7,7.2,0,12,0,0
+street_stability_2,2025,17,Azerbaijan Grand Prix,baku,bearman,15.0,12,4.7,1,15,0,1
+street_stability_2,2025,18,Singapore Grand Prix,marina_bay,bearman,9.0,9,4.8,0,18,0,1
+street_stability_2,2025,19,United States Grand Prix,americas,lawson,12.0,11,4.5,0,18,0,1
+street_stability_2,2025,20,Mexico City Grand Prix,rodriguez,tsunoda,11.0,11,6.8,0,18,0,1
+street_stability_2,2025,21,São Paulo Grand Prix,interlagos,sainz,15.0,13,5.6,0,12,0,0
+street_stability_2,2025,22,Las Vegas Grand Prix,vegas,hadjar,8.0,6,5.2,1,10,0,0
+street_stability_2,2025,23,Qatar Grand Prix,losail,hulkenberg,11.0,20,6.4,0,0,0,0
+street_stability_2,2025,24,Abu Dhabi Grand Prix,yas_marina,bearman,11.0,12,7.5,0,15,0,1
