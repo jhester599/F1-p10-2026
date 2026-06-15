@@ -181,28 +181,30 @@ Promotion gates for all candidates:
 These ideas are intentionally parked until the current repository maintenance,
 runtime stabilization, and model-cache provenance work are complete.
 
-### Backlog 1 - In-Season Retraining Policy Research
+### Backlog 1 - In-Season Retraining Policy Research - COMPLETED 2026-06-15
 Question:
-- Should models retrain after every completed round, only at fixed checkpoints, or not at all during the season?
+- Should models retrain after every completed round, only at fixed checkpoints,
+  or not at all during the season?
 
-Research design:
-- Build an expanding in-season backtest where each 2025 race is predicted using
-  only data available before that race.
-- Compare static preseason models against rolling retrain schedules:
-  - no in-season retrain
-  - retrain after every race
-  - retrain every 3-5 races
-  - retrain at current checkpoint plan only
-- Score each individual model and the ensemble separately to identify which
-  model families benefit from fresh data and which overfit.
-- Consider a hybrid policy where only stable beneficiaries retrain, while
-  overfit-prone models remain fixed and run inference only.
+Evidence:
+- Implemented `scripts/101_v10_inseason_retrain_replay.py`.
+- Production replay command:
+  `python scripts/101_v10_inseason_retrain_replay.py --year 2025 --schedules preseason_static,checkpoint_5_10_15,every_5`
+- Artifacts:
+  - `results/v10_inseason_retrain_replay/summary.csv`
+  - `results/v10_inseason_retrain_replay/summary.json`
+  - `results/v10_inseason_retrain_replay/summary.md`
 
-Acceptance criteria:
-- Promotion requires improvement on in-season backtest without degrading the
-  locked 2025 holdout and 2026 live scorecards.
-- Any automated retrain cadence must include cache/version fingerprints and
-  rollback criteria.
+Decision:
+- Do not automate in-season retraining from the tested cadence policies.
+- Naive grid-P10 and preseason `xgb_clf` tied at `14.0417 avg_pts`.
+- Refit ensemble cadences underperformed the preseason ensemble, suggesting
+  cadence-only retraining is more likely to overfit than close the baseline gap.
+
+Follow-up:
+- If changing production behavior, study a conservative `xgb_clf`-first promotion
+  or richer multi-season feature/model work with rolling gates, not cadence-only
+  retraining.
 
 ### Backlog 2 - P10 League Scoring Automation
 Goal:

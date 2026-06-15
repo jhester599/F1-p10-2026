@@ -1,0 +1,673 @@
+strategy,model,year,round,race_name,circuit_id,training_cutoff_round,picked_driver,grid_position,actual_pos,fantasy_pts,exact,within_2
+naive_grid_p10,naive_grid_p10,2025,1,Australian Grand Prix,albert_park,0,sainz,10.0,18,2,0,0
+preseason_static:ensemble,ensemble,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+preseason_static:lgb_reg,lgb_reg,2025,1,Australian Grand Prix,albert_park,0,sainz,10.0,18,2,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+preseason_static:rf_clf,rf_clf,2025,1,Australian Grand Prix,albert_park,0,hadjar,11.0,20,0,0,0
+preseason_static:rf_reg,rf_reg,2025,1,Australian Grand Prix,albert_park,0,albon,6.0,5,8,0,0
+preseason_static:ridge,ridge,2025,1,Australian Grand Prix,albert_park,0,tsunoda,5.0,12,15,0,1
+preseason_static:xgb_clf,xgb_clf,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+preseason_static:xgb_reg,xgb_reg,2025,1,Australian Grand Prix,albert_park,0,hadjar,11.0,20,0,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,1,Australian Grand Prix,albert_park,0,sainz,10.0,18,2,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,1,Australian Grand Prix,albert_park,0,hadjar,11.0,20,0,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,1,Australian Grand Prix,albert_park,0,albon,6.0,5,8,0,0
+checkpoint_5_10_15:ridge,ridge,2025,1,Australian Grand Prix,albert_park,0,tsunoda,5.0,12,15,0,1
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,1,Australian Grand Prix,albert_park,0,hadjar,11.0,20,0,0,0
+every_5:ensemble,ensemble,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+every_5:lgb_reg,lgb_reg,2025,1,Australian Grand Prix,albert_park,0,sainz,10.0,18,2,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+every_5:rf_clf,rf_clf,2025,1,Australian Grand Prix,albert_park,0,hadjar,11.0,20,0,0,0
+every_5:rf_reg,rf_reg,2025,1,Australian Grand Prix,albert_park,0,albon,6.0,5,8,0,0
+every_5:ridge,ridge,2025,1,Australian Grand Prix,albert_park,0,tsunoda,5.0,12,15,0,1
+every_5:xgb_clf,xgb_clf,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+every_5:xgb_ranker,xgb_ranker,2025,1,Australian Grand Prix,albert_park,0,bortoleto,15.0,16,6,0,0
+every_5:xgb_reg,xgb_reg,2025,1,Australian Grand Prix,albert_park,0,hadjar,11.0,20,0,0,0
+naive_grid_p10,naive_grid_p10,2025,2,Chinese Grand Prix,shanghai,0,albon,10.0,7,12,0,0
+preseason_static:ensemble,ensemble,2025,2,Chinese Grand Prix,shanghai,0,alonso,13.0,17,4,0,0
+preseason_static:lgb_reg,lgb_reg,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+preseason_static:lgbm_ranker,lgbm_ranker,2025,2,Chinese Grand Prix,shanghai,0,albon,10.0,7,12,0,0
+preseason_static:rf_clf,rf_clf,2025,2,Chinese Grand Prix,shanghai,0,hulkenberg,12.0,15,8,0,0
+preseason_static:rf_reg,rf_reg,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+preseason_static:ridge,ridge,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+preseason_static:xgb_clf,xgb_clf,2025,2,Chinese Grand Prix,shanghai,0,albon,10.0,7,12,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,2,Chinese Grand Prix,shanghai,0,alonso,13.0,17,4,0,0
+preseason_static:xgb_reg,xgb_reg,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+checkpoint_5_10_15:ensemble,ensemble,2025,2,Chinese Grand Prix,shanghai,0,alonso,13.0,17,4,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,2,Chinese Grand Prix,shanghai,0,albon,10.0,7,12,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,2,Chinese Grand Prix,shanghai,0,hulkenberg,12.0,15,8,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+checkpoint_5_10_15:ridge,ridge,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,2,Chinese Grand Prix,shanghai,0,albon,10.0,7,12,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,2,Chinese Grand Prix,shanghai,0,alonso,13.0,17,4,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+every_5:ensemble,ensemble,2025,2,Chinese Grand Prix,shanghai,0,alonso,13.0,17,4,0,0
+every_5:lgb_reg,lgb_reg,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+every_5:lgbm_ranker,lgbm_ranker,2025,2,Chinese Grand Prix,shanghai,0,albon,10.0,7,12,0,0
+every_5:rf_clf,rf_clf,2025,2,Chinese Grand Prix,shanghai,0,hulkenberg,12.0,15,8,0,0
+every_5:rf_reg,rf_reg,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+every_5:ridge,ridge,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+every_5:xgb_clf,xgb_clf,2025,2,Chinese Grand Prix,shanghai,0,albon,10.0,7,12,0,0
+every_5:xgb_ranker,xgb_ranker,2025,2,Chinese Grand Prix,shanghai,0,alonso,13.0,17,4,0,0
+every_5:xgb_reg,xgb_reg,2025,2,Chinese Grand Prix,shanghai,0,hadjar,7.0,11,18,0,1
+naive_grid_p10,naive_grid_p10,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+preseason_static:ensemble,ensemble,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+preseason_static:lgb_reg,lgb_reg,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+preseason_static:rf_clf,rf_clf,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+preseason_static:rf_reg,rf_reg,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+preseason_static:ridge,ridge,2025,3,Japanese Grand Prix,suzuka,0,albon,9.0,9,18,0,1
+preseason_static:xgb_clf,xgb_clf,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+preseason_static:xgb_ranker,xgb_ranker,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+preseason_static:xgb_reg,xgb_reg,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+checkpoint_5_10_15:ridge,ridge,2025,3,Japanese Grand Prix,suzuka,0,albon,9.0,9,18,0,1
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+every_5:ensemble,ensemble,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+every_5:lgb_reg,lgb_reg,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+every_5:rf_clf,rf_clf,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+every_5:rf_reg,rf_reg,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+every_5:ridge,ridge,2025,3,Japanese Grand Prix,suzuka,0,albon,9.0,9,18,0,1
+every_5:xgb_clf,xgb_clf,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+every_5:xgb_ranker,xgb_ranker,2025,3,Japanese Grand Prix,suzuka,0,bearman,10.0,10,25,1,1
+every_5:xgb_reg,xgb_reg,2025,3,Japanese Grand Prix,suzuka,0,hamilton,8.0,7,12,0,0
+naive_grid_p10,naive_grid_p10,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+preseason_static:ensemble,ensemble,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+preseason_static:lgb_reg,lgb_reg,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+preseason_static:lgbm_ranker,lgbm_ranker,2025,4,Bahrain Grand Prix,bahrain,0,hamilton,9.0,5,8,0,0
+preseason_static:rf_clf,rf_clf,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+preseason_static:rf_reg,rf_reg,2025,4,Bahrain Grand Prix,bahrain,0,sainz,8.0,19,1,0,0
+preseason_static:ridge,ridge,2025,4,Bahrain Grand Prix,bahrain,0,sainz,8.0,19,1,0,0
+preseason_static:xgb_clf,xgb_clf,2025,4,Bahrain Grand Prix,bahrain,0,doohan,11.0,14,10,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,4,Bahrain Grand Prix,bahrain,0,alonso,13.0,15,8,0,0
+preseason_static:xgb_reg,xgb_reg,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+checkpoint_5_10_15:ensemble,ensemble,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,4,Bahrain Grand Prix,bahrain,0,hamilton,9.0,5,8,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,4,Bahrain Grand Prix,bahrain,0,sainz,8.0,19,1,0,0
+checkpoint_5_10_15:ridge,ridge,2025,4,Bahrain Grand Prix,bahrain,0,sainz,8.0,19,1,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,4,Bahrain Grand Prix,bahrain,0,doohan,11.0,14,10,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,4,Bahrain Grand Prix,bahrain,0,alonso,13.0,15,8,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+every_5:ensemble,ensemble,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+every_5:lgb_reg,lgb_reg,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+every_5:lgbm_ranker,lgbm_ranker,2025,4,Bahrain Grand Prix,bahrain,0,hamilton,9.0,5,8,0,0
+every_5:rf_clf,rf_clf,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+every_5:rf_reg,rf_reg,2025,4,Bahrain Grand Prix,bahrain,0,sainz,8.0,19,1,0,0
+every_5:ridge,ridge,2025,4,Bahrain Grand Prix,bahrain,0,sainz,8.0,19,1,0,0
+every_5:xgb_clf,xgb_clf,2025,4,Bahrain Grand Prix,bahrain,0,doohan,11.0,14,10,0,0
+every_5:xgb_ranker,xgb_ranker,2025,4,Bahrain Grand Prix,bahrain,0,alonso,13.0,15,8,0,0
+every_5:xgb_reg,xgb_reg,2025,4,Bahrain Grand Prix,bahrain,0,tsunoda,10.0,9,18,0,1
+naive_grid_p10,naive_grid_p10,2025,5,Saudi Arabian Grand Prix,jeddah,0,norris,10.0,4,6,0,0
+preseason_static:ensemble,ensemble,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+preseason_static:lgb_reg,lgb_reg,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+preseason_static:rf_clf,rf_clf,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+preseason_static:rf_reg,rf_reg,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+preseason_static:ridge,ridge,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+preseason_static:xgb_clf,xgb_clf,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+preseason_static:xgb_ranker,xgb_ranker,2025,5,Saudi Arabian Grand Prix,jeddah,0,alonso,13.0,11,18,0,1
+preseason_static:xgb_reg,xgb_reg,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+checkpoint_5_10_15:ridge,ridge,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,5,Saudi Arabian Grand Prix,jeddah,0,alonso,13.0,11,18,0,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+every_5:ensemble,ensemble,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+every_5:lgb_reg,lgb_reg,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+every_5:rf_clf,rf_clf,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+every_5:rf_reg,rf_reg,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+every_5:ridge,ridge,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+every_5:xgb_clf,xgb_clf,2025,5,Saudi Arabian Grand Prix,jeddah,0,albon,11.0,9,18,0,1
+every_5:xgb_ranker,xgb_ranker,2025,5,Saudi Arabian Grand Prix,jeddah,0,alonso,13.0,11,18,0,1
+every_5:xgb_reg,xgb_reg,2025,5,Saudi Arabian Grand Prix,jeddah,0,tsunoda,8.0,19,1,0,0
+naive_grid_p10,naive_grid_p10,2025,6,Miami Grand Prix,miami,0,tsunoda,10.0,10,25,1,1
+preseason_static:ensemble,ensemble,2025,6,Miami Grand Prix,miami,0,tsunoda,10.0,10,25,1,1
+preseason_static:lgb_reg,lgb_reg,2025,6,Miami Grand Prix,miami,0,tsunoda,10.0,10,25,1,1
+preseason_static:lgbm_ranker,lgbm_ranker,2025,6,Miami Grand Prix,miami,0,hamilton,12.0,8,15,0,1
+preseason_static:rf_clf,rf_clf,2025,6,Miami Grand Prix,miami,0,ocon,9.0,12,15,0,1
+preseason_static:rf_reg,rf_reg,2025,6,Miami Grand Prix,miami,0,hamilton,12.0,8,15,0,1
+preseason_static:ridge,ridge,2025,6,Miami Grand Prix,miami,0,hamilton,12.0,8,15,0,1
+preseason_static:xgb_clf,xgb_clf,2025,6,Miami Grand Prix,miami,0,hadjar,11.0,11,18,0,1
+preseason_static:xgb_ranker,xgb_ranker,2025,6,Miami Grand Prix,miami,0,tsunoda,10.0,10,25,1,1
+preseason_static:xgb_reg,xgb_reg,2025,6,Miami Grand Prix,miami,0,tsunoda,10.0,10,25,1,1
+checkpoint_5_10_15:ensemble,ensemble,2025,6,Miami Grand Prix,miami,5,hadjar,11.0,11,18,0,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,6,Miami Grand Prix,miami,5,tsunoda,10.0,10,25,1,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,6,Miami Grand Prix,miami,5,hadjar,11.0,11,18,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,6,Miami Grand Prix,miami,5,ocon,9.0,12,15,0,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,6,Miami Grand Prix,miami,5,ocon,9.0,12,15,0,1
+checkpoint_5_10_15:ridge,ridge,2025,6,Miami Grand Prix,miami,5,hamilton,12.0,8,15,0,1
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,6,Miami Grand Prix,miami,5,hadjar,11.0,11,18,0,1
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,6,Miami Grand Prix,miami,5,hadjar,11.0,11,18,0,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,6,Miami Grand Prix,miami,5,albon,7.0,5,8,0,0
+every_5:ensemble,ensemble,2025,6,Miami Grand Prix,miami,5,hadjar,11.0,11,18,0,1
+every_5:lgb_reg,lgb_reg,2025,6,Miami Grand Prix,miami,5,tsunoda,10.0,10,25,1,1
+every_5:lgbm_ranker,lgbm_ranker,2025,6,Miami Grand Prix,miami,5,hadjar,11.0,11,18,0,1
+every_5:rf_clf,rf_clf,2025,6,Miami Grand Prix,miami,5,ocon,9.0,12,15,0,1
+every_5:rf_reg,rf_reg,2025,6,Miami Grand Prix,miami,5,ocon,9.0,12,15,0,1
+every_5:ridge,ridge,2025,6,Miami Grand Prix,miami,5,hamilton,12.0,8,15,0,1
+every_5:xgb_clf,xgb_clf,2025,6,Miami Grand Prix,miami,5,hadjar,11.0,11,18,0,1
+every_5:xgb_ranker,xgb_ranker,2025,6,Miami Grand Prix,miami,5,hadjar,11.0,11,18,0,1
+every_5:xgb_reg,xgb_reg,2025,6,Miami Grand Prix,miami,5,albon,7.0,5,8,0,0
+naive_grid_p10,naive_grid_p10,2025,7,Emilia Romagna Grand Prix,imola,0,gasly,10.0,13,12,0,0
+preseason_static:ensemble,ensemble,2025,7,Emilia Romagna Grand Prix,imola,0,alonso,5.0,11,18,0,1
+preseason_static:lgb_reg,lgb_reg,2025,7,Emilia Romagna Grand Prix,imola,0,antonelli,13.0,19,1,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,7,Emilia Romagna Grand Prix,imola,0,hadjar,9.0,9,18,0,1
+preseason_static:rf_clf,rf_clf,2025,7,Emilia Romagna Grand Prix,imola,0,hadjar,9.0,9,18,0,1
+preseason_static:rf_reg,rf_reg,2025,7,Emilia Romagna Grand Prix,imola,0,antonelli,13.0,19,1,0,0
+preseason_static:ridge,ridge,2025,7,Emilia Romagna Grand Prix,imola,0,alonso,5.0,11,18,0,1
+preseason_static:xgb_clf,xgb_clf,2025,7,Emilia Romagna Grand Prix,imola,0,hadjar,9.0,9,18,0,1
+preseason_static:xgb_ranker,xgb_ranker,2025,7,Emilia Romagna Grand Prix,imola,0,ocon,18.0,20,0,0,0
+preseason_static:xgb_reg,xgb_reg,2025,7,Emilia Romagna Grand Prix,imola,0,antonelli,13.0,19,1,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,7,Emilia Romagna Grand Prix,imola,5,bearman,19.0,17,4,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,7,Emilia Romagna Grand Prix,imola,5,antonelli,13.0,19,1,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,7,Emilia Romagna Grand Prix,imola,5,bearman,19.0,17,4,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,7,Emilia Romagna Grand Prix,imola,5,hadjar,9.0,9,18,0,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,7,Emilia Romagna Grand Prix,imola,5,antonelli,13.0,19,1,0,0
+checkpoint_5_10_15:ridge,ridge,2025,7,Emilia Romagna Grand Prix,imola,5,alonso,5.0,11,18,0,1
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,7,Emilia Romagna Grand Prix,imola,5,hadjar,9.0,9,18,0,1
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,7,Emilia Romagna Grand Prix,imola,5,bearman,19.0,17,4,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,7,Emilia Romagna Grand Prix,imola,5,antonelli,13.0,19,1,0,0
+every_5:ensemble,ensemble,2025,7,Emilia Romagna Grand Prix,imola,5,bearman,19.0,17,4,0,0
+every_5:lgb_reg,lgb_reg,2025,7,Emilia Romagna Grand Prix,imola,5,antonelli,13.0,19,1,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,7,Emilia Romagna Grand Prix,imola,5,bearman,19.0,17,4,0,0
+every_5:rf_clf,rf_clf,2025,7,Emilia Romagna Grand Prix,imola,5,hadjar,9.0,9,18,0,1
+every_5:rf_reg,rf_reg,2025,7,Emilia Romagna Grand Prix,imola,5,antonelli,13.0,19,1,0,0
+every_5:ridge,ridge,2025,7,Emilia Romagna Grand Prix,imola,5,alonso,5.0,11,18,0,1
+every_5:xgb_clf,xgb_clf,2025,7,Emilia Romagna Grand Prix,imola,5,hadjar,9.0,9,18,0,1
+every_5:xgb_ranker,xgb_ranker,2025,7,Emilia Romagna Grand Prix,imola,5,bearman,19.0,17,4,0,0
+every_5:xgb_reg,xgb_reg,2025,7,Emilia Romagna Grand Prix,imola,5,antonelli,13.0,19,1,0,0
+naive_grid_p10,naive_grid_p10,2025,8,Monaco Grand Prix,monaco,0,albon,10.0,9,18,0,1
+preseason_static:ensemble,ensemble,2025,8,Monaco Grand Prix,monaco,0,alonso,7.0,19,1,0,0
+preseason_static:lgb_reg,lgb_reg,2025,8,Monaco Grand Prix,monaco,0,alonso,7.0,19,1,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,8,Monaco Grand Prix,monaco,0,russell,14.0,11,18,0,1
+preseason_static:rf_clf,rf_clf,2025,8,Monaco Grand Prix,monaco,0,sainz,11.0,10,25,1,1
+preseason_static:rf_reg,rf_reg,2025,8,Monaco Grand Prix,monaco,0,russell,14.0,11,18,0,1
+preseason_static:ridge,ridge,2025,8,Monaco Grand Prix,monaco,0,hadjar,6.0,6,10,0,0
+preseason_static:xgb_clf,xgb_clf,2025,8,Monaco Grand Prix,monaco,0,albon,10.0,9,18,0,1
+preseason_static:xgb_ranker,xgb_ranker,2025,8,Monaco Grand Prix,monaco,0,alonso,7.0,19,1,0,0
+preseason_static:xgb_reg,xgb_reg,2025,8,Monaco Grand Prix,monaco,0,hadjar,6.0,6,10,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,8,Monaco Grand Prix,monaco,5,albon,10.0,9,18,0,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,8,Monaco Grand Prix,monaco,5,albon,10.0,9,18,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,8,Monaco Grand Prix,monaco,5,albon,10.0,9,18,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,8,Monaco Grand Prix,monaco,5,sainz,11.0,10,25,1,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,8,Monaco Grand Prix,monaco,5,russell,14.0,11,18,0,1
+checkpoint_5_10_15:ridge,ridge,2025,8,Monaco Grand Prix,monaco,5,hadjar,6.0,6,10,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,8,Monaco Grand Prix,monaco,5,albon,10.0,9,18,0,1
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,8,Monaco Grand Prix,monaco,5,hadjar,6.0,6,10,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,8,Monaco Grand Prix,monaco,5,hadjar,6.0,6,10,0,0
+every_5:ensemble,ensemble,2025,8,Monaco Grand Prix,monaco,5,albon,10.0,9,18,0,1
+every_5:lgb_reg,lgb_reg,2025,8,Monaco Grand Prix,monaco,5,albon,10.0,9,18,0,1
+every_5:lgbm_ranker,lgbm_ranker,2025,8,Monaco Grand Prix,monaco,5,albon,10.0,9,18,0,1
+every_5:rf_clf,rf_clf,2025,8,Monaco Grand Prix,monaco,5,sainz,11.0,10,25,1,1
+every_5:rf_reg,rf_reg,2025,8,Monaco Grand Prix,monaco,5,russell,14.0,11,18,0,1
+every_5:ridge,ridge,2025,8,Monaco Grand Prix,monaco,5,hadjar,6.0,6,10,0,0
+every_5:xgb_clf,xgb_clf,2025,8,Monaco Grand Prix,monaco,5,albon,10.0,9,18,0,1
+every_5:xgb_ranker,xgb_ranker,2025,8,Monaco Grand Prix,monaco,5,hadjar,6.0,6,10,0,0
+every_5:xgb_reg,xgb_reg,2025,8,Monaco Grand Prix,monaco,5,hadjar,6.0,6,10,0,0
+naive_grid_p10,naive_grid_p10,2025,9,Spanish Grand Prix,catalunya,0,alonso,10.0,9,18,0,1
+preseason_static:ensemble,ensemble,2025,9,Spanish Grand Prix,catalunya,0,hadjar,9.0,7,12,0,0
+preseason_static:lgb_reg,lgb_reg,2025,9,Spanish Grand Prix,catalunya,0,hadjar,9.0,7,12,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,9,Spanish Grand Prix,catalunya,0,bortoleto,12.0,12,15,0,1
+preseason_static:rf_clf,rf_clf,2025,9,Spanish Grand Prix,catalunya,0,hadjar,9.0,7,12,0,0
+preseason_static:rf_reg,rf_reg,2025,9,Spanish Grand Prix,catalunya,0,albon,11.0,19,1,0,0
+preseason_static:ridge,ridge,2025,9,Spanish Grand Prix,catalunya,0,hadjar,9.0,7,12,0,0
+preseason_static:xgb_clf,xgb_clf,2025,9,Spanish Grand Prix,catalunya,0,hadjar,9.0,7,12,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,9,Spanish Grand Prix,catalunya,0,lawson,13.0,11,18,0,1
+preseason_static:xgb_reg,xgb_reg,2025,9,Spanish Grand Prix,catalunya,0,hadjar,9.0,7,12,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+checkpoint_5_10_15:ridge,ridge,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,9,Spanish Grand Prix,catalunya,5,lawson,13.0,11,18,0,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+every_5:ensemble,ensemble,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+every_5:lgb_reg,lgb_reg,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+every_5:rf_clf,rf_clf,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+every_5:rf_reg,rf_reg,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+every_5:ridge,ridge,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+every_5:xgb_clf,xgb_clf,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+every_5:xgb_ranker,xgb_ranker,2025,9,Spanish Grand Prix,catalunya,5,lawson,13.0,11,18,0,1
+every_5:xgb_reg,xgb_reg,2025,9,Spanish Grand Prix,catalunya,5,hadjar,9.0,7,12,0,0
+naive_grid_p10,naive_grid_p10,2025,10,Canadian Grand Prix,villeneuve,0,albon,10.0,20,0,0,0
+preseason_static:ensemble,ensemble,2025,10,Canadian Grand Prix,villeneuve,0,hadjar,9.0,16,6,0,0
+preseason_static:lgb_reg,lgb_reg,2025,10,Canadian Grand Prix,villeneuve,0,tsunoda,11.0,12,15,0,1
+preseason_static:lgbm_ranker,lgbm_ranker,2025,10,Canadian Grand Prix,villeneuve,0,albon,10.0,20,0,0,0
+preseason_static:rf_clf,rf_clf,2025,10,Canadian Grand Prix,villeneuve,0,hadjar,9.0,16,6,0,0
+preseason_static:rf_reg,rf_reg,2025,10,Canadian Grand Prix,villeneuve,0,albon,10.0,20,0,0,0
+preseason_static:ridge,ridge,2025,10,Canadian Grand Prix,villeneuve,0,alonso,6.0,7,12,0,0
+preseason_static:xgb_clf,xgb_clf,2025,10,Canadian Grand Prix,villeneuve,0,hadjar,9.0,16,6,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,10,Canadian Grand Prix,villeneuve,0,ocon,15.0,9,18,0,1
+preseason_static:xgb_reg,xgb_reg,2025,10,Canadian Grand Prix,villeneuve,0,tsunoda,11.0,12,15,0,1
+checkpoint_5_10_15:ensemble,ensemble,2025,10,Canadian Grand Prix,villeneuve,5,hadjar,9.0,16,6,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,10,Canadian Grand Prix,villeneuve,5,alonso,6.0,7,12,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,10,Canadian Grand Prix,villeneuve,5,hadjar,9.0,16,6,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,10,Canadian Grand Prix,villeneuve,5,hadjar,9.0,16,6,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,10,Canadian Grand Prix,villeneuve,5,alonso,6.0,7,12,0,0
+checkpoint_5_10_15:ridge,ridge,2025,10,Canadian Grand Prix,villeneuve,5,alonso,6.0,7,12,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,10,Canadian Grand Prix,villeneuve,5,hadjar,9.0,16,6,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,10,Canadian Grand Prix,villeneuve,5,ocon,15.0,9,18,0,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,10,Canadian Grand Prix,villeneuve,5,alonso,6.0,7,12,0,0
+every_5:ensemble,ensemble,2025,10,Canadian Grand Prix,villeneuve,5,hadjar,9.0,16,6,0,0
+every_5:lgb_reg,lgb_reg,2025,10,Canadian Grand Prix,villeneuve,5,alonso,6.0,7,12,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,10,Canadian Grand Prix,villeneuve,5,hadjar,9.0,16,6,0,0
+every_5:rf_clf,rf_clf,2025,10,Canadian Grand Prix,villeneuve,5,hadjar,9.0,16,6,0,0
+every_5:rf_reg,rf_reg,2025,10,Canadian Grand Prix,villeneuve,5,alonso,6.0,7,12,0,0
+every_5:ridge,ridge,2025,10,Canadian Grand Prix,villeneuve,5,alonso,6.0,7,12,0,0
+every_5:xgb_clf,xgb_clf,2025,10,Canadian Grand Prix,villeneuve,5,hadjar,9.0,16,6,0,0
+every_5:xgb_ranker,xgb_ranker,2025,10,Canadian Grand Prix,villeneuve,5,ocon,15.0,9,18,0,1
+every_5:xgb_reg,xgb_reg,2025,10,Canadian Grand Prix,villeneuve,5,alonso,6.0,7,12,0,0
+naive_grid_p10,naive_grid_p10,2025,11,Austrian Grand Prix,red_bull_ring,0,gasly,10.0,13,12,0,0
+preseason_static:ensemble,ensemble,2025,11,Austrian Grand Prix,red_bull_ring,0,colapinto,14.0,15,8,0,0
+preseason_static:lgb_reg,lgb_reg,2025,11,Austrian Grand Prix,red_bull_ring,0,max_verstappen,7.0,18,2,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,11,Austrian Grand Prix,red_bull_ring,0,bortoleto,8.0,8,15,0,1
+preseason_static:rf_clf,rf_clf,2025,11,Austrian Grand Prix,red_bull_ring,0,bortoleto,8.0,8,15,0,1
+preseason_static:rf_reg,rf_reg,2025,11,Austrian Grand Prix,red_bull_ring,0,antonelli,9.0,19,1,0,0
+preseason_static:ridge,ridge,2025,11,Austrian Grand Prix,red_bull_ring,0,antonelli,9.0,19,1,0,0
+preseason_static:xgb_clf,xgb_clf,2025,11,Austrian Grand Prix,red_bull_ring,0,tsunoda,18.0,16,6,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,11,Austrian Grand Prix,red_bull_ring,0,colapinto,14.0,15,8,0,0
+preseason_static:xgb_reg,xgb_reg,2025,11,Austrian Grand Prix,red_bull_ring,0,antonelli,9.0,19,1,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,11,Austrian Grand Prix,red_bull_ring,10,hadjar,13.0,12,15,0,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,11,Austrian Grand Prix,red_bull_ring,10,lawson,6.0,6,10,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,11,Austrian Grand Prix,red_bull_ring,10,tsunoda,18.0,16,6,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,11,Austrian Grand Prix,red_bull_ring,10,hadjar,13.0,12,15,0,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,11,Austrian Grand Prix,red_bull_ring,10,lawson,6.0,6,10,0,0
+checkpoint_5_10_15:ridge,ridge,2025,11,Austrian Grand Prix,red_bull_ring,10,antonelli,9.0,19,1,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,11,Austrian Grand Prix,red_bull_ring,10,tsunoda,18.0,16,6,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,11,Austrian Grand Prix,red_bull_ring,10,colapinto,14.0,15,8,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,11,Austrian Grand Prix,red_bull_ring,10,antonelli,9.0,19,1,0,0
+every_5:ensemble,ensemble,2025,11,Austrian Grand Prix,red_bull_ring,10,hadjar,13.0,12,15,0,1
+every_5:lgb_reg,lgb_reg,2025,11,Austrian Grand Prix,red_bull_ring,10,lawson,6.0,6,10,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,11,Austrian Grand Prix,red_bull_ring,10,tsunoda,18.0,16,6,0,0
+every_5:rf_clf,rf_clf,2025,11,Austrian Grand Prix,red_bull_ring,10,hadjar,13.0,12,15,0,1
+every_5:rf_reg,rf_reg,2025,11,Austrian Grand Prix,red_bull_ring,10,lawson,6.0,6,10,0,0
+every_5:ridge,ridge,2025,11,Austrian Grand Prix,red_bull_ring,10,antonelli,9.0,19,1,0,0
+every_5:xgb_clf,xgb_clf,2025,11,Austrian Grand Prix,red_bull_ring,10,tsunoda,18.0,16,6,0,0
+every_5:xgb_ranker,xgb_ranker,2025,11,Austrian Grand Prix,red_bull_ring,10,colapinto,14.0,15,8,0,0
+every_5:xgb_reg,xgb_reg,2025,11,Austrian Grand Prix,red_bull_ring,10,antonelli,9.0,19,1,0,0
+naive_grid_p10,naive_grid_p10,2025,12,British Grand Prix,silverstone,0,gasly,10.0,6,10,0,0
+preseason_static:ensemble,ensemble,2025,12,British Grand Prix,silverstone,0,bearman,8.0,11,18,0,1
+preseason_static:lgb_reg,lgb_reg,2025,12,British Grand Prix,silverstone,0,sainz,11.0,12,15,0,1
+preseason_static:lgbm_ranker,lgbm_ranker,2025,12,British Grand Prix,silverstone,0,hadjar,13.0,17,4,0,0
+preseason_static:rf_clf,rf_clf,2025,12,British Grand Prix,silverstone,0,bearman,8.0,11,18,0,1
+preseason_static:rf_reg,rf_reg,2025,12,British Grand Prix,silverstone,0,bearman,8.0,11,18,0,1
+preseason_static:ridge,ridge,2025,12,British Grand Prix,silverstone,0,alonso,9.0,9,18,0,1
+preseason_static:xgb_clf,xgb_clf,2025,12,British Grand Prix,silverstone,0,tsunoda,12.0,15,8,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,12,British Grand Prix,silverstone,0,bearman,8.0,11,18,0,1
+preseason_static:xgb_reg,xgb_reg,2025,12,British Grand Prix,silverstone,0,sainz,11.0,12,15,0,1
+checkpoint_5_10_15:ensemble,ensemble,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,12,British Grand Prix,silverstone,10,tsunoda,12.0,15,8,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,12,British Grand Prix,silverstone,10,hadjar,13.0,17,4,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+checkpoint_5_10_15:ridge,ridge,2025,12,British Grand Prix,silverstone,10,alonso,9.0,9,18,0,1
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,12,British Grand Prix,silverstone,10,tsunoda,12.0,15,8,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+every_5:ensemble,ensemble,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+every_5:lgb_reg,lgb_reg,2025,12,British Grand Prix,silverstone,10,tsunoda,12.0,15,8,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,12,British Grand Prix,silverstone,10,hadjar,13.0,17,4,0,0
+every_5:rf_clf,rf_clf,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+every_5:rf_reg,rf_reg,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+every_5:ridge,ridge,2025,12,British Grand Prix,silverstone,10,alonso,9.0,9,18,0,1
+every_5:xgb_clf,xgb_clf,2025,12,British Grand Prix,silverstone,10,tsunoda,12.0,15,8,0,0
+every_5:xgb_ranker,xgb_ranker,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+every_5:xgb_reg,xgb_reg,2025,12,British Grand Prix,silverstone,10,bearman,8.0,11,18,0,1
+naive_grid_p10,naive_grid_p10,2025,13,Belgian Grand Prix,spa,0,bortoleto,10.0,9,18,0,1
+preseason_static:ensemble,ensemble,2025,13,Belgian Grand Prix,spa,0,gasly,13.0,10,25,1,1
+preseason_static:lgb_reg,lgb_reg,2025,13,Belgian Grand Prix,spa,0,ocon,11.0,15,8,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,13,Belgian Grand Prix,spa,0,gasly,13.0,10,25,1,1
+preseason_static:rf_clf,rf_clf,2025,13,Belgian Grand Prix,spa,0,ocon,11.0,15,8,0,0
+preseason_static:rf_reg,rf_reg,2025,13,Belgian Grand Prix,spa,0,hamilton,16.0,7,12,0,0
+preseason_static:ridge,ridge,2025,13,Belgian Grand Prix,spa,0,albon,5.0,6,10,0,0
+preseason_static:xgb_clf,xgb_clf,2025,13,Belgian Grand Prix,spa,0,bearman,12.0,11,18,0,1
+preseason_static:xgb_ranker,xgb_ranker,2025,13,Belgian Grand Prix,spa,0,gasly,13.0,10,25,1,1
+preseason_static:xgb_reg,xgb_reg,2025,13,Belgian Grand Prix,spa,0,hamilton,16.0,7,12,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,13,Belgian Grand Prix,spa,10,ocon,11.0,15,8,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,13,Belgian Grand Prix,spa,10,albon,5.0,6,10,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,13,Belgian Grand Prix,spa,10,bearman,12.0,11,18,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,13,Belgian Grand Prix,spa,10,ocon,11.0,15,8,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,13,Belgian Grand Prix,spa,10,hamilton,16.0,7,12,0,0
+checkpoint_5_10_15:ridge,ridge,2025,13,Belgian Grand Prix,spa,10,albon,5.0,6,10,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,13,Belgian Grand Prix,spa,10,ocon,11.0,15,8,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,13,Belgian Grand Prix,spa,10,gasly,13.0,10,25,1,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,13,Belgian Grand Prix,spa,10,gasly,13.0,10,25,1,1
+every_5:ensemble,ensemble,2025,13,Belgian Grand Prix,spa,10,ocon,11.0,15,8,0,0
+every_5:lgb_reg,lgb_reg,2025,13,Belgian Grand Prix,spa,10,albon,5.0,6,10,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,13,Belgian Grand Prix,spa,10,bearman,12.0,11,18,0,1
+every_5:rf_clf,rf_clf,2025,13,Belgian Grand Prix,spa,10,ocon,11.0,15,8,0,0
+every_5:rf_reg,rf_reg,2025,13,Belgian Grand Prix,spa,10,hamilton,16.0,7,12,0,0
+every_5:ridge,ridge,2025,13,Belgian Grand Prix,spa,10,albon,5.0,6,10,0,0
+every_5:xgb_clf,xgb_clf,2025,13,Belgian Grand Prix,spa,10,ocon,11.0,15,8,0,0
+every_5:xgb_ranker,xgb_ranker,2025,13,Belgian Grand Prix,spa,10,gasly,13.0,10,25,1,1
+every_5:xgb_reg,xgb_reg,2025,13,Belgian Grand Prix,spa,10,gasly,13.0,10,25,1,1
+naive_grid_p10,naive_grid_p10,2025,14,Hungarian Grand Prix,hungaroring,0,hadjar,10.0,11,18,0,1
+preseason_static:ensemble,ensemble,2025,14,Hungarian Grand Prix,hungaroring,0,antonelli,15.0,10,25,1,1
+preseason_static:lgb_reg,lgb_reg,2025,14,Hungarian Grand Prix,hungaroring,0,stroll,6.0,7,12,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,14,Hungarian Grand Prix,hungaroring,0,antonelli,15.0,10,25,1,1
+preseason_static:rf_clf,rf_clf,2025,14,Hungarian Grand Prix,hungaroring,0,bearman,11.0,20,0,0,0
+preseason_static:rf_reg,rf_reg,2025,14,Hungarian Grand Prix,hungaroring,0,stroll,6.0,7,12,0,0
+preseason_static:ridge,ridge,2025,14,Hungarian Grand Prix,hungaroring,0,stroll,6.0,7,12,0,0
+preseason_static:xgb_clf,xgb_clf,2025,14,Hungarian Grand Prix,hungaroring,0,antonelli,15.0,10,25,1,1
+preseason_static:xgb_ranker,xgb_ranker,2025,14,Hungarian Grand Prix,hungaroring,0,antonelli,15.0,10,25,1,1
+preseason_static:xgb_reg,xgb_reg,2025,14,Hungarian Grand Prix,hungaroring,0,alonso,5.0,5,8,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,14,Hungarian Grand Prix,hungaroring,10,tsunoda,16.0,17,4,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,14,Hungarian Grand Prix,hungaroring,10,alonso,5.0,5,8,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,14,Hungarian Grand Prix,hungaroring,10,tsunoda,16.0,17,4,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,14,Hungarian Grand Prix,hungaroring,10,hadjar,10.0,11,18,0,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,14,Hungarian Grand Prix,hungaroring,10,stroll,6.0,7,12,0,0
+checkpoint_5_10_15:ridge,ridge,2025,14,Hungarian Grand Prix,hungaroring,10,stroll,6.0,7,12,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,14,Hungarian Grand Prix,hungaroring,10,lawson,9.0,8,15,0,1
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,14,Hungarian Grand Prix,hungaroring,10,tsunoda,16.0,17,4,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,14,Hungarian Grand Prix,hungaroring,10,alonso,5.0,5,8,0,0
+every_5:ensemble,ensemble,2025,14,Hungarian Grand Prix,hungaroring,10,tsunoda,16.0,17,4,0,0
+every_5:lgb_reg,lgb_reg,2025,14,Hungarian Grand Prix,hungaroring,10,alonso,5.0,5,8,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,14,Hungarian Grand Prix,hungaroring,10,tsunoda,16.0,17,4,0,0
+every_5:rf_clf,rf_clf,2025,14,Hungarian Grand Prix,hungaroring,10,hadjar,10.0,11,18,0,1
+every_5:rf_reg,rf_reg,2025,14,Hungarian Grand Prix,hungaroring,10,stroll,6.0,7,12,0,0
+every_5:ridge,ridge,2025,14,Hungarian Grand Prix,hungaroring,10,stroll,6.0,7,12,0,0
+every_5:xgb_clf,xgb_clf,2025,14,Hungarian Grand Prix,hungaroring,10,lawson,9.0,8,15,0,1
+every_5:xgb_ranker,xgb_ranker,2025,14,Hungarian Grand Prix,hungaroring,10,tsunoda,16.0,17,4,0,0
+every_5:xgb_reg,xgb_reg,2025,14,Hungarian Grand Prix,hungaroring,10,alonso,5.0,5,8,0,0
+naive_grid_p10,naive_grid_p10,2025,15,Dutch Grand Prix,zandvoort,0,alonso,10.0,8,15,0,1
+preseason_static:ensemble,ensemble,2025,15,Dutch Grand Prix,zandvoort,0,antonelli,11.0,16,6,0,0
+preseason_static:lgb_reg,lgb_reg,2025,15,Dutch Grand Prix,zandvoort,0,sainz,9.0,13,12,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,15,Dutch Grand Prix,zandvoort,0,antonelli,11.0,16,6,0,0
+preseason_static:rf_clf,rf_clf,2025,15,Dutch Grand Prix,zandvoort,0,alonso,10.0,8,15,0,1
+preseason_static:rf_reg,rf_reg,2025,15,Dutch Grand Prix,zandvoort,0,antonelli,11.0,16,6,0,0
+preseason_static:ridge,ridge,2025,15,Dutch Grand Prix,zandvoort,0,hadjar,4.0,3,4,0,0
+preseason_static:xgb_clf,xgb_clf,2025,15,Dutch Grand Prix,zandvoort,0,sainz,9.0,13,12,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,15,Dutch Grand Prix,zandvoort,0,antonelli,11.0,16,6,0,0
+preseason_static:xgb_reg,xgb_reg,2025,15,Dutch Grand Prix,zandvoort,0,sainz,9.0,13,12,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,15,Dutch Grand Prix,zandvoort,10,lawson,8.0,12,15,0,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,15,Dutch Grand Prix,zandvoort,10,sainz,9.0,13,12,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,15,Dutch Grand Prix,zandvoort,10,bortoleto,13.0,15,8,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,15,Dutch Grand Prix,zandvoort,10,alonso,10.0,8,15,0,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,15,Dutch Grand Prix,zandvoort,10,antonelli,11.0,16,6,0,0
+checkpoint_5_10_15:ridge,ridge,2025,15,Dutch Grand Prix,zandvoort,10,lawson,8.0,12,15,0,1
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,15,Dutch Grand Prix,zandvoort,10,sainz,9.0,13,12,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,15,Dutch Grand Prix,zandvoort,10,lawson,8.0,12,15,0,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,15,Dutch Grand Prix,zandvoort,10,lawson,8.0,12,15,0,1
+every_5:ensemble,ensemble,2025,15,Dutch Grand Prix,zandvoort,10,lawson,8.0,12,15,0,1
+every_5:lgb_reg,lgb_reg,2025,15,Dutch Grand Prix,zandvoort,10,sainz,9.0,13,12,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,15,Dutch Grand Prix,zandvoort,10,bortoleto,13.0,15,8,0,0
+every_5:rf_clf,rf_clf,2025,15,Dutch Grand Prix,zandvoort,10,alonso,10.0,8,15,0,1
+every_5:rf_reg,rf_reg,2025,15,Dutch Grand Prix,zandvoort,10,antonelli,11.0,16,6,0,0
+every_5:ridge,ridge,2025,15,Dutch Grand Prix,zandvoort,10,lawson,8.0,12,15,0,1
+every_5:xgb_clf,xgb_clf,2025,15,Dutch Grand Prix,zandvoort,10,sainz,9.0,13,12,0,0
+every_5:xgb_ranker,xgb_ranker,2025,15,Dutch Grand Prix,zandvoort,10,lawson,8.0,12,15,0,1
+every_5:xgb_reg,xgb_reg,2025,15,Dutch Grand Prix,zandvoort,10,lawson,8.0,12,15,0,1
+naive_grid_p10,naive_grid_p10,2025,16,Italian Grand Prix,monza,0,tsunoda,10.0,13,12,0,0
+preseason_static:ensemble,ensemble,2025,16,Italian Grand Prix,monza,0,albon,14.0,7,12,0,0
+preseason_static:lgb_reg,lgb_reg,2025,16,Italian Grand Prix,monza,0,alonso,9.0,19,1,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,16,Italian Grand Prix,monza,0,albon,14.0,7,12,0,0
+preseason_static:rf_clf,rf_clf,2025,16,Italian Grand Prix,monza,0,alonso,9.0,19,1,0,0
+preseason_static:rf_reg,rf_reg,2025,16,Italian Grand Prix,monza,0,alonso,9.0,19,1,0,0
+preseason_static:ridge,ridge,2025,16,Italian Grand Prix,monza,0,antonelli,7.0,9,18,0,1
+preseason_static:xgb_clf,xgb_clf,2025,16,Italian Grand Prix,monza,0,albon,14.0,7,12,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,16,Italian Grand Prix,monza,0,albon,14.0,7,12,0,0
+preseason_static:xgb_reg,xgb_reg,2025,16,Italian Grand Prix,monza,0,alonso,9.0,19,1,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,16,Italian Grand Prix,monza,15,albon,14.0,7,12,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,16,Italian Grand Prix,monza,15,antonelli,7.0,9,18,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,16,Italian Grand Prix,monza,15,tsunoda,10.0,13,12,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,16,Italian Grand Prix,monza,15,alonso,9.0,19,1,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,16,Italian Grand Prix,monza,15,antonelli,7.0,9,18,0,1
+checkpoint_5_10_15:ridge,ridge,2025,16,Italian Grand Prix,monza,15,antonelli,7.0,9,18,0,1
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,16,Italian Grand Prix,monza,15,tsunoda,10.0,13,12,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,16,Italian Grand Prix,monza,15,albon,14.0,7,12,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,16,Italian Grand Prix,monza,15,albon,14.0,7,12,0,0
+every_5:ensemble,ensemble,2025,16,Italian Grand Prix,monza,15,albon,14.0,7,12,0,0
+every_5:lgb_reg,lgb_reg,2025,16,Italian Grand Prix,monza,15,antonelli,7.0,9,18,0,1
+every_5:lgbm_ranker,lgbm_ranker,2025,16,Italian Grand Prix,monza,15,tsunoda,10.0,13,12,0,0
+every_5:rf_clf,rf_clf,2025,16,Italian Grand Prix,monza,15,alonso,9.0,19,1,0,0
+every_5:rf_reg,rf_reg,2025,16,Italian Grand Prix,monza,15,antonelli,7.0,9,18,0,1
+every_5:ridge,ridge,2025,16,Italian Grand Prix,monza,15,antonelli,7.0,9,18,0,1
+every_5:xgb_clf,xgb_clf,2025,16,Italian Grand Prix,monza,15,tsunoda,10.0,13,12,0,0
+every_5:xgb_ranker,xgb_ranker,2025,16,Italian Grand Prix,monza,15,albon,14.0,7,12,0,0
+every_5:xgb_reg,xgb_reg,2025,16,Italian Grand Prix,monza,15,albon,14.0,7,12,0,0
+naive_grid_p10,naive_grid_p10,2025,17,Azerbaijan Grand Prix,baku,0,leclerc,10.0,9,18,0,1
+preseason_static:ensemble,ensemble,2025,17,Azerbaijan Grand Prix,baku,0,bearman,15.0,12,15,0,1
+preseason_static:lgb_reg,lgb_reg,2025,17,Azerbaijan Grand Prix,baku,0,russell,5.0,2,2,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,17,Azerbaijan Grand Prix,baku,0,colapinto,16.0,19,1,0,0
+preseason_static:rf_clf,rf_clf,2025,17,Azerbaijan Grand Prix,baku,0,alonso,11.0,15,8,0,0
+preseason_static:rf_reg,rf_reg,2025,17,Azerbaijan Grand Prix,baku,0,hadjar,8.0,10,25,1,1
+preseason_static:ridge,ridge,2025,17,Azerbaijan Grand Prix,baku,0,tsunoda,6.0,6,10,0,0
+preseason_static:xgb_clf,xgb_clf,2025,17,Azerbaijan Grand Prix,baku,0,hulkenberg,17.0,16,6,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,17,Azerbaijan Grand Prix,baku,0,stroll,14.0,17,4,0,0
+preseason_static:xgb_reg,xgb_reg,2025,17,Azerbaijan Grand Prix,baku,0,hamilton,12.0,8,15,0,1
+checkpoint_5_10_15:ensemble,ensemble,2025,17,Azerbaijan Grand Prix,baku,15,stroll,14.0,17,4,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,17,Azerbaijan Grand Prix,baku,15,antonelli,4.0,4,6,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,17,Azerbaijan Grand Prix,baku,15,bortoleto,13.0,11,18,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,17,Azerbaijan Grand Prix,baku,15,alonso,11.0,15,8,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,17,Azerbaijan Grand Prix,baku,15,hadjar,8.0,10,25,1,1
+checkpoint_5_10_15:ridge,ridge,2025,17,Azerbaijan Grand Prix,baku,15,tsunoda,6.0,6,10,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,17,Azerbaijan Grand Prix,baku,15,alonso,11.0,15,8,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,17,Azerbaijan Grand Prix,baku,15,stroll,14.0,17,4,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,17,Azerbaijan Grand Prix,baku,15,lawson,3.0,5,8,0,0
+every_5:ensemble,ensemble,2025,17,Azerbaijan Grand Prix,baku,15,stroll,14.0,17,4,0,0
+every_5:lgb_reg,lgb_reg,2025,17,Azerbaijan Grand Prix,baku,15,antonelli,4.0,4,6,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,17,Azerbaijan Grand Prix,baku,15,bortoleto,13.0,11,18,0,1
+every_5:rf_clf,rf_clf,2025,17,Azerbaijan Grand Prix,baku,15,alonso,11.0,15,8,0,0
+every_5:rf_reg,rf_reg,2025,17,Azerbaijan Grand Prix,baku,15,hadjar,8.0,10,25,1,1
+every_5:ridge,ridge,2025,17,Azerbaijan Grand Prix,baku,15,tsunoda,6.0,6,10,0,0
+every_5:xgb_clf,xgb_clf,2025,17,Azerbaijan Grand Prix,baku,15,alonso,11.0,15,8,0,0
+every_5:xgb_ranker,xgb_ranker,2025,17,Azerbaijan Grand Prix,baku,15,stroll,14.0,17,4,0,0
+every_5:xgb_reg,xgb_reg,2025,17,Azerbaijan Grand Prix,baku,15,lawson,3.0,5,8,0,0
+naive_grid_p10,naive_grid_p10,2025,18,Singapore Grand Prix,marina_bay,0,alonso,10.0,7,12,0,0
+preseason_static:ensemble,ensemble,2025,18,Singapore Grand Prix,marina_bay,0,lawson,12.0,15,8,0,0
+preseason_static:lgb_reg,lgb_reg,2025,18,Singapore Grand Prix,marina_bay,0,lawson,12.0,15,8,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,18,Singapore Grand Prix,marina_bay,0,bortoleto,14.0,17,4,0,0
+preseason_static:rf_clf,rf_clf,2025,18,Singapore Grand Prix,marina_bay,0,bearman,9.0,9,18,0,1
+preseason_static:rf_reg,rf_reg,2025,18,Singapore Grand Prix,marina_bay,0,hadjar,8.0,11,18,0,1
+preseason_static:ridge,ridge,2025,18,Singapore Grand Prix,marina_bay,0,hadjar,8.0,11,18,0,1
+preseason_static:xgb_clf,xgb_clf,2025,18,Singapore Grand Prix,marina_bay,0,hadjar,8.0,11,18,0,1
+preseason_static:xgb_ranker,xgb_ranker,2025,18,Singapore Grand Prix,marina_bay,0,lawson,12.0,15,8,0,0
+preseason_static:xgb_reg,xgb_reg,2025,18,Singapore Grand Prix,marina_bay,0,lawson,12.0,15,8,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,18,Singapore Grand Prix,marina_bay,15,tsunoda,13.0,12,15,0,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,18,Singapore Grand Prix,marina_bay,15,bearman,9.0,9,18,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,18,Singapore Grand Prix,marina_bay,15,tsunoda,13.0,12,15,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,18,Singapore Grand Prix,marina_bay,15,alonso,10.0,7,12,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,18,Singapore Grand Prix,marina_bay,15,hadjar,8.0,11,18,0,1
+checkpoint_5_10_15:ridge,ridge,2025,18,Singapore Grand Prix,marina_bay,15,hadjar,8.0,11,18,0,1
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,18,Singapore Grand Prix,marina_bay,15,hadjar,8.0,11,18,0,1
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,18,Singapore Grand Prix,marina_bay,15,tsunoda,13.0,12,15,0,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,18,Singapore Grand Prix,marina_bay,15,lawson,12.0,15,8,0,0
+every_5:ensemble,ensemble,2025,18,Singapore Grand Prix,marina_bay,15,tsunoda,13.0,12,15,0,1
+every_5:lgb_reg,lgb_reg,2025,18,Singapore Grand Prix,marina_bay,15,bearman,9.0,9,18,0,1
+every_5:lgbm_ranker,lgbm_ranker,2025,18,Singapore Grand Prix,marina_bay,15,tsunoda,13.0,12,15,0,1
+every_5:rf_clf,rf_clf,2025,18,Singapore Grand Prix,marina_bay,15,alonso,10.0,7,12,0,0
+every_5:rf_reg,rf_reg,2025,18,Singapore Grand Prix,marina_bay,15,hadjar,8.0,11,18,0,1
+every_5:ridge,ridge,2025,18,Singapore Grand Prix,marina_bay,15,hadjar,8.0,11,18,0,1
+every_5:xgb_clf,xgb_clf,2025,18,Singapore Grand Prix,marina_bay,15,hadjar,8.0,11,18,0,1
+every_5:xgb_ranker,xgb_ranker,2025,18,Singapore Grand Prix,marina_bay,15,tsunoda,13.0,12,15,0,1
+every_5:xgb_reg,xgb_reg,2025,18,Singapore Grand Prix,marina_bay,15,lawson,12.0,15,8,0,0
+naive_grid_p10,naive_grid_p10,2025,19,United States Grand Prix,americas,0,alonso,10.0,10,25,1,1
+preseason_static:ensemble,ensemble,2025,19,United States Grand Prix,americas,0,lawson,12.0,11,18,0,1
+preseason_static:lgb_reg,lgb_reg,2025,19,United States Grand Prix,americas,0,sainz,9.0,20,0,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,19,United States Grand Prix,americas,0,lawson,12.0,11,18,0,1
+preseason_static:rf_clf,rf_clf,2025,19,United States Grand Prix,americas,0,lawson,12.0,11,18,0,1
+preseason_static:rf_reg,rf_reg,2025,19,United States Grand Prix,americas,0,sainz,9.0,20,0,0,0
+preseason_static:ridge,ridge,2025,19,United States Grand Prix,americas,0,sainz,9.0,20,0,0,0
+preseason_static:xgb_clf,xgb_clf,2025,19,United States Grand Prix,americas,0,alonso,10.0,10,25,1,1
+preseason_static:xgb_ranker,xgb_ranker,2025,19,United States Grand Prix,americas,0,lawson,12.0,11,18,0,1
+preseason_static:xgb_reg,xgb_reg,2025,19,United States Grand Prix,americas,0,tsunoda,13.0,7,12,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,19,United States Grand Prix,americas,15,tsunoda,13.0,7,12,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,19,United States Grand Prix,americas,15,bearman,8.0,9,18,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,19,United States Grand Prix,americas,15,lawson,12.0,11,18,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,19,United States Grand Prix,americas,15,lawson,12.0,11,18,0,1
+checkpoint_5_10_15:rf_reg,rf_reg,2025,19,United States Grand Prix,americas,15,sainz,9.0,20,0,0,0
+checkpoint_5_10_15:ridge,ridge,2025,19,United States Grand Prix,americas,15,sainz,9.0,20,0,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,19,United States Grand Prix,americas,15,tsunoda,13.0,7,12,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,19,United States Grand Prix,americas,15,tsunoda,13.0,7,12,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,19,United States Grand Prix,americas,15,hulkenberg,11.0,8,15,0,1
+every_5:ensemble,ensemble,2025,19,United States Grand Prix,americas,15,tsunoda,13.0,7,12,0,0
+every_5:lgb_reg,lgb_reg,2025,19,United States Grand Prix,americas,15,bearman,8.0,9,18,0,1
+every_5:lgbm_ranker,lgbm_ranker,2025,19,United States Grand Prix,americas,15,lawson,12.0,11,18,0,1
+every_5:rf_clf,rf_clf,2025,19,United States Grand Prix,americas,15,lawson,12.0,11,18,0,1
+every_5:rf_reg,rf_reg,2025,19,United States Grand Prix,americas,15,sainz,9.0,20,0,0,0
+every_5:ridge,ridge,2025,19,United States Grand Prix,americas,15,sainz,9.0,20,0,0,0
+every_5:xgb_clf,xgb_clf,2025,19,United States Grand Prix,americas,15,tsunoda,13.0,7,12,0,0
+every_5:xgb_ranker,xgb_ranker,2025,19,United States Grand Prix,americas,15,tsunoda,13.0,7,12,0,0
+every_5:xgb_reg,xgb_reg,2025,19,United States Grand Prix,americas,15,hulkenberg,11.0,8,15,0,1
+naive_grid_p10,naive_grid_p10,2025,20,Mexico City Grand Prix,rodriguez,0,bearman,10.0,4,6,0,0
+preseason_static:ensemble,ensemble,2025,20,Mexico City Grand Prix,rodriguez,0,hadjar,9.0,13,12,0,0
+preseason_static:lgb_reg,lgb_reg,2025,20,Mexico City Grand Prix,rodriguez,0,sainz,7.0,17,4,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,20,Mexico City Grand Prix,rodriguez,0,lawson,15.0,20,0,0,0
+preseason_static:rf_clf,rf_clf,2025,20,Mexico City Grand Prix,rodriguez,0,bearman,10.0,4,6,0,0
+preseason_static:rf_reg,rf_reg,2025,20,Mexico City Grand Prix,rodriguez,0,tsunoda,11.0,11,18,0,1
+preseason_static:ridge,ridge,2025,20,Mexico City Grand Prix,rodriguez,0,sainz,7.0,17,4,0,0
+preseason_static:xgb_clf,xgb_clf,2025,20,Mexico City Grand Prix,rodriguez,0,tsunoda,11.0,11,18,0,1
+preseason_static:xgb_ranker,xgb_ranker,2025,20,Mexico City Grand Prix,rodriguez,0,lawson,15.0,20,0,0,0
+preseason_static:xgb_reg,xgb_reg,2025,20,Mexico City Grand Prix,rodriguez,0,hadjar,9.0,13,12,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,20,Mexico City Grand Prix,rodriguez,15,hadjar,9.0,13,12,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,20,Mexico City Grand Prix,rodriguez,15,bearman,10.0,4,6,0,0
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,20,Mexico City Grand Prix,rodriguez,15,tsunoda,11.0,11,18,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,20,Mexico City Grand Prix,rodriguez,15,hadjar,9.0,13,12,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,20,Mexico City Grand Prix,rodriguez,15,sainz,7.0,17,4,0,0
+checkpoint_5_10_15:ridge,ridge,2025,20,Mexico City Grand Prix,rodriguez,15,sainz,7.0,17,4,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,20,Mexico City Grand Prix,rodriguez,15,tsunoda,11.0,11,18,0,1
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,20,Mexico City Grand Prix,rodriguez,15,lawson,15.0,20,0,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,20,Mexico City Grand Prix,rodriguez,15,bearman,10.0,4,6,0,0
+every_5:ensemble,ensemble,2025,20,Mexico City Grand Prix,rodriguez,15,hadjar,9.0,13,12,0,0
+every_5:lgb_reg,lgb_reg,2025,20,Mexico City Grand Prix,rodriguez,15,bearman,10.0,4,6,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,20,Mexico City Grand Prix,rodriguez,15,tsunoda,11.0,11,18,0,1
+every_5:rf_clf,rf_clf,2025,20,Mexico City Grand Prix,rodriguez,15,hadjar,9.0,13,12,0,0
+every_5:rf_reg,rf_reg,2025,20,Mexico City Grand Prix,rodriguez,15,sainz,7.0,17,4,0,0
+every_5:ridge,ridge,2025,20,Mexico City Grand Prix,rodriguez,15,sainz,7.0,17,4,0,0
+every_5:xgb_clf,xgb_clf,2025,20,Mexico City Grand Prix,rodriguez,15,tsunoda,11.0,11,18,0,1
+every_5:xgb_ranker,xgb_ranker,2025,20,Mexico City Grand Prix,rodriguez,15,lawson,15.0,20,0,0,0
+every_5:xgb_reg,xgb_reg,2025,20,Mexico City Grand Prix,rodriguez,15,bearman,10.0,4,6,0,0
+naive_grid_p10,naive_grid_p10,2025,21,São Paulo Grand Prix,interlagos,0,hulkenberg,10.0,9,18,0,1
+preseason_static:ensemble,ensemble,2025,21,São Paulo Grand Prix,interlagos,0,hamilton,13.0,18,2,0,0
+preseason_static:lgb_reg,lgb_reg,2025,21,São Paulo Grand Prix,interlagos,0,albon,12.0,11,18,0,1
+preseason_static:lgbm_ranker,lgbm_ranker,2025,21,São Paulo Grand Prix,interlagos,0,tsunoda,19.0,17,4,0,0
+preseason_static:rf_clf,rf_clf,2025,21,São Paulo Grand Prix,interlagos,0,sainz,15.0,13,12,0,0
+preseason_static:rf_reg,rf_reg,2025,21,São Paulo Grand Prix,interlagos,0,lawson,7.0,7,12,0,0
+preseason_static:ridge,ridge,2025,21,São Paulo Grand Prix,interlagos,0,max_verstappen,16.0,3,4,0,0
+preseason_static:xgb_clf,xgb_clf,2025,21,São Paulo Grand Prix,interlagos,0,alonso,11.0,14,10,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,21,São Paulo Grand Prix,interlagos,0,hamilton,13.0,18,2,0,0
+preseason_static:xgb_reg,xgb_reg,2025,21,São Paulo Grand Prix,interlagos,0,max_verstappen,16.0,3,4,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,21,São Paulo Grand Prix,interlagos,15,hamilton,13.0,18,2,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,21,São Paulo Grand Prix,interlagos,15,hadjar,5.0,8,15,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,21,São Paulo Grand Prix,interlagos,15,hamilton,13.0,18,2,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,21,São Paulo Grand Prix,interlagos,15,alonso,11.0,14,10,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,21,São Paulo Grand Prix,interlagos,15,hamilton,13.0,18,2,0,0
+checkpoint_5_10_15:ridge,ridge,2025,21,São Paulo Grand Prix,interlagos,15,hamilton,13.0,18,2,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,21,São Paulo Grand Prix,interlagos,15,alonso,11.0,14,10,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,21,São Paulo Grand Prix,interlagos,15,hamilton,13.0,18,2,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,21,São Paulo Grand Prix,interlagos,15,max_verstappen,16.0,3,4,0,0
+every_5:ensemble,ensemble,2025,21,São Paulo Grand Prix,interlagos,20,sainz,15.0,13,12,0,0
+every_5:lgb_reg,lgb_reg,2025,21,São Paulo Grand Prix,interlagos,20,bearman,8.0,6,10,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,21,São Paulo Grand Prix,interlagos,20,hamilton,13.0,18,2,0,0
+every_5:rf_clf,rf_clf,2025,21,São Paulo Grand Prix,interlagos,20,hulkenberg,10.0,9,18,0,1
+every_5:rf_reg,rf_reg,2025,21,São Paulo Grand Prix,interlagos,20,hamilton,13.0,18,2,0,0
+every_5:ridge,ridge,2025,21,São Paulo Grand Prix,interlagos,20,hamilton,13.0,18,2,0,0
+every_5:xgb_clf,xgb_clf,2025,21,São Paulo Grand Prix,interlagos,20,hamilton,13.0,18,2,0,0
+every_5:xgb_ranker,xgb_ranker,2025,21,São Paulo Grand Prix,interlagos,20,sainz,15.0,13,12,0,0
+every_5:xgb_reg,xgb_reg,2025,21,São Paulo Grand Prix,interlagos,20,max_verstappen,16.0,3,4,0,0
+naive_grid_p10,naive_grid_p10,2025,22,Las Vegas Grand Prix,vegas,0,gasly,10.0,13,12,0,0
+preseason_static:ensemble,ensemble,2025,22,Las Vegas Grand Prix,vegas,0,hadjar,8.0,6,10,0,0
+preseason_static:lgb_reg,lgb_reg,2025,22,Las Vegas Grand Prix,vegas,0,hadjar,8.0,6,10,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,22,Las Vegas Grand Prix,vegas,0,hamilton,20.0,8,15,0,1
+preseason_static:rf_clf,rf_clf,2025,22,Las Vegas Grand Prix,vegas,0,hadjar,8.0,6,10,0,0
+preseason_static:rf_reg,rf_reg,2025,22,Las Vegas Grand Prix,vegas,0,hamilton,20.0,8,15,0,1
+preseason_static:ridge,ridge,2025,22,Las Vegas Grand Prix,vegas,0,lawson,6.0,14,10,0,0
+preseason_static:xgb_clf,xgb_clf,2025,22,Las Vegas Grand Prix,vegas,0,bearman,14.0,10,25,1,1
+preseason_static:xgb_ranker,xgb_ranker,2025,22,Las Vegas Grand Prix,vegas,0,hadjar,8.0,6,10,0,0
+preseason_static:xgb_reg,xgb_reg,2025,22,Las Vegas Grand Prix,vegas,0,leclerc,9.0,4,6,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,22,Las Vegas Grand Prix,vegas,15,hadjar,8.0,6,10,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,22,Las Vegas Grand Prix,vegas,15,alonso,7.0,11,18,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,22,Las Vegas Grand Prix,vegas,15,hamilton,20.0,8,15,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,22,Las Vegas Grand Prix,vegas,15,hulkenberg,11.0,7,12,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,22,Las Vegas Grand Prix,vegas,15,hamilton,20.0,8,15,0,1
+checkpoint_5_10_15:ridge,ridge,2025,22,Las Vegas Grand Prix,vegas,15,lawson,6.0,14,10,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,22,Las Vegas Grand Prix,vegas,15,hamilton,20.0,8,15,0,1
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,22,Las Vegas Grand Prix,vegas,15,hadjar,8.0,6,10,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,22,Las Vegas Grand Prix,vegas,15,sainz,3.0,5,8,0,0
+every_5:ensemble,ensemble,2025,22,Las Vegas Grand Prix,vegas,20,hadjar,8.0,6,10,0,0
+every_5:lgb_reg,lgb_reg,2025,22,Las Vegas Grand Prix,vegas,20,leclerc,9.0,4,6,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,22,Las Vegas Grand Prix,vegas,20,hamilton,20.0,8,15,0,1
+every_5:rf_clf,rf_clf,2025,22,Las Vegas Grand Prix,vegas,20,bearman,14.0,10,25,1,1
+every_5:rf_reg,rf_reg,2025,22,Las Vegas Grand Prix,vegas,20,hamilton,20.0,8,15,0,1
+every_5:ridge,ridge,2025,22,Las Vegas Grand Prix,vegas,20,lawson,6.0,14,10,0,0
+every_5:xgb_clf,xgb_clf,2025,22,Las Vegas Grand Prix,vegas,20,stroll,12.0,18,2,0,0
+every_5:xgb_ranker,xgb_ranker,2025,22,Las Vegas Grand Prix,vegas,20,hadjar,8.0,6,10,0,0
+every_5:xgb_reg,xgb_reg,2025,22,Las Vegas Grand Prix,vegas,20,hamilton,20.0,8,15,0,1
+naive_grid_p10,naive_grid_p10,2025,23,Qatar Grand Prix,losail,0,leclerc,10.0,8,15,0,1
+preseason_static:ensemble,ensemble,2025,23,Qatar Grand Prix,losail,0,lawson,12.0,9,18,0,1
+preseason_static:lgb_reg,lgb_reg,2025,23,Qatar Grand Prix,losail,0,alonso,8.0,7,12,0,0
+preseason_static:lgbm_ranker,lgbm_ranker,2025,23,Qatar Grand Prix,losail,0,hamilton,18.0,12,15,0,1
+preseason_static:rf_clf,rf_clf,2025,23,Qatar Grand Prix,losail,0,bearman,13.0,19,1,0,0
+preseason_static:rf_reg,rf_reg,2025,23,Qatar Grand Prix,losail,0,alonso,8.0,7,12,0,0
+preseason_static:ridge,ridge,2025,23,Qatar Grand Prix,losail,0,sainz,7.0,3,4,0,0
+preseason_static:xgb_clf,xgb_clf,2025,23,Qatar Grand Prix,losail,0,bearman,13.0,19,1,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,23,Qatar Grand Prix,losail,0,ocon,17.0,15,8,0,0
+preseason_static:xgb_reg,xgb_reg,2025,23,Qatar Grand Prix,losail,0,alonso,8.0,7,12,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,23,Qatar Grand Prix,losail,15,hamilton,18.0,12,15,0,1
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,23,Qatar Grand Prix,losail,15,albon,15.0,11,18,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,23,Qatar Grand Prix,losail,15,hamilton,18.0,12,15,0,1
+checkpoint_5_10_15:rf_clf,rf_clf,2025,23,Qatar Grand Prix,losail,15,hulkenberg,11.0,20,0,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,23,Qatar Grand Prix,losail,15,alonso,8.0,7,12,0,0
+checkpoint_5_10_15:ridge,ridge,2025,23,Qatar Grand Prix,losail,15,sainz,7.0,3,4,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,23,Qatar Grand Prix,losail,15,hulkenberg,11.0,20,0,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,23,Qatar Grand Prix,losail,15,hamilton,18.0,12,15,0,1
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,23,Qatar Grand Prix,losail,15,alonso,8.0,7,12,0,0
+every_5:ensemble,ensemble,2025,23,Qatar Grand Prix,losail,20,hamilton,18.0,12,15,0,1
+every_5:lgb_reg,lgb_reg,2025,23,Qatar Grand Prix,losail,20,leclerc,10.0,8,15,0,1
+every_5:lgbm_ranker,lgbm_ranker,2025,23,Qatar Grand Prix,losail,20,hamilton,18.0,12,15,0,1
+every_5:rf_clf,rf_clf,2025,23,Qatar Grand Prix,losail,20,bearman,13.0,19,1,0,0
+every_5:rf_reg,rf_reg,2025,23,Qatar Grand Prix,losail,20,sainz,7.0,3,4,0,0
+every_5:ridge,ridge,2025,23,Qatar Grand Prix,losail,20,sainz,7.0,3,4,0,0
+every_5:xgb_clf,xgb_clf,2025,23,Qatar Grand Prix,losail,20,bearman,13.0,19,1,0,0
+every_5:xgb_ranker,xgb_ranker,2025,23,Qatar Grand Prix,losail,20,hamilton,18.0,12,15,0,1
+every_5:xgb_reg,xgb_reg,2025,23,Qatar Grand Prix,losail,20,alonso,8.0,7,12,0,0
+naive_grid_p10,naive_grid_p10,2025,24,Abu Dhabi Grand Prix,yas_marina,0,tsunoda,10.0,14,10,0,0
+preseason_static:ensemble,ensemble,2025,24,Abu Dhabi Grand Prix,yas_marina,0,lawson,13.0,18,2,0,0
+preseason_static:lgb_reg,lgb_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,0,bortoleto,7.0,11,18,0,1
+preseason_static:lgbm_ranker,lgbm_ranker,2025,24,Abu Dhabi Grand Prix,yas_marina,0,hadjar,9.0,17,4,0,0
+preseason_static:rf_clf,rf_clf,2025,24,Abu Dhabi Grand Prix,yas_marina,0,sainz,12.0,13,12,0,0
+preseason_static:rf_reg,rf_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,0,antonelli,14.0,15,8,0,0
+preseason_static:ridge,ridge,2025,24,Abu Dhabi Grand Prix,yas_marina,0,alonso,6.0,6,10,0,0
+preseason_static:xgb_clf,xgb_clf,2025,24,Abu Dhabi Grand Prix,yas_marina,0,alonso,6.0,6,10,0,0
+preseason_static:xgb_ranker,xgb_ranker,2025,24,Abu Dhabi Grand Prix,yas_marina,0,lawson,13.0,18,2,0,0
+preseason_static:xgb_reg,xgb_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,0,antonelli,14.0,15,8,0,0
+checkpoint_5_10_15:ensemble,ensemble,2025,24,Abu Dhabi Grand Prix,yas_marina,15,antonelli,14.0,15,8,0,0
+checkpoint_5_10_15:lgb_reg,lgb_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,15,bortoleto,7.0,11,18,0,1
+checkpoint_5_10_15:lgbm_ranker,lgbm_ranker,2025,24,Abu Dhabi Grand Prix,yas_marina,15,ocon,8.0,7,12,0,0
+checkpoint_5_10_15:rf_clf,rf_clf,2025,24,Abu Dhabi Grand Prix,yas_marina,15,sainz,12.0,13,12,0,0
+checkpoint_5_10_15:rf_reg,rf_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,15,bortoleto,7.0,11,18,0,1
+checkpoint_5_10_15:ridge,ridge,2025,24,Abu Dhabi Grand Prix,yas_marina,15,alonso,6.0,6,10,0,0
+checkpoint_5_10_15:xgb_clf,xgb_clf,2025,24,Abu Dhabi Grand Prix,yas_marina,15,hadjar,9.0,17,4,0,0
+checkpoint_5_10_15:xgb_ranker,xgb_ranker,2025,24,Abu Dhabi Grand Prix,yas_marina,15,antonelli,14.0,15,8,0,0
+checkpoint_5_10_15:xgb_reg,xgb_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,15,bortoleto,7.0,11,18,0,1
+every_5:ensemble,ensemble,2025,24,Abu Dhabi Grand Prix,yas_marina,20,lawson,13.0,18,2,0,0
+every_5:lgb_reg,lgb_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,20,antonelli,14.0,15,8,0,0
+every_5:lgbm_ranker,lgbm_ranker,2025,24,Abu Dhabi Grand Prix,yas_marina,20,bearman,11.0,12,15,0,1
+every_5:rf_clf,rf_clf,2025,24,Abu Dhabi Grand Prix,yas_marina,20,sainz,12.0,13,12,0,0
+every_5:rf_reg,rf_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,20,bortoleto,7.0,11,18,0,1
+every_5:ridge,ridge,2025,24,Abu Dhabi Grand Prix,yas_marina,20,alonso,6.0,6,10,0,0
+every_5:xgb_clf,xgb_clf,2025,24,Abu Dhabi Grand Prix,yas_marina,20,lawson,13.0,18,2,0,0
+every_5:xgb_ranker,xgb_ranker,2025,24,Abu Dhabi Grand Prix,yas_marina,20,lawson,13.0,18,2,0,0
+every_5:xgb_reg,xgb_reg,2025,24,Abu Dhabi Grand Prix,yas_marina,20,bortoleto,7.0,11,18,0,1

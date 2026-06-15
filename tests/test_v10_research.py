@@ -10,7 +10,10 @@ from src.v10_research import (
     fantasy_from_position,
     normalize_scores,
     pick_weighted_driver,
+    parse_round_schedule,
+    schedule_label,
     summarize_strategy,
+    training_cutoff_for_round,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -114,3 +117,52 @@ def test_conditional_blends_cover_grid_and_street_strategies() -> None:
     assert "ot_ge_5_stability_1" in names
     assert "street_stability_1" in names
     assert any(blend.street_only for blend in blends)
+
+
+def test_parse_round_schedule_accepts_named_and_numeric_schedules() -> None:
+    assert parse_round_schedule("preseason_static") == ()
+    assert parse_round_schedule("every_3") == (3, 6, 9, 12, 15, 18, 21, 24)
+    assert parse_round_schedule("checkpoint_5_10_15") == (5, 10, 15)
+    assert parse_round_schedule("5,10,15") == (5, 10, 15)
+
+
+def test_training_cutoff_for_round_uses_completed_races_only() -> None:
+    assert training_cutoff_for_round(1, "preseason_static") == 0
+    assert training_cutoff_for_round(7, "every_3") == 6
+    assert training_cutoff_for_round(10, "every_3") == 9
+    assert training_cutoff_for_round(12, "checkpoint_5_10_15") == 10
+    assert training_cutoff_for_round(9, "after_every_race") == 8
+
+
+def test_schedule_label_is_stable_for_artifacts() -> None:
+    assert schedule_label("preseason_static") == "preseason_static"
+    assert schedule_label("5,10,15") == "checkpoint_5_10_15"
+
+
+def test_inseason_replay_training_frame_uses_only_completed_cutoff_rounds() -> None:
+    module = load_script_module("101_v10_inseason_retrain_replay.py")
+    frame = pd.DataFrame(
+        {
+            "year": [2024, 2025, 2025, 2025],
+            "round": [24, 1, 2, 3],
+            "driver_id": ["a", "a", "a", "a"],
+        }
+    )
+
+    train = module.training_frame_for_cutoff(frame, year=2025, cutoff_round=2)
+
+    assert train[["year", "round"]].to_records(index=False).tolist() == [
+        (2024, 24),
+        (2025, 1),
+        (2025, 2),
+    ]
+
+
+def test_inseason_replay_selected_schedules_are_artifact_safe() -> None:
+    module = load_script_module("101_v10_inseason_retrain_replay.py")
+
+    assert module.selected_schedules("preseason_static,checkpoint_5_10_15,every_3") == [
+        "preseason_static",
+        "checkpoint_5_10_15",
+        "every_3",
+    ]

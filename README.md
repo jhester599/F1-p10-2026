@@ -87,6 +87,7 @@ V10 research scripts:
 ```bash
 python scripts/99_v10_rf_reg_subspace_pruning.py --year 2025 --n-estimators 400
 python scripts/100_v10_conditional_baseline_blends.py --year 2025
+python scripts/101_v10_inseason_retrain_replay.py --year 2025 --schedules preseason_static,checkpoint_5_10_15,every_5
 ```
 
 Outputs:
@@ -101,6 +102,7 @@ Outputs:
 - `results/candidate_b/candidate_b_live_2026_replay.json`
 - `results/v10_rf_reg_subspace/summary.{csv,json,md}`
 - `results/v10_conditional_baseline_blends/summary.{csv,json,md}`
+- `results/v10_inseason_retrain_replay/summary.{csv,json,md}`
 
 The rolling-CV replay generator creates per-driver scored CV checkpoints because
 the legacy CV CSVs contain only model picks and cannot replay blended candidate
@@ -826,6 +828,12 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
   naive grid-P10 remained best at `14.0417 avg_pts`; the best conditional blend reached
   `12.6667 avg_pts`, beating current rolling-CV ensemble but not the naive baseline.
   No production ensemble change recommended from this sweep.
+- **In-season retrain cadence replay (v10.x, 2026-06-15):**
+  `scripts/101_v10_inseason_retrain_replay.py` compared static preseason, current
+  checkpoint retraining (`R5/R10/R15`), and every-5-round retraining on a production
+  2025 replay. Naive grid-P10 and preseason `xgb_clf` tied at `14.0417 avg_pts`;
+  every retrained ensemble cadence underperformed preseason ensemble. No automated
+  in-season retraining change recommended.
 
 - **Weather features (v6.13):** Originally REJECTED (−2.3 pts/race at global level).
   In v9.1 per-model testing: `chaos_index`, `temp_max_c`, `is_high_wind`, `rain_category` all
@@ -836,9 +844,10 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
 **Pended for later in season:**
 
 - **2026 retraining (v6.12):** Retrain after R5, R10, R15, R24 as 2026 data accumulates.
-- **Naive baseline gap follow-up (v10.x):** The conditional grid-blend sweep did not beat
-  naive grid-P10. Next viable direction is an expanding-window retrain/replay study rather
-  than another 2025-only weight tweak.
+- **Naive baseline gap follow-up (v10.x):** The conditional grid-blend and in-season
+  retrain replay sweeps did not beat naive grid-P10. Next viable direction is richer
+  expanding-window feature/model research or a conservative `xgb_clf`-first promotion
+  study with multi-season gates.
 
 ---
 
