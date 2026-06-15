@@ -68,3 +68,77 @@ When email secrets are configured, the notification email includes:
 
 - The workflow is idempotent: if a round has already been predicted, it exits without creating duplicates.
 - If email secrets are missing, prediction files are still generated and committed.
+
+---
+
+# GitHub Actions Automation (2026 League Results)
+
+This repository also includes:
+
+- Workflow: `.github/workflows/results-automation-2026.yml`
+- Runner script: `scripts/66_update_results_automation.py`
+
+The workflow scans the first league Google Sheet after likely race-completion
+windows, fetches official race classifications through the existing Jolpica
+fetcher, writes blank Column F positions in `Form Responses 1`, optionally
+extends the `results!J:Q` time-series formulas, and emails a summary when rows
+are updated.
+
+## Results Timing Logic
+
+- Scheduled workflow probes use explicit 2026 cron entries from
+  `race_start + 120 minutes` through `race_start + 240 minutes`
+  (`+120..+240`) every 30 minutes.
+- A preflight gate fetches the Jolpica 2026 schedule before dependency setup.
+  Scheduled runs continue only when the current UTC time is inside the active
+  race window.
+- Scheduled runs pass the mapped sheet round to
+  `scripts/66_update_results_automation.py`, so each probe only scans the
+  round that just completed.
+- Manual workflow dispatch always runs; `round_override` can be used to target a
+  single sheet round, and leaving it blank scans all sheet rounds.
+- For 2026 only, sheet R4/R5 are skipped no-result rounds, and sheet R6+ maps to
+  Jolpica official rounds with a `-2` offset.
+
+## Results Sheet Setup
+
+Required repository secrets:
+
+- `GOOGLE_SERVICE_ACCOUNT_JSON`
+- `RESULTS_SPREADSHEET_ID`
+- `SMTP_SERVER`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `RESULTS_EMAIL_FROM`
+- `RESULTS_EMAIL_TO`
+
+`GOOGLE_SERVICE_ACCOUNT_JSON` may be raw JSON or base64-encoded JSON. Share the
+target Google Sheet with the service account's `client_email`, otherwise the
+workflow can authenticate but cannot edit the spreadsheet.
+
+## Results Update Rules
+
+- Target tab: `Form Responses 1`
+- Input columns: timestamp, email, race, selected driver, concat
+- Target write column: F (`position`)
+- Existing Column F values are always skipped.
+- Earlier duplicate responses for the same race/email concat are skipped so a
+  later response is treated as authoritative.
+- The 2026 league sheet includes skipped war rounds as R4/R5. Those rounds are
+  treated as no-result rounds, and sheet rounds R6+ map to Jolpica official
+  rounds with a `-2` offset.
+- Column G stays formula-driven from the `points` tab.
+- `results!A1:H26` stays formula-driven.
+- `results!J:Q` can be extended with cumulative formulas by passing
+  `--update-time-series`.
+
+## Manual Run
+
+Use workflow dispatch with `round_override` and `dry_run=true` to preview a
+single round without writing to the sheet. The script also supports local dry
+runs:
+
+```bash
+python scripts/66_update_results_automation.py --year 2026 --round 9 --spreadsheet-id <sheet_id> --dry-run
+```
