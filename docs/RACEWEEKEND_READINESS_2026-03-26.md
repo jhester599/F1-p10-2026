@@ -43,8 +43,11 @@ can affect model quality. Treat this as a post-weekend improvement task.
    - `docs/CANDIDATE_A_CYCLE1_DECISION_2026-03-26.md`
 2. Candidate B cycle-1 tooling and recommendation were completed (PR #30), promotion deferred:
    - `docs/CANDIDATE_B_CYCLE1_DECISION_2026-03-26.md`
-3. Next high-value task: retrain-drift stabilization before any weight promotion.
-   - Lock training snapshot and environment
-   - Re-run holdout/CV/live scorecards
-   - Re-evaluate Candidate A/B finalists against no-regression gates
+3. Updated status as of June 15, 2026:
+   - Retrain/model-cache provenance work is complete.
+   - Candidate A/B promotion remains blocked by rolling-CV/live gates.
+   - In-season retrain cadence research did not beat naive grid-P10, so do not
+     enable automated retraining from the tested cadence policies.
+   - Next high-value task: multi-season `xgb_clf`-first promotion or richer
+     feature/model research with rolling gates.
 

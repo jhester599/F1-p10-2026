@@ -61,6 +61,26 @@ V10 pended-task research rerun (2026-06-15):
   - `results/v10_rf_reg_subspace/summary.{csv,json,md}`
   - `results/v10_conditional_baseline_blends/summary.{csv,json,md}`
 
+V10 in-season retrain replay (2026-06-15):
+- Command:
+  `python scripts/101_v10_inseason_retrain_replay.py --year 2025 --schedules preseason_static,checkpoint_5_10_15,every_5`
+- Schedules tested:
+  - preseason static models
+  - checkpoint retraining after completed rounds 5, 10, and 15
+  - every-5-round retraining
+- Result: naive grid-P10 and preseason `xgb_clf` tied at `14.0417 avg_pts`.
+  The production preseason ensemble scored `13.0000`; the best retrained model
+  path was `every_5:rf_clf` at `13.5833`, while retrained ensemble cadences
+  regressed (`every_5:ensemble` at `11.7917`, `checkpoint_5_10_15:ensemble`
+  at `11.6250`).
+- Decision: no automated in-season retraining change recommended. The result
+  suggests fresh 2025 rows can overfit ensemble components faster than they
+  improve P10 selection. If production behavior changes next, prefer a
+  multi-season `xgb_clf`-first promotion study or richer expanding-window feature
+  research over cadence-only retraining.
+- Artifacts:
+  - `results/v10_inseason_retrain_replay/summary.{csv,json,md}`
+
 ---
 
 ## Current Baselines (eval_2025_picks.csv)

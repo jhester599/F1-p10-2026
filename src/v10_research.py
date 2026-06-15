@@ -8,6 +8,8 @@ import pandas as pd
 
 from config import FANTASY_POINTS
 
+MAX_F1_ROUNDS = 24
+
 
 def fantasy_from_position(position: int | float) -> int:
     if pd.isna(position):
@@ -24,6 +26,47 @@ def normalize_scores(raw: np.ndarray) -> np.ndarray:
     if hi > lo:
         return (values - lo) / (hi - lo)
     return np.full(values.shape, 0.5, dtype=float)
+
+
+def parse_round_schedule(raw: str) -> tuple[int, ...]:
+    schedule = raw.strip().lower()
+    if schedule in {"preseason_static", "static", "none"}:
+        return ()
+    if schedule == "after_every_race":
+        return tuple(range(1, MAX_F1_ROUNDS + 1))
+    if schedule.startswith("every_"):
+        interval = int(schedule.removeprefix("every_"))
+        if interval <= 0:
+            raise ValueError("Schedule interval must be positive.")
+        return tuple(range(interval, MAX_F1_ROUNDS + 1, interval))
+    if schedule.startswith("checkpoint_"):
+        schedule = schedule.removeprefix("checkpoint_").replace("_", ",")
+
+    rounds = tuple(sorted({int(part.strip()) for part in schedule.split(",") if part.strip()}))
+    if any(round_number <= 0 for round_number in rounds):
+        raise ValueError("Schedule rounds must be positive.")
+    return rounds
+
+
+def training_cutoff_for_round(round_number: int, schedule: str) -> int:
+    if round_number <= 0:
+        raise ValueError("Round number must be positive.")
+    if schedule.strip().lower() == "after_every_race":
+        return round_number - 1
+
+    completed_round = round_number - 1
+    eligible = [cutoff for cutoff in parse_round_schedule(schedule) if cutoff <= completed_round]
+    return max(eligible, default=0)
+
+
+def schedule_label(schedule: str) -> str:
+    normalized = schedule.strip().lower()
+    if normalized in {"preseason_static", "static", "none", "after_every_race"}:
+        return "preseason_static" if normalized in {"static", "none"} else normalized
+    checkpoints = parse_round_schedule(normalized)
+    if normalized.startswith("every_"):
+        return normalized
+    return "checkpoint_" + "_".join(str(round_number) for round_number in checkpoints)
 
 
 def score_vector(scored_df: pd.DataFrame, model_name: str) -> np.ndarray:

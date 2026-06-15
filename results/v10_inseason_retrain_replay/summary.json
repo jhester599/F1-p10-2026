@@ -1,0 +1,322 @@
+{
+  "generated_at_utc": "2026-06-15 10:47 UTC",
+  "year": 2025,
+  "schedules": [
+    "preseason_static",
+    "checkpoint_5_10_15",
+    "every_5"
+  ],
+  "fast_models": false,
+  "max_round": null,
+  "status": "production_model_catalog",
+  "results": [
+    {
+      "strategy": "naive_grid_p10",
+      "n_races": 24,
+      "total_pts": 337,
+      "avg_pts": 14.041666666666666,
+      "exact_p10": 3,
+      "within_2": 12,
+      "delta_vs_naive": 0.0,
+      "delta_vs_preseason_ensemble": 1.041666666666666,
+      "passes_gap_gate": true
+    },
+    {
+      "strategy": "preseason_static:xgb_clf",
+      "n_races": 24,
+      "total_pts": 337,
+      "avg_pts": 14.041666666666666,
+      "exact_p10": 4,
+      "within_2": 11,
+      "delta_vs_naive": 0.0,
+      "delta_vs_preseason_ensemble": 1.041666666666666,
+      "passes_gap_gate": true
+    },
+    {
+      "strategy": "every_5:rf_clf",
+      "n_races": 24,
+      "total_pts": 326,
+      "avg_pts": 13.583333333333334,
+      "exact_p10": 3,
+      "within_2": 13,
+      "delta_vs_naive": -0.45833333333333215,
+      "delta_vs_preseason_ensemble": 0.5833333333333339,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "preseason_static:ensemble",
+      "n_races": 24,
+      "total_pts": 312,
+      "avg_pts": 13.0,
+      "exact_p10": 4,
+      "within_2": 11,
+      "delta_vs_naive": -1.041666666666666,
+      "delta_vs_preseason_ensemble": 0.0,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "checkpoint_5_10_15:rf_clf",
+      "n_races": 24,
+      "total_pts": 304,
+      "avg_pts": 12.666666666666666,
+      "exact_p10": 2,
+      "within_2": 11,
+      "delta_vs_naive": -1.375,
+      "delta_vs_preseason_ensemble": -0.3333333333333339,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "checkpoint_5_10_15:lgb_reg",
+      "n_races": 24,
+      "total_pts": 302,
+      "avg_pts": 12.583333333333334,
+      "exact_p10": 1,
+      "within_2": 11,
+      "delta_vs_naive": -1.4583333333333321,
+      "delta_vs_preseason_ensemble": -0.4166666666666661,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "checkpoint_5_10_15:xgb_clf",
+      "n_races": 24,
+      "total_pts": 289,
+      "avg_pts": 12.041666666666666,
+      "exact_p10": 1,
+      "within_2": 9,
+      "delta_vs_naive": -2.0,
+      "delta_vs_preseason_ensemble": -0.9583333333333339,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "preseason_static:rf_clf",
+      "n_races": 24,
+      "total_pts": 287,
+      "avg_pts": 11.958333333333334,
+      "exact_p10": 2,
+      "within_2": 11,
+      "delta_vs_naive": -2.083333333333332,
+      "delta_vs_preseason_ensemble": -1.041666666666666,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "every_5:ensemble",
+      "n_races": 24,
+      "total_pts": 283,
+      "avg_pts": 11.791666666666666,
+      "exact_p10": 1,
+      "within_2": 10,
+      "delta_vs_naive": -2.25,
+      "delta_vs_preseason_ensemble": -1.208333333333334,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "every_5:lgbm_ranker",
+      "n_races": 24,
+      "total_pts": 282,
+      "avg_pts": 11.75,
+      "exact_p10": 0,
+      "within_2": 11,
+      "delta_vs_naive": -2.291666666666666,
+      "delta_vs_preseason_ensemble": -1.25,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "every_5:xgb_ranker",
+      "n_races": 24,
+      "total_pts": 281,
+      "avg_pts": 11.708333333333334,
+      "exact_p10": 2,
+      "within_2": 10,
+      "delta_vs_naive": -2.333333333333332,
+      "delta_vs_preseason_ensemble": -1.291666666666666,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "checkpoint_5_10_15:ensemble",
+      "n_races": 24,
+      "total_pts": 279,
+      "avg_pts": 11.625,
+      "exact_p10": 1,
+      "within_2": 10,
+      "delta_vs_naive": -2.416666666666666,
+      "delta_vs_preseason_ensemble": -1.375,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "checkpoint_5_10_15:lgbm_ranker",
+      "n_races": 24,
+      "total_pts": 279,
+      "avg_pts": 11.625,
+      "exact_p10": 0,
+      "within_2": 10,
+      "delta_vs_naive": -2.416666666666666,
+      "delta_vs_preseason_ensemble": -1.375,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "checkpoint_5_10_15:xgb_ranker",
+      "n_races": 24,
+      "total_pts": 277,
+      "avg_pts": 11.541666666666666,
+      "exact_p10": 2,
+      "within_2": 10,
+      "delta_vs_naive": -2.5,
+      "delta_vs_preseason_ensemble": -1.458333333333334,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "every_5:lgb_reg",
+      "n_races": 24,
+      "total_pts": 272,
+      "avg_pts": 11.333333333333334,
+      "exact_p10": 1,
+      "within_2": 8,
+      "delta_vs_naive": -2.708333333333332,
+      "delta_vs_preseason_ensemble": -1.666666666666666,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "preseason_static:lgbm_ranker",
+      "n_races": 24,
+      "total_pts": 270,
+      "avg_pts": 11.25,
+      "exact_p10": 2,
+      "within_2": 11,
+      "delta_vs_naive": -2.791666666666666,
+      "delta_vs_preseason_ensemble": -1.75,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "preseason_static:xgb_ranker",
+      "n_races": 24,
+      "total_pts": 269,
+      "avg_pts": 11.208333333333334,
+      "exact_p10": 4,
+      "within_2": 9,
+      "delta_vs_naive": -2.833333333333332,
+      "delta_vs_preseason_ensemble": -1.791666666666666,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "checkpoint_5_10_15:rf_reg",
+      "n_races": 24,
+      "total_pts": 268,
+      "avg_pts": 11.166666666666666,
+      "exact_p10": 1,
+      "within_2": 9,
+      "delta_vs_naive": -2.875,
+      "delta_vs_preseason_ensemble": -1.833333333333334,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "every_5:xgb_clf",
+      "n_races": 24,
+      "total_pts": 267,
+      "avg_pts": 11.125,
+      "exact_p10": 1,
+      "within_2": 8,
+      "delta_vs_naive": -2.916666666666666,
+      "delta_vs_preseason_ensemble": -1.875,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "every_5:rf_reg",
+      "n_races": 24,
+      "total_pts": 260,
+      "avg_pts": 10.833333333333334,
+      "exact_p10": 1,
+      "within_2": 9,
+      "delta_vs_naive": -3.208333333333332,
+      "delta_vs_preseason_ensemble": -2.166666666666666,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "every_5:xgb_reg",
+      "n_races": 24,
+      "total_pts": 257,
+      "avg_pts": 10.708333333333334,
+      "exact_p10": 1,
+      "within_2": 8,
+      "delta_vs_naive": -3.333333333333332,
+      "delta_vs_preseason_ensemble": -2.291666666666666,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "checkpoint_5_10_15:ridge",
+      "n_races": 24,
+      "total_pts": 252,
+      "avg_pts": 10.5,
+      "exact_p10": 0,
+      "within_2": 9,
+      "delta_vs_naive": -3.541666666666666,
+      "delta_vs_preseason_ensemble": -2.5,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "every_5:ridge",
+      "n_races": 24,
+      "total_pts": 252,
+      "avg_pts": 10.5,
+      "exact_p10": 0,
+      "within_2": 9,
+      "delta_vs_naive": -3.541666666666666,
+      "delta_vs_preseason_ensemble": -2.5,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "checkpoint_5_10_15:xgb_reg",
+      "n_races": 24,
+      "total_pts": 250,
+      "avg_pts": 10.416666666666666,
+      "exact_p10": 1,
+      "within_2": 7,
+      "delta_vs_naive": -3.625,
+      "delta_vs_preseason_ensemble": -2.583333333333334,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "preseason_static:ridge",
+      "n_races": 24,
+      "total_pts": 243,
+      "avg_pts": 10.125,
+      "exact_p10": 0,
+      "within_2": 8,
+      "delta_vs_naive": -3.916666666666666,
+      "delta_vs_preseason_ensemble": -2.875,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "preseason_static:xgb_reg",
+      "n_races": 24,
+      "total_pts": 238,
+      "avg_pts": 9.916666666666666,
+      "exact_p10": 1,
+      "within_2": 6,
+      "delta_vs_naive": -4.125,
+      "delta_vs_preseason_ensemble": -3.083333333333334,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "preseason_static:rf_reg",
+      "n_races": 24,
+      "total_pts": 233,
+      "avg_pts": 9.708333333333334,
+      "exact_p10": 1,
+      "within_2": 8,
+      "delta_vs_naive": -4.333333333333332,
+      "delta_vs_preseason_ensemble": -3.291666666666666,
+      "passes_gap_gate": false
+    },
+    {
+      "strategy": "preseason_static:lgb_reg",
+      "n_races": 24,
+      "total_pts": 227,
+      "avg_pts": 9.458333333333334,
+      "exact_p10": 1,
+      "within_2": 7,
+      "delta_vs_naive": -4.583333333333332,
+      "delta_vs_preseason_ensemble": -3.541666666666666,
+      "passes_gap_gate": false
+    }
+  ]
+}
