@@ -92,6 +92,7 @@ python scripts/102_v10_xgb_clf_leakage_audit.py
 python scripts/103_v10_xgb_clf_promotion_readiness.py
 python scripts/104_v10_xgb_clf_grid_ablation.py --year 2025
 python scripts/105_refresh_circ_p10_grid_chaos.py
+python scripts/106_v10_expanding_checkpoint_scorecard.py
 ```
 
 Outputs:
@@ -111,6 +112,7 @@ Outputs:
 - `results/v10_xgb_clf_promotion/summary.{json,md}`
 - `results/v10_xgb_clf_grid_ablation/summary.{csv,json,md}`
 - `data/processed/features_2010_2025.parquet` and derived train/eval splits after `scripts/105_refresh_circ_p10_grid_chaos.py`
+- `results/v10_expanding_checkpoint_scorecard/summary.{csv,json,md}`
 
 The rolling-CV replay generator creates per-driver scored CV checkpoints because
 the legacy CV CSVs contain only model picks and cannot replay blended candidate
@@ -871,8 +873,10 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
 - **Naive baseline gap follow-up (v10.x):** The conditional grid-blend and in-season
   retrain replay sweeps did not beat naive grid-P10, and direct `xgb_clf` promotion is
   blocked by multi-year CV. The leakage-safe processed-data refresh is complete; the
-  next viable direction is expanding-window feature/model validation rather than a
-  2025-only weight tweak.
+  expanding checkpoint scorecard (`scripts/106_v10_expanding_checkpoint_scorecard.py`)
+  also keeps naive grid-P10 best over 214 races (`11.7056 avg_pts`) with ridge second
+  (`11.5794`). Next viable direction is feature/model validation that can beat this
+  multi-year baseline, not another 2025-only weight tweak.
 
 ---
 

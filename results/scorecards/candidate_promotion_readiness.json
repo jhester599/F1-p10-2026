@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-14 18:57 UTC",
+  "generated_at_utc": "2026-06-15 12:58 UTC",
   "inputs": {
     "benchmark": "results/scorecards/benchmark_scorecard_latest.json",
     "candidate_a": "results/candidate_a/candidate_a_weight_sweep_recommendation.json",
@@ -7,9 +7,9 @@
     "candidate_replay_gates": "results/scorecards/candidate_replay_gates.json"
   },
   "interpretation": {
-    "leader": "Candidate A",
+    "leader": null,
     "production_change_recommended": false,
-    "reason": "Candidate holdout sweeps are available, but promotion still depends on candidate-specific rolling-CV and 2026 live replay gates."
+    "reason": "No candidate has cleared holdout, rolling-CV, and live replay gates; production weights should remain unchanged."
   },
   "candidates": [
     {
@@ -45,10 +45,10 @@
         "balanced_gate_pass": true
       },
       "required_replay_gates": {
-        "rolling_cv_candidate_replay": "pass",
+        "rolling_cv_candidate_replay": "fail",
         "live_2026_candidate_replay": "insufficient_data"
       },
-      "promotion_status": "blocked_live_replay_insufficient"
+      "promotion_status": "blocked_candidate_replay_failed"
     }
   ]
 }

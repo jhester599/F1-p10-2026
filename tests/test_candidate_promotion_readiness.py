@@ -19,12 +19,12 @@ def test_candidate_promotion_readiness_uses_tracked_replay_gates():
 
     report = module.build_report()
 
-    assert report["interpretation"]["leader"] == "Candidate A"
+    assert report["interpretation"]["leader"] is None
     assert report["interpretation"]["production_change_recommended"] is False
 
     candidates = {row["candidate"]: row for row in report["candidates"]}
     assert candidates["Candidate A"]["promotion_status"] == "blocked_candidate_replay_failed"
-    assert candidates["Candidate B"]["promotion_status"] == "blocked_live_replay_insufficient"
+    assert candidates["Candidate B"]["promotion_status"] == "blocked_candidate_replay_failed"
     assert candidates["Candidate A"]["holdout"]["candidate_avg_pts"] > candidates["Candidate B"]["holdout"]["candidate_avg_pts"]
     assert report["inputs"]["candidate_replay_gates"] == "results/scorecards/candidate_replay_gates.json"
 
@@ -59,6 +59,28 @@ def test_candidate_promotion_readiness_uses_replay_gate_artifact(tmp_path, monke
     assert candidate_a["required_replay_gates"]["rolling_cv_candidate_replay"] == "pass"
     assert candidate_a["required_replay_gates"]["live_2026_candidate_replay"] == "insufficient_data"
     assert candidate_a["promotion_status"] == "blocked_live_replay_insufficient"
+
+
+def test_interpretation_has_no_leader_when_replay_gates_fail() -> None:
+    module = load_module()
+    candidates = [
+        {
+            "candidate": "Candidate A",
+            "holdout": {"balanced_gate_pass": True, "candidate_avg_pts": 14.0},
+            "promotion_status": "blocked_candidate_replay_failed",
+        },
+        {
+            "candidate": "Candidate B",
+            "holdout": {"balanced_gate_pass": True, "candidate_avg_pts": 13.5},
+            "promotion_status": "blocked_candidate_replay_failed",
+        },
+    ]
+
+    interpretation = module.build_interpretation(candidates)
+
+    assert interpretation["leader"] is None
+    assert interpretation["production_change_recommended"] is False
+    assert "No candidate has cleared" in interpretation["reason"]
 
 
 def test_next_gate_describes_failed_replay_before_live_data() -> None:

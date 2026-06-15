@@ -269,6 +269,46 @@ def test_refresh_changed_row_count_compares_by_position() -> None:
     assert module.count_changed_rows(before, refreshed) == 1
 
 
+def test_expanding_checkpoint_scorecard_scores_model_picks() -> None:
+    module = load_script_module("106_v10_expanding_checkpoint_scorecard.py")
+    scored = pd.DataFrame(
+        {
+            "year": [2025, 2025, 2025],
+            "round": [1, 1, 1],
+            "driver_id": ["a", "b", "c"],
+            "grid_position": [10.0, 11.0, 12.0],
+            "actual_pos": [10, 11, 14],
+            "xgb_clf_pick": [0, 1, 0],
+            "ensemble_pick": [1, 0, 0],
+        }
+    )
+
+    summary = module.summarize_model_picks(scored, ["xgb_clf", "ensemble"])
+
+    assert summary.loc[summary["model"] == "xgb_clf", "avg_pts"].iloc[0] == 18.0
+    assert summary.loc[summary["model"] == "ensemble", "avg_pts"].iloc[0] == 25.0
+
+
+def test_expanding_checkpoint_scorecard_adds_naive_grid_p10() -> None:
+    module = load_script_module("106_v10_expanding_checkpoint_scorecard.py")
+    scored = pd.DataFrame(
+        {
+            "year": [2025, 2025, 2025],
+            "round": [1, 1, 1],
+            "driver_id": ["a", "b", "c"],
+            "grid_position": [9.0, 10.0, 11.0],
+            "actual_pos": [18, 12, 10],
+            "ensemble_pick": [1, 0, 0],
+        }
+    )
+
+    summary = module.summarize_all(scored, ["ensemble"], include_naive=True)
+
+    naive = summary.loc[summary["model"] == "naive_grid_p10"].iloc[0]
+    assert naive["avg_pts"] == 15.0
+    assert naive["within_2"] == 1
+
+
 def test_historical_circ_p10_grid_chaos_excludes_current_and_future_races() -> None:
     frame = pd.DataFrame(
         {
