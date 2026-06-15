@@ -1,0 +1,31 @@
+{
+  "generated_at_utc": "2026-06-15 11:53 UTC",
+  "source": "results\\v10_inseason_retrain_replay\\picks.csv",
+  "summary": {
+    "race_count": 24,
+    "same_pick_count": 4,
+    "same_pick_rate": 0.16666666666666666,
+    "naive_total_pts": 337,
+    "xgb_clf_total_pts": 337,
+    "naive_avg_pts": 14.041666666666666,
+    "xgb_clf_avg_pts": 14.041666666666666,
+    "xgb_clf_exact_p10": 4,
+    "naive_exact_p10": 3,
+    "xgb_clf_avg_grid_gap_to_p10": 2.2916666666666665,
+    "xgb_clf_pick_grid_positions": [
+      6.0,
+      8.0,
+      9.0,
+      10.0,
+      11.0,
+      12.0,
+      13.0,
+      14.0,
+      15.0,
+      17.0,
+      18.0
+    ],
+    "known_target_derived_features_in_xgb_clf": [],
+    "xgb_clf_uses_circ_p10_grid_chaos": false
+  }
+}

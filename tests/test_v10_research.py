@@ -15,6 +15,7 @@ from src.v10_research import (
     summarize_strategy,
     training_cutoff_for_round,
 )
+from src.feature_engineering import historical_circ_p10_grid_chaos
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -166,3 +167,70 @@ def test_inseason_replay_selected_schedules_are_artifact_safe() -> None:
         "checkpoint_5_10_15",
         "every_3",
     ]
+
+
+def test_xgb_clf_leakage_audit_summary_counts_pick_overlap() -> None:
+    module = load_script_module("102_v10_xgb_clf_leakage_audit.py")
+    comparison = pd.DataFrame(
+        {
+            "same_pick": [True, False],
+            "fantasy_pts_naive_grid_p10": [25, 0],
+            "fantasy_pts_preseason_static:xgb_clf": [25, 18],
+            "actual_pos_preseason_static:xgb_clf": [10, 11],
+            "actual_pos_naive_grid_p10": [10, 20],
+            "xgb_grid_gap_to_p10": [0.0, 2.0],
+            "grid_position_preseason_static:xgb_clf": [10.0, 12.0],
+        }
+    )
+
+    summary = module.summarize(comparison)
+
+    assert summary["same_pick_count"] == 1
+    assert summary["same_pick_rate"] == 0.5
+    assert summary["xgb_clf_total_pts"] == 43
+    assert summary["xgb_clf_uses_circ_p10_grid_chaos"] is False
+
+
+def test_xgb_clf_promotion_readiness_summarizes_points() -> None:
+    module = load_script_module("103_v10_xgb_clf_promotion_readiness.py")
+    summary = module.summarize_points(
+        pd.DataFrame(
+            {
+                "model": ["xgb_clf", "xgb_clf", "ensemble"],
+                "fantasy_pts": [25, 18, 12],
+            }
+        )
+    )
+
+    xgb = module.metric_for(summary, "xgb_clf")
+
+    assert xgb["n_races"] == 2
+    assert xgb["total_pts"] == 43
+    assert xgb["avg_pts"] == 21.5
+
+
+def test_xgb_clf_grid_ablation_variants_remove_grid_families() -> None:
+    module = load_script_module("104_v10_xgb_clf_grid_ablation.py")
+    variants = {variant.name: variant for variant in module.build_feature_variants()}
+
+    assert "current_xgb_clf" in variants
+    assert "grid_only" in variants
+    assert "grid_position" in variants["current_xgb_clf"].features
+    assert "grid_position" not in variants["no_grid_family"].features
+    assert set(variants["grid_only"].features) <= set(module.GRID_FAMILY_FEATURES)
+
+
+def test_historical_circ_p10_grid_chaos_excludes_current_and_future_races() -> None:
+    frame = pd.DataFrame(
+        {
+            "year": [2024, 2024, 2025, 2025, 2026, 2026],
+            "round": [1, 1, 1, 1, 1, 1],
+            "circuit_id": ["test", "test", "test", "test", "test", "test"],
+            "grid_position": [7.0, 3.0, 15.0, 2.0, 20.0, 4.0],
+            "finish_position": [10, 11, 10, 12, 10, 13],
+        }
+    )
+
+    chaos = historical_circ_p10_grid_chaos(frame, default=4.0)
+
+    assert chaos.tolist() == [4.0, 4.0, 4.0, 4.0, np.std([7.0, 15.0], ddof=1), np.std([7.0, 15.0], ddof=1)]

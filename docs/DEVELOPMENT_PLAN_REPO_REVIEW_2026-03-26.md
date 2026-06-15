@@ -202,9 +202,12 @@ Decision:
   cadence-only retraining is more likely to overfit than close the baseline gap.
 
 Follow-up:
-- If changing production behavior, study a conservative `xgb_clf`-first promotion
-  or richer multi-season feature/model work with rolling gates, not cadence-only
-  retraining.
+- Direct `xgb_clf` promotion was audited on June 15, 2026 and remains blocked:
+  holdout/in-season evidence is promising, but multi-year rolling CV does not
+  pass and live 2026 sample size is too small.
+- Continue with leakage-safe feature/model research and rerun expanding
+  validation after processed data is rebuilt with historical-only
+  `circ_p10_grid_chaos`.
 
 ### Backlog 2 - P10 League Scoring Automation
 Goal:

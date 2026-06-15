@@ -88,6 +88,9 @@ V10 research scripts:
 python scripts/99_v10_rf_reg_subspace_pruning.py --year 2025 --n-estimators 400
 python scripts/100_v10_conditional_baseline_blends.py --year 2025
 python scripts/101_v10_inseason_retrain_replay.py --year 2025 --schedules preseason_static,checkpoint_5_10_15,every_5
+python scripts/102_v10_xgb_clf_leakage_audit.py
+python scripts/103_v10_xgb_clf_promotion_readiness.py
+python scripts/104_v10_xgb_clf_grid_ablation.py --year 2025
 ```
 
 Outputs:
@@ -103,6 +106,9 @@ Outputs:
 - `results/v10_rf_reg_subspace/summary.{csv,json,md}`
 - `results/v10_conditional_baseline_blends/summary.{csv,json,md}`
 - `results/v10_inseason_retrain_replay/summary.{csv,json,md}`
+- `results/v10_xgb_clf_leakage_audit/summary.{json,md}`
+- `results/v10_xgb_clf_promotion/summary.{json,md}`
+- `results/v10_xgb_clf_grid_ablation/summary.{csv,json,md}`
 
 The rolling-CV replay generator creates per-driver scored CV checkpoints because
 the legacy CV CSVs contain only model picks and cannot replay blended candidate
@@ -834,6 +840,17 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
   2025 replay. Naive grid-P10 and preseason `xgb_clf` tied at `14.0417 avg_pts`;
   every retrained ensemble cadence underperformed preseason ensemble. No automated
   in-season retraining change recommended.
+- **xgb_clf tie/leakage audit (v10.x, 2026-06-15):**
+  `scripts/102_v10_xgb_clf_leakage_audit.py` found that preseason `xgb_clf` matched
+  naive grid-P10 picks in only `4/24` races, so the tie is not simple grid-P10 copying.
+  A target-derived `circ_p10_grid_chaos` feature was found and made historical-only;
+  `xgb_clf` does not use that feature.
+- **xgb_clf promotion and grid ablation (v10.x, 2026-06-15):**
+  `scripts/103_v10_xgb_clf_promotion_readiness.py` keeps direct `xgb_clf` promotion
+  blocked because multi-year rolling CV and live-sample gates do not pass. The grid
+  ablation (`scripts/104_v10_xgb_clf_grid_ablation.py`) showed current `xgb_clf`
+  remained best at `14.0417 avg_pts`; `grid_only` fell to `11.2083`, so the signal is
+  not merely a naive grid heuristic.
 
 - **Weather features (v6.13):** Originally REJECTED (−2.3 pts/race at global level).
   In v9.1 per-model testing: `chaos_index`, `temp_max_c`, `is_high_wind`, `rain_category` all
@@ -845,9 +862,9 @@ v5.6 added q2_gap_pct + q2_elimination_margin; v5.7 added con_xpt_std.
 
 - **2026 retraining (v6.12):** Retrain after R5, R10, R15, R24 as 2026 data accumulates.
 - **Naive baseline gap follow-up (v10.x):** The conditional grid-blend and in-season
-  retrain replay sweeps did not beat naive grid-P10. Next viable direction is richer
-  expanding-window feature/model research or a conservative `xgb_clf`-first promotion
-  study with multi-season gates.
+  retrain replay sweeps did not beat naive grid-P10, and direct `xgb_clf` promotion is
+  blocked by multi-year CV. Next viable direction is leakage-safe feature/model research
+  with refreshed processed data and expanding-window gates.
 
 ---
 

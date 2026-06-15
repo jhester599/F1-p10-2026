@@ -1,0 +1,87 @@
+{
+  "generated_at_utc": "2026-06-15 11:53 UTC",
+  "inputs": {
+    "holdout": "results\\eval_2025_picks.csv",
+    "rolling_cv": "results\\cv_results_with_segments.csv",
+    "live": "results\\2026_live_log.csv",
+    "inseason": "results\\v10_inseason_retrain_replay\\summary.csv"
+  },
+  "scorecards": {
+    "holdout_2025": {
+      "xgb_clf": {
+        "model": "xgb_clf",
+        "n_races": 24,
+        "total_pts": 337,
+        "avg_pts": 14.041666666666666
+      },
+      "ensemble": {
+        "model": "ensemble",
+        "n_races": 24,
+        "total_pts": 315,
+        "avg_pts": 13.125
+      },
+      "gate_pass": true
+    },
+    "rolling_cv_multi_year": {
+      "xgb_clf": {
+        "model": "xgb_clf",
+        "n_races": 252,
+        "total_pts": 2700,
+        "avg_pts": 10.714285714285714
+      },
+      "ensemble": {
+        "model": "ensemble",
+        "n_races": 252,
+        "total_pts": 2929,
+        "avg_pts": 11.623015873015873
+      },
+      "gate_pass": false
+    },
+    "live_2026": {
+      "xgb_clf": {
+        "model": "xgb_clf",
+        "n_races": 4,
+        "total_pts": 70,
+        "avg_pts": 17.5
+      },
+      "ensemble": {
+        "model": "ensemble",
+        "n_races": 4,
+        "total_pts": 55,
+        "avg_pts": 13.75
+      },
+      "gate_pass": false,
+      "reason_if_fail": "requires >=5 live races and xgb_clf >= ensemble"
+    },
+    "inseason_2025": {
+      "preseason_xgb_clf": {
+        "strategy": "preseason_static:xgb_clf",
+        "n_races": 24,
+        "total_pts": 337,
+        "avg_pts": 14.041666666666666,
+        "exact_p10": 4,
+        "within_2": 11,
+        "delta_vs_naive": 0.0,
+        "delta_vs_preseason_ensemble": 1.041666666666666,
+        "passes_gap_gate": true
+      },
+      "naive_grid_p10": {
+        "strategy": "naive_grid_p10",
+        "n_races": 24,
+        "total_pts": 337,
+        "avg_pts": 14.041666666666666,
+        "exact_p10": 3,
+        "within_2": 12,
+        "delta_vs_naive": 0.0,
+        "delta_vs_preseason_ensemble": 1.041666666666666,
+        "passes_gap_gate": true
+      },
+      "gate_pass": true
+    }
+  },
+  "recommendation": {
+    "production_change_recommended": false,
+    "reason": "Holdout/in-season evidence is promising, but rolling-CV and live-sample gates block promotion.",
+    "next_step": "Do not promote xgb_clf alone. Continue with leakage-safe feature/model research and rerun multi-season expanding validation when refreshed processed data is available."
+  }
+}

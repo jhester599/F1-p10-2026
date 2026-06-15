@@ -1,0 +1,25 @@
+year,round,race_name,circuit_id,actual_pos_naive_grid_p10,actual_pos_preseason_static:xgb_clf,fantasy_pts_naive_grid_p10,fantasy_pts_preseason_static:xgb_clf,grid_position_naive_grid_p10,grid_position_preseason_static:xgb_clf,picked_driver_naive_grid_p10,picked_driver_preseason_static:xgb_clf,same_pick,xgb_minus_naive_pts,xgb_grid_gap_to_p10
+2025,1,Australian Grand Prix,albert_park,18,16,2,6,10.0,15.0,sainz,bortoleto,False,4,5.0
+2025,2,Chinese Grand Prix,shanghai,7,7,12,12,10.0,10.0,albon,albon,True,0,0.0
+2025,3,Japanese Grand Prix,suzuka,10,10,25,25,10.0,10.0,bearman,bearman,True,0,0.0
+2025,4,Bahrain Grand Prix,bahrain,9,14,18,10,10.0,11.0,tsunoda,doohan,False,-8,1.0
+2025,5,Saudi Arabian Grand Prix,jeddah,4,9,6,18,10.0,11.0,norris,albon,False,12,1.0
+2025,6,Miami Grand Prix,miami,10,11,25,18,10.0,11.0,tsunoda,hadjar,False,-7,1.0
+2025,7,Emilia Romagna Grand Prix,imola,13,9,12,18,10.0,9.0,gasly,hadjar,False,6,1.0
+2025,8,Monaco Grand Prix,monaco,9,9,18,18,10.0,10.0,albon,albon,True,0,0.0
+2025,9,Spanish Grand Prix,catalunya,9,7,18,12,10.0,9.0,alonso,hadjar,False,-6,1.0
+2025,10,Canadian Grand Prix,villeneuve,20,16,0,6,10.0,9.0,albon,hadjar,False,6,1.0
+2025,11,Austrian Grand Prix,red_bull_ring,13,16,12,6,10.0,18.0,gasly,tsunoda,False,-6,8.0
+2025,12,British Grand Prix,silverstone,6,15,10,8,10.0,12.0,gasly,tsunoda,False,-2,2.0
+2025,13,Belgian Grand Prix,spa,9,11,18,18,10.0,12.0,bortoleto,bearman,False,0,2.0
+2025,14,Hungarian Grand Prix,hungaroring,11,10,18,25,10.0,15.0,hadjar,antonelli,False,7,5.0
+2025,15,Dutch Grand Prix,zandvoort,8,13,15,12,10.0,9.0,alonso,sainz,False,-3,1.0
+2025,16,Italian Grand Prix,monza,13,7,12,12,10.0,14.0,tsunoda,albon,False,0,4.0
+2025,17,Azerbaijan Grand Prix,baku,9,16,18,6,10.0,17.0,leclerc,hulkenberg,False,-12,7.0
+2025,18,Singapore Grand Prix,marina_bay,7,11,12,18,10.0,8.0,alonso,hadjar,False,6,2.0
+2025,19,United States Grand Prix,americas,10,10,25,25,10.0,10.0,alonso,alonso,True,0,0.0
+2025,20,Mexico City Grand Prix,rodriguez,4,11,6,18,10.0,11.0,bearman,tsunoda,False,12,1.0
+2025,21,São Paulo Grand Prix,interlagos,9,14,18,10,10.0,11.0,hulkenberg,alonso,False,-8,1.0
+2025,22,Las Vegas Grand Prix,vegas,13,10,12,25,10.0,14.0,gasly,bearman,False,13,4.0
+2025,23,Qatar Grand Prix,losail,8,19,15,1,10.0,13.0,leclerc,bearman,False,-14,3.0
+2025,24,Abu Dhabi Grand Prix,yas_marina,14,6,10,10,10.0,6.0,tsunoda,alonso,False,0,4.0

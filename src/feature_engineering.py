@@ -85,6 +85,29 @@ def _rolling_mean_excl_dnf(
     return float(np.mean(clean)) if clean else fill
 
 
+def historical_circ_p10_grid_chaos(feat_df: pd.DataFrame, default: float = 4.0) -> pd.Series:
+    """Return per-row circuit P10-grid volatility using only prior races."""
+    ordered = feat_df.sort_values(["year", "round"]).copy()
+    history: dict[str, list[float]] = {}
+    values: dict[int, float] = {}
+
+    for (_year, _round_number, circuit), race_df in ordered.groupby(
+        ["year", "round", "circuit_id"], sort=True
+    ):
+        prior = history.get(str(circuit), [])
+        race_value = float(np.std(prior, ddof=1)) if len(prior) >= 2 else float(default)
+        for idx in race_df.index:
+            values[int(idx)] = race_value
+
+        p10_rows = race_df[race_df[TARGET_COL] == 10]
+        if not p10_rows.empty:
+            history.setdefault(str(circuit), []).extend(
+                p10_rows["grid_position"].astype(float).tolist()
+            )
+
+    return pd.Series(values).reindex(feat_df.index).fillna(float(default)).astype(float)
+
+
 # ── phase 1: flatten raw API data ─────────────────────────────────────────────
 
 def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
@@ -850,17 +873,8 @@ def build_feature_matrix(
         feat_df = feat_df.merge(pd.DataFrame(_pit_var_feat), on=["circuit_id", "year"], how="left")
         feat_df["circ_pit_stop_var"] = feat_df["circ_pit_stop_var"].fillna(0.1)
 
-    # circ_p10_grid_chaos: std dev of P10 finisher's starting grid at circuit
-    _p10_finishers = feat_df[feat_df[TARGET_COL] == 10]
-    if len(_p10_finishers) > 0:
-        _chaos = _p10_finishers.groupby("circuit_id")["grid_position"].std().reset_index()
-        _chaos.columns = ["circuit_id", "circ_p10_grid_chaos"]
-        feat_df = feat_df.merge(_chaos, on="circuit_id", how="left")
-        feat_df["circ_p10_grid_chaos"] = feat_df["circ_p10_grid_chaos"].fillna(
-            feat_df["circ_p10_grid_chaos"].median() if feat_df["circ_p10_grid_chaos"].notna().any() else 4.0
-        )
-    else:
-        feat_df["circ_p10_grid_chaos"] = 4.0
+    # circ_p10_grid_chaos: prior std dev of P10 finisher's starting grid at circuit.
+    feat_df["circ_p10_grid_chaos"] = historical_circ_p10_grid_chaos(feat_df, default=4.0)
 
     # ── v9.0: Weather features ───────────────────────────────────────────────
     # Weather features were tested per model and accepted for several models

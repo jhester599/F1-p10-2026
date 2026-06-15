@@ -81,6 +81,34 @@ V10 in-season retrain replay (2026-06-15):
 - Artifacts:
   - `results/v10_inseason_retrain_replay/summary.{csv,json,md}`
 
+V10 xgb_clf tie/leakage audit and follow-up research (2026-06-15):
+- xgb_clf leakage audit command:
+  `python scripts/102_v10_xgb_clf_leakage_audit.py`
+- Audit result: preseason `xgb_clf` matched naive grid-P10 in only `4/24`
+  races, so the equal `337` total points are not caused by blindly picking the
+  P10 qualifier. `xgb_clf` does not include `circ_p10_grid_chaos`.
+- Leakage fix: `circ_p10_grid_chaos` was confirmed target-derived because it
+  used all P10 finishers in the assembled feature matrix. It now uses only
+  prior races at the circuit via `historical_circ_p10_grid_chaos`.
+- xgb_clf promotion readiness command:
+  `python scripts/103_v10_xgb_clf_promotion_readiness.py`
+- Promotion result: direct `xgb_clf` promotion remains blocked. Holdout and
+  in-season gates pass, but multi-year rolling CV does not (`xgb_clf` below
+  ensemble) and live 2026 has insufficient sample size.
+- xgb_clf grid ablation command:
+  `python scripts/104_v10_xgb_clf_grid_ablation.py --year 2025`
+- Ablation result: current `xgb_clf` remained best at `14.0417 avg_pts`.
+  `grid_only` fell to `11.2083`, `no_grid_family` reached `12.9583`, and
+  `no_grid_proximity` reached `11.8333`. The model benefits from valid
+  post-qualifying grid-zone context, but it is not merely a naive grid heuristic.
+- Decision: no production promotion yet. Continue with leakage-safe
+  feature/model research and rerun expanding validation after processed data can
+  be rebuilt with the historical circuit feature fix.
+- Artifacts:
+  - `results/v10_xgb_clf_leakage_audit/summary.{json,md}`
+  - `results/v10_xgb_clf_promotion/summary.{json,md}`
+  - `results/v10_xgb_clf_grid_ablation/summary.{csv,json,md}`
+
 ---
 
 ## Current Baselines (eval_2025_picks.csv)
