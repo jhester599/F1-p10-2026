@@ -48,6 +48,8 @@ can affect model quality. Treat this as a post-weekend improvement task.
    - Candidate A/B promotion remains blocked by rolling-CV/live gates.
    - In-season retrain cadence research did not beat naive grid-P10, so do not
      enable automated retraining from the tested cadence policies.
-   - Next high-value task: multi-season `xgb_clf`-first promotion or richer
-     feature/model research with rolling gates.
+   - Direct `xgb_clf` promotion was audited and remains blocked by multi-year
+     rolling-CV/live gates.
+   - Next high-value task: rebuild processed data with leakage-safe
+     `circ_p10_grid_chaos`, then rerun expanding feature/model validation.
 

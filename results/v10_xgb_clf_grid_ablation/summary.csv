@@ -1,0 +1,6 @@
+variant,description,feature_count,n_races,total_pts,avg_pts,exact_p10,within_2,delta_vs_current
+current_xgb_clf,Current MODEL_FEATURES['xgb_clf'] subspace.,47,24,337,14.041666666666666,4,11,0.0
+no_grid_family,Current xgb_clf without current-grid-derived feature family.,41,24,311,12.958333333333334,2,11,-1.0833333333333321
+no_grid_proximity,Current xgb_clf without explicit P10-grid proximity/rank features.,45,24,284,11.833333333333334,2,9,-2.208333333333332
+grid_only,Only current-grid/P10-zone features used by xgb_clf.,4,24,269,11.208333333333334,3,11,-2.833333333333332
+qual_grid_core,Compact qualifying/grid/overtaking core.,8,24,256,10.666666666666666,1,10,-3.375

@@ -1,0 +1,61 @@
+{
+  "generated_at_utc": "2026-06-15 11:56 UTC",
+  "year": 2025,
+  "results": [
+    {
+      "variant": "current_xgb_clf",
+      "description": "Current MODEL_FEATURES['xgb_clf'] subspace.",
+      "feature_count": 47,
+      "n_races": 24,
+      "total_pts": 337,
+      "avg_pts": 14.041666666666666,
+      "exact_p10": 4,
+      "within_2": 11,
+      "delta_vs_current": 0.0
+    },
+    {
+      "variant": "no_grid_family",
+      "description": "Current xgb_clf without current-grid-derived feature family.",
+      "feature_count": 41,
+      "n_races": 24,
+      "total_pts": 311,
+      "avg_pts": 12.958333333333334,
+      "exact_p10": 2,
+      "within_2": 11,
+      "delta_vs_current": -1.0833333333333321
+    },
+    {
+      "variant": "no_grid_proximity",
+      "description": "Current xgb_clf without explicit P10-grid proximity/rank features.",
+      "feature_count": 45,
+      "n_races": 24,
+      "total_pts": 284,
+      "avg_pts": 11.833333333333334,
+      "exact_p10": 2,
+      "within_2": 9,
+      "delta_vs_current": -2.208333333333332
+    },
+    {
+      "variant": "grid_only",
+      "description": "Only current-grid/P10-zone features used by xgb_clf.",
+      "feature_count": 4,
+      "n_races": 24,
+      "total_pts": 269,
+      "avg_pts": 11.208333333333334,
+      "exact_p10": 3,
+      "within_2": 11,
+      "delta_vs_current": -2.833333333333332
+    },
+    {
+      "variant": "qual_grid_core",
+      "description": "Compact qualifying/grid/overtaking core.",
+      "feature_count": 8,
+      "n_races": 24,
+      "total_pts": 256,
+      "avg_pts": 10.666666666666666,
+      "exact_p10": 1,
+      "within_2": 10,
+      "delta_vs_current": -3.375
+    }
+  ]
+}
