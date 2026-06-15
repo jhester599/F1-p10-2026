@@ -220,6 +220,55 @@ def test_xgb_clf_grid_ablation_variants_remove_grid_families() -> None:
     assert set(variants["grid_only"].features) <= set(module.GRID_FAMILY_FEATURES)
 
 
+def test_refresh_circ_p10_grid_chaos_updates_only_target_column() -> None:
+    module = load_script_module("105_refresh_circ_p10_grid_chaos.py")
+    frame = pd.DataFrame(
+        {
+            "year": [2024, 2024, 2025, 2025],
+            "round": [1, 1, 1, 1],
+            "circuit_id": ["test", "test", "test", "test"],
+            "grid_position": [7.0, 3.0, 15.0, 2.0],
+            "finish_position": [10, 11, 10, 12],
+            "circ_p10_grid_chaos": [99.0, 99.0, 99.0, 99.0],
+            "other_feature": [1.0, 2.0, 3.0, 4.0],
+        }
+    )
+
+    refreshed = module.refresh_frame(frame)
+
+    assert refreshed["circ_p10_grid_chaos"].tolist() == [4.0, 4.0, 4.0, 4.0]
+    assert refreshed["other_feature"].tolist() == frame["other_feature"].tolist()
+
+
+def test_refresh_split_from_combined_preserves_prior_history() -> None:
+    module = load_script_module("105_refresh_circ_p10_grid_chaos.py")
+    combined = pd.DataFrame(
+        {
+            "year": [2024, 2024, 2025, 2025, 2026, 2026],
+            "round": [1, 1, 1, 1, 1, 1],
+            "circuit_id": ["test", "test", "test", "test", "test", "test"],
+            "grid_position": [7.0, 3.0, 15.0, 2.0, 20.0, 4.0],
+            "finish_position": [10, 11, 10, 12, 10, 13],
+            "circ_p10_grid_chaos": [99.0] * 6,
+        }
+    )
+
+    refreshed_2026 = module.refresh_split_from_combined(combined, start_year=2026, end_year=2026)
+
+    assert refreshed_2026["circ_p10_grid_chaos"].tolist() == [
+        np.std([7.0, 15.0], ddof=1),
+        np.std([7.0, 15.0], ddof=1),
+    ]
+
+
+def test_refresh_changed_row_count_compares_by_position() -> None:
+    module = load_script_module("105_refresh_circ_p10_grid_chaos.py")
+    before = pd.Series([4.0, 5.0], index=[0, 1])
+    refreshed = pd.DataFrame({"circ_p10_grid_chaos": [4.0, 6.0]}, index=[100, 101])
+
+    assert module.count_changed_rows(before, refreshed) == 1
+
+
 def test_historical_circ_p10_grid_chaos_excludes_current_and_future_races() -> None:
     frame = pd.DataFrame(
         {

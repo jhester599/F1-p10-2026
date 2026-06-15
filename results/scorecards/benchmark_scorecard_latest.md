@@ -1,6 +1,6 @@
 # Benchmark Scorecard (Latest)
 
-Generated: 2026-06-14 12:42 UTC
+Generated: 2026-06-15 12:38 UTC
 
 ## Locked Baselines
 - v8.23 2025 holdout avg pts: **14.21**

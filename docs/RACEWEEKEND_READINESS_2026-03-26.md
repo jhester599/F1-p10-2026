@@ -50,6 +50,7 @@ can affect model quality. Treat this as a post-weekend improvement task.
      enable automated retraining from the tested cadence policies.
    - Direct `xgb_clf` promotion was audited and remains blocked by multi-year
      rolling-CV/live gates.
-   - Next high-value task: rebuild processed data with leakage-safe
-     `circ_p10_grid_chaos`, then rerun expanding feature/model validation.
+   - Leakage-safe `circ_p10_grid_chaos` processed snapshots were refreshed with
+     `scripts/105_refresh_circ_p10_grid_chaos.py`; next high-value task is
+     expanding feature/model validation, not direct `xgb_clf` promotion.
 
