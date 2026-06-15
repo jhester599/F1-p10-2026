@@ -78,11 +78,11 @@ This repository also includes:
 - Workflow: `.github/workflows/results-automation-2026.yml`
 - Runner script: `scripts/66_update_results_automation.py`
 
-The workflow scans the first league Google Sheet after likely race-completion
-windows, fetches official race classifications through the existing Jolpica
-fetcher, writes blank Column F positions in `Form Responses 1`, optionally
-extends the `results!J:Q` time-series formulas, and emails a summary when rows
-are updated.
+The workflow scans the configured league Google Sheets after likely
+race-completion windows, fetches official race classifications through the
+existing Jolpica fetcher, writes blank Column F positions in `Form Responses 1`,
+optionally extends each sheet's cumulative `results` time-series formulas, and
+emails a combined summary when rows are updated.
 
 ## Results Timing Logic
 
@@ -105,7 +105,8 @@ are updated.
 Required repository secrets:
 
 - `GOOGLE_SERVICE_ACCOUNT_JSON`
-- `RESULTS_SPREADSHEET_ID`
+- `RESULTS_SPREADSHEET_IDS`
+- `RESULTS_SPREADSHEET_ID` for the legacy single-sheet fallback
 - `SMTP_SERVER`
 - `SMTP_PORT`
 - `SMTP_USERNAME`
@@ -113,9 +114,10 @@ Required repository secrets:
 - `RESULTS_EMAIL_FROM`
 - `RESULTS_EMAIL_TO`
 
-`GOOGLE_SERVICE_ACCOUNT_JSON` may be raw JSON or base64-encoded JSON. Share the
-target Google Sheet with the service account's `client_email`, otherwise the
-workflow can authenticate but cannot edit the spreadsheet.
+`GOOGLE_SERVICE_ACCOUNT_JSON` may be raw JSON or base64-encoded JSON.
+`RESULTS_SPREADSHEET_IDS` may be comma-separated or newline-separated. Share
+each target Google Sheet with the service account's `client_email`, otherwise
+the workflow can authenticate but cannot edit the spreadsheet.
 
 ## Results Update Rules
 
@@ -130,8 +132,8 @@ workflow can authenticate but cannot edit the spreadsheet.
   rounds with a `-2` offset.
 - Column G stays formula-driven from the `points` tab.
 - `results!A1:H26` stays formula-driven.
-- `results!J:Q` can be extended with cumulative formulas by passing
-  `--update-time-series`.
+- The cumulative `results` time-series block is detected from the results table
+  width and can be extended by passing `--update-time-series`.
 
 ## Manual Run
 
@@ -142,3 +144,6 @@ runs:
 ```bash
 python scripts/66_update_results_automation.py --year 2026 --round 9 --spreadsheet-id <sheet_id> --dry-run
 ```
+
+Pass `--spreadsheet-id` more than once to preview multiple leagues locally, or
+set `RESULTS_SPREADSHEET_IDS` to the configured sheet IDs.

@@ -343,9 +343,10 @@ jobs:
         if: steps.preflight.outputs.run_full == 'true'
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          RESULTS_SPREADSHEET_IDS: ${{ secrets.RESULTS_SPREADSHEET_IDS }}
           RESULTS_SPREADSHEET_ID: ${{ secrets.RESULTS_SPREADSHEET_ID }}
         run: |
-          if [ -n "$GOOGLE_SERVICE_ACCOUNT_JSON" ] && [ -n "$RESULTS_SPREADSHEET_ID" ]; then
+          if [ -n "$GOOGLE_SERVICE_ACCOUNT_JSON" ] && { [ -n "$RESULTS_SPREADSHEET_IDS" ] || [ -n "$RESULTS_SPREADSHEET_ID" ]; }; then
             echo "sheet_ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "sheet_ready=false" >> "$GITHUB_OUTPUT"
@@ -356,6 +357,7 @@ jobs:
         if: steps.preflight.outputs.run_full == 'true' && steps.sheet_cfg.outputs.sheet_ready == 'true'
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          RESULTS_SPREADSHEET_IDS: ${{ secrets.RESULTS_SPREADSHEET_IDS }}
           RESULTS_SPREADSHEET_ID: ${{ secrets.RESULTS_SPREADSHEET_ID }}
         run: |
           CMD="python scripts/66_update_results_automation.py --year 2026 --update-time-series"
@@ -372,7 +374,7 @@ jobs:
       - name: Missing Google Sheets secrets notice
         if: steps.preflight.outputs.run_full == 'true' && steps.sheet_cfg.outputs.sheet_ready == 'false'
         run: |
-          echo "Skipping league results update because GOOGLE_SERVICE_ACCOUNT_JSON or RESULTS_SPREADSHEET_ID is missing."
+          echo "Skipping league results update because GOOGLE_SERVICE_ACCOUNT_JSON and RESULTS_SPREADSHEET_IDS/RESULTS_SPREADSHEET_ID are not fully configured."
 
       - name: Check email secret configuration
         id: email_cfg

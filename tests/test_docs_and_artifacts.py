@@ -98,10 +98,13 @@ def test_results_automation_is_documented_and_wired() -> None:
 
     assert "scripts/66_update_results_automation.py" in workflow
     assert "GOOGLE_SERVICE_ACCOUNT_JSON" in workflow
+    assert "RESULTS_SPREADSHEET_IDS" in workflow
     assert "RESULTS_SPREADSHEET_ID" in workflow
     assert "RESULTS_EMAIL_TO" in workflow
     assert "scripts/66_update_results_automation.py" in readme
+    assert "RESULTS_SPREADSHEET_IDS" in readme
     assert "GOOGLE_SERVICE_ACCOUNT_JSON" in automation_docs
+    assert "RESULTS_SPREADSHEET_IDS" in automation_docs
     assert "RESULTS_EMAIL_TO" in automation_docs
 
 

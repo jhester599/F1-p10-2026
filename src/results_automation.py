@@ -63,6 +63,21 @@ def official_round_for_sheet_round(year: int, sheet_round: int) -> int | None:
     return sheet_round
 
 
+def parse_spreadsheet_ids(raw: str | None, fallback: str | None = None) -> list[str]:
+    source = raw if raw and raw.strip() else fallback
+    if not source:
+        return []
+    ids: list[str] = []
+    seen: set[str] = set()
+    for item in re.split(r"[\n,]+", source):
+        spreadsheet_id = item.strip()
+        if not spreadsheet_id or spreadsheet_id in seen:
+            continue
+        seen.add(spreadsheet_id)
+        ids.append(spreadsheet_id)
+    return ids
+
+
 def _normalize_code(value: str) -> str:
     return (value or "").strip().upper()
 
@@ -154,17 +169,48 @@ def build_position_updates(
     return UpdatePlan(updates=updates, skipped=skipped)
 
 
-def cumulative_formula_row(row_number: int) -> list[str]:
-    return [
-        f"=A{row_number}",
-        f"=K{row_number - 1}+B{row_number}",
-        f"=L{row_number - 1}+C{row_number}",
-        f"=M{row_number - 1}+D{row_number}",
-        f"=N{row_number - 1}+E{row_number}",
-        f"=O{row_number - 1}+F{row_number}",
-        f"=P{row_number - 1}+G{row_number}",
-        f"=Q{row_number - 1}+H{row_number}",
-    ]
+def _column_letter(column_number: int) -> str:
+    letters = ""
+    while column_number:
+        column_number, remainder = divmod(column_number - 1, 26)
+        letters = chr(65 + remainder) + letters
+    return letters
+
+
+def detect_results_table_layout(results_values: list[list[object]]) -> dict[str, int]:
+    header = results_values[0] if results_values else []
+    player_count = 0
+    for value in header[1:]:
+        if str(value).strip():
+            player_count += 1
+            continue
+        break
+    if player_count <= 0:
+        player_count = 7
+    series_start_column = player_count + 3
+    return {
+        "player_count": player_count,
+        "score_start_column": 2,
+        "series_start_column": series_start_column,
+        "series_end_column": series_start_column + player_count,
+    }
+
+
+def cumulative_formula_row(
+    row_number: int,
+    *,
+    score_start_column: int = 2,
+    series_start_column: int = 10,
+    player_count: int = 7,
+) -> list[str]:
+    formulas = [f"=A{row_number}"]
+    for player_index in range(player_count):
+        score_column = _column_letter(score_start_column + player_index)
+        series_column = _column_letter(series_start_column + player_index + 1)
+        formulas.append(
+            f"={series_column}{row_number - 1}+{score_column}{row_number}"
+        )
+    return formulas
 
 
 def points_formula_for_row(row_number: int) -> str:
