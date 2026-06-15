@@ -1,0 +1,98 @@
+{
+  "generated_at_utc": "2026-06-15 12:55 UTC",
+  "checkpoint_count": 10,
+  "checkpoints": [
+    "results\\candidate_replay_cv_checkpoints\\fold_2016_race_scores.csv",
+    "results\\candidate_replay_cv_checkpoints\\fold_2017_race_scores.csv",
+    "results\\candidate_replay_cv_checkpoints\\fold_2018_race_scores.csv",
+    "results\\candidate_replay_cv_checkpoints\\fold_2019_race_scores.csv",
+    "results\\candidate_replay_cv_checkpoints\\fold_2020_race_scores.csv",
+    "results\\candidate_replay_cv_checkpoints\\fold_2021_race_scores.csv",
+    "results\\candidate_replay_cv_checkpoints\\fold_2022_race_scores.csv",
+    "results\\candidate_replay_cv_checkpoints\\fold_2023_race_scores.csv",
+    "results\\candidate_replay_cv_checkpoints\\fold_2024_race_scores.csv",
+    "results\\candidate_replay_cv_checkpoints\\fold_2025_race_scores.csv"
+  ],
+  "summary": [
+    {
+      "model": "naive_grid_p10",
+      "n_races": 214,
+      "total_pts": 2505,
+      "avg_pts": 11.705607476635514,
+      "exact_p10": 20,
+      "within_2": 86
+    },
+    {
+      "model": "ridge",
+      "n_races": 214,
+      "total_pts": 2478,
+      "avg_pts": 11.57943925233645,
+      "exact_p10": 16,
+      "within_2": 87
+    },
+    {
+      "model": "lgb_reg",
+      "n_races": 214,
+      "total_pts": 2399,
+      "avg_pts": 11.210280373831775,
+      "exact_p10": 15,
+      "within_2": 83
+    },
+    {
+      "model": "rf_clf",
+      "n_races": 214,
+      "total_pts": 2386,
+      "avg_pts": 11.149532710280374,
+      "exact_p10": 12,
+      "within_2": 90
+    },
+    {
+      "model": "rf_reg",
+      "n_races": 214,
+      "total_pts": 2352,
+      "avg_pts": 10.990654205607477,
+      "exact_p10": 17,
+      "within_2": 78
+    },
+    {
+      "model": "lgbm_ranker",
+      "n_races": 214,
+      "total_pts": 2344,
+      "avg_pts": 10.953271028037383,
+      "exact_p10": 12,
+      "within_2": 84
+    },
+    {
+      "model": "xgb_reg",
+      "n_races": 214,
+      "total_pts": 2338,
+      "avg_pts": 10.925233644859814,
+      "exact_p10": 15,
+      "within_2": 76
+    },
+    {
+      "model": "xgb_clf",
+      "n_races": 214,
+      "total_pts": 2327,
+      "avg_pts": 10.873831775700934,
+      "exact_p10": 14,
+      "within_2": 80
+    },
+    {
+      "model": "ensemble",
+      "n_races": 214,
+      "total_pts": 2233,
+      "avg_pts": 10.434579439252337,
+      "exact_p10": 11,
+      "within_2": 79
+    },
+    {
+      "model": "xgb_ranker",
+      "n_races": 214,
+      "total_pts": 2209,
+      "avg_pts": 10.322429906542055,
+      "exact_p10": 12,
+      "within_2": 79
+    }
+  ]
+}

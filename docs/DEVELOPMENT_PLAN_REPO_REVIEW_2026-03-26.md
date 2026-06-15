@@ -207,8 +207,11 @@ Follow-up:
   pass and live 2026 sample size is too small.
 - Leakage-safe processed parquet snapshots were refreshed with historical-only
   `circ_p10_grid_chaos` via `scripts/105_refresh_circ_p10_grid_chaos.py`.
-  Continue with expanding feature/model validation before considering any
-  production weight or direct `xgb_clf` promotion.
+- Expanding validation has now been rerun across 2016-2025 scored checkpoints:
+  Candidate A and Candidate B both fail rolling replay gates, and the checkpoint
+  scorecard keeps naive grid-P10 best over 214 races. Continue feature/model
+  validation against this broader baseline before considering any production
+  weight or direct `xgb_clf` promotion.
 
 ### Backlog 2 - P10 League Scoring Automation
 Goal:

@@ -126,6 +126,31 @@ Leakage-safe processed-data refresh (2026-06-15):
 - Decision: keep the source fix and refreshed processed snapshots, but do not
   change production weights or promote `xgb_clf` from this evidence alone.
 
+V10 expanding checkpoint replay and scorecard (2026-06-15):
+- Commands:
+  - `python scripts/98_candidate_rolling_cv_replay.py --years 2016,2017,2018,2019,2020,2021,2022,2023,2024,2025 --window-size 4`
+  - `python scripts/97_candidate_replay_gates.py`
+  - `python scripts/96_candidate_promotion_readiness.py`
+  - `python scripts/106_v10_expanding_checkpoint_scorecard.py`
+- Scope: 10 expanding-window folds, 214 races, scored per-driver checkpoints
+  under `results/candidate_replay_cv_checkpoints/`.
+- Candidate replay result: Candidate A averaged `10.3972` vs baseline `10.4346`
+  (`-0.0374`), while Candidate B averaged `10.3084` (`-0.1262`). Both fail
+  rolling-CV replay gates; production promotion remains blocked.
+- Model/baseline scorecard result: naive grid-P10 remained best at
+  `11.7056 avg_pts`; ridge was second at `11.5794`; `xgb_clf` reached
+  `10.8738`; ensemble reached `10.4346`.
+- Decision: treat Candidate A/B 2025 holdout gains as overfit until a future
+  candidate clears this broader replay. The next useful research should target
+  feature/model changes that beat naive grid-P10 in the expanding checkpoint
+  scorecard, not additional holdout-only weight tuning.
+- Artifacts:
+  - `results/candidate_a/candidate_a_rolling_cv_replay.json`
+  - `results/candidate_b/candidate_b_rolling_cv_replay.json`
+  - `results/scorecards/candidate_replay_gates.{json,md}`
+  - `results/scorecards/candidate_promotion_readiness.{json,md}`
+  - `results/v10_expanding_checkpoint_scorecard/summary.{csv,json,md}`
+
 ---
 
 ## Current Baselines (eval_2025_picks.csv)

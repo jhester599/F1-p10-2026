@@ -254,3 +254,30 @@ This document records structural decisions made for CI reliability, Windows comp
 - The next model-development task is to run the candidate-specific rolling-CV
   replay generator and continue accumulating live replay evidence, not to change
   race-weekend inference weights yet.
+
+## 16) Reject Candidate A/B promotion after refreshed expanding replay
+
+### Decision
+- Rebuild candidate scored CV checkpoints for 2016-2025 after the leakage-safe
+  `circ_p10_grid_chaos` refresh.
+- Keep Candidate A and Candidate B out of production because both fail the
+  refreshed rolling replay gate.
+- Add `scripts/106_v10_expanding_checkpoint_scorecard.py` to summarize model and
+  naive-baseline picks from the scored checkpoints without retraining.
+
+### Why
+- Candidate A and Candidate B both looked promising on the 2025 holdout, but
+  that evidence was too narrow for production promotion.
+- The 214-race expanding replay is a stronger anti-overfit gate:
+  - baseline replay: `10.4346 avg_pts`
+  - Candidate A: `10.3972 avg_pts`
+  - Candidate B: `10.3084 avg_pts`
+- The same checkpoint scorecard keeps naive grid-P10 best at `11.7056 avg_pts`,
+  with ridge second at `11.5794`.
+
+### Impact
+- Production ensemble weights remain unchanged.
+- Candidate promotion readiness now shows both candidates blocked by failed
+  rolling-CV replay gates.
+- Future v10 research should target changes that beat the expanding checkpoint
+  naive baseline, not 2025-only weight sweeps.

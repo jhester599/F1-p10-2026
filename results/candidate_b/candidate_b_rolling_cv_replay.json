@@ -1,19 +1,1919 @@
 {
-  "generated_at_utc": "2026-06-14 18:57 UTC",
+  "generated_at_utc": "2026-06-15 12:53 UTC",
   "candidate": "Candidate B",
   "status": "ok",
   "baseline_metrics": {
-    "n_races": 24,
-    "avg_pts": 11.208333333333334,
-    "total_pts": 269
+    "n_races": 214,
+    "avg_pts": 10.434579439252337,
+    "total_pts": 2233
   },
   "candidate_metrics": {
-    "n_races": 24,
-    "avg_pts": 11.208333333333334,
-    "total_pts": 269
+    "n_races": 214,
+    "avg_pts": 10.30841121495327,
+    "total_pts": 2206
   },
-  "passes_gate": true,
+  "passes_gate": false,
   "races": [
+    {
+      "year": 2016,
+      "round": 1,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2016,
+      "round": 2,
+      "baseline_pick": "max_verstappen",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "max_verstappen",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2016,
+      "round": 3,
+      "baseline_pick": "max_verstappen",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "max_verstappen",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2016,
+      "round": 4,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2016,
+      "round": 5,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2016,
+      "round": 6,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2016,
+      "round": 7,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2016,
+      "round": 8,
+      "baseline_pick": "bottas",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "bottas",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2016,
+      "round": 9,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2016,
+      "round": 10,
+      "baseline_pick": "max_verstappen",
+      "baseline_actual_pos": 2,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "max_verstappen",
+      "candidate_actual_pos": 2,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2016,
+      "round": 11,
+      "baseline_pick": "bottas",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "bottas",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2016,
+      "round": 12,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2016,
+      "round": 13,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2016,
+      "round": 14,
+      "baseline_pick": "button",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "button",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2016,
+      "round": 15,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2016,
+      "round": 16,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2016,
+      "round": 17,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 17,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 17,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2016,
+      "round": 18,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2016,
+      "round": 19,
+      "baseline_pick": "max_verstappen",
+      "baseline_actual_pos": 4,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "max_verstappen",
+      "candidate_actual_pos": 4,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2016,
+      "round": 20,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2016,
+      "round": 21,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 18,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 18,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2017,
+      "round": 1,
+      "baseline_pick": "alonso",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "alonso",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2017,
+      "round": 2,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2017,
+      "round": 3,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2017,
+      "round": 4,
+      "baseline_pick": "kevin_magnussen",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "kevin_magnussen",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2017,
+      "round": 5,
+      "baseline_pick": "kevin_magnussen",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "kevin_magnussen",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2017,
+      "round": 6,
+      "baseline_pick": "massa",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "massa",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2017,
+      "round": 7,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2017,
+      "round": 8,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 17,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 17,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2017,
+      "round": 9,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 17,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 17,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2017,
+      "round": 10,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2017,
+      "round": 11,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2017,
+      "round": 12,
+      "baseline_pick": "alonso",
+      "baseline_actual_pos": 18,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "alonso",
+      "candidate_actual_pos": 18,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2017,
+      "round": 13,
+      "baseline_pick": "vandoorne",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "vandoorne",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
+    },
+    {
+      "year": 2017,
+      "round": 14,
+      "baseline_pick": "vandoorne",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "vandoorne",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2017,
+      "round": 15,
+      "baseline_pick": "vandoorne",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "vandoorne",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2017,
+      "round": 16,
+      "baseline_pick": "vandoorne",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "vandoorne",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2017,
+      "round": 17,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2017,
+      "round": 18,
+      "baseline_pick": "vandoorne",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "vandoorne",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2017,
+      "round": 19,
+      "baseline_pick": "brendon_hartley",
+      "baseline_actual_pos": 17,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "brendon_hartley",
+      "candidate_actual_pos": 17,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2017,
+      "round": 20,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2018,
+      "round": 1,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2018,
+      "round": 2,
+      "baseline_pick": "alonso",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "alonso",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2018,
+      "round": 3,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2018,
+      "round": 4,
+      "baseline_pick": "gasly",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "vandoorne",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2018,
+      "round": 5,
+      "baseline_pick": "perez",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "perez",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2018,
+      "round": 6,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2018,
+      "round": 7,
+      "baseline_pick": "brendon_hartley",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "brendon_hartley",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
+    },
+    {
+      "year": 2018,
+      "round": 8,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2018,
+      "round": 9,
+      "baseline_pick": "perez",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "perez",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2018,
+      "round": 10,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2018,
+      "round": 11,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2018,
+      "round": 12,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2018,
+      "round": 13,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2018,
+      "round": 14,
+      "baseline_pick": "kevin_magnussen",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "kevin_magnussen",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2018,
+      "round": 15,
+      "baseline_pick": "kevin_magnussen",
+      "baseline_actual_pos": 18,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "kevin_magnussen",
+      "candidate_actual_pos": 18,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2018,
+      "round": 16,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 17,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 17,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2018,
+      "round": 17,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "kevin_magnussen",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2018,
+      "round": 18,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
+    },
+    {
+      "year": 2018,
+      "round": 19,
+      "baseline_pick": "perez",
+      "baseline_actual_pos": 18,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "perez",
+      "candidate_actual_pos": 18,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2018,
+      "round": 20,
+      "baseline_pick": "perez",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "perez",
+      "candidate_actual_pos": 10,
+      "candidate_fantasy_pts": 25
+    },
+    {
+      "year": 2018,
+      "round": 21,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2019,
+      "round": 1,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2019,
+      "round": 2,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2019,
+      "round": 3,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2019,
+      "round": 4,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2019,
+      "round": 5,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2019,
+      "round": 6,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2019,
+      "round": 7,
+      "baseline_pick": "giovinazzi",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "giovinazzi",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2019,
+      "round": 8,
+      "baseline_pick": "giovinazzi",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "giovinazzi",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2019,
+      "round": 9,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 17,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 17,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2019,
+      "round": 10,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2019,
+      "round": 11,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
+    },
+    {
+      "year": 2019,
+      "round": 12,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2019,
+      "round": 13,
+      "baseline_pick": "kevin_magnussen",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "kevin_magnussen",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2019,
+      "round": 14,
+      "baseline_pick": "norris",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "norris",
+      "candidate_actual_pos": 10,
+      "candidate_fantasy_pts": 25
+    },
+    {
+      "year": 2019,
+      "round": 15,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2019,
+      "round": 16,
+      "baseline_pick": "grosjean",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "grosjean",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2019,
+      "round": 17,
+      "baseline_pick": "gasly",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "gasly",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2019,
+      "round": 18,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2019,
+      "round": 19,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2019,
+      "round": 20,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2019,
+      "round": 21,
+      "baseline_pick": "perez",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "perez",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2020,
+      "round": 1,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2020,
+      "round": 2,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 10,
+      "candidate_fantasy_pts": 25
+    },
+    {
+      "year": 2020,
+      "round": 3,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2020,
+      "round": 4,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 18,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 18,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2020,
+      "round": 5,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2020,
+      "round": 6,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2020,
+      "round": 7,
+      "baseline_pick": "kvyat",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "kvyat",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2020,
+      "round": 8,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2020,
+      "round": 9,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2020,
+      "round": 10,
+      "baseline_pick": "gasly",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "gasly",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2020,
+      "round": 11,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 5,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "sainz",
+      "candidate_actual_pos": 5,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2020,
+      "round": 12,
+      "baseline_pick": "sainz",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "gasly",
+      "candidate_actual_pos": 5,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2020,
+      "round": 13,
+      "baseline_pick": "vettel",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "vettel",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2020,
+      "round": 14,
+      "baseline_pick": "vettel",
+      "baseline_actual_pos": 3,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "gasly",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2020,
+      "round": 15,
+      "baseline_pick": "vettel",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "vettel",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2020,
+      "round": 16,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 2,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 2,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2020,
+      "round": 17,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2021,
+      "round": 1,
+      "baseline_pick": "perez",
+      "baseline_actual_pos": 5,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "perez",
+      "candidate_actual_pos": 5,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2021,
+      "round": 2,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2021,
+      "round": 3,
+      "baseline_pick": "alonso",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "alonso",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2021,
+      "round": 4,
+      "baseline_pick": "giovinazzi",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "giovinazzi",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2021,
+      "round": 5,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2021,
+      "round": 6,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
+    },
+    {
+      "year": 2021,
+      "round": 7,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2021,
+      "round": 8,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 10,
+      "candidate_fantasy_pts": 25
+    },
+    {
+      "year": 2021,
+      "round": 9,
+      "baseline_pick": "alonso",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "alonso",
+      "candidate_actual_pos": 10,
+      "candidate_fantasy_pts": 25
+    },
+    {
+      "year": 2021,
+      "round": 10,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2021,
+      "round": 11,
+      "baseline_pick": "giovinazzi",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "giovinazzi",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2021,
+      "round": 12,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2021,
+      "round": 13,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
+    },
+    {
+      "year": 2021,
+      "round": 14,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2021,
+      "round": 15,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2021,
+      "round": 16,
+      "baseline_pick": "alonso",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "alonso",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2021,
+      "round": 17,
+      "baseline_pick": "giovinazzi",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "giovinazzi",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2021,
+      "round": 18,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2021,
+      "round": 19,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2021,
+      "round": 20,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2021,
+      "round": 21,
+      "baseline_pick": "raikkonen",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "raikkonen",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2021,
+      "round": 22,
+      "baseline_pick": "gasly",
+      "baseline_actual_pos": 5,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "gasly",
+      "candidate_actual_pos": 5,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2022,
+      "round": 1,
+      "baseline_pick": "norris",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "norris",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2022,
+      "round": 2,
+      "baseline_pick": "kevin_magnussen",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "kevin_magnussen",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2022,
+      "round": 3,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2022,
+      "round": 4,
+      "baseline_pick": "mick_schumacher",
+      "baseline_actual_pos": 17,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "mick_schumacher",
+      "candidate_actual_pos": 17,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2022,
+      "round": 5,
+      "baseline_pick": "vettel",
+      "baseline_actual_pos": 17,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "vettel",
+      "candidate_actual_pos": 17,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2022,
+      "round": 6,
+      "baseline_pick": "mick_schumacher",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "mick_schumacher",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2022,
+      "round": 7,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2022,
+      "round": 8,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2022,
+      "round": 9,
+      "baseline_pick": "mick_schumacher",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "mick_schumacher",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
+    },
+    {
+      "year": 2022,
+      "round": 10,
+      "baseline_pick": "gasly",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "gasly",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2022,
+      "round": 11,
+      "baseline_pick": "alonso",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "alonso",
+      "candidate_actual_pos": 10,
+      "candidate_fantasy_pts": 25
+    },
+    {
+      "year": 2022,
+      "round": 12,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2022,
+      "round": 13,
+      "baseline_pick": "zhou",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "zhou",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2022,
+      "round": 14,
+      "baseline_pick": "norris",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "norris",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2022,
+      "round": 15,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2022,
+      "round": 16,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2022,
+      "round": 17,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2022,
+      "round": 18,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2022,
+      "round": 19,
+      "baseline_pick": "vettel",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "vettel",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2022,
+      "round": 20,
+      "baseline_pick": "norris",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "norris",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2022,
+      "round": 21,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2022,
+      "round": 22,
+      "baseline_pick": "norris",
+      "baseline_actual_pos": 6,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "norris",
+      "candidate_actual_pos": 6,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2023,
+      "round": 1,
+      "baseline_pick": "zhou",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "zhou",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2023,
+      "round": 2,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2023,
+      "round": 3,
+      "baseline_pick": "de_vries",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "de_vries",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2023,
+      "round": 4,
+      "baseline_pick": "bottas",
+      "baseline_actual_pos": 18,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "bottas",
+      "candidate_actual_pos": 18,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2023,
+      "round": 5,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2023,
+      "round": 6,
+      "baseline_pick": "albon",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "albon",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2023,
+      "round": 7,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2023,
+      "round": 8,
+      "baseline_pick": "albon",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "albon",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2023,
+      "round": 9,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2023,
+      "round": 10,
+      "baseline_pick": "albon",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "albon",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2023,
+      "round": 11,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2023,
+      "round": 12,
+      "baseline_pick": "piastri",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "piastri",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2023,
+      "round": 13,
+      "baseline_pick": "albon",
+      "baseline_actual_pos": 8,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "albon",
+      "candidate_actual_pos": 8,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2023,
+      "round": 14,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 20,
+      "baseline_fantasy_pts": 0,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 20,
+      "candidate_fantasy_pts": 0
+    },
+    {
+      "year": 2023,
+      "round": 15,
+      "baseline_pick": "lawson",
+      "baseline_actual_pos": 9,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "lawson",
+      "candidate_actual_pos": 9,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2023,
+      "round": 16,
+      "baseline_pick": "lawson",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "lawson",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2023,
+      "round": 17,
+      "baseline_pick": "norris",
+      "baseline_actual_pos": 3,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "norris",
+      "candidate_actual_pos": 3,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2023,
+      "round": 18,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2023,
+      "round": 19,
+      "baseline_pick": "bottas",
+      "baseline_actual_pos": 15,
+      "baseline_fantasy_pts": 8,
+      "candidate_pick": "bottas",
+      "candidate_actual_pos": 15,
+      "candidate_fantasy_pts": 8
+    },
+    {
+      "year": 2023,
+      "round": 20,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "gasly",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2023,
+      "round": 21,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
+    },
+    {
+      "year": 2023,
+      "round": 22,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 10,
+      "candidate_fantasy_pts": 25
+    },
+    {
+      "year": 2024,
+      "round": 1,
+      "baseline_pick": "kevin_magnussen",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "kevin_magnussen",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2024,
+      "round": 2,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
+    },
+    {
+      "year": 2024,
+      "round": 3,
+      "baseline_pick": "albon",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "albon",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2024,
+      "round": 4,
+      "baseline_pick": "tsunoda",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "tsunoda",
+      "candidate_actual_pos": 10,
+      "candidate_fantasy_pts": 25
+    },
+    {
+      "year": 2024,
+      "round": 5,
+      "baseline_pick": "hulkenberg",
+      "baseline_actual_pos": 10,
+      "baseline_fantasy_pts": 25,
+      "candidate_pick": "hulkenberg",
+      "candidate_actual_pos": 10,
+      "candidate_fantasy_pts": 25
+    },
+    {
+      "year": 2024,
+      "round": 6,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 17,
+      "baseline_fantasy_pts": 4,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 17,
+      "candidate_fantasy_pts": 4
+    },
+    {
+      "year": 2024,
+      "round": 7,
+      "baseline_pick": "gasly",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "gasly",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2024,
+      "round": 8,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2024,
+      "round": 9,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2024,
+      "round": 10,
+      "baseline_pick": "bottas",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "bottas",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2024,
+      "round": 11,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 12,
+      "baseline_fantasy_pts": 15,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 12,
+      "candidate_fantasy_pts": 15
+    },
+    {
+      "year": 2024,
+      "round": 12,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 7,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 7,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2024,
+      "round": 13,
+      "baseline_pick": "bottas",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "bottas",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2024,
+      "round": 14,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2024,
+      "round": 15,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2024,
+      "round": 16,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2024,
+      "round": 17,
+      "baseline_pick": "ricciardo",
+      "baseline_actual_pos": 13,
+      "baseline_fantasy_pts": 12,
+      "candidate_pick": "ricciardo",
+      "candidate_actual_pos": 13,
+      "candidate_fantasy_pts": 12
+    },
+    {
+      "year": 2024,
+      "round": 18,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
+    {
+      "year": 2024,
+      "round": 19,
+      "baseline_pick": "albon",
+      "baseline_actual_pos": 16,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "albon",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
+    },
+    {
+      "year": 2024,
+      "round": 20,
+      "baseline_pick": "alonso",
+      "baseline_actual_pos": 18,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "alonso",
+      "candidate_actual_pos": 18,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2024,
+      "round": 21,
+      "baseline_pick": "ocon",
+      "baseline_actual_pos": 2,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "ocon",
+      "candidate_actual_pos": 2,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2024,
+      "round": 22,
+      "baseline_pick": "alonso",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "alonso",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
+    },
+    {
+      "year": 2024,
+      "round": 23,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 18,
+      "baseline_fantasy_pts": 2,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 18,
+      "candidate_fantasy_pts": 2
+    },
+    {
+      "year": 2024,
+      "round": 24,
+      "baseline_pick": "stroll",
+      "baseline_actual_pos": 14,
+      "baseline_fantasy_pts": 10,
+      "candidate_pick": "stroll",
+      "candidate_actual_pos": 14,
+      "candidate_fantasy_pts": 10
+    },
     {
       "year": 2025,
       "round": 1,
@@ -97,12 +1997,12 @@
     {
       "year": 2025,
       "round": 9,
-      "baseline_pick": "albon",
-      "baseline_actual_pos": 19,
-      "baseline_fantasy_pts": 1,
-      "candidate_pick": "albon",
-      "candidate_actual_pos": 19,
-      "candidate_fantasy_pts": 1
+      "baseline_pick": "lawson",
+      "baseline_actual_pos": 11,
+      "baseline_fantasy_pts": 18,
+      "candidate_pick": "lawson",
+      "candidate_actual_pos": 11,
+      "candidate_fantasy_pts": 18
     },
     {
       "year": 2025,
@@ -110,9 +2010,9 @@
       "baseline_pick": "ocon",
       "baseline_actual_pos": 9,
       "baseline_fantasy_pts": 18,
-      "candidate_pick": "ocon",
-      "candidate_actual_pos": 9,
-      "candidate_fantasy_pts": 18
+      "candidate_pick": "hadjar",
+      "candidate_actual_pos": 16,
+      "candidate_fantasy_pts": 6
     },
     {
       "year": 2025,
@@ -187,11 +2087,11 @@
     {
       "year": 2025,
       "round": 18,
-      "baseline_pick": "bearman",
-      "baseline_actual_pos": 9,
+      "baseline_pick": "hadjar",
+      "baseline_actual_pos": 11,
       "baseline_fantasy_pts": 18,
-      "candidate_pick": "bearman",
-      "candidate_actual_pos": 9,
+      "candidate_pick": "hadjar",
+      "candidate_actual_pos": 11,
       "candidate_fantasy_pts": 18
     },
     {
@@ -207,12 +2107,12 @@
     {
       "year": 2025,
       "round": 20,
-      "baseline_pick": "tsunoda",
-      "baseline_actual_pos": 11,
-      "baseline_fantasy_pts": 18,
-      "candidate_pick": "tsunoda",
-      "candidate_actual_pos": 11,
-      "candidate_fantasy_pts": 18
+      "baseline_pick": "bearman",
+      "baseline_actual_pos": 4,
+      "baseline_fantasy_pts": 6,
+      "candidate_pick": "bearman",
+      "candidate_actual_pos": 4,
+      "candidate_fantasy_pts": 6
     },
     {
       "year": 2025,
@@ -237,12 +2137,12 @@
     {
       "year": 2025,
       "round": 23,
-      "baseline_pick": "hulkenberg",
-      "baseline_actual_pos": 20,
-      "baseline_fantasy_pts": 0,
-      "candidate_pick": "hulkenberg",
-      "candidate_actual_pos": 20,
-      "candidate_fantasy_pts": 0
+      "baseline_pick": "bearman",
+      "baseline_actual_pos": 19,
+      "baseline_fantasy_pts": 1,
+      "candidate_pick": "bearman",
+      "candidate_actual_pos": 19,
+      "candidate_fantasy_pts": 1
     },
     {
       "year": 2025,
@@ -257,7 +2157,7 @@
   ],
   "skipped_races": [],
   "inputs": {
-    "checkpoint_count": 1,
+    "checkpoint_count": 10,
     "active_models": [
       "xgb_ranker",
       "lgbm_ranker",

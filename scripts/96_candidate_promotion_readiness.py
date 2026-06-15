@@ -148,6 +148,31 @@ def rank_candidates(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(candidates, key=sort_key, reverse=True)
 
 
+def build_interpretation(candidates: list[dict[str, Any]]) -> dict[str, Any]:
+    eligible = [
+        row for row in candidates
+        if row.get("promotion_status") == "ready_for_promotion_review"
+    ]
+    ranked_eligible = rank_candidates(eligible)
+    leader = ranked_eligible[0] if ranked_eligible else None
+
+    if leader:
+        return {
+            "leader": leader.get("candidate"),
+            "production_change_recommended": True,
+            "reason": "A candidate has cleared holdout, rolling-CV, and live replay gates.",
+        }
+
+    return {
+        "leader": None,
+        "production_change_recommended": False,
+        "reason": (
+            "No candidate has cleared holdout, rolling-CV, and live replay gates; "
+            "production weights should remain unchanged."
+        ),
+    }
+
+
 def build_report() -> dict[str, Any]:
     benchmark = load_json(BENCHMARK)
     best_individual = best_individual_holdout(benchmark)
@@ -170,7 +195,6 @@ def build_report() -> dict[str, Any]:
         ),
     ]
     ranked = rank_candidates(candidates)
-    leader = ranked[0] if ranked else None
 
     return {
         "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
@@ -180,14 +204,7 @@ def build_report() -> dict[str, Any]:
             "candidate_b": rel_path(CANDIDATE_B),
             "candidate_replay_gates": rel_path(CANDIDATE_REPLAY_GATES),
         },
-        "interpretation": {
-            "leader": leader.get("candidate") if leader else None,
-            "production_change_recommended": False,
-            "reason": (
-                "Candidate holdout sweeps are available, but promotion still "
-                "depends on candidate-specific rolling-CV and 2026 live replay gates."
-            ),
-        },
+        "interpretation": build_interpretation(ranked),
         "candidates": ranked,
     }
 
@@ -210,13 +227,15 @@ def next_gate_lines(candidates: list[dict[str, Any]]) -> list[str]:
 
 
 def write_markdown(report: dict[str, Any]) -> str:
+    leader = report["interpretation"]["leader"]
+    leader_text = "none" if leader is None else str(leader)
     lines = [
         "# Candidate Promotion Readiness",
         "",
         f"Generated: {report['generated_at_utc']}",
         "",
         "## Decision",
-        f"- Leading candidate: `{report['interpretation']['leader']}`",
+        f"- Leading candidate: `{leader_text}`",
         f"- Production change recommended: `{report['interpretation']['production_change_recommended']}`",
         f"- Reason: {report['interpretation']['reason']}",
         "",

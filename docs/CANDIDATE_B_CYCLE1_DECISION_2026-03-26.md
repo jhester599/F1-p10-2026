@@ -143,3 +143,27 @@ Next step:
 3. Promote only if the Candidate B configuration improves the balanced
    scorecard without a critical regression on live 2026 outcomes.
 
+## Expanding Replay Update (2026-06-15)
+Candidate B has now been replayed across 10 expanding-window folds after the
+leakage-safe `circ_p10_grid_chaos` refresh.
+
+Command:
+
+```bash
+python scripts/98_candidate_rolling_cv_replay.py --years 2016,2017,2018,2019,2020,2021,2022,2023,2024,2025 --window-size 4
+python scripts/97_candidate_replay_gates.py
+python scripts/96_candidate_promotion_readiness.py
+```
+
+Result:
+- Scope: `214` races across 2016-2025.
+- Baseline replay: `10.4346 avg_pts`.
+- Candidate B replay: `10.3084 avg_pts` (`-0.1262`).
+- Gate status: rolling-CV replay **failed**.
+- The 2025 holdout gain does not generalize across the broader replay sample.
+
+Decision:
+- Do not promote Candidate B stage scales.
+- Future stage or weight research should first beat the expanding checkpoint
+  scorecard, not only the 2025 holdout.
+
