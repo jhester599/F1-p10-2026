@@ -147,3 +147,62 @@ python scripts/66_update_results_automation.py --year 2026 --round 9 --spreadshe
 
 Pass `--spreadsheet-id` more than once to preview multiple leagues locally, or
 set `RESULTS_SPREADSHEET_IDS` to the configured sheet IDs.
+
+---
+
+# GitHub Actions Automation (2026 League Digest Emails)
+
+Participant-facing spoiler digest emails are handled separately from the admin
+update summary:
+
+- Workflow: `.github/workflows/league-digest-2026.yml`
+- Runner script: `scripts/67_send_league_digest.py`
+
+The workflow runs each morning during the season and only proceeds when the
+Jolpica schedule shows an official race on the previous UTC date. Manual runs
+can supply `round_override`.
+
+Digest contents include:
+
+- An obvious SPOILER warning in the subject and top email header.
+- A short race summary and league-specific commentary.
+- A ranked player table with total points and the current race points.
+- A total-points bar chart.
+- A line chart of cumulative league scores by round.
+- Best-effort source links from F1.com and The Race.
+
+Recipients:
+
+- The script reads participant emails from `Form Responses 1`.
+- Each spreadsheet is processed independently, so league recipient lists and
+  standings stay separate.
+- For testing, set `RESULTS_DIGEST_TEST_RECIPIENT` to
+  `jeffrey.r.hester@gmail.com`; this overrides participant recipients while
+  preserving real league data in the email.
+- Scheduled sends default to the test recipient unless
+  `RESULTS_DIGEST_SEND_TO_PARTICIPANTS` is set to `true`.
+- Set `RESULTS_DIGEST_SEND_TO_PARTICIPANTS=true` only after test digest emails
+  are approved for the broader group.
+
+Required repository secrets for live digest email:
+
+- `GOOGLE_SERVICE_ACCOUNT_JSON`
+- `RESULTS_SPREADSHEET_IDS`
+- `RESULTS_SPREADSHEET_ID` for the legacy single-sheet fallback
+- `SMTP_SERVER`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `RESULTS_EMAIL_FROM`
+
+Optional secrets/variables:
+
+- `GEMINI_API_KEY` enables stylized Gemini commentary.
+- `RESULTS_DIGEST_MODEL` can override the default Gemini model.
+- `RESULTS_DIGEST_TEST_RECIPIENT` forces all digest sends to the test address.
+- `RESULTS_DIGEST_SEND_TO_PARTICIPANTS` enables participant-recipient mode when
+  set to `true`.
+
+If Gemini is unavailable, the script uses deterministic fallback commentary and
+still sends the spoiler digest. If SMTP secrets are missing, the workflow runs in
+dry-run mode and uploads the generated HTML/charts as artifacts.
