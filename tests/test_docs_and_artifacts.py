@@ -125,3 +125,24 @@ def test_results_automation_uses_race_result_probe_window() -> None:
     assert "# R07 Barcelona +240m" in workflow
     assert "steps.update_results.outputs.updated_rows != ''" in workflow
     assert '30 22 * 3-12 0,1' not in workflow
+
+
+def test_league_digest_workflow_is_documented_and_wired() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "league-digest-2026.yml").read_text(
+        encoding="utf-8"
+    )
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    automation_docs = (ROOT / "docs" / "GITHUB_ACTIONS_AUTOMATION.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "scripts/67_send_league_digest.py" in workflow
+    assert "GEMINI_API_KEY" in workflow
+    assert "RESULTS_DIGEST_TEST_RECIPIENT" in workflow
+    assert "RESULTS_DIGEST_SEND_TO_PARTICIPANTS" in workflow
+    assert "SPOILER" in workflow
+    assert "scripts/67_send_league_digest.py" in readme
+    assert "GEMINI_API_KEY" in automation_docs
+    assert "RESULTS_DIGEST_TEST_RECIPIENT" in automation_docs
+    assert "RESULTS_DIGEST_SEND_TO_PARTICIPANTS" in automation_docs
+    assert "Form Responses 1" in automation_docs
