@@ -17,6 +17,9 @@ from src.results_automation import detect_results_table_layout
 
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+DEFAULT_DIGEST_MODEL = "gemma-4-26b-a4b-it"
+DEFAULT_DIGEST_FALLBACK_MODEL = "gemini-2.5-flash-lite"
+DEFAULT_DIGEST_LLM_TIMEOUT_SECONDS = 45
 
 
 @dataclass(frozen=True)
@@ -56,6 +59,7 @@ class DigestCommentary:
     race_summary: str
     league_commentary: str
     notable_movements: list[str]
+    provider: str = "fallback"
     provider_note: str | None = None
 
 
@@ -207,6 +211,7 @@ def build_fallback_commentary(digest: LeagueDigest) -> DigestCommentary:
         race_summary=race_summary,
         league_commentary=league_commentary,
         notable_movements=notable,
+        provider="fallback",
     )
 
 
@@ -222,7 +227,10 @@ def _commentary_prompt(digest: LeagueDigest, articles: list[ArticleSource]) -> s
         "style": (
             "Write lively but concise F1 fantasy league commentary. "
             "Mention spoilers are already disclosed by the email header. "
-            "Do not invent facts beyond the supplied race, league, and source data."
+            "Ground the race_summary in the supplied source titles and snippets when available. "
+            "Do not invent facts beyond the supplied race, league, and source data. "
+            "Return only one JSON object with string keys "
+            '"headline", "race_summary", "league_commentary", and array key "notable_movements".'
         ),
     }
     return json.dumps(payload, ensure_ascii=True)
@@ -235,7 +243,62 @@ def _parse_commentary_json(raw: str) -> DigestCommentary:
         race_summary=str(data.get("race_summary", "")).strip(),
         league_commentary=str(data.get("league_commentary", "")).strip(),
         notable_movements=[str(item).strip() for item in data.get("notable_movements", []) if str(item).strip()],
+        provider="gemini",
     )
+
+
+def summarize_gemini_error(exc: Exception, max_length: int = 320) -> str:
+    message = " ".join(str(exc).split())
+    for env_name in ("GEMINI_API_KEY", "GOOGLE_API_KEY"):
+        secret = os.getenv(env_name)
+        if secret:
+            message = message.replace(secret, f"[REDACTED_{env_name}]")
+    summary = f"{exc.__class__.__name__}: {message}" if message else exc.__class__.__name__
+    if len(summary) > max_length:
+        return summary[: max_length - 3].rstrip() + "..."
+    return summary
+
+
+def digest_llm_timeout_ms() -> int:
+    raw = os.getenv("RESULTS_DIGEST_LLM_TIMEOUT_SECONDS", "").strip()
+    if not raw:
+        return DEFAULT_DIGEST_LLM_TIMEOUT_SECONDS * 1000
+    try:
+        seconds = int(raw)
+    except ValueError:
+        return DEFAULT_DIGEST_LLM_TIMEOUT_SECONDS * 1000
+    return max(1, seconds) * 1000
+
+
+def digest_model_sequence(model: str | None = None) -> list[str]:
+    explicit_model = model or os.getenv("RESULTS_DIGEST_MODEL", "").strip()
+    if explicit_model:
+        return [explicit_model]
+    return [DEFAULT_DIGEST_MODEL, DEFAULT_DIGEST_FALLBACK_MODEL]
+
+
+def is_gemma_model(model_name: str) -> bool:
+    return model_name.lower().startswith("gemma-")
+
+
+def commentary_generation_config(model_name: str) -> dict[str, Any]:
+    config: dict[str, Any] = {"response_mime_type": "application/json"}
+    if is_gemma_model(model_name):
+        return config
+    config["response_schema"] = {
+        "type": "object",
+        "properties": {
+            "headline": {"type": "string"},
+            "race_summary": {"type": "string"},
+            "league_commentary": {"type": "string"},
+            "notable_movements": {
+                "type": "array",
+                "items": {"type": "string"},
+            },
+        },
+        "required": ["headline", "race_summary", "league_commentary", "notable_movements"],
+    }
+    return config
 
 
 def request_gemini_commentary(
@@ -245,46 +308,53 @@ def request_gemini_commentary(
     client: Any | None = None,
     model: str | None = None,
 ) -> DigestCommentary:
-    model_name = model or os.getenv("RESULTS_DIGEST_MODEL") or "gemini-2.5-flash-lite"
+    model_names = digest_model_sequence(model)
+    last_error: Exception | None = None
     try:
         if client is None:
             if not os.getenv("GEMINI_API_KEY") and not os.getenv("GOOGLE_API_KEY"):
                 raise RuntimeError("GEMINI_API_KEY is not configured")
             from google import genai
+            from google.genai import types
 
-            client = genai.Client()
-        response = client.models.generate_content(
-            model=model_name,
-            contents=_commentary_prompt(digest, articles),
-            config={
-                "response_mime_type": "application/json",
-                "response_schema": {
-                    "type": "object",
-                    "properties": {
-                        "headline": {"type": "string"},
-                        "race_summary": {"type": "string"},
-                        "league_commentary": {"type": "string"},
-                        "notable_movements": {
-                            "type": "array",
-                            "items": {"type": "string"},
-                        },
-                    },
-                    "required": ["headline", "race_summary", "league_commentary", "notable_movements"],
-                },
-            },
-        )
-        commentary = _parse_commentary_json(response.text)
-        if commentary.headline and commentary.race_summary and commentary.league_commentary:
-            return commentary
-        raise ValueError("Gemini response omitted required prose")
-    except Exception:
+            client = genai.Client(
+                http_options=types.HttpOptions(timeout=digest_llm_timeout_ms())
+            )
+        for model_name in model_names:
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=_commentary_prompt(digest, articles),
+                    config=commentary_generation_config(model_name),
+                )
+                commentary = _parse_commentary_json(response.text)
+                if commentary.headline and commentary.race_summary and commentary.league_commentary:
+                    return DigestCommentary(
+                        headline=commentary.headline,
+                        race_summary=commentary.race_summary,
+                        league_commentary=commentary.league_commentary,
+                        notable_movements=commentary.notable_movements,
+                        provider="gemini",
+                        provider_note=f"Gemini model {model_name} generated this commentary.",
+                    )
+                raise ValueError("Gemini response omitted required prose")
+            except Exception as exc:
+                last_error = exc
+        if last_error:
+            raise last_error
+        raise RuntimeError("No Gemini models configured")
+    except Exception as exc:
         fallback = build_fallback_commentary(digest)
         return DigestCommentary(
             headline=fallback.headline,
             race_summary=fallback.race_summary,
             league_commentary=fallback.league_commentary,
             notable_movements=fallback.notable_movements,
-            provider_note="Gemini commentary unavailable; used deterministic fallback.",
+            provider="fallback",
+            provider_note=(
+                "Gemini commentary unavailable; used deterministic fallback. "
+                f"Gemini error: {summarize_gemini_error(exc)}"
+            ),
         )
 
 

@@ -140,6 +140,8 @@ def test_league_digest_workflow_is_documented_and_wired() -> None:
     assert "GEMINI_API_KEY" in workflow
     assert "RESULTS_DIGEST_TEST_RECIPIENT" in workflow
     assert "RESULTS_DIGEST_SEND_TO_PARTICIPANTS" in workflow
+    assert '[ -n "$SMTP_USERNAME" ]' in workflow
+    assert '[ -n "$RESULTS_EMAIL_FROM" ]' not in workflow
     assert "SPOILER" in workflow
     assert "scripts/67_send_league_digest.py" in readme
     assert "GEMINI_API_KEY" in automation_docs
