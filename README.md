@@ -292,10 +292,11 @@ Required secrets:
 - `SMTP_PORT`
 - `SMTP_USERNAME`
 - `SMTP_PASSWORD`
-- `RESULTS_EMAIL_FROM`
+- `RESULTS_EMAIL_FROM` optional sender override; defaults to `SMTP_USERNAME`
 - `RESULTS_EMAIL_TO`
 
-Share each Google Sheet with the `client_email` from the service-account JSON
+Enable the Google Sheets API in the Google Cloud project that owns the service
+account key, then share each Google Sheet with the `client_email` from that key
 before enabling scheduled writes. The workflow sends one results email only when
 rows are actually updated across the configured sheets.
 
@@ -317,16 +318,29 @@ address unless `RESULTS_DIGEST_SEND_TO_PARTICIPANTS` is set to `true`.
 
 GitHub Actions workflow: `.github/workflows/league-digest-2026.yml`.
 
+For manual workflow dispatch, set `round_override` to the numeric sheet round
+only, such as `9`, not `R9`.
+
 Optional Gemini commentary:
 
 - `GEMINI_API_KEY`
 - `RESULTS_DIGEST_MODEL` repository variable, defaulting in code to
-  `gemini-2.5-flash-lite`
+  `gemma-4-26b-a4b-it` first, then `gemini-2.5-flash-lite` if the default
+  Gemma model times out or errors
+- `RESULTS_DIGEST_LLM_TIMEOUT_SECONDS` repository variable, defaulting to `45`
 - `RESULTS_DIGEST_SEND_TO_PARTICIPANTS` repository variable, set to `true` only
   after test emails are approved
 
+The digest workflow uses the same Google Sheets service account, so that key's
+Google Cloud project also needs the Google Sheets API enabled.
+
 If Gemini is unavailable or quota-limited, the email still sends with fallback
-commentary. Race article links are fetched best-effort from F1.com and The Race.
+commentary. The workflow log records `commentary_provider=gemini` or
+`commentary_provider=fallback` for each league. Race article links are fetched
+best-effort from F1.com and The Race, and search result snippets are supplied to
+the model as source context for the race summary. Gemma models use prompt-only
+JSON mode because Google's structured-output supported-model list covers Gemini
+models but not hosted Gemma models.
 
 ---
 

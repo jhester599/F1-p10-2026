@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       round_override:
-        description: "Optional sheet round number override for manual runs"
+        description: "Optional numeric sheet round override for manual runs, for example 9 not R9"
         required: false
         type: string
       dry_run:
@@ -125,7 +125,7 @@ jobs:
           else
             echo "sheet_ready=false" >> "$GITHUB_OUTPUT"
           fi
-          if [ -n "$SMTP_SERVER" ] && [ -n "$SMTP_PORT" ] && [ -n "$SMTP_USERNAME" ] && [ -n "$SMTP_PASSWORD" ] && [ -n "$RESULTS_EMAIL_FROM" ]; then
+          if [ -n "$SMTP_SERVER" ] && [ -n "$SMTP_PORT" ] && [ -n "$SMTP_USERNAME" ] && [ -n "$SMTP_PASSWORD" ]; then
             echo "email_ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "email_ready=false" >> "$GITHUB_OUTPUT"

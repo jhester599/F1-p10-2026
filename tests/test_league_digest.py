@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -7,6 +8,7 @@ from src.league_digest import (
     DigestCommentary,
     LeagueDigest,
     PlayerStanding,
+    _commentary_prompt,
     build_fallback_commentary,
     build_spoiler_subject,
     extract_participant_emails,
@@ -14,6 +16,7 @@ from src.league_digest import (
     render_digest_html,
     render_league_charts,
     request_gemini_commentary,
+    summarize_gemini_error,
 )
 
 
@@ -133,6 +136,70 @@ def test_request_gemini_commentary_uses_client_json() -> None:
 
     assert commentary.headline == "A lively P10 shake-up"
     assert commentary.notable_movements == ["Move one"]
+    assert commentary.provider == "gemini"
+    assert commentary.provider_note == "Gemini model gemini-test generated this commentary."
+
+
+def test_request_gemini_commentary_uses_prompt_json_for_gemma_models() -> None:
+    captured: dict[str, object] = {}
+
+    class FakeResponse:
+        text = (
+            '{"headline":"Gemma JSON","race_summary":"Race prose",'
+            '"league_commentary":"League prose","notable_movements":[]}'
+        )
+
+    class FakeModels:
+        def generate_content(self, **kwargs):
+            captured.update(kwargs)
+            return FakeResponse()
+
+    class FakeClient:
+        models = FakeModels()
+
+    digest = parse_league_digest(
+        results_values=sample_results_values(),
+        sheet_round=7,
+        race_name="Barcelona Grand Prix",
+        p10_driver="Franco Colapinto",
+    )
+
+    request_gemini_commentary(digest, [], client=FakeClient(), model="gemma-4-26b-a4b-it")
+
+    assert captured["config"] == {"response_mime_type": "application/json"}
+    prompt_payload = json.loads(captured["contents"])
+    assert '"headline"' in prompt_payload["style"]
+    assert "Return only one JSON object" in prompt_payload["style"]
+
+
+def test_request_gemini_commentary_uses_response_schema_for_gemini_models() -> None:
+    captured: dict[str, object] = {}
+
+    class FakeResponse:
+        text = (
+            '{"headline":"Gemini JSON","race_summary":"Race prose",'
+            '"league_commentary":"League prose","notable_movements":[]}'
+        )
+
+    class FakeModels:
+        def generate_content(self, **kwargs):
+            captured.update(kwargs)
+            return FakeResponse()
+
+    class FakeClient:
+        models = FakeModels()
+
+    digest = parse_league_digest(
+        results_values=sample_results_values(),
+        sheet_round=7,
+        race_name="Barcelona Grand Prix",
+        p10_driver="Franco Colapinto",
+    )
+
+    request_gemini_commentary(digest, [], client=FakeClient(), model="gemini-2.5-flash-lite")
+
+    assert captured["config"]["response_mime_type"] == "application/json"
+    assert "response_schema" in captured["config"]
 
 
 def test_request_gemini_commentary_uses_default_model_when_env_empty(monkeypatch) -> None:
@@ -162,7 +229,98 @@ def test_request_gemini_commentary_uses_default_model_when_env_empty(monkeypatch
 
     request_gemini_commentary(digest, [], client=FakeClient())
 
-    assert captured["model"] == "gemini-2.5-flash-lite"
+    assert captured["model"] == "gemma-4-26b-a4b-it"
+
+
+def test_request_gemini_commentary_tries_flash_lite_after_gemma_error(monkeypatch) -> None:
+    captured_models: list[str] = []
+
+    class FakeResponse:
+        text = (
+            '{"headline":"Flash fallback","race_summary":"Race prose",'
+            '"league_commentary":"League prose","notable_movements":[]}'
+        )
+
+    class FakeModels:
+        def generate_content(self, **kwargs):
+            captured_models.append(kwargs["model"])
+            if kwargs["model"] == "gemma-4-26b-a4b-it":
+                raise RuntimeError("deadline")
+            return FakeResponse()
+
+    class FakeClient:
+        models = FakeModels()
+
+    monkeypatch.setenv("RESULTS_DIGEST_MODEL", "")
+    digest = parse_league_digest(
+        results_values=sample_results_values(),
+        sheet_round=7,
+        race_name="Barcelona Grand Prix",
+        p10_driver="Franco Colapinto",
+    )
+
+    commentary = request_gemini_commentary(digest, [], client=FakeClient())
+
+    assert captured_models == ["gemma-4-26b-a4b-it", "gemini-2.5-flash-lite"]
+    assert commentary.headline == "Flash fallback"
+    assert commentary.provider_note == "Gemini model gemini-2.5-flash-lite generated this commentary."
+
+
+def test_request_gemini_commentary_configures_client_timeout(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class FakeResponse:
+        text = (
+            '{"headline":"Timeout model","race_summary":"Race prose",'
+            '"league_commentary":"League prose","notable_movements":[]}'
+        )
+
+    class FakeModels:
+        def generate_content(self, **kwargs):
+            return FakeResponse()
+
+    class FakeClient:
+        models = FakeModels()
+
+        def __init__(self, **kwargs):
+            captured.update(kwargs)
+
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    monkeypatch.setattr("google.genai.Client", FakeClient)
+    digest = parse_league_digest(
+        results_values=sample_results_values(),
+        sheet_round=7,
+        race_name="Barcelona Grand Prix",
+        p10_driver="Franco Colapinto",
+    )
+
+    request_gemini_commentary(digest, [])
+
+    assert captured["http_options"].timeout == 45_000
+
+
+def test_commentary_prompt_grounds_race_summary_in_source_snippets() -> None:
+    digest = parse_league_digest(
+        results_values=sample_results_values(),
+        sheet_round=7,
+        race_name="Barcelona Grand Prix",
+        p10_driver="Franco Colapinto",
+    )
+
+    prompt = _commentary_prompt(
+        digest,
+        [
+            ArticleSource(
+                "F1.com",
+                "Barcelona race report",
+                "https://formula1.com/report",
+                "Hamilton controlled the late restart while Colapinto held P10.",
+            )
+        ],
+    )
+
+    assert "Ground the race_summary in the supplied source titles and snippets" in prompt
+    assert "Hamilton controlled the late restart" in prompt
 
 
 def test_request_gemini_commentary_falls_back_on_error() -> None:
@@ -183,7 +341,18 @@ def test_request_gemini_commentary_falls_back_on_error() -> None:
     commentary = request_gemini_commentary(digest, [], client=BrokenClient(), model="gemini-test")
 
     assert commentary.headline.startswith("Barcelona Grand Prix")
-    assert commentary.provider_note == "Gemini commentary unavailable; used deterministic fallback."
+    assert commentary.provider == "fallback"
+    assert commentary.provider_note == (
+        "Gemini commentary unavailable; used deterministic fallback. "
+        "Gemini error: RuntimeError: quota"
+    )
+
+
+def test_summarize_gemini_error_redacts_configured_api_key(monkeypatch) -> None:
+    monkeypatch.setenv("GEMINI_API_KEY", "abc123-secret")
+    exc = RuntimeError("request failed for abc123-secret\nwith more detail")
+
+    assert summarize_gemini_error(exc) == "RuntimeError: request failed for [REDACTED_GEMINI_API_KEY] with more detail"
 
 
 def test_render_league_charts_writes_png_files(tmp_path: Path) -> None:

@@ -111,7 +111,7 @@ Required repository secrets:
 - `SMTP_PORT`
 - `SMTP_USERNAME`
 - `SMTP_PASSWORD`
-- `RESULTS_EMAIL_FROM`
+- `RESULTS_EMAIL_FROM` optional sender override; defaults to `SMTP_USERNAME`
 - `RESULTS_EMAIL_TO`
 
 `GOOGLE_SERVICE_ACCOUNT_JSON` may be raw JSON or base64-encoded JSON.
@@ -160,7 +160,8 @@ update summary:
 
 The workflow runs each morning during the season and only proceeds when the
 Jolpica schedule shows an official race on the previous UTC date. Manual runs
-can supply `round_override`.
+can supply `round_override`; use the numeric sheet round only, such as `9`, not
+`R9`.
 
 Digest contents include:
 
@@ -195,14 +196,28 @@ Required repository secrets for live digest email:
 - `SMTP_PASSWORD`
 - `RESULTS_EMAIL_FROM`
 
+The Google Sheets API must be enabled in the Google Cloud project that owns the
+service account key, and each target spreadsheet must be shared with that
+service account's `client_email`.
+
 Optional secrets/variables:
 
 - `GEMINI_API_KEY` enables stylized Gemini commentary.
-- `RESULTS_DIGEST_MODEL` can override the default Gemini model.
+- `RESULTS_DIGEST_MODEL` can override the default Gemini API model sequence.
+  Without an override, the script tries `gemma-4-26b-a4b-it` first, then
+  `gemini-2.5-flash-lite` if Gemma times out or errors.
+- `RESULTS_DIGEST_LLM_TIMEOUT_SECONDS` can override the default 45-second
+  commentary request timeout.
 - `RESULTS_DIGEST_TEST_RECIPIENT` forces all digest sends to the test address.
 - `RESULTS_DIGEST_SEND_TO_PARTICIPANTS` enables participant-recipient mode when
   set to `true`.
 
 If Gemini is unavailable, the script uses deterministic fallback commentary and
-still sends the spoiler digest. If SMTP secrets are missing, the workflow runs in
-dry-run mode and uploads the generated HTML/charts as artifacts.
+still sends the spoiler digest. The workflow log prints
+`commentary_provider=gemini` or `commentary_provider=fallback` for each league.
+Best-effort F1.com and The Race search result snippets are supplied to the model
+as source context for the race summary. Gemma models use prompt-only JSON mode;
+schema-constrained structured output remains enabled for Gemini models that
+support it.
+If SMTP secrets are missing, the workflow runs in dry-run mode and uploads the
+generated HTML/charts as artifacts.
