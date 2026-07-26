@@ -1,0 +1,210 @@
+name: 2026 Qualifying Prediction Alert
+
+on:
+  workflow_dispatch:
+    inputs:
+      round_override:
+        description: "Round number to check (required for manual runs, e.g. 11 for Hungary)"
+        required: false
+        type: string
+  schedule:
+    # 2026-specific cron checks, one per race weekend, at qualifying +360 minutes
+    # (6 hours). Each entry checks whether that round's prediction file exists;
+    # if the qualifying-predictions-2026.yml automation never produced one
+    # (e.g. delayed results data exhausted all of its +90..+240 retry probes),
+    # this sends an alert email so a manual run can be triggered instead of the
+    # gap going unnoticed.
+    # Note: GitHub cron has no year field; these entries will still trigger in
+    # future years, but the preflight gate below enforces the 2026 published
+    # schedule window.
+    # R01 Australian +360m (6h post-qualifying)
+    - cron: "0 11 7 3 *"
+    # R02 Chinese +360m (6h post-qualifying)
+    - cron: "0 13 14 3 *"
+    # R03 Japanese +360m (6h post-qualifying)
+    - cron: "0 12 28 3 *"
+    # R04 Miami +360m (6h post-qualifying)
+    - cron: "0 2 3 5 *"
+    # R05 Canadian +360m (6h post-qualifying)
+    - cron: "0 2 24 5 *"
+    # R06 Monaco +360m (6h post-qualifying)
+    - cron: "0 20 6 6 *"
+    # R07 Barcelona-Catalunya +360m (6h post-qualifying)
+    - cron: "0 20 13 6 *"
+    # R08 Austrian +360m (6h post-qualifying)
+    - cron: "0 20 27 6 *"
+    # R09 British +360m (6h post-qualifying)
+    - cron: "0 21 4 7 *"
+    # R10 Belgian +360m (6h post-qualifying)
+    - cron: "0 20 18 7 *"
+    # R11 Hungarian +360m (6h post-qualifying)
+    - cron: "0 20 25 7 *"
+    # R12 Dutch +360m (6h post-qualifying)
+    - cron: "0 20 22 8 *"
+    # R13 Italian +360m (6h post-qualifying)
+    - cron: "0 20 5 9 *"
+    # R14 Spanish +360m (6h post-qualifying)
+    - cron: "0 20 12 9 *"
+    # R15 Azerbaijan +360m (6h post-qualifying)
+    - cron: "0 18 25 9 *"
+    # R16 Singapore +360m (6h post-qualifying)
+    - cron: "0 19 10 10 *"
+    # R17 United States +360m (6h post-qualifying)
+    - cron: "0 3 25 10 *"
+    # R18 Mexican +360m (6h post-qualifying)
+    - cron: "0 3 1 11 *"
+    # R19 Brazilian +360m (6h post-qualifying)
+    - cron: "0 0 8 11 *"
+    # R20 Las Vegas +360m (6h post-qualifying)
+    - cron: "0 10 21 11 *"
+    # R21 Qatar +360m (6h post-qualifying)
+    - cron: "0 0 29 11 *"
+    # R22 Abu Dhabi +360m (6h post-qualifying)
+    - cron: "0 20 5 12 *"
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+concurrency:
+  group: qualifying-prediction-alert-2026
+  cancel-in-progress: false
+
+jobs:
+  check-and-alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine round in alert window
+        id: preflight
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ROUND_OVERRIDE: ${{ inputs.round_override }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timedelta, timezone
+          from urllib.request import urlopen
+
+          def write_output(**values):
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+                  for key, value in values.items():
+                      handle.write(f"{key}={value}\n")
+
+          event_name = os.environ.get("EVENT_NAME", "")
+          round_override = os.environ.get("ROUND_OVERRIDE", "").strip()
+
+          year = 2026
+          offset_minutes = 360
+          window_minutes = 90
+          schedule_url = f"https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json"
+
+          with urlopen(schedule_url, timeout=30) as resp:
+              payload = json.loads(resp.read().decode("utf-8"))
+
+          races = {
+              int(race["round"]): race
+              for race in payload.get("races", [])
+              if not race.get("canceled")
+          }
+
+          if event_name != "schedule":
+              if round_override:
+                  rnd = int(round_override)
+                  race = races.get(rnd)
+                  name = race["name"] if race else f"Round {rnd}"
+                  write_output(run_full="true", round=str(rnd), race_name=name, skip_reason="")
+              else:
+                  write_output(run_full="false", round="", race_name="", skip_reason="Manual run requires round_override.")
+              raise SystemExit(0)
+
+          now = datetime.now(timezone.utc)
+          for rnd, race in races.items():
+              q = race.get("sessions", {}).get("qualifying")
+              if not q:
+                  continue
+              qdt = datetime.fromisoformat(q.replace("Z", "+00:00"))
+              window_start = qdt + timedelta(minutes=offset_minutes)
+              window_end = window_start + timedelta(minutes=window_minutes)
+              if window_start <= now <= window_end:
+                  write_output(run_full="true", round=str(rnd), race_name=race.get("name", f"Round {rnd}"), skip_reason="")
+                  raise SystemExit(0)
+
+          write_output(run_full="false", round="", race_name="", skip_reason="Not in qualifying+360..+450 window.")
+          PY
+
+      - name: Preflight skip notice
+        if: steps.preflight.outputs.run_full != 'true'
+        run: |
+          echo "Skipping alert check."
+          echo "Reason: ${{ steps.preflight.outputs.skip_reason }}"
+
+      - name: Check for existing prediction file
+        id: check
+        if: steps.preflight.outputs.run_full == 'true'
+        run: |
+          ROUND="${{ steps.preflight.outputs.round }}"
+          PADDED=$(printf '%02d' "$ROUND")
+          FILE="results/prediction_2026_R${PADDED}.csv"
+          if [ -f "$FILE" ]; then
+            echo "missing=false" >> "$GITHUB_OUTPUT"
+            echo "Prediction file $FILE already exists; no alert needed."
+          else
+            echo "missing=true" >> "$GITHUB_OUTPUT"
+            echo "Prediction file $FILE is missing 6+ hours after qualifying."
+          fi
+
+      - name: Check email secret configuration
+        id: email_cfg
+        if: steps.check.outputs.missing == 'true'
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          PREDICTION_EMAIL_TO: ${{ secrets.PREDICTION_EMAIL_TO }}
+          PREDICTION_EMAIL_FROM: ${{ secrets.PREDICTION_EMAIL_FROM }}
+        run: |
+          if [ -n "$SMTP_SERVER" ] && [ -n "$SMTP_PORT" ] && [ -n "$SMTP_USERNAME" ] && [ -n "$SMTP_PASSWORD" ] && [ -n "$PREDICTION_EMAIL_TO" ] && [ -n "$PREDICTION_EMAIL_FROM" ]; then
+            echo "email_ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "email_ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send missing-prediction alert email
+        if: steps.check.outputs.missing == 'true' && steps.email_cfg.outputs.email_ready == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "ALERT: 2026 R${{ steps.preflight.outputs.round }} (${{ steps.preflight.outputs.race_name }}) qualifying prediction has NOT arrived"
+          to: ${{ secrets.PREDICTION_EMAIL_TO }}
+          from: ${{ secrets.PREDICTION_EMAIL_FROM }}
+          body: |
+            It has been 6+ hours since qualifying for 2026 Round ${{ steps.preflight.outputs.round }} (${{ steps.preflight.outputs.race_name }}), and no prediction file was found in results/.
+
+            The qualifying-predictions-2026.yml automation likely ran out of retry probes (it checks at qualifying +90/+120/+150/+180/+210/+240 minutes) without finding published qualifying results.
+
+            To generate it now, manually run the "2026 Qualifying Predictions" workflow (workflow_dispatch) with round_override=${{ steps.preflight.outputs.round }} at:
+            https://github.com/${{ github.repository }}/actions/workflows/qualifying-predictions-2026.yml
+
+            This alert run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Missing email secrets notice
+        if: steps.check.outputs.missing == 'true' && steps.email_cfg.outputs.email_ready == 'false'
+        run: |
+          echo "Prediction is missing 6+ hours after qualifying, but alert email secrets are missing."
+          echo "See docs/GITHUB_ACTIONS_AUTOMATION.md for required secrets."
+
+      - name: No alert needed notice
+        if: steps.check.outputs.missing == 'false'
+        run: |
+          echo "Prediction already exists for this round; no alert needed."
