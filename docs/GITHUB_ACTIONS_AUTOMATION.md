@@ -10,14 +10,25 @@ The workflow runs on a schedule, aligns execution to published qualifying times,
 ## Timing Logic
 
 - Source schedule template: `https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json` (f1calendar data source)
-- Scheduled workflow uses explicit 2026 cron probe entries at qualifying `+60`, `+75`, and `+90` minutes (UTC) for each race.
+- Scheduled workflow uses explicit 2026 cron probe entries at qualifying `+90`, `+120`, `+150`, `+180`, `+210`, and `+240` minutes (UTC) for each race.
+  - Probes intentionally start at `+90` rather than `+60`/`+75`: Ergast/FastF1 qualifying results are rarely published that early, and the tighter early-only cadence used previously (`+60`/`+75`/`+90`) sometimes exhausted every retry before results were live, leaving that round's prediction (and email) never generated.
 - On scheduled runs, predictions execute only when current UTC time is inside:
   - `qualifying_time + 90 minutes` to `qualifying_time + 240 minutes` (`+90..+240`)
-- This keeps the intended post-qualifying run round-specific while giving upstream qualifying data up to 4 hours after session start to publish.
+- This keeps the intended post-qualifying run round-specific while giving upstream qualifying data up to 4 hours after session start to publish, with six real chances (every 30 minutes) to catch a late publish instead of three chances bunched in the first half hour.
 - A preflight gate runs before Python dependency setup:
   - If the round CSV already exists, later scheduled probes skip gracefully.
 - Note: GitHub cron has no year field. The workflow is effectively 2026-specific because the runner script gates execution against the 2026 published schedule window.
 - Reference schedule export: `docs/2026_qualifying_workflow_windows.csv`
+
+## Missing-Prediction Alert
+
+- Workflow: `.github/workflows/qualifying-prediction-alert-2026.yml`
+- A separate, lightweight check (no model dependencies) fires once per race weekend at qualifying `+360` minutes (6 hours).
+- It looks up the round whose qualifying session is in that window, then checks whether `results/prediction_2026_RXX.csv` exists.
+  - If the file exists, it exits quietly — no email, no noise.
+  - If the file is missing (all six `+90..+240` retry probes were exhausted without results ever publishing), it sends an alert email using the same `PREDICTION_EMAIL_*`/`SMTP_*` secrets as the main workflow, with a direct link to manually dispatch `qualifying-predictions-2026.yml` with the correct `round_override`.
+- Manual runs require `round_override` (e.g. `11` for Hungary); without it, a manual dispatch skips the check rather than guessing a round.
+- If alert email secrets are missing, the run just logs that the prediction is missing and secrets aren't configured — same "generate without email" tolerance as the main workflow.
 
 ## CI Caching
 
