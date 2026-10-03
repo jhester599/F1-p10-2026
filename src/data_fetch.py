@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import logging
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
@@ -124,7 +125,16 @@ class F1Fetcher:
     # ── public API ────────────────────────────────────────────────────────────
 
     def schedule(self, year: int) -> list[dict]:
-        """Return list of race dicts for a season."""
+        """Return list of race dicts for a season.
+
+        The in-progress season's calendar is re-fetched live (falling back to
+        the cache) because rounds can be inserted or renumbered mid-season,
+        and a stale cached calendar maps round numbers to the wrong circuit.
+        """
+        if year >= datetime.now(timezone.utc).year:
+            races = self._mrdata(str(year), "RaceTable", "Races", use_cache=False)
+            if races:
+                return races
         return self._mrdata(str(year), "RaceTable", "Races")
 
     def qualifying(self, year: int, rnd: int) -> list[dict]:
