@@ -8,59 +8,62 @@ on:
         required: false
         type: string
   schedule:
-    # 2026-specific cron checks, one per race weekend, at qualifying +360 minutes
-    # (6 hours). Each entry checks whether that round's prediction file exists;
-    # if the qualifying-predictions-2026.yml automation never produced one
-    # (e.g. delayed results data exhausted all of its +90..+240 retry probes),
-    # this sends an alert email so a manual run can be triggered instead of the
-    # gap going unnoticed.
+    # 2026-specific cron checks, one per race weekend, at qualifying +780 minutes
+    # (13 hours), i.e. after the last qualifying-predictions-2026.yml probe
+    # (+720). Each entry checks whether that round's prediction file exists;
+    # if the automation never produced one (e.g. delayed results data or
+    # delayed GitHub cron runs exhausted all of its +90..+720 retry probes),
+    # this sends an alert email so a manual run can be triggered before the
+    # race instead of the gap going unnoticed.
     # Note: GitHub cron has no year field; these entries will still trigger in
     # future years, but the preflight gate below enforces the 2026 published
     # schedule window.
-    # R01 Australian +360m (6h post-qualifying)
-    - cron: "0 11 7 3 *"
-    # R02 Chinese +360m (6h post-qualifying)
-    - cron: "0 13 14 3 *"
-    # R03 Japanese +360m (6h post-qualifying)
-    - cron: "0 12 28 3 *"
-    # R04 Miami +360m (6h post-qualifying)
-    - cron: "0 2 3 5 *"
-    # R05 Canadian +360m (6h post-qualifying)
-    - cron: "0 2 24 5 *"
-    # R06 Monaco +360m (6h post-qualifying)
-    - cron: "0 20 6 6 *"
-    # R07 Barcelona-Catalunya +360m (6h post-qualifying)
-    - cron: "0 20 13 6 *"
-    # R08 Austrian +360m (6h post-qualifying)
-    - cron: "0 20 27 6 *"
-    # R09 British +360m (6h post-qualifying)
-    - cron: "0 21 4 7 *"
-    # R10 Belgian +360m (6h post-qualifying)
-    - cron: "0 20 18 7 *"
-    # R11 Hungarian +360m (6h post-qualifying)
-    - cron: "0 20 25 7 *"
-    # R12 Dutch +360m (6h post-qualifying)
-    - cron: "0 20 22 8 *"
-    # R13 Italian +360m (6h post-qualifying)
-    - cron: "0 20 5 9 *"
-    # R14 Spanish +360m (6h post-qualifying)
-    - cron: "0 20 12 9 *"
-    # R15 Azerbaijan +360m (6h post-qualifying)
-    - cron: "0 18 25 9 *"
-    # R16 Singapore +360m (6h post-qualifying)
-    - cron: "0 19 10 10 *"
-    # R17 United States +360m (6h post-qualifying)
-    - cron: "0 3 25 10 *"
-    # R18 Mexican +360m (6h post-qualifying)
-    - cron: "0 3 1 11 *"
-    # R19 Brazilian +360m (6h post-qualifying)
-    - cron: "0 0 8 11 *"
-    # R20 Las Vegas +360m (6h post-qualifying)
-    - cron: "0 10 21 11 *"
-    # R21 Qatar +360m (6h post-qualifying)
-    - cron: "0 0 29 11 *"
-    # R22 Abu Dhabi +360m (6h post-qualifying)
-    - cron: "0 20 5 12 *"
+    # R01 Australian +780m (13h post-qualifying)
+    - cron: "0 18 7 3 *"
+    # R02 Chinese +780m (13h post-qualifying)
+    - cron: "0 20 14 3 *"
+    # R03 Japanese +780m (13h post-qualifying)
+    - cron: "0 19 28 3 *"
+    # R04 Miami +780m (13h post-qualifying)
+    - cron: "0 9 3 5 *"
+    # R05 Canadian +780m (13h post-qualifying)
+    - cron: "0 9 24 5 *"
+    # R06 Monaco +780m (13h post-qualifying)
+    - cron: "0 3 7 6 *"
+    # R07 Barcelona-Catalunya +780m (13h post-qualifying)
+    - cron: "0 3 14 6 *"
+    # R08 Austrian +780m (13h post-qualifying)
+    - cron: "0 3 28 6 *"
+    # R09 British +780m (13h post-qualifying)
+    - cron: "0 4 5 7 *"
+    # R10 Belgian +780m (13h post-qualifying)
+    - cron: "0 3 19 7 *"
+    # R11 Hungarian +780m (13h post-qualifying)
+    - cron: "0 3 26 7 *"
+    # R12 Dutch +780m (13h post-qualifying)
+    - cron: "0 3 23 8 *"
+    # R13 Italian +780m (13h post-qualifying)
+    - cron: "0 3 6 9 *"
+    # R14 Spanish +780m (13h post-qualifying)
+    - cron: "0 3 13 9 *"
+    # R15 Azerbaijan +780m (13h post-qualifying)
+    - cron: "0 1 26 9 *"
+    # R16 Bahrain Grand Prix (Malaysia) +780m (13h post-qualifying)
+    - cron: "0 21 3 10 *"
+    # R17 Singapore +780m (13h post-qualifying)
+    - cron: "0 2 11 10 *"
+    # R18 United States +780m (13h post-qualifying)
+    - cron: "0 10 25 10 *"
+    # R19 Mexican +780m (13h post-qualifying)
+    - cron: "0 10 1 11 *"
+    # R20 Brazilian +780m (13h post-qualifying)
+    - cron: "0 7 8 11 *"
+    # R21 Las Vegas +780m (13h post-qualifying)
+    - cron: "0 17 21 11 *"
+    # R22 Qatar +780m (13h post-qualifying)
+    - cron: "0 7 29 11 *"
+    # R23 Abu Dhabi +780m (13h post-qualifying)
+    - cron: "0 3 6 12 *"
 
 permissions:
   contents: read
@@ -101,8 +104,8 @@ jobs:
           round_override = os.environ.get("ROUND_OVERRIDE", "").strip()
 
           year = 2026
-          offset_minutes = 360
-          window_minutes = 90
+          offset_minutes = 780
+          window_minutes = 360
           schedule_url = f"https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json"
 
           with urlopen(schedule_url, timeout=30) as resp:
@@ -136,7 +139,7 @@ jobs:
                   write_output(run_full="true", round=str(rnd), race_name=race.get("name", f"Round {rnd}"), skip_reason="")
                   raise SystemExit(0)
 
-          write_output(run_full="false", round="", race_name="", skip_reason="Not in qualifying+360..+450 window.")
+          write_output(run_full="false", round="", race_name="", skip_reason="Not in qualifying+780..+1140 window.")
           PY
 
       - name: Preflight skip notice
@@ -157,7 +160,7 @@ jobs:
             echo "Prediction file $FILE already exists; no alert needed."
           else
             echo "missing=true" >> "$GITHUB_OUTPUT"
-            echo "Prediction file $FILE is missing 6+ hours after qualifying."
+            echo "Prediction file $FILE is missing 13+ hours after qualifying."
           fi
 
       - name: Check email secret configuration
@@ -189,9 +192,9 @@ jobs:
           to: ${{ secrets.PREDICTION_EMAIL_TO }}
           from: ${{ secrets.PREDICTION_EMAIL_FROM }}
           body: |
-            It has been 6+ hours since qualifying for 2026 Round ${{ steps.preflight.outputs.round }} (${{ steps.preflight.outputs.race_name }}), and no prediction file was found in results/.
+            It has been 13+ hours since qualifying for 2026 Round ${{ steps.preflight.outputs.round }} (${{ steps.preflight.outputs.race_name }}), and no prediction file was found in results/.
 
-            The qualifying-predictions-2026.yml automation likely ran out of retry probes (it checks at qualifying +90/+120/+150/+180/+210/+240 minutes) without finding published qualifying results.
+            The qualifying-predictions-2026.yml automation likely ran out of retry probes (it checks at qualifying +90/+120/+150/+180/+210/+240/+300/+360/+480/+600/+720 minutes) without finding published qualifying results.
 
             To generate it now, manually run the "2026 Qualifying Predictions" workflow (workflow_dispatch) with round_override=${{ steps.preflight.outputs.round }} at:
             https://github.com/${{ github.repository }}/actions/workflows/qualifying-predictions-2026.yml
@@ -201,7 +204,7 @@ jobs:
       - name: Missing email secrets notice
         if: steps.check.outputs.missing == 'true' && steps.email_cfg.outputs.email_ready == 'false'
         run: |
-          echo "Prediction is missing 6+ hours after qualifying, but alert email secrets are missing."
+          echo "Prediction is missing 13+ hours after qualifying, but alert email secrets are missing."
           echo "See docs/GITHUB_ACTIONS_AUTOMATION.md for required secrets."
 
       - name: No alert needed notice
