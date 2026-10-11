@@ -53,11 +53,11 @@ def test_schedule_window_defaults_match_production_retry_gate():
     automation = load_automation_module()
 
     assert automation.DEFAULT_OFFSET_MINUTES == 90
-    assert automation.DEFAULT_WINDOW_MINUTES == 150
+    assert automation.DEFAULT_WINDOW_MINUTES == 870
     assert (
         automation.qualifying_window_label(
             automation.DEFAULT_OFFSET_MINUTES,
             automation.DEFAULT_WINDOW_MINUTES,
         )
-        == "+90..+240"
+        == "+90..+960"
     )
