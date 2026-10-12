@@ -18,13 +18,26 @@ def test_workflow_stages_all_prediction_outputs_before_commit() -> None:
     assert '"${{ steps.run_prediction.outputs.season_log }}"' in workflow
 
 
-def test_scheduled_retry_gate_runs_from_90_to_240_minutes_after_qualifying() -> None:
+def test_scheduled_retry_gate_runs_from_90_to_960_minutes_after_qualifying() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
 
     assert "offset_minutes = 90" in workflow
-    assert "window_minutes = 150" in workflow
+    assert "window_minutes = 870" in workflow
     assert "--offset-minutes 90" in workflow
-    assert "--window-minutes 150" in workflow
+    assert "--window-minutes 870" in workflow
+
+
+def test_every_round_has_backstop_probes_inside_the_gate() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    labels = re.findall(r"# (R\d{2}) .* \+(\d+)m\n", workflow)
+    probes: dict[str, set[int]] = {}
+    for rnd, minutes in labels:
+        probes.setdefault(rnd, set()).add(int(minutes))
+
+    assert probes
+    for minutes in probes.values():
+        assert minutes == {90, 120, 150, 180, 210, 240, 300, 360, 480, 600, 720}
+        assert max(minutes) < 90 + 870
 
 
 def test_model_and_processed_caches_require_exact_keys() -> None:

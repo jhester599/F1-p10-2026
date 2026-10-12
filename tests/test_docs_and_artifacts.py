@@ -14,8 +14,8 @@ def test_automation_docs_describe_current_retry_window() -> None:
     )
 
     assert "qualifying_time + 90 minutes" in docs
-    assert "qualifying_time + 240 minutes" in docs
-    assert "`+90..+240`" in docs
+    assert "qualifying_time + 960 minutes" in docs
+    assert "`+90..+960`" in docs
     assert "qualifying_time + 60 minutes` to `+90 minutes" not in docs
     assert "run window guard (`+60m` to `+90m`)" not in docs
 
@@ -25,7 +25,8 @@ def test_workflow_skip_message_uses_current_retry_window() -> None:
         encoding="utf-8"
     )
 
-    assert "Not in qualifying+90..+240 window." in workflow
+    assert "Not in qualifying+90..+960 window." in workflow
+    assert "Not in qualifying+90..+240 window." not in workflow
     assert "Not in qualifying+60..+90 window." not in workflow
 
 

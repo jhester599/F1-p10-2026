@@ -203,12 +203,11 @@ Automated post-qualifying predictions are implemented in:
 ### Scheduled behavior
 
 - Workflow uses explicit 2026 race-date cron probe entries (UTC), scheduled at:
-  - `qualifying_time + 60 minutes`
-  - `qualifying_time + 75 minutes`
-  - `qualifying_time + 90 minutes`
+  - `qualifying_time + 90/120/150/180/210/240 minutes`
+  - backstop probes at `qualifying_time + 300/360/480/600/720 minutes`
 - The runner executes prediction only inside the published qualifying window:
-  - `qualifying_time + 90 minutes` to `qualifying_time + 240 minutes` (`+90..+240`)
-  - This wider gate allows delayed qualifying publication while keeping the workflow round-specific.
+  - `qualifying_time + 90 minutes` to `qualifying_time + 960 minutes` (`+90..+960`)
+  - This wide gate allows delayed qualifying publication and GitHub cron runs that start hours late, while keeping the workflow round-specific and closing before race start.
 - A workflow preflight gate checks whether the round output CSV already exists.
   - If an earlier run already succeeded, later cron probes skip before dependency install/training.
 - Published schedule source (f1calendar data backend):

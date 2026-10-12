@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_OFFSET_MINUTES = 90
-DEFAULT_WINDOW_MINUTES = 150
+DEFAULT_WINDOW_MINUTES = 870
 
 
 def set_output(name: str, value: str) -> None:

@@ -13,11 +13,16 @@ on:
         default: false
         type: boolean
   schedule:
-    # 2026-specific cron probes (qualifying +90/+120/+150/+180/+210/+240 minutes, UTC).
+    # 2026-specific cron probes (qualifying +90/+120/+150/+180/+210/+240, then
+    # +300/+360/+480/+600/+720 minutes, UTC).
     # Probes start at qualifying+90 (not +60) because Ergast/FastF1 qualifying
     # results are rarely published that early, and continue every 30 minutes
     # through +240 to give delayed publication several real chances to be caught.
-    # The Python gate below enforces the same qualifying+90..+240 window.
+    # The sparser +300..+720 probes are a backstop for GitHub delaying scheduled
+    # runs by hours (the 2026 R17 Singapore probes all started 3h+ late).
+    # The Python gate below enforces a qualifying+90..+960 window: it stays open
+    # well past the last probe so delayed runs still execute, and closes well
+    # before every race start (qualifying +21h or later in 2026).
     # Note: GitHub cron has no year field; these entries will still trigger in future years,
     # but the runner script gates execution against the 2026 published schedule window.
     # R01 Australian +90m
@@ -32,6 +37,16 @@ on:
     - cron: "30 8 7 3 *"
     # R01 Australian +240m
     - cron: "0 9 7 3 *"
+    # R01 Australian +300m
+    - cron: "0 10 7 3 *"
+    # R01 Australian +360m
+    - cron: "0 11 7 3 *"
+    # R01 Australian +480m
+    - cron: "0 13 7 3 *"
+    # R01 Australian +600m
+    - cron: "0 15 7 3 *"
+    # R01 Australian +720m
+    - cron: "0 17 7 3 *"
     # R02 Chinese +90m
     - cron: "30 8 14 3 *"
     # R02 Chinese +120m
@@ -44,6 +59,16 @@ on:
     - cron: "30 10 14 3 *"
     # R02 Chinese +240m
     - cron: "0 11 14 3 *"
+    # R02 Chinese +300m
+    - cron: "0 12 14 3 *"
+    # R02 Chinese +360m
+    - cron: "0 13 14 3 *"
+    # R02 Chinese +480m
+    - cron: "0 15 14 3 *"
+    # R02 Chinese +600m
+    - cron: "0 17 14 3 *"
+    # R02 Chinese +720m
+    - cron: "0 19 14 3 *"
     # R03 Japanese +90m
     - cron: "30 7 28 3 *"
     # R03 Japanese +120m
@@ -56,6 +81,16 @@ on:
     - cron: "30 9 28 3 *"
     # R03 Japanese +240m
     - cron: "0 10 28 3 *"
+    # R03 Japanese +300m
+    - cron: "0 11 28 3 *"
+    # R03 Japanese +360m
+    - cron: "0 12 28 3 *"
+    # R03 Japanese +480m
+    - cron: "0 14 28 3 *"
+    # R03 Japanese +600m
+    - cron: "0 16 28 3 *"
+    # R03 Japanese +720m
+    - cron: "0 18 28 3 *"
     # R04 Miami +90m
     - cron: "30 21 2 5 *"
     # R04 Miami +120m
@@ -68,6 +103,16 @@ on:
     - cron: "30 23 2 5 *"
     # R04 Miami +240m
     - cron: "0 0 3 5 *"
+    # R04 Miami +300m
+    - cron: "0 1 3 5 *"
+    # R04 Miami +360m
+    - cron: "0 2 3 5 *"
+    # R04 Miami +480m
+    - cron: "0 4 3 5 *"
+    # R04 Miami +600m
+    - cron: "0 6 3 5 *"
+    # R04 Miami +720m
+    - cron: "0 8 3 5 *"
     # R05 Canadian +90m
     - cron: "30 21 23 5 *"
     # R05 Canadian +120m
@@ -80,6 +125,16 @@ on:
     - cron: "30 23 23 5 *"
     # R05 Canadian +240m
     - cron: "0 0 24 5 *"
+    # R05 Canadian +300m
+    - cron: "0 1 24 5 *"
+    # R05 Canadian +360m
+    - cron: "0 2 24 5 *"
+    # R05 Canadian +480m
+    - cron: "0 4 24 5 *"
+    # R05 Canadian +600m
+    - cron: "0 6 24 5 *"
+    # R05 Canadian +720m
+    - cron: "0 8 24 5 *"
     # R06 Monaco +90m
     - cron: "30 15 6 6 *"
     # R06 Monaco +120m
@@ -92,6 +147,16 @@ on:
     - cron: "30 17 6 6 *"
     # R06 Monaco +240m
     - cron: "0 18 6 6 *"
+    # R06 Monaco +300m
+    - cron: "0 19 6 6 *"
+    # R06 Monaco +360m
+    - cron: "0 20 6 6 *"
+    # R06 Monaco +480m
+    - cron: "0 22 6 6 *"
+    # R06 Monaco +600m
+    - cron: "0 0 7 6 *"
+    # R06 Monaco +720m
+    - cron: "0 2 7 6 *"
     # R07 Barcelona-Catalunya +90m
     - cron: "30 15 13 6 *"
     # R07 Barcelona-Catalunya +120m
@@ -104,6 +169,16 @@ on:
     - cron: "30 17 13 6 *"
     # R07 Barcelona-Catalunya +240m
     - cron: "0 18 13 6 *"
+    # R07 Barcelona-Catalunya +300m
+    - cron: "0 19 13 6 *"
+    # R07 Barcelona-Catalunya +360m
+    - cron: "0 20 13 6 *"
+    # R07 Barcelona-Catalunya +480m
+    - cron: "0 22 13 6 *"
+    # R07 Barcelona-Catalunya +600m
+    - cron: "0 0 14 6 *"
+    # R07 Barcelona-Catalunya +720m
+    - cron: "0 2 14 6 *"
     # R08 Austrian +90m
     - cron: "30 15 27 6 *"
     # R08 Austrian +120m
@@ -116,6 +191,16 @@ on:
     - cron: "30 17 27 6 *"
     # R08 Austrian +240m
     - cron: "0 18 27 6 *"
+    # R08 Austrian +300m
+    - cron: "0 19 27 6 *"
+    # R08 Austrian +360m
+    - cron: "0 20 27 6 *"
+    # R08 Austrian +480m
+    - cron: "0 22 27 6 *"
+    # R08 Austrian +600m
+    - cron: "0 0 28 6 *"
+    # R08 Austrian +720m
+    - cron: "0 2 28 6 *"
     # R09 British +90m
     - cron: "30 16 4 7 *"
     # R09 British +120m
@@ -128,6 +213,16 @@ on:
     - cron: "30 18 4 7 *"
     # R09 British +240m
     - cron: "0 19 4 7 *"
+    # R09 British +300m
+    - cron: "0 20 4 7 *"
+    # R09 British +360m
+    - cron: "0 21 4 7 *"
+    # R09 British +480m
+    - cron: "0 23 4 7 *"
+    # R09 British +600m
+    - cron: "0 1 5 7 *"
+    # R09 British +720m
+    - cron: "0 3 5 7 *"
     # R10 Belgian +90m
     - cron: "30 15 18 7 *"
     # R10 Belgian +120m
@@ -140,6 +235,16 @@ on:
     - cron: "30 17 18 7 *"
     # R10 Belgian +240m
     - cron: "0 18 18 7 *"
+    # R10 Belgian +300m
+    - cron: "0 19 18 7 *"
+    # R10 Belgian +360m
+    - cron: "0 20 18 7 *"
+    # R10 Belgian +480m
+    - cron: "0 22 18 7 *"
+    # R10 Belgian +600m
+    - cron: "0 0 19 7 *"
+    # R10 Belgian +720m
+    - cron: "0 2 19 7 *"
     # R11 Hungarian +90m
     - cron: "30 15 25 7 *"
     # R11 Hungarian +120m
@@ -152,6 +257,16 @@ on:
     - cron: "30 17 25 7 *"
     # R11 Hungarian +240m
     - cron: "0 18 25 7 *"
+    # R11 Hungarian +300m
+    - cron: "0 19 25 7 *"
+    # R11 Hungarian +360m
+    - cron: "0 20 25 7 *"
+    # R11 Hungarian +480m
+    - cron: "0 22 25 7 *"
+    # R11 Hungarian +600m
+    - cron: "0 0 26 7 *"
+    # R11 Hungarian +720m
+    - cron: "0 2 26 7 *"
     # R12 Dutch +90m
     - cron: "30 15 22 8 *"
     # R12 Dutch +120m
@@ -164,6 +279,16 @@ on:
     - cron: "30 17 22 8 *"
     # R12 Dutch +240m
     - cron: "0 18 22 8 *"
+    # R12 Dutch +300m
+    - cron: "0 19 22 8 *"
+    # R12 Dutch +360m
+    - cron: "0 20 22 8 *"
+    # R12 Dutch +480m
+    - cron: "0 22 22 8 *"
+    # R12 Dutch +600m
+    - cron: "0 0 23 8 *"
+    # R12 Dutch +720m
+    - cron: "0 2 23 8 *"
     # R13 Italian +90m
     - cron: "30 15 5 9 *"
     # R13 Italian +120m
@@ -176,6 +301,16 @@ on:
     - cron: "30 17 5 9 *"
     # R13 Italian +240m
     - cron: "0 18 5 9 *"
+    # R13 Italian +300m
+    - cron: "0 19 5 9 *"
+    # R13 Italian +360m
+    - cron: "0 20 5 9 *"
+    # R13 Italian +480m
+    - cron: "0 22 5 9 *"
+    # R13 Italian +600m
+    - cron: "0 0 6 9 *"
+    # R13 Italian +720m
+    - cron: "0 2 6 9 *"
     # R14 Spanish +90m
     - cron: "30 15 12 9 *"
     # R14 Spanish +120m
@@ -188,6 +323,16 @@ on:
     - cron: "30 17 12 9 *"
     # R14 Spanish +240m
     - cron: "0 18 12 9 *"
+    # R14 Spanish +300m
+    - cron: "0 19 12 9 *"
+    # R14 Spanish +360m
+    - cron: "0 20 12 9 *"
+    # R14 Spanish +480m
+    - cron: "0 22 12 9 *"
+    # R14 Spanish +600m
+    - cron: "0 0 13 9 *"
+    # R14 Spanish +720m
+    - cron: "0 2 13 9 *"
     # R15 Azerbaijan +90m
     - cron: "30 13 25 9 *"
     # R15 Azerbaijan +120m
@@ -200,90 +345,192 @@ on:
     - cron: "30 15 25 9 *"
     # R15 Azerbaijan +240m
     - cron: "0 16 25 9 *"
-    # R16 Singapore +90m
+    # R15 Azerbaijan +300m
+    - cron: "0 17 25 9 *"
+    # R15 Azerbaijan +360m
+    - cron: "0 18 25 9 *"
+    # R15 Azerbaijan +480m
+    - cron: "0 20 25 9 *"
+    # R15 Azerbaijan +600m
+    - cron: "0 22 25 9 *"
+    # R15 Azerbaijan +720m
+    - cron: "0 0 26 9 *"
+    # R16 Bahrain Grand Prix (Malaysia) +90m
+    - cron: "30 9 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +120m
+    - cron: "0 10 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +150m
+    - cron: "30 10 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +180m
+    - cron: "0 11 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +210m
+    - cron: "30 11 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +240m
+    - cron: "0 12 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +300m
+    - cron: "0 13 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +360m
+    - cron: "0 14 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +480m
+    - cron: "0 16 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +600m
+    - cron: "0 18 3 10 *"
+    # R16 Bahrain Grand Prix (Malaysia) +720m
+    - cron: "0 20 3 10 *"
+    # R17 Singapore +90m
     - cron: "30 14 10 10 *"
-    # R16 Singapore +120m
+    # R17 Singapore +120m
     - cron: "0 15 10 10 *"
-    # R16 Singapore +150m
+    # R17 Singapore +150m
     - cron: "30 15 10 10 *"
-    # R16 Singapore +180m
+    # R17 Singapore +180m
     - cron: "0 16 10 10 *"
-    # R16 Singapore +210m
+    # R17 Singapore +210m
     - cron: "30 16 10 10 *"
-    # R16 Singapore +240m
+    # R17 Singapore +240m
     - cron: "0 17 10 10 *"
-    # R17 United States +90m
+    # R17 Singapore +300m
+    - cron: "0 18 10 10 *"
+    # R17 Singapore +360m
+    - cron: "0 19 10 10 *"
+    # R17 Singapore +480m
+    - cron: "0 21 10 10 *"
+    # R17 Singapore +600m
+    - cron: "0 23 10 10 *"
+    # R17 Singapore +720m
+    - cron: "0 1 11 10 *"
+    # R18 United States +90m
     - cron: "30 22 24 10 *"
-    # R17 United States +120m
+    # R18 United States +120m
     - cron: "0 23 24 10 *"
-    # R17 United States +150m
+    # R18 United States +150m
     - cron: "30 23 24 10 *"
-    # R17 United States +180m
+    # R18 United States +180m
     - cron: "0 0 25 10 *"
-    # R17 United States +210m
+    # R18 United States +210m
     - cron: "30 0 25 10 *"
-    # R17 United States +240m
+    # R18 United States +240m
     - cron: "0 1 25 10 *"
-    # R18 Mexican +90m
+    # R18 United States +300m
+    - cron: "0 2 25 10 *"
+    # R18 United States +360m
+    - cron: "0 3 25 10 *"
+    # R18 United States +480m
+    - cron: "0 5 25 10 *"
+    # R18 United States +600m
+    - cron: "0 7 25 10 *"
+    # R18 United States +720m
+    - cron: "0 9 25 10 *"
+    # R19 Mexican +90m
     - cron: "30 22 31 10 *"
-    # R18 Mexican +120m
+    # R19 Mexican +120m
     - cron: "0 23 31 10 *"
-    # R18 Mexican +150m
+    # R19 Mexican +150m
     - cron: "30 23 31 10 *"
-    # R18 Mexican +180m
+    # R19 Mexican +180m
     - cron: "0 0 1 11 *"
-    # R18 Mexican +210m
+    # R19 Mexican +210m
     - cron: "30 0 1 11 *"
-    # R18 Mexican +240m
+    # R19 Mexican +240m
     - cron: "0 1 1 11 *"
-    # R19 Brazilian +90m
+    # R19 Mexican +300m
+    - cron: "0 2 1 11 *"
+    # R19 Mexican +360m
+    - cron: "0 3 1 11 *"
+    # R19 Mexican +480m
+    - cron: "0 5 1 11 *"
+    # R19 Mexican +600m
+    - cron: "0 7 1 11 *"
+    # R19 Mexican +720m
+    - cron: "0 9 1 11 *"
+    # R20 Brazilian +90m
     - cron: "30 19 7 11 *"
-    # R19 Brazilian +120m
+    # R20 Brazilian +120m
     - cron: "0 20 7 11 *"
-    # R19 Brazilian +150m
+    # R20 Brazilian +150m
     - cron: "30 20 7 11 *"
-    # R19 Brazilian +180m
+    # R20 Brazilian +180m
     - cron: "0 21 7 11 *"
-    # R19 Brazilian +210m
+    # R20 Brazilian +210m
     - cron: "30 21 7 11 *"
-    # R19 Brazilian +240m
+    # R20 Brazilian +240m
     - cron: "0 22 7 11 *"
-    # R20 Las Vegas +90m
+    # R20 Brazilian +300m
+    - cron: "0 23 7 11 *"
+    # R20 Brazilian +360m
+    - cron: "0 0 8 11 *"
+    # R20 Brazilian +480m
+    - cron: "0 2 8 11 *"
+    # R20 Brazilian +600m
+    - cron: "0 4 8 11 *"
+    # R20 Brazilian +720m
+    - cron: "0 6 8 11 *"
+    # R21 Las Vegas +90m
     - cron: "30 5 21 11 *"
-    # R20 Las Vegas +120m
+    # R21 Las Vegas +120m
     - cron: "0 6 21 11 *"
-    # R20 Las Vegas +150m
+    # R21 Las Vegas +150m
     - cron: "30 6 21 11 *"
-    # R20 Las Vegas +180m
+    # R21 Las Vegas +180m
     - cron: "0 7 21 11 *"
-    # R20 Las Vegas +210m
+    # R21 Las Vegas +210m
     - cron: "30 7 21 11 *"
-    # R20 Las Vegas +240m
+    # R21 Las Vegas +240m
     - cron: "0 8 21 11 *"
-    # R21 Qatar +90m
+    # R21 Las Vegas +300m
+    - cron: "0 9 21 11 *"
+    # R21 Las Vegas +360m
+    - cron: "0 10 21 11 *"
+    # R21 Las Vegas +480m
+    - cron: "0 12 21 11 *"
+    # R21 Las Vegas +600m
+    - cron: "0 14 21 11 *"
+    # R21 Las Vegas +720m
+    - cron: "0 16 21 11 *"
+    # R22 Qatar +90m
     - cron: "30 19 28 11 *"
-    # R21 Qatar +120m
+    # R22 Qatar +120m
     - cron: "0 20 28 11 *"
-    # R21 Qatar +150m
+    # R22 Qatar +150m
     - cron: "30 20 28 11 *"
-    # R21 Qatar +180m
+    # R22 Qatar +180m
     - cron: "0 21 28 11 *"
-    # R21 Qatar +210m
+    # R22 Qatar +210m
     - cron: "30 21 28 11 *"
-    # R21 Qatar +240m
+    # R22 Qatar +240m
     - cron: "0 22 28 11 *"
-    # R22 Abu Dhabi +90m
+    # R22 Qatar +300m
+    - cron: "0 23 28 11 *"
+    # R22 Qatar +360m
+    - cron: "0 0 29 11 *"
+    # R22 Qatar +480m
+    - cron: "0 2 29 11 *"
+    # R22 Qatar +600m
+    - cron: "0 4 29 11 *"
+    # R22 Qatar +720m
+    - cron: "0 6 29 11 *"
+    # R23 Abu Dhabi +90m
     - cron: "30 15 5 12 *"
-    # R22 Abu Dhabi +120m
+    # R23 Abu Dhabi +120m
     - cron: "0 16 5 12 *"
-    # R22 Abu Dhabi +150m
+    # R23 Abu Dhabi +150m
     - cron: "30 16 5 12 *"
-    # R22 Abu Dhabi +180m
+    # R23 Abu Dhabi +180m
     - cron: "0 17 5 12 *"
-    # R22 Abu Dhabi +210m
+    # R23 Abu Dhabi +210m
     - cron: "30 17 5 12 *"
-    # R22 Abu Dhabi +240m
+    # R23 Abu Dhabi +240m
     - cron: "0 18 5 12 *"
+    # R23 Abu Dhabi +300m
+    - cron: "0 19 5 12 *"
+    # R23 Abu Dhabi +360m
+    - cron: "0 20 5 12 *"
+    # R23 Abu Dhabi +480m
+    - cron: "0 22 5 12 *"
+    # R23 Abu Dhabi +600m
+    - cron: "0 0 6 12 *"
+    # R23 Abu Dhabi +720m
+    - cron: "0 2 6 12 *"
 
 permissions:
   contents: write
@@ -332,7 +579,7 @@ jobs:
           schedule_url = f"https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/{year}.json"
           now = datetime.now(timezone.utc)
           offset_minutes = 90
-          window_minutes = 150
+          window_minutes = 870
 
           with urlopen(schedule_url, timeout=30) as resp:
               payload = json.loads(resp.read().decode("utf-8"))
@@ -353,7 +600,7 @@ jobs:
 
           if in_window_round is None:
               set_output("run_full", "false")
-              set_output("skip_reason", "Not in qualifying+90..+240 window.")
+              set_output("skip_reason", "Not in qualifying+90..+960 window.")
               raise SystemExit(0)
 
           out_csv = Path(f"results/prediction_{year}_R{in_window_round:02d}.csv")
@@ -417,7 +664,7 @@ jobs:
               --year 2026 \
               --require-schedule-window \
               --offset-minutes 90 \
-              --window-minutes 150
+              --window-minutes 870
           else
             CMD="python scripts/65_run_qualifying_automation.py --year 2026"
             if [ -n "${{ inputs.round_override }}" ]; then
