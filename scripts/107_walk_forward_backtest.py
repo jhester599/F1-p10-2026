@@ -56,7 +56,11 @@ def current_season_features(year: int) -> pd.DataFrame:
     """Feature rows for the completed races of *year* (training pipeline)."""
     fetcher = F1Fetcher(cache_only_before=year)
     schedule = fetcher.schedule(year)
-    raw = build_raw_results(fetcher, list(range(min(TRAIN_YEARS), year + 1)))
+    completed = [int(r["round"]) for r in schedule if fetcher.results(year, int(r["round"]))]
+    # Stop after the last completed race so future rounds are never requested.
+    raw = build_raw_results(
+        fetcher, list(range(min(TRAIN_YEARS), year + 1)), before=(year, max(completed) + 1)
+    )
     feat = build_feature_matrix(raw, fetcher, season_rounds={year: len(schedule)})
     return feat[feat["year"] == year]
 

@@ -102,6 +102,13 @@ python scripts/105_refresh_circ_p10_grid_chaos.py
 python scripts/106_v10_expanding_checkpoint_scorecard.py
 ```
 
+Walk-forward backtest and ensemble-weight check (2014 → current season, expanding window):
+
+```bash
+python scripts/107_walk_forward_backtest.py --current-season 2026   # ~30 min, resumable with --resume
+python scripts/108_tune_ensemble_weights.py                          # offline, seconds
+```
+
 Outputs:
 
 - `results/scorecards/benchmark_scorecard_latest.json`
@@ -120,6 +127,7 @@ Outputs:
 - `results/v10_xgb_clf_grid_ablation/summary.{csv,json,md}`
 - `data/processed/features_2010_2025.parquet` and derived train/eval splits after `scripts/105_refresh_circ_p10_grid_chaos.py`
 - `results/v10_expanding_checkpoint_scorecard/summary.{csv,json,md}`
+- `results/walk_forward/summary.csv`, `old_vs_new_by_year.csv`, `ensemble_weight_tuning.csv` (per-fold files in `results/walk_forward/folds/` are not committed)
 
 The rolling-CV replay generator creates per-driver scored CV checkpoints because
 the legacy CV CSVs contain only model picks and cannot replay blended candidate

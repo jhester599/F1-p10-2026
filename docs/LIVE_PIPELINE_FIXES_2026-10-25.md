@@ -87,12 +87,62 @@ None of these is distinguishable from zero. The fixes are correctness fixes
 (the models now see the inputs they were trained on), not a measured accuracy
 gain. The starting grid is clearly the better naive signal in both seasons.
 
+## Walk-forward backtest, 2014–2026
+
+A single holdout season (about 20 races) is too noisy to choose between
+models. `scripts/107_walk_forward_backtest.py` runs an expanding window: for
+each season Y the models are trained on every season before Y (as
+production does) and scored on Y. That gives 269 out-of-sample races from
+2014 through 2026 R17. Each fold also saves every ensemble component's
+per-driver score, so weight sets can be compared without retraining
+(`scripts/108_tune_ensemble_weights.py`).
+
+Average fantasy points per race. Full per-year table:
+`results/walk_forward/old_vs_new_by_year.csv`.
+
+| | 2014–24 (228 races) | 2025–26 (41 races) | All 2014–26 |
+|---|---|---|---|
+| Old data + v9.2 weights (previous production) | 10.92 | 12.78 | 11.20 |
+| New data + v9.2 weights | 11.12 | 12.66 | 11.36 |
+| Old data + new weights | 12.44 | 11.15 | 12.25 |
+| **New data + new weights (current)** | **12.96** | 11.20 | **12.69** |
+| Naive P10, qualifying order | 11.36 | 12.80 | 11.58 |
+| Naive P10, starting grid | 11.59 | **14.02** | 11.96 |
+
+Paired differences per race (mean ± SE):
+
+- Current vs previous production: +1.48 ± 0.53 overall, +2.04 ± 0.58 in
+  2014–24, −1.59 ± 1.24 in 2025–26.
+- Data fixes only (same weights): +0.15 ± 0.44 with v9.2 weights, +0.44 ±
+  0.37 with the new ones. 7 of 8 individual models improve on the new data;
+  the base-model mean goes from 11.17 to 11.53.
+- New weights only (same data): +1.33 ± 0.54 on the new data, +1.04 ± 0.50
+  on the old.
+- Naive pick, starting grid vs qualifying order: +0.38 ± 0.33 overall,
+  +1.22 ± 0.59 in 2025–26.
+
+### Ensemble weight retune
+
+`ENSEMBLE_WEIGHTS` is now equal weight on all eight models, plus 0.5 on the
+grid heuristic and 0.5 on the championship heuristic.
+
+- **How it was chosen:** tuned on 2014–2024 only, with 2025–2026 held out.
+- **Why the search was kept small:** an unrestricted random search over the
+  10 weights scored 13.3 in-sample, but only 12.2 when each season was
+  scored with weights tuned on the other seasons. Plain equal weights score
+  12.6. The search was therefore limited to "8 models equal + grid/champ
+  heuristic weight". Leave-one-season-out within that family: 12.61.
+- **The v9.2 weights** (xgb_ranker = 6, …) had been picked on the 2025
+  holdout. They rank last among the tested weightings over 2014–2024.
+- **Held-out 2025–26:** the new weights do not confirm there (−1.46 ± 1.27
+  vs v9.2, which itself was chosen on 2025). The naive starting-grid pick
+  leads every weighting in those seasons, 14.02 per race. With 41 races
+  this may be noise or a change of regime under the 2026 regulations. It is
+  worth re-checking with `scripts/108_tune_ensemble_weights.py` as 2026
+  races accumulate.
+
 ## Follow-ups (not done here)
 
-- **Re-tune the ensemble weights.** The v9.2 weights were fitted to the
-  pre-fix model landscape. After the retrain the ensemble trails the naive
-  starting-grid pick on the 2025 holdout (12.33 vs 14.79), and B shows how
-  sensitive it is to the base models changing underneath it.
 - `grid_position` is clipped to 1–20 although 2026 fields have 22 cars, so
   slots 21 and 22 collapse into 20.
 - Jolpica serves no practice sessions (404), so `fp2_position` is the
