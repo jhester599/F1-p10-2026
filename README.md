@@ -4,9 +4,16 @@ Predicts which driver will finish **10th** in a Formula 1 Grand Prix, optimised 
 fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetrically).
 
 **Current model:** 104 features · 8 models · G_plus_clf ensemble (v9.2, per-model subspaces)
-**Benchmark:** `naive_grid_p10` — 14.04 avg pts/race on 2025 holdout
-**Current 2025 holdout:** ensemble — **13.12 avg pts/race** (−0.92 vs naive baseline)
-**Best refreshed individual model:** `xgb_clf` — **14.04 avg pts/race**
+**Benchmark:** `naive_grid_p10` — 14.79 avg pts/race on 2025 holdout (driver starting P10)
+**Current 2025 holdout:** ensemble — **12.33 avg pts/race** (−2.46 vs naive baseline)
+**Best refreshed individual model:** `xgb_ranker` — **11.96 avg pts/race**
+
+> **2026-10-25 data fixes:** `grid_position` is now the official starting grid, lapped
+> finishers from 2023 on are no longer counted as DNFs, and live predictions use the
+> training feature pipeline (they previously zero-filled 28 features and ignored the
+> current season). The ensemble weights were not re-tuned after the retrain. See
+> [docs/LIVE_PIPELINE_FIXES_2026-10-25.md](docs/LIVE_PIPELINE_FIXES_2026-10-25.md).
+> Previous figures (13.12 ensemble / 14.04 naive) came from the pre-fix data.
 
 **v9.x improvements over v8.23 baseline (11.50 pts/race with old weights on 2025 holdout):**
 - v9.0: Heterogeneous feature subspace architecture — per-model `MODEL_FEATURES` routing
@@ -352,7 +359,8 @@ F1-p10-2026/
 ├── run_pipeline.py             # convenience orchestrator (steps 2-4)
 │
 ├── src/
-│   ├── data_fetch.py           # Jolpica API wrapper with caching
+│   ├── data_fetch.py           # Jolpica API wrapper with caching (OpenF1 fallback)
+│   ├── openf1.py               # OpenF1 client: live qualifying + official starting grid
 │   ├── feature_engineering.py  # builds the 104-feature matrix (v9.1: +25 new features)
 │   ├── models.py               # model definitions, G_plus_clf non-adaptive ensemble (v9.2)
 │   └── scoring.py              # fantasy scoring + regret utilities
@@ -420,7 +428,7 @@ Each model uses a curated subspace via `MODEL_FEATURES` in `config.py` (v9 per-m
 
 | Feature | Description |
 |---|---|
-| `grid_position` | Starting grid position (1–20) |
+| `grid_position` | Official starting grid slot (penalties applied; pit-lane starts at the back), qualifying position if the grid is unknown (1–20) |
 | `q_gap_pct` | Best qualifying lap time gap to pole (%) |
 | `q_gap_sq` | `q_gap_pct²` — non-linear backmarker penalty **(v3.61)** |
 | `q1_gap_pct` | Q1 session gap to pole (%). Available for all drivers. **(v5.2)** |
@@ -701,6 +709,20 @@ python scripts/01_fetch_data.py --fp-only            # top up FP1/FP2 only
 > For a narrow historical-only `circ_p10_grid_chaos` refresh, run
 > `python scripts/105_refresh_circ_p10_grid_chaos.py`; the default path refreshes the combined
 > parquet first and then derives the train/eval split files from that combined history.
+
+### Live race weekends
+
+`predict_race.py` / `scripts/65_run_qualifying_automation.py` build the race's
+features with the same pipeline as training: every completed race since 2010
+(past seasons from the raw cache, the current season live from Jolpica) plus
+the race's entry list goes through `build_feature_matrix()`.
+
+- **Qualifying:** Jolpica first; if it has not published the session yet
+  (it can lag 8+ hours), OpenF1 (`src/openf1.py`) is used instead.
+- **Starting grid:** Jolpica only publishes it with the race result, so the
+  official grid comes from OpenF1 once the FIA publishes it; until then the
+  qualifying order stands in.
+- **Weather:** race-day forecast from Open-Meteo (`weather/race_forecast.py`).
 
 **Constructor pit times** (`data/processed/constructor_pit_times.parquet`) — covers 2011–2025.
 Rebuild with: `python scripts/24_fetch_pit_data_2025.py [--year 2026]`

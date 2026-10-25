@@ -5,7 +5,7 @@ Automation runner for post-qualifying 2026 predictions.
 What it does:
 1. Finds the latest 2026 round with published qualifying results.
 2. Skips if that round was already predicted.
-3. Ensures required datasets/models exist (build/train if missing).
+3. Ensures the raw API cache, datasets and models exist (build/train if missing).
 4. Runs the model prediction for that round.
 5. Writes:
    - results/prediction_<year>_R<round>.csv
@@ -36,7 +36,7 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from config import EVAL_YEAR, MODELS_DIR, PREDICT_YEAR, PROCESSED_DIR, RESULTS_DIR, TRAIN_YEARS
+from config import MODELS_DIR, PREDICT_YEAR, PROCESSED_DIR, RESULTS_DIR
 from predict_race import build_live_features
 from src.data_fetch import F1Fetcher
 from src.models import load_all, predict_race
@@ -90,19 +90,6 @@ def to_github_blob_url(path: Path) -> str:
         return str(path)
     rel = to_repo_rel(path)
     return f"{server}/{repo}/blob/{ref_name}/{rel}"
-
-
-def load_historical_data() -> pd.DataFrame:
-    candidates = [
-        PROCESSED_DIR / "features_2010_2025.parquet",
-        PROCESSED_DIR / f"features_{min(TRAIN_YEARS)}_{max(TRAIN_YEARS)}.parquet",
-        PROCESSED_DIR / f"features_2010_{EVAL_YEAR}.parquet",
-    ]
-    path = next((p for p in candidates if p.exists()), None)
-    if path is None:
-        raise FileNotFoundError(f"No processed dataset found in {PROCESSED_DIR}")
-    logger.info("Using historical data: %s", path.name)
-    return pd.read_parquet(path)
 
 
 def latest_qualified_round(year: int, fetcher: F1Fetcher) -> tuple[int | None, dict[str, Any] | None]:
@@ -170,10 +157,8 @@ def round_from_published_qualifying_schedule(
     return round_number, race_name
 
 
-def ensure_processed_data() -> None:
-    required = PROCESSED_DIR / "features_2010_2025.parquet"
-    if required.exists():
-        return
+def ensure_raw_cache() -> None:
+    """Restore past seasons' API responses; live features are built from them."""
     raw_dir = ROOT / "data" / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
     min_cache_files = 500
@@ -195,6 +180,13 @@ def ensure_processed_data() -> None:
             "Refusing live API rebuild to avoid rate-limit timeouts."
         )
     logger.info("Raw cache entries available: %d JSON files", json_count_after)
+
+
+def ensure_processed_data() -> None:
+    required = PROCESSED_DIR / "features_2010_2025.parquet"
+    if required.exists():
+        return
+    ensure_raw_cache()
     run_cmd(
         [sys.executable, "scripts/02_build_dataset.py", "--years", "2010", "2025"],
         extra_env={"F1_FETCH_CACHE_ONLY": "1"},
@@ -329,7 +321,8 @@ def main() -> None:
 
     year = args.year
     schedule_url = args.schedule_url.format(year=year)
-    fetcher = F1Fetcher()
+    # Past seasons come from the bundled raw cache; only this season goes live.
+    fetcher = F1Fetcher(cache_only_before=year)
 
     if args.round is not None:
         target_round = args.round
@@ -384,10 +377,10 @@ def main() -> None:
         set_output("race_name", race_name)
         return
 
+    ensure_raw_cache()
     ensure_processed_data()
     ensure_models()
 
-    historical_df = load_historical_data()
     models = load_all()
     if not models:
         raise RuntimeError("No models available after setup.")
@@ -396,8 +389,6 @@ def main() -> None:
         year=year,
         rnd=target_round,
         fetcher=fetcher,
-        historical_df=historical_df,
-        force_fetch=True,
     )
     scored_df, picks = predict_race(feat_df, models)
     out_csv.parent.mkdir(parents=True, exist_ok=True)

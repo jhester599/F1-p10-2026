@@ -23,6 +23,9 @@ def test_round_with_missing_qualifying_data_skips_without_running_models(monkeyp
     automation = load_automation_module()
 
     class Fetcher:
+        def __init__(self, **kwargs):
+            assert kwargs == {"cache_only_before": 2026}
+
         def schedule(self, year):
             assert year == 2026
             return [{"round": "7", "raceName": "Barcelona Grand Prix", "date": "2026-06-14"}]
