@@ -17,7 +17,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,2,Chinese Grand Prix,shanghai,xgb_ranker,albon,sainz,7,12,0
 2025,2,Chinese Grand Prix,shanghai,lgbm_ranker,albon,sainz,7,12,0
 2025,2,Chinese Grand Prix,shanghai,xgb_clf,tsunoda,sainz,16,6,0
-2025,3,Japanese Grand Prix,suzuka,ensemble,bearman,bearman,10,25,1
+2025,3,Japanese Grand Prix,suzuka,ensemble,albon,bearman,9,18,0
 2025,3,Japanese Grand Prix,suzuka,ridge,albon,bearman,9,18,0
 2025,3,Japanese Grand Prix,suzuka,lgb_reg,albon,bearman,9,18,0
 2025,3,Japanese Grand Prix,suzuka,rf_clf,bearman,bearman,10,25,1
@@ -35,7 +35,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,4,Bahrain Grand Prix,bahrain,xgb_ranker,bearman,bearman,10,25,1
 2025,4,Bahrain Grand Prix,bahrain,lgbm_ranker,ocon,bearman,8,15,0
 2025,4,Bahrain Grand Prix,bahrain,xgb_clf,doohan,bearman,14,10,0
-2025,5,Saudi Arabian Grand Prix,jeddah,ensemble,albon,hadjar,9,18,0
+2025,5,Saudi Arabian Grand Prix,jeddah,ensemble,tsunoda,hadjar,19,1,0
 2025,5,Saudi Arabian Grand Prix,jeddah,ridge,tsunoda,hadjar,19,1,0
 2025,5,Saudi Arabian Grand Prix,jeddah,lgb_reg,tsunoda,hadjar,19,1,0
 2025,5,Saudi Arabian Grand Prix,jeddah,rf_clf,gasly,hadjar,20,0,0
@@ -44,7 +44,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,5,Saudi Arabian Grand Prix,jeddah,xgb_ranker,albon,hadjar,9,18,0
 2025,5,Saudi Arabian Grand Prix,jeddah,lgbm_ranker,albon,hadjar,9,18,0
 2025,5,Saudi Arabian Grand Prix,jeddah,xgb_clf,albon,hadjar,9,18,0
-2025,6,Miami Grand Prix,miami,ensemble,hadjar,tsunoda,11,18,0
+2025,6,Miami Grand Prix,miami,ensemble,tsunoda,tsunoda,10,25,1
 2025,6,Miami Grand Prix,miami,ridge,hamilton,tsunoda,8,15,0
 2025,6,Miami Grand Prix,miami,lgb_reg,tsunoda,tsunoda,10,25,1
 2025,6,Miami Grand Prix,miami,rf_clf,ocon,tsunoda,12,15,0
@@ -80,7 +80,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,9,Spanish Grand Prix,catalunya,xgb_ranker,lawson,max_verstappen,11,18,0
 2025,9,Spanish Grand Prix,catalunya,lgbm_ranker,albon,max_verstappen,19,1,0
 2025,9,Spanish Grand Prix,catalunya,xgb_clf,albon,max_verstappen,19,1,0
-2025,10,Canadian Grand Prix,villeneuve,ensemble,hadjar,sainz,16,6,0
+2025,10,Canadian Grand Prix,villeneuve,ensemble,albon,sainz,20,0,0
 2025,10,Canadian Grand Prix,villeneuve,ridge,alonso,sainz,7,12,0
 2025,10,Canadian Grand Prix,villeneuve,lgb_reg,albon,sainz,20,0,0
 2025,10,Canadian Grand Prix,villeneuve,rf_clf,hadjar,sainz,16,6,0
@@ -89,7 +89,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,10,Canadian Grand Prix,villeneuve,xgb_ranker,ocon,sainz,9,18,0
 2025,10,Canadian Grand Prix,villeneuve,lgbm_ranker,hadjar,sainz,16,6,0
 2025,10,Canadian Grand Prix,villeneuve,xgb_clf,hadjar,sainz,16,6,0
-2025,11,Austrian Grand Prix,red_bull_ring,ensemble,bortoleto,ocon,8,15,0
+2025,11,Austrian Grand Prix,red_bull_ring,ensemble,antonelli,ocon,19,1,0
 2025,11,Austrian Grand Prix,red_bull_ring,ridge,antonelli,ocon,19,1,0
 2025,11,Austrian Grand Prix,red_bull_ring,lgb_reg,tsunoda,ocon,16,6,0
 2025,11,Austrian Grand Prix,red_bull_ring,rf_clf,hadjar,ocon,12,15,0
@@ -98,7 +98,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,11,Austrian Grand Prix,red_bull_ring,xgb_ranker,bortoleto,ocon,8,15,0
 2025,11,Austrian Grand Prix,red_bull_ring,lgbm_ranker,bortoleto,ocon,8,15,0
 2025,11,Austrian Grand Prix,red_bull_ring,xgb_clf,bortoleto,ocon,8,15,0
-2025,12,British Grand Prix,silverstone,ensemble,hadjar,russell,17,4,0
+2025,12,British Grand Prix,silverstone,ensemble,alonso,russell,9,18,0
 2025,12,British Grand Prix,silverstone,ridge,alonso,russell,9,18,0
 2025,12,British Grand Prix,silverstone,lgb_reg,sainz,russell,12,15,0
 2025,12,British Grand Prix,silverstone,rf_clf,sainz,russell,12,15,0
@@ -116,7 +116,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,13,Belgian Grand Prix,spa,xgb_ranker,ocon,gasly,15,8,0
 2025,13,Belgian Grand Prix,spa,lgbm_ranker,bortoleto,gasly,9,18,0
 2025,13,Belgian Grand Prix,spa,xgb_clf,ocon,gasly,15,8,0
-2025,14,Hungarian Grand Prix,hungaroring,ensemble,bearman,antonelli,20,0,0
+2025,14,Hungarian Grand Prix,hungaroring,ensemble,antonelli,antonelli,10,25,1
 2025,14,Hungarian Grand Prix,hungaroring,ridge,alonso,antonelli,5,8,0
 2025,14,Hungarian Grand Prix,hungaroring,lgb_reg,alonso,antonelli,5,8,0
 2025,14,Hungarian Grand Prix,hungaroring,rf_clf,bearman,antonelli,20,0,0
@@ -134,7 +134,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,15,Dutch Grand Prix,zandvoort,xgb_ranker,alonso,ocon,8,15,0
 2025,15,Dutch Grand Prix,zandvoort,lgbm_ranker,alonso,ocon,8,15,0
 2025,15,Dutch Grand Prix,zandvoort,xgb_clf,sainz,ocon,13,12,0
-2025,16,Italian Grand Prix,monza,ensemble,albon,hadjar,7,12,0
+2025,16,Italian Grand Prix,monza,ensemble,tsunoda,hadjar,13,12,0
 2025,16,Italian Grand Prix,monza,ridge,antonelli,hadjar,9,18,0
 2025,16,Italian Grand Prix,monza,lgb_reg,tsunoda,hadjar,13,12,0
 2025,16,Italian Grand Prix,monza,rf_clf,hulkenberg,hadjar,20,0,0
@@ -143,7 +143,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,16,Italian Grand Prix,monza,xgb_ranker,albon,hadjar,7,12,0
 2025,16,Italian Grand Prix,monza,lgbm_ranker,albon,hadjar,7,12,0
 2025,16,Italian Grand Prix,monza,xgb_clf,albon,hadjar,7,12,0
-2025,17,Azerbaijan Grand Prix,baku,ensemble,bearman,hadjar,12,15,0
+2025,17,Azerbaijan Grand Prix,baku,ensemble,alonso,hadjar,15,8,0
 2025,17,Azerbaijan Grand Prix,baku,ridge,hamilton,hadjar,8,15,0
 2025,17,Azerbaijan Grand Prix,baku,lgb_reg,alonso,hadjar,15,8,0
 2025,17,Azerbaijan Grand Prix,baku,rf_clf,alonso,hadjar,15,8,0
@@ -161,7 +161,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,18,Singapore Grand Prix,marina_bay,xgb_ranker,stroll,sainz,13,12,0
 2025,18,Singapore Grand Prix,marina_bay,lgbm_ranker,bortoleto,sainz,17,4,0
 2025,18,Singapore Grand Prix,marina_bay,xgb_clf,hadjar,sainz,11,18,0
-2025,19,United States Grand Prix,americas,ensemble,lawson,alonso,11,18,0
+2025,19,United States Grand Prix,americas,ensemble,sainz,alonso,20,0,0
 2025,19,United States Grand Prix,americas,ridge,sainz,alonso,20,0,0
 2025,19,United States Grand Prix,americas,lgb_reg,sainz,alonso,20,0,0
 2025,19,United States Grand Prix,americas,rf_clf,lawson,alonso,11,18,0
@@ -197,7 +197,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,22,Las Vegas Grand Prix,vegas,xgb_ranker,hadjar,bearman,6,10,0
 2025,22,Las Vegas Grand Prix,vegas,lgbm_ranker,hamilton,bearman,8,15,0
 2025,22,Las Vegas Grand Prix,vegas,xgb_clf,bearman,bearman,10,25,1
-2025,23,Qatar Grand Prix,losail,ensemble,bearman,tsunoda,19,1,0
+2025,23,Qatar Grand Prix,losail,ensemble,alonso,tsunoda,7,12,0
 2025,23,Qatar Grand Prix,losail,ridge,sainz,tsunoda,3,4,0
 2025,23,Qatar Grand Prix,losail,lgb_reg,albon,tsunoda,11,18,0
 2025,23,Qatar Grand Prix,losail,rf_clf,bearman,tsunoda,19,1,0
@@ -206,7 +206,7 @@ year,round,race_name,circuit_id,model,predicted,actual_p10,actual_pos,fantasy_pt
 2025,23,Qatar Grand Prix,losail,xgb_ranker,bearman,tsunoda,19,1,0
 2025,23,Qatar Grand Prix,losail,lgbm_ranker,alonso,tsunoda,7,12,0
 2025,23,Qatar Grand Prix,losail,xgb_clf,hulkenberg,tsunoda,20,0,0
-2025,24,Abu Dhabi Grand Prix,yas_marina,ensemble,bearman,stroll,12,15,0
+2025,24,Abu Dhabi Grand Prix,yas_marina,ensemble,hadjar,stroll,17,4,0
 2025,24,Abu Dhabi Grand Prix,yas_marina,ridge,alonso,stroll,6,10,0
 2025,24,Abu Dhabi Grand Prix,yas_marina,lgb_reg,bearman,stroll,12,15,0
 2025,24,Abu Dhabi Grand Prix,yas_marina,rf_clf,sainz,stroll,13,12,0

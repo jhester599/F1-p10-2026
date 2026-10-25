@@ -3,10 +3,10 @@
 Predicts which driver will finish **10th** in a Formula 1 Grand Prix, optimised for a
 fantasy league that scores by proximity to P10 (25 pts exact, tapering symmetrically).
 
-**Current model:** 104 features · 8 models · G_plus_clf ensemble (v9.2, per-model subspaces)
-**Benchmark:** `naive_grid_p10` — 14.79 avg pts/race on 2025 holdout (driver starting P10)
-**Current 2025 holdout:** ensemble — **12.33 avg pts/race** (−2.46 vs naive baseline)
-**Best refreshed individual model:** `xgb_ranker` — **11.96 avg pts/race**
+**Current model:** 104 features · 8 models · equal-weight ensemble + grid/champ heuristics (2026-10 walk-forward weights, per-model subspaces)
+**Walk-forward 2014–2026 (269 races, expanding window):** ensemble **12.69** · v9.2 weights 11.36 · naive starting-P10 11.96 avg pts/race
+**2025 holdout:** ensemble 11.38 · naive `naive_grid_p10` (driver starting P10) 14.79 — the naive pick has been strongest in 2025–26
+**Best refreshed individual model (2025):** `xgb_ranker` — **11.96 avg pts/race**
 
 > **2026-10-25 data fixes:** `grid_position` is now the official starting grid, lapped
 > finishers from 2023 on are no longer counted as DNFs, and live predictions use the
@@ -362,7 +362,7 @@ F1-p10-2026/
 │   ├── data_fetch.py           # Jolpica API wrapper with caching (OpenF1 fallback)
 │   ├── openf1.py               # OpenF1 client: live qualifying + official starting grid
 │   ├── feature_engineering.py  # builds the 104-feature matrix (v9.1: +25 new features)
-│   ├── models.py               # model definitions, G_plus_clf non-adaptive ensemble (v9.2)
+│   ├── models.py               # model definitions, non-adaptive weighted ensemble (2026-10 weights)
 │   └── scoring.py              # fantasy scoring + regret utilities
 │
 ├── scripts/

@@ -8,7 +8,7 @@ albert_park,ridge,15.0,1
 albert_park,xgb_clf,6.0,1
 albert_park,xgb_ranker,6.0,1
 albert_park,xgb_reg,0.0,1
-americas,ensemble,18.0,1
+americas,ensemble,0.0,1
 americas,lgb_reg,0.0,1
 americas,lgbm_ranker,1.0,1
 americas,rf_clf,18.0,1
@@ -26,7 +26,7 @@ bahrain,ridge,1.0,1
 bahrain,xgb_clf,10.0,1
 bahrain,xgb_ranker,25.0,1
 bahrain,xgb_reg,18.0,1
-baku,ensemble,15.0,1
+baku,ensemble,8.0,1
 baku,lgb_reg,8.0,1
 baku,lgbm_ranker,15.0,1
 baku,rf_clf,8.0,1
@@ -44,7 +44,7 @@ catalunya,ridge,12.0,1
 catalunya,xgb_clf,1.0,1
 catalunya,xgb_ranker,18.0,1
 catalunya,xgb_reg,12.0,1
-hungaroring,ensemble,0.0,1
+hungaroring,ensemble,25.0,1
 hungaroring,lgb_reg,8.0,1
 hungaroring,lgbm_ranker,25.0,1
 hungaroring,rf_clf,0.0,1
@@ -71,7 +71,7 @@ interlagos,ridge,2.0,1
 interlagos,xgb_clf,4.0,1
 interlagos,xgb_ranker,4.0,1
 interlagos,xgb_reg,4.0,1
-jeddah,ensemble,18.0,1
+jeddah,ensemble,1.0,1
 jeddah,lgb_reg,1.0,1
 jeddah,lgbm_ranker,18.0,1
 jeddah,rf_clf,0.0,1
@@ -80,7 +80,7 @@ jeddah,ridge,1.0,1
 jeddah,xgb_clf,18.0,1
 jeddah,xgb_ranker,18.0,1
 jeddah,xgb_reg,6.0,1
-losail,ensemble,1.0,1
+losail,ensemble,12.0,1
 losail,lgb_reg,18.0,1
 losail,lgbm_ranker,12.0,1
 losail,rf_clf,1.0,1
@@ -98,7 +98,7 @@ marina_bay,ridge,18.0,1
 marina_bay,xgb_clf,18.0,1
 marina_bay,xgb_ranker,12.0,1
 marina_bay,xgb_reg,8.0,1
-miami,ensemble,18.0,1
+miami,ensemble,25.0,1
 miami,lgb_reg,25.0,1
 miami,lgbm_ranker,8.0,1
 miami,rf_clf,15.0,1
@@ -125,7 +125,7 @@ monza,ridge,18.0,1
 monza,xgb_clf,12.0,1
 monza,xgb_ranker,12.0,1
 monza,xgb_reg,1.0,1
-red_bull_ring,ensemble,15.0,1
+red_bull_ring,ensemble,1.0,1
 red_bull_ring,lgb_reg,6.0,1
 red_bull_ring,lgbm_ranker,15.0,1
 red_bull_ring,rf_clf,15.0,1
@@ -152,7 +152,7 @@ shanghai,ridge,18.0,1
 shanghai,xgb_clf,6.0,1
 shanghai,xgb_ranker,12.0,1
 shanghai,xgb_reg,18.0,1
-silverstone,ensemble,4.0,1
+silverstone,ensemble,18.0,1
 silverstone,lgb_reg,15.0,1
 silverstone,lgbm_ranker,1.0,1
 silverstone,rf_clf,15.0,1
@@ -170,7 +170,7 @@ spa,ridge,10.0,1
 spa,xgb_clf,8.0,1
 spa,xgb_ranker,8.0,1
 spa,xgb_reg,8.0,1
-suzuka,ensemble,25.0,1
+suzuka,ensemble,18.0,1
 suzuka,lgb_reg,18.0,1
 suzuka,lgbm_ranker,25.0,1
 suzuka,rf_clf,25.0,1
@@ -188,7 +188,7 @@ vegas,ridge,10.0,1
 vegas,xgb_clf,25.0,1
 vegas,xgb_ranker,10.0,1
 vegas,xgb_reg,15.0,1
-villeneuve,ensemble,6.0,1
+villeneuve,ensemble,0.0,1
 villeneuve,lgb_reg,0.0,1
 villeneuve,lgbm_ranker,6.0,1
 villeneuve,rf_clf,6.0,1
@@ -197,7 +197,7 @@ villeneuve,ridge,12.0,1
 villeneuve,xgb_clf,6.0,1
 villeneuve,xgb_ranker,18.0,1
 villeneuve,xgb_reg,0.0,1
-yas_marina,ensemble,15.0,1
+yas_marina,ensemble,4.0,1
 yas_marina,lgb_reg,15.0,1
 yas_marina,lgbm_ranker,12.0,1
 yas_marina,rf_clf,12.0,1

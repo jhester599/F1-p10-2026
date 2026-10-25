@@ -21,3 +21,6 @@ results/eval_2025_plots/
 *.zip
 *.tar.gz
 *.gz
+
+# walk-forward per-fold outputs (scripts/107); summaries in results/walk_forward/ are committed
+results/walk_forward/folds/
