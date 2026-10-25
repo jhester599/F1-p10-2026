@@ -33,7 +33,7 @@ from config import (
     STREET_CIRCUITS,
     TARGET_COL,
 )
-from src.data_fetch import F1Fetcher, _status_is_finish
+from src.data_fetch import F1Fetcher, _status_is_finish, grid_from_results
 from src.qualifying_features import parse_qualifying_session
 
 logger = logging.getLogger(__name__)
@@ -110,15 +110,93 @@ def historical_circ_p10_grid_chaos(feat_df: pd.DataFrame, default: float = 4.0) 
 
 # ── phase 1: flatten raw API data ─────────────────────────────────────────────
 
-def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
+def _race_session_context(fetcher: F1Fetcher, year: int, rnd: int):
+    """Qualifying session + practice-position map for one race."""
+    qualifying = parse_qualifying_session(fetcher.qualifying(year, rnd))
+
+    # FP2 position (fallback: FP1, then qualifying position per driver)
+    fp2_map: dict[str, int] = {}
+    fp2_results = fetcher.fp2_classification(year, rnd)
+    if fp2_results:
+        for pr in fp2_results:
+            did = pr["Driver"]["driverId"]
+            fp2_map[did] = _safe_pos(pr.get("position"), 20)
+    else:
+        # Sprint weekend or cancelled FP2 — try FP1
+        fp1_results = fetcher.fp1_classification(year, rnd)
+        for pr in fp1_results:
+            did = pr["Driver"]["driverId"]
+            fp2_map[did] = _safe_pos(pr.get("position"), 20)
+    return qualifying, fp2_map
+
+
+def _raw_row(
+    race: dict,
+    year: int,
+    driver_id: str,
+    constructor_id: str,
+    qualifying,
+    fp2_map: dict[str, int],
+    start_slot: float,
+    finish_position: float,
+    points: float,
+    is_dnf: bool,
+    actual_grid: float,
+) -> dict:
+    """One long-form raw row (shared by completed races and live entries).
+
+    grid_position is the official starting grid slot (penalties applied) when
+    known, falling back to the qualifying position.
+    """
+    q_info = qualifying.by_driver.get(driver_id)
+    qual_pos = q_info.grid_position if q_info is not None else np.nan
+    grid = start_slot if not np.isnan(start_slot) else qual_pos
+
+    # fp2_position: FP2 → FP1 → qualifying position fallback
+    fp2_pos = fp2_map.get(driver_id)
+    if fp2_pos is None:
+        fp2_pos = int(qual_pos) if not np.isnan(qual_pos) else 20
+
+    return {
+        "year":            year,
+        "round":           int(race["round"]),
+        "race_name":       race["raceName"],
+        "circuit_id":      race["Circuit"]["circuitId"].lower(),
+        "driver_id":       driver_id,
+        "constructor_id":  constructor_id,
+        "grid_position":   grid,
+        "qual_position":   qual_pos,
+        "actual_grid":     actual_grid,
+        "finish_position": finish_position,
+        "points":          points,
+        "is_dnf":          is_dnf,
+        "best_q_time":     q_info.best_q_time if q_info is not None else None,
+        "pole_time":       qualifying.pole_time,
+        "q_gap_pct":       qualifying.gap_pct_by_driver.get(driver_id, np.nan),
+        "fp2_position":    fp2_pos,
+        "q1_time":         q_info.q1_time if q_info is not None else None,
+        "q2_time":         q_info.q2_time if q_info is not None else None,
+        "q3_time":         q_info.q3_time if q_info is not None else None,
+        "q3_cutoff_time":  qualifying.q3_cutoff_time,
+    }
+
+
+def build_raw_results(
+    fetcher: F1Fetcher,
+    years: list[int],
+    before: tuple[int, int] | None = None,
+) -> pd.DataFrame:
     """
     Returns a long-form DataFrame with all race results + qualifying data.
+
+    before : (year, round) — only races strictly before this one are read
+             (history for a live prediction; later rounds are not requested).
 
     Columns
     -------
     year, round, race_name, circuit_id, driver_id, constructor_id,
-    grid_position, finish_position, points, is_dnf,
-    best_q_time, pole_time, q_gap_pct
+    grid_position (starting grid, qualifying position fallback), qual_position,
+    finish_position, points, is_dnf, best_q_time, pole_time, q_gap_pct
     """
     rows: list[dict] = []
 
@@ -129,75 +207,28 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
             continue
 
         for race in schedule:
-            rnd        = int(race["round"])
-            race_name  = race["raceName"]
-            circuit_id = race["Circuit"]["circuitId"].lower()
-            logger.debug("%d R%02d  %s", year, rnd, race_name)
+            rnd = int(race["round"])
+            if before is not None and (year, rnd) >= before:
+                continue
+            logger.debug("%d R%02d  %s", year, rnd, race["raceName"])
 
-            # --- qualifying ---
-            qualifying = parse_qualifying_session(fetcher.qualifying(year, rnd))
-            qual_map = qualifying.by_driver
-            pole_time = qualifying.pole_time
-            q3_cutoff_time = qualifying.q3_cutoff_time
-
-            # --- FP2 position (fallback: FP1, then qualifying position) ---
-            fp2_map: dict[str, int] = {}
-            fp2_results = fetcher.fp2_classification(year, rnd)
-            if fp2_results:
-                for pr in fp2_results:
-                    did = pr["Driver"]["driverId"]
-                    fp2_map[did] = _safe_pos(pr.get("position"), 20)
-            else:
-                # Sprint weekend or cancelled FP2 — try FP1
-                fp1_results = fetcher.fp1_classification(year, rnd)
-                for pr in fp1_results:
-                    did = pr["Driver"]["driverId"]
-                    fp2_map[did] = _safe_pos(pr.get("position"), 20)
+            qualifying, fp2_map = _race_session_context(fetcher, year, rnd)
 
             # --- race results ---
-            for rr in fetcher.results(year, rnd):
+            results = fetcher.results(year, rnd)
+            start_grid = grid_from_results(results)
+            for rr in results:
                 did  = rr["Driver"]["driverId"]
-                cid  = rr["Constructor"]["constructorId"]
                 pos  = _safe_float(rr.get("position"), DNF_POSITION)
-                pts  = _safe_float(rr.get("points"),   0.0)
-                stat = rr.get("status", "Unknown")
-                is_dnf = not _status_is_finish(stat)
-
-                q_info = qual_map.get(did)
-                grid = q_info.grid_position if q_info is not None else np.nan
-                if np.isnan(grid):
-                    grid = _safe_float(rr.get("grid"), np.nan)
-
-                best_q = q_info.best_q_time if q_info is not None else None
-                q_gap_pct = qualifying.gap_pct_by_driver.get(did, np.nan)
-
-                # fp2_position: FP2 → FP1 → qualifying position fallback
-                fp2_pos = fp2_map.get(did)
-                if fp2_pos is None:
-                    q_grid = q_info.grid_position if q_info is not None else np.nan
-                    fp2_pos = int(q_grid) if not (isinstance(q_grid, float) and np.isnan(q_grid)) else 20
-
-                rows.append({
-                    "year":            year,
-                    "round":           rnd,
-                    "race_name":       race_name,
-                    "circuit_id":      circuit_id,
-                    "driver_id":       did,
-                    "constructor_id":  cid,
-                    "grid_position":   grid,
-                    "actual_grid":     _safe_float(rr.get("grid"), np.nan),
-                    "finish_position": min(int(pos), DNF_POSITION),
-                    "points":          pts,
-                    "is_dnf":          is_dnf,
-                    "best_q_time":     best_q,
-                    "pole_time":       pole_time,
-                    "q_gap_pct":       q_gap_pct,
-                    "fp2_position":    fp2_pos,
-                    "q1_time":         q_info.q1_time if q_info is not None else None,
-                    "q2_time":         q_info.q2_time if q_info is not None else None,
-                    "q3_time":         q_info.q3_time if q_info is not None else None,
-                    "q3_cutoff_time":  q3_cutoff_time,
-                })
+                rows.append(_raw_row(
+                    race, year, did, rr["Constructor"]["constructorId"],
+                    qualifying, fp2_map,
+                    start_slot=_safe_float(start_grid.get(did)),
+                    finish_position=min(int(pos), DNF_POSITION),
+                    points=_safe_float(rr.get("points"), 0.0),
+                    is_dnf=not _status_is_finish(rr.get("status", "Unknown")),
+                    actual_grid=_safe_float(rr.get("grid"), np.nan),
+                ))
 
     df = pd.DataFrame(rows)
     if df.empty:
@@ -211,14 +242,41 @@ def build_raw_results(fetcher: F1Fetcher, years: list[int]) -> pd.DataFrame:
     return df
 
 
+def build_race_entry_rows(fetcher: F1Fetcher, year: int, race: dict) -> pd.DataFrame:
+    """Raw rows for a race that has qualified but not yet started.
+
+    Same columns as build_raw_results(); the race outcome columns are unknown
+    (finish_position NaN).  Uses the published starting grid when available.
+    """
+    rnd = int(race["round"])
+    qualifying, fp2_map = _race_session_context(fetcher, year, rnd)
+    start_grid = fetcher.starting_grid(year, rnd)
+    rows = [
+        _raw_row(
+            race, year, did, info.constructor_id, qualifying, fp2_map,
+            start_slot=_safe_float(start_grid.get(did)),
+            finish_position=np.nan,
+            points=0.0,
+            is_dnf=False,
+            actual_grid=_safe_float(start_grid.get(did)),
+        )
+        for did, info in qualifying.by_driver.items()
+    ]
+    return pd.DataFrame(rows)
+
+
 # ── phase 2: build feature matrix ─────────────────────────────────────────────
 
 def build_feature_matrix(
     raw: pd.DataFrame,
     fetcher: F1Fetcher,
+    season_rounds: dict[int, int] | None = None,
 ) -> pd.DataFrame:
     """
     Walk every race chronologically and attach pre-race features for each driver.
+
+    season_rounds : scheduled round count per year, for seasons still in
+                    progress (by default the last round present in *raw*).
 
     Returns a DataFrame with FEATURE_COLS + TARGET_COL (plus identifier cols).
     """
@@ -563,6 +621,7 @@ def build_feature_matrix(
                 "drv_in_points_last5":   drv_in_points_last5,
                 # v5.2: pass-through qualifying session raw times for candidate features
                 "actual_grid":      row.get("actual_grid", np.nan),
+                "qual_position":    row.get("qual_position", np.nan),
                 "q1_time":          row.get("q1_time"),
                 "q2_time":          row.get("q2_time"),
                 "q3_time":          row.get("q3_time"),
@@ -588,6 +647,8 @@ def build_feature_matrix(
     # race_num / total_races_in_season ∈ [0, 1].  Allows tree models to learn
     # season-stage interactions (e.g. form features are more informative late).
     max_round_per_year = raw.groupby("year")["round"].max()
+    if season_rounds:
+        max_round_per_year.update(pd.Series(season_rounds))
     feat_df["season_completeness"] = (
         feat_df["race_num"] / feat_df["year"].map(max_round_per_year)
     ).clip(0.0, 1.0)
@@ -721,13 +782,13 @@ def build_feature_matrix(
     # NaN → median fill applied after computation (no leakage risk: all values
     # come from the same race's qualifying session, not future races).
 
-    # A. grid_penalty_delta: actual race grid minus qualifying position.
+    # A. grid_penalty_delta: starting grid slot minus qualifying position.
     #    Positive = driver starts worse than they qualified (engine/gearbox penalty).
     #    Zero = no penalty.  Negative = promoted by others' penalties.
-    if "actual_grid" in feat_df.columns:
+    if "qual_position" in feat_df.columns:
         feat_df["grid_penalty_delta"] = (
-            feat_df["actual_grid"].fillna(feat_df["grid_position"])
-            - feat_df["grid_position"]
+            feat_df["grid_position"]
+            - feat_df["qual_position"].fillna(feat_df["grid_position"])
         ).clip(-10, 20)
 
     # B. qual_session_reached: ordinal 1/2/3 indicating Q1/Q2/Q3 elimination.

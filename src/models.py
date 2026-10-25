@@ -224,44 +224,39 @@ except ImportError:
     logger.warning("lightgbm not installed – LGB models will be skipped")
 
 
-# ── weighted ensemble — v9.1 weights (non-adaptive) ───────────────────────────
+# ── weighted ensemble — 2026-10 walk-forward weights (non-adaptive) ───────────
 #
-# v9.1: Ensemble re-optimized after per-model feature subspace testing.
+# 2026-10-25: retuned after the starting-grid / lapped-DNF data fixes
+# (docs/LIVE_PIPELINE_FIXES_2026-10-25.md).  The v9.2 G_plus_clf weights
+# (xgb_ranker=6, lgbm_ranker=1.5, rf_clf=1.5, lgb_reg=1, xgb_clf=0.5) had been
+# selected on the 2025 holdout alone.
 #
-# v9.1 per-model results changed the landscape (2025 holdout, 24 races):
-#   lgb_reg: 12.58  xgb_ranker: 12.50  rf_clf: 11.67  xgb_reg: 10.67
-#   xgb_clf: 10.50  ridge: 10.12  lgbm_ranker: 10.04  rf_reg: 7.50
+# Protocol: expanding-window walk-forward (train on all seasons < Y, score Y)
+# for Y = 2014–2026; weights tuned on 2014–2024 out-of-fold component scores,
+# 2025–2026 held out.  Free-form weight search overfits (leave-one-season-out
+# 12.2 vs 12.6 for plain equal weights), so the search was restricted to
+# "all 8 models equal + grid/champ heuristic weight":
 #
-# Old v7.2 weights (xgb_ranker=6, lgbm_ranker=1.5, rf_clf=1.5) → 11.50 pts/race
-# with v9.1 features.  lgb_reg overtook lgbm_ranker as the #2 best model.
+#   avg pts/race (out of fold)   2014–24   2025   2026   2022–26   2014–26
+#   2026-10 weights (this)         12.96  11.38  10.94    12.67     12.69
+#   equal 8 models only            12.57  11.46  10.76    12.33     12.36
+#   v9.2 G_plus_clf                11.12  12.33  13.12    12.79     11.36
+#   naive (driver starting P10)    11.59  14.79  12.94    12.68     11.96
 #
-# Weight search (scripts/62–64_v91_ensemble_*.py), 2026-03-21:
-#   G_plus_clf     (xgb=6, lgbm=1.5, rf=1.5, lgb=1.0, xgb_clf=0.5):  13.333  ← BEST
-#   G_old_plus_lgb (xgb=6, lgbm=1.5, rf=1.5, lgb=1.0):                12.625
-#   E_three_way    (lgb=3, xgb=3, rf=3):                               12.333
-#   C_lgb_dom      (lgb=6, xgb=2, rf=1.5):                            12.042
-#   B_ranker_dom   (xgb=6, lgb=2, rf=1.5):                            11.667
-#   baseline_v72   (old weights):                                       11.500
-#
-# Accepted: G_plus_clf (+1.833 vs v7.2 baseline, +0.708 vs G_old_plus_lgb)
-#
-# Key change: lgb_reg added at weight=1.0 (v9.1 best model), xgb_clf increased
-# to 0.5 for diversity; lgbm_ranker and rf_clf unchanged; ridge/xgb_reg removed.
-#
-# Evaluation (2026-03-21, scripts 62–64):
-#   2025 holdout (train 2010–2024): 13.333 pts/race
-#   Naive baseline: 14.04 pts/race
+# this − v9.2: +1.83 ± 0.59 per race on 2014–24 (228 races), −1.46 ± 1.27
+# on 2025–26 (41 races; v9.2 was itself chosen on 2025).  The 2025–26 seasons
+# favour the naive starting-grid pick over every weighting tested.
 ENSEMBLE_WEIGHTS: dict[str, float] = {
-    "xgb_ranker":      6.00,   # dominant ranker (12.50 individual)
-    "lgbm_ranker":     1.50,   # diversity: lambdarank objective
-    "rf_clf":          1.50,   # calibrated RF classifier — architectural diversity
-    "lgb_reg":         1.00,   # v9.1: LightGBM regressor now best individual model (12.58)
-    "xgb_clf":         0.50,   # EV-based class probability — diversity signal
-    "ridge":           0.00,   # removed (10.12 individual, no net diversity gain)
-    "rf_reg":          0.00,   # removed (7.50 individual — worst model)
-    "xgb_reg":         0.00,   # removed (10.67 individual, xgb_ranker dominates)
-    "grid_heuristic":  0.00,   # removed (signal in grid_position feature)
-    "champ_heuristic": 0.00,   # removed (signal in drv_champ_pos feature)
+    "ridge":           1.00,
+    "rf_reg":          1.00,
+    "xgb_reg":         1.00,
+    "lgb_reg":         1.00,
+    "rf_clf":          1.00,
+    "xgb_clf":         1.00,
+    "xgb_ranker":      1.00,
+    "lgbm_ranker":     1.00,
+    "grid_heuristic":  0.50,   # 1 / (1 + |grid − 10|): prior towards the P10 starter
+    "champ_heuristic": 0.50,   # 1 / (1 + |champ_pos − 10|): prior towards P10 in the standings
 }
 
 # ── v5.9 Season-stage adaptive ensemble weights ────────────────────────────────

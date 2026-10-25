@@ -428,39 +428,37 @@ Recommended pick: **lawson**
 
 ## Round 18 - United States Grand Prix (2026-10-25)
 
-Generated: 2026-10-25 05:12 UTC
+Generated: 2026-10-25 12:40 UTC
 
 ### Consensus
-- arvid_lindblad: 4 vote(s)
-- piastri: 1 vote(s)
+- lawson: 4 vote(s)
+- gasly: 2 vote(s)
+- bearman: 2 vote(s)
 - hulkenberg: 1 vote(s)
-- bearman: 1 vote(s)
-- lawson: 1 vote(s)
-- gasly: 1 vote(s)
 
-Recommended pick: **arvid_lindblad**
+Recommended pick: **lawson**
 
 ### Model Picks
 | Model | Pick | Grid | Model score |
 |---|---|---|---|
-| ensemble | arvid_lindblad | P9 | 0.9911 |
-| ridge | piastri | P7 | 8.9718 |
-| lgb_reg | arvid_lindblad | P9 | 10.3008 |
-| rf_clf | hulkenberg | P12 | 11.9240 |
-| xgb_reg | bearman | P16 | 10.0116 |
-| rf_reg | lawson | P10 | 10.4303 |
-| xgb_ranker | arvid_lindblad | P9 | -1.0125 |
-| lgbm_ranker | arvid_lindblad | P9 | -1.7200 |
-| xgb_clf | gasly | P11 | 9.5417 |
+| ensemble | lawson | P9 | 0.8573 |
+| ridge | lawson | P9 | 10.6520 |
+| lgb_reg | gasly | P10 | 10.0396 |
+| rf_clf | hulkenberg | P11 | 12.7947 |
+| xgb_reg | lawson | P9 | 9.6194 |
+| rf_reg | lawson | P9 | 10.2449 |
+| xgb_ranker | bearman | P13 | -0.3838 |
+| lgbm_ranker | bearman | P13 | -1.7804 |
+| xgb_clf | gasly | P10 | 10.0256 |
 
 ### Top Ensemble Candidates
 | Driver | Constructor | Grid | Ensemble score |
 |---|---|---|---|
-| arvid_lindblad | rb | P9 | 0.9911 |
-| lawson | rb | P10 | 0.9306 |
-| bortoleto | audi | P13 | 0.9199 |
-| ocon | haas | P17 | 0.8913 |
-| bearman | haas | P16 | 0.8811 |
-| hulkenberg | audi | P12 | 0.8739 |
-| colapinto | alpine | P14 | 0.8033 |
-| gasly | alpine | P11 | 0.7707 |
+| lawson | rb | P9 | 0.8573 |
+| gasly | alpine | P10 | 0.8350 |
+| arvid_lindblad | rb | P14 | 0.6939 |
+| hulkenberg | audi | P11 | 0.6220 |
+| bearman | haas | P13 | 0.5009 |
+| colapinto | alpine | P20 | 0.4877 |
+| ocon | haas | P15 | 0.4517 |
+| piastri | mclaren | P7 | 0.4326 |

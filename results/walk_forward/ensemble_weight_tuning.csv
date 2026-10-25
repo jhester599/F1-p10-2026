@@ -1,0 +1,16 @@
+weights,tune 2014-2024,holdout 2025-2026,all
+config ENSEMBLE_WEIGHTS,12.96,11.2,12.69
+v9.2 G_plus_clf,11.12,12.66,11.36
+naive (grid_heuristic only),11.59,14.02,11.96
+equal8 grid=0 champ=0,12.57,11.17,12.36
+equal8 grid=0 champ=0.5,12.82,10.98,12.54
+equal8 grid=0 champ=1,12.93,11.07,12.64
+equal8 grid=0.5 champ=0,12.61,11.51,12.44
+equal8 grid=0.5 champ=0.5,12.96,11.2,12.69
+equal8 grid=0.5 champ=1,12.93,11.0,12.64
+equal8 grid=1 champ=0,12.54,11.44,12.38
+equal8 grid=1 champ=0.5,12.59,10.98,12.35
+equal8 grid=1 champ=1,12.85,11.49,12.64
+equal8 grid=2 champ=0,12.45,12.2,12.41
+equal8 grid=2 champ=0.5,12.26,11.29,12.12
+equal8 grid=2 champ=1,12.3,11.02,12.1

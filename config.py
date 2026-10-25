@@ -16,6 +16,10 @@ for _d in [RAW_DIR, PROCESSED_DIR, MODELS_DIR, RESULTS_DIR]:
 
 # ── API settings ──────────────────────────────────────────────────────────────
 JOLPICA_BASE  = "https://api.jolpi.ca/ergast/f1"
+# Fallback for qualifying / starting grid when Jolpica has not published a
+# session yet (it can lag many hours). OpenF1 coverage starts in 2023.
+OPENF1_BASE        = "https://api.openf1.org/v1"
+OPENF1_FIRST_YEAR  = 2023
 REQUEST_DELAY = 0.35   # seconds between successive requests (stay under rate limit)
 MAX_RETRIES   = 4
 
