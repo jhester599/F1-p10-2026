@@ -1,35 +1,36 @@
 ## Round 19 - Mexico City Grand Prix (2026-11-01)
 
-Generated: 2026-11-01 01:25 UTC
+Generated: 2026-11-01 18:04 UTC
 
 ### Consensus
-- lawson: 6 vote(s)
-- colapinto: 2 vote(s)
-- hulkenberg: 1 vote(s)
+- arvid_lindblad: 5 vote(s)
+- hulkenberg: 2 vote(s)
+- piastri: 1 vote(s)
+- bearman: 1 vote(s)
 
-Recommended pick: **lawson**
+Recommended pick: **arvid_lindblad**
 
 ### Model Picks
 | Model | Pick | Grid | Model score |
 |---|---|---|---|
-| lgbm_ranker | colapinto | P12 | -1.1634 |
-| ensemble | lawson | P8 | 0.8983 |
-| xgb_ranker | lawson | P8 | -0.1854 |
-| rf_clf | hulkenberg | P11 | 13.0716 |
-| xgb_reg | lawson | P8 | 10.2513 |
-| xgb_clf | colapinto | P12 | 10.1053 |
-| lgb_reg | lawson | P8 | 9.6335 |
-| rf_reg | lawson | P8 | 10.2725 |
-| ridge | lawson | P8 | 9.8828 |
+| ensemble | arvid_lindblad | P8 | 0.8645 |
+| ridge | piastri | P12 | 9.3990 |
+| lgb_reg | arvid_lindblad | P8 | 9.7173 |
+| rf_clf | hulkenberg | P10 | 13.3883 |
+| xgb_reg | arvid_lindblad | P8 | 9.7681 |
+| rf_reg | arvid_lindblad | P8 | 10.4533 |
+| xgb_ranker | hulkenberg | P10 | -0.5388 |
+| lgbm_ranker | arvid_lindblad | P8 | -0.9564 |
+| xgb_clf | bearman | P14 | 10.2948 |
 
 ### Top Ensemble Candidates
 | Driver | Constructor | Grid | Ensemble score |
 |---|---|---|---|
-| lawson | rb | P8 | 0.8983 |
-| arvid_lindblad | rb | P9 | 0.7649 |
-| gasly | alpine | P10 | 0.7263 |
-| piastri | mclaren | P13 | 0.6806 |
-| hulkenberg | audi | P11 | 0.5923 |
-| colapinto | alpine | P12 | 0.5674 |
-| hadjar | red_bull | P7 | 0.4385 |
-| bortoleto | audi | P14 | 0.4342 |
+| arvid_lindblad | rb | P8 | 0.8645 |
+| gasly | alpine | P9 | 0.7975 |
+| hulkenberg | audi | P10 | 0.7049 |
+| piastri | mclaren | P12 | 0.6963 |
+| colapinto | alpine | P11 | 0.5840 |
+| lawson | rb | P20 | 0.5519 |
+| bortoleto | audi | P13 | 0.4616 |
+| hadjar | red_bull | P7 | 0.4485 |

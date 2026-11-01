@@ -146,6 +146,44 @@ def test_qualifying_falls_back_to_openf1_when_jolpica_is_empty(tmp_path, monkeyp
     assert fetcher.starting_grid(2026, 18) == {"antonelli": 1, "max_verstappen": 5}
 
 
+def test_openf1_starting_grid_resolves_drivers_from_current_qualifying(tmp_path, monkeypatch) -> None:
+    class FakeOpenF1:
+        def qualifying_session(self, year, race_date):
+            return {"session_key": 99, "date_start": "2026-10-31T21:00:00+00:00"}
+
+        def session_results(self, key):
+            return []
+
+        def drivers(self, key):
+            return []
+
+        def starting_grid(self, key):
+            return [{"driver_number": 3, "position": 1}, {"driver_number": 50, "position": 2}]
+
+    fetcher = F1Fetcher(cache_dir=tmp_path, openf1=FakeOpenF1())
+    jolpica = {
+        "2026/19/qualifying": [
+            {"number": "50", "Driver": {"driverId": "ryo_hirakawa"}, "Constructor": {"constructorId": "haas"}},
+        ],
+        "2026/18/results": [
+            {"number": "3", "Driver": {"driverId": "max_verstappen"}, "Constructor": {"constructorId": "red_bull"}},
+        ],
+    }
+
+    def fake_mrdata(path, *keys, use_cache=True):
+        if path == "2026":
+            return [{"round": "18", "date": "2026-10-25"}, {"round": "19", "date": "2026-11-01"}]
+        if path == "2025":
+            return []
+        rows = jolpica.get(path, [])
+        key = "QualifyingResults" if path.endswith("qualifying") else "Results"
+        return [{key: rows}] if rows else []
+
+    monkeypatch.setattr(fetcher, "_mrdata", fake_mrdata)
+
+    assert fetcher.starting_grid(2026, 19) == {"max_verstappen": 1, "ryo_hirakawa": 2}
+
+
 def test_stale_cached_empty_current_season_response_is_refetched(tmp_path, monkeypatch) -> None:
     fetcher = F1Fetcher(cache_dir=tmp_path)
     year = datetime.now(timezone.utc).year
