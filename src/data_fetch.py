@@ -249,9 +249,20 @@ class F1Fetcher:
         session, _ = self._openf1_qualifying_session(year, rnd)
         if session is None:
             return {}
+        # This round's Jolpica qualifying names drivers who have not raced yet
+        # (stand-ins, rookies), so their car numbers resolve to the same
+        # driverId the entry list uses.
+        number_map = self._season_number_map(year, rnd)
+        for row in self._jolpica_qualifying(year, rnd):
+            number = str(row.get("number", ""))
+            if number:
+                number_map[number] = (
+                    row["Driver"]["driverId"],
+                    row["Constructor"]["constructorId"],
+                )
         grid = starting_grid_from_openf1(
             self._openf1_client().starting_grid(session["session_key"]),
-            self._season_number_map(year, rnd),
+            number_map,
         )
         if grid:
             logger.info("Using OpenF1 starting grid for %d R%d (%d drivers)", year, rnd, len(grid))
