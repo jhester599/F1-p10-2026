@@ -249,11 +249,11 @@ class F1Fetcher:
         session, _ = self._openf1_qualifying_session(year, rnd)
         if session is None:
             return {}
-        # This round's Jolpica qualifying names drivers who have not raced yet
-        # (stand-ins, rookies), so their car numbers resolve to the same
-        # driverId the entry list uses.
+        # This round's qualifying (Jolpica, else OpenF1) names drivers who have
+        # not raced yet (stand-ins, rookies), so their car numbers resolve to
+        # the same driverId the entry list uses.
         number_map = self._season_number_map(year, rnd)
-        for row in self._jolpica_qualifying(year, rnd):
+        for row in self.qualifying(year, rnd):
             number = str(row.get("number", ""))
             if number:
                 number_map[number] = (

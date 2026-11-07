@@ -184,6 +184,51 @@ def test_openf1_starting_grid_resolves_drivers_from_current_qualifying(tmp_path,
     assert fetcher.starting_grid(2026, 19) == {"max_verstappen": 1, "ryo_hirakawa": 2}
 
 
+def test_openf1_starting_grid_resolves_new_driver_from_openf1_qualifying(tmp_path, monkeypatch) -> None:
+    # Jolpica has not published this round's qualifying, and car #51 has not
+    # raced this season: the OpenF1 qualifying rows must still place it.
+    class FakeOpenF1:
+        def qualifying_session(self, year, race_date):
+            return {"session_key": 99, "date_start": "2026-11-07T18:00:00+00:00"}
+
+        def session_results(self, key):
+            return [
+                {"position": 1, "driver_number": 3, "duration": [90.0, 89.0, 88.0]},
+                {"position": 2, "driver_number": 51, "duration": [91.0, 90.0, None]},
+            ]
+
+        def drivers(self, key):
+            return [
+                {"driver_number": 3, "team_name": "Red Bull Racing", "last_name": "Verstappen"},
+                {"driver_number": 51, "team_name": "Haas F1 Team", "last_name": "Rookie"},
+            ]
+
+        def starting_grid(self, key):
+            return [{"driver_number": 51, "position": 1}, {"driver_number": 3, "position": 21}]
+
+    fetcher = F1Fetcher(cache_dir=tmp_path, openf1=FakeOpenF1())
+    jolpica = {
+        "2026/19/results": [
+            {"number": "3", "Driver": {"driverId": "max_verstappen"}, "Constructor": {"constructorId": "red_bull"}},
+        ],
+    }
+
+    def fake_mrdata(path, *keys, use_cache=True):
+        if path == "2026":
+            return [{"round": "19", "date": "2026-11-01"}, {"round": "20", "date": "2026-11-08"}]
+        if path == "2025":
+            return []
+        rows = jolpica.get(path, [])
+        key = "QualifyingResults" if path.endswith("qualifying") else "Results"
+        return [{key: rows}] if rows else []
+
+    monkeypatch.setattr(fetcher, "_mrdata", fake_mrdata)
+
+    rows = fetcher.qualifying(2026, 20)
+    assert [r["Driver"]["driverId"] for r in rows] == ["max_verstappen", "rookie"]
+    assert fetcher.starting_grid(2026, 20) == {"rookie": 1, "max_verstappen": 21}
+
+
 def test_stale_cached_empty_current_season_response_is_refetched(tmp_path, monkeypatch) -> None:
     fetcher = F1Fetcher(cache_dir=tmp_path)
     year = datetime.now(timezone.utc).year
